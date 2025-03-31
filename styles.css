@@ -13,7 +13,7 @@ h1 {
 }
 
 /* Back Button */
-button.back-button {
+.back-button {
     position: absolute;
     top: 10px;
     left: 10px;
@@ -26,7 +26,7 @@ button.back-button {
     font-size: 14px;
 }
 
-button.back-button:hover {
+.back-button:hover {
     background-color: #0056b3;
 }
 
@@ -73,6 +73,16 @@ table {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
     overflow: hidden;
+    table-layout: fixed;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    word-wrap: break-word;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 thead {
@@ -81,8 +91,6 @@ thead {
 }
 
 thead th {
-    padding: 12px;
-    text-align: left;
     border-bottom: 2px solid #ddd;
 }
 
@@ -90,12 +98,11 @@ tbody tr:nth-child(even) {
     background-color: #f2f2f2;
 }
 
-tbody td {
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
-    text-align: left;
-    word-break: break-word;
-}
+/* Make Table Fit Columns */
+th:nth-child(1), td:nth-child(1) { width: 20%; }
+th:nth-child(2), td:nth-child(2) { width: 30%; }
+th:nth-child(3), td:nth-child(3) { width: 30%; }
+th:nth-child(4), td:nth-child(4) { width: 20%; }
 
 /* Footer */
 .footer {
@@ -106,6 +113,7 @@ tbody td {
     text-align: center;
 }
 
+/* Responsive Design */
 @media screen and (max-width: 768px) {
     .search-container {
         flex-direction: column;
@@ -115,5 +123,8 @@ tbody td {
     }
     table {
         width: 100%;
+    }
+    th, td {
+        white-space: normal; /* Allows wrapping for mobile */
     }
 }
