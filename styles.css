@@ -1,68 +1,107 @@
-/* styles.css (Modernized CSS) */
+/* General Styles */
 body {
     font-family: Arial, sans-serif;
     text-align: center;
-    background-color: #f9f9f9;
+    margin: 10px;
+    background-color: #f4f4f4;
 }
-.container {
-    max-width: 600px;
-    margin: 40px auto;
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-}
+
+/* Headings */
 h1 {
-    font-size: 22px;
     color: #333;
+    font-size: 22px;
+    margin-bottom: 15px;
 }
-.menu-button {
-    display: block;
-    width: 100%;
+
+/* Search Container */
+.search-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+/* Input Field */
+#searchBox {
+    width: 60%;
+    max-width: 400px;
     padding: 12px;
-    font-size: 18px;
-    margin: 10px 0;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    outline: none;
+}
+
+/* Button */
+#searchButton {
+    padding: 12px 20px;
+    font-size: 16px;
+    cursor: pointer;
     background-color: #007bff;
     color: white;
     border: none;
-    border-radius: 5px;
-    cursor: pointer;
+    border-radius: 8px;
     transition: 0.3s;
 }
-.menu-button:hover {
+
+#searchButton:hover {
     background-color: #0056b3;
 }
-.search-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
-}
-#searchBox {
-    flex: 1;
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-}
+
+/* Search Results Label */
 #resultLabel {
+    font-size: 16px;
     font-weight: bold;
     color: #333;
+    float: right;
 }
-#results {
+
+/* Table */
+table {
     width: 100%;
     margin-top: 15px;
     border-collapse: collapse;
+    background: white;
+    font-size: 14px;
+    box-sizing: border-box;
+    table-layout: fixed;
 }
+
 th, td {
     padding: 10px;
     border: 1px solid #ddd;
     text-align: left;
+    word-wrap: break-word;
 }
+
+/* Table Header */
 th {
     background-color: #007bff;
     color: white;
 }
-footer {
+
+/* Table Responsive */
+@media screen and (max-width: 600px) {
+    table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    th, td {
+        padding: 8px;
+        font-size: 12px;
+    }
+
+    #resultLabel {
+        font-size: 14px;
+    }
+}
+
+/* Footer */
+.footer {
     margin-top: 20px;
     font-size: 14px;
     color: #555;
