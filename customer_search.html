@@ -1,0 +1,69 @@
+<!-- customer_search.html (Search Page) -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Customer</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Search Customer</h1>
+        <button class="menu-button" onclick="window.location.href='index.html'">⬅ Back to Main Menu</button>
+        <div class="search-container">
+            <input type="text" id="searchBox" placeholder="Search by CIF, Name, Address, or Phone">
+            <button id="searchButton">🔍 Search</button>
+            <span id="resultLabel">Results: 0</span>
+        </div>
+        <table id="results">
+            <thead style="display: none;">
+                <tr>
+                    <th>CIF</th>
+                    <th>Name</th>
+                    <th>Address</th>
+                    <th>Phone Number</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <footer>© 2025 Built for Credit Team SVG</footer>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            let data = [];
+            function fetchData() {
+                const files = ["data.json", "data1.json", "data2.json"];
+                Promise.all(files.map(file => fetch(file).then(res => res.ok ? res.json() : [])))
+                    .then(results => { data = results.flat(); })
+                    .catch(error => console.error("Data Load Error:", error));
+            }
+
+            function performSearch() {
+                const query = document.getElementById("searchBox").value.toLowerCase();
+                const results = data.filter(item =>
+                    item.CIF.toLowerCase().includes(query) ||
+                    item.Name.toLowerCase().includes(query) ||
+                    item.Address.toLowerCase().includes(query) ||
+                    item.Phone_Number.includes(query)
+                );
+                displayResults(results);
+            }
+
+            function displayResults(results) {
+                const tableHead = document.querySelector("#results thead");
+                const resultsTable = document.querySelector("#results tbody");
+                document.getElementById("resultLabel").textContent = `Results: ${results.length}`;
+                tableHead.style.display = results.length > 0 ? "table-header-group" : "none";
+                resultsTable.innerHTML = results.length > 0 ? results.map(item =>
+                    `<tr><td>${item.CIF}</td><td>${item.Name}</td><td>${item.Address}</td><td>${item.Phone_Number}</td></tr>`
+                ).join("") : "<tr><td colspan='4'>No results found</td></tr>";
+            }
+
+            document.getElementById("searchButton").addEventListener("click", performSearch);
+            fetchData();
+        });
+    </script>
+</body>
+</html>
