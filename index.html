@@ -13,9 +13,20 @@
       color: white;
     }
 
+    /* Entrance animation */
     .container {
       text-align: center;
       padding: 40px 20px;
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeSlideIn 0.8s ease-out forwards;
+    }
+
+    @keyframes fadeSlideIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     h1 {
