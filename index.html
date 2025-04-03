@@ -31,6 +31,20 @@
       font-size: 16px;
     }
 
+    .logout-icon {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 20px;
+      margin-top: 5px;
+      cursor: pointer;
+      transition: color 0.3s;
+    }
+
+    .logout-icon:hover {
+      color: #ff4d4d;
+    }
+
     .logo {
       height: 70px;
     }
@@ -102,6 +116,10 @@
         align-self: flex-end;
       }
 
+      .logout-icon {
+        font-size: 18px;
+      }
+
       h1 {
         font-size: 22px;
       }
@@ -122,10 +140,11 @@
     }
   </script>
 
-  <!-- Top Bar: Welcome (left) + Logo (right) -->
+  <!-- Top Bar: Welcome (left) + Logout Icon (under welcome) + Logo (right) -->
   <div class="topbar">
     <div class="top-left">
       <div class="welcome" id="welcome">Welcome, user</div>
+      <button class="logout-icon" onclick="logout()" title="Logout">⎋</button>
     </div>
     <img src="LogoAC.png" alt="ACLEDA Logo" class="logo" />
   </div>
@@ -159,6 +178,11 @@
 
   <script>
     document.getElementById("welcome").textContent = "Welcome, " + sessionStorage.getItem("loggedInUser");
+
+    function logout() {
+      sessionStorage.removeItem("loggedInUser");
+      window.location.href = "login.html";
+    }
   </script>
 </body>
 </html>
