@@ -82,6 +82,15 @@
   </style>
 </head>
 <body>
+
+  <!-- Session check -->
+  <script>
+    const user = sessionStorage.getItem("loggedInUser");
+    if (!user) {
+      window.location.href = "login.html"; // redirect to login if not logged in
+    }
+  </script>
+
   <div class="container">
     <h1>Credit Assist</h1>
 
