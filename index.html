@@ -14,9 +14,6 @@
     }
 
     .topbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
       padding: 10px 20px;
       background-color: #0d2d5c;
     }
@@ -43,10 +40,6 @@
 
     .logout-icon:hover {
       color: #ff4d4d;
-    }
-
-    .logo {
-      height: 70px;
     }
 
     .container {
@@ -105,17 +98,6 @@
     }
 
     @media (max-width: 600px) {
-      .topbar {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .logo {
-        height: 50px;
-        margin-top: 10px;
-        align-self: flex-end;
-      }
-
       .logout-icon {
         font-size: 18px;
       }
@@ -140,16 +122,14 @@
     }
   </script>
 
-  <!-- Top Bar: Welcome (left) + Logout Icon (under welcome) + Logo (right) -->
+  <!-- Top Bar: Welcome + Logout Icon (no logo) -->
   <div class="topbar">
     <div class="top-left">
       <div class="welcome" id="welcome">Welcome, user</div>
       <button class="logout-icon" onclick="logout()" title="Logout">⎋</button>
     </div>
-    <img src="LogoAC.png" alt="ACLEDA Logo" class="logo" />
   </div>
 
-  <!-- Content -->
   <div class="container">
     <h1>Credit Assist</h1>
 
