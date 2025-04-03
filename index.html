@@ -8,7 +8,7 @@
     body {
       margin: 0;
       padding: 0;
-      background-color: #1c2331; /* Dark background */
+      background-color: #1c2331;
       font-family: Arial, sans-serif;
       color: white;
     }
@@ -35,16 +35,21 @@
       border: none;
       border-radius: 8px;
       cursor: pointer;
-      transition: background-color 0.3s;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      transition: transform 0.2s ease, background-color 0.3s ease, box-shadow 0.3s ease;
     }
 
     .menu-button:hover {
       background-color: #1a8cff;
+      transform: scale(1.03);
+      box-shadow: 0 6px 15px rgba(51, 153, 255, 0.4);
     }
 
     .menu-button:disabled {
       background-color: #555;
       cursor: not-allowed;
+      opacity: 0.7;
+      box-shadow: none;
     }
 
     footer {
