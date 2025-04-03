@@ -85,7 +85,6 @@
   </div>
 
   <script>
-    // Auto-fill username/password if remembered
     window.onload = () => {
       const savedUser = localStorage.getItem("rememberedUser");
       if (savedUser) {
@@ -114,7 +113,7 @@
           } else {
             localStorage.removeItem("rememberedUser");
           }
-          window.location.href = "main.html";
+          window.location.href = "index.html"; // Go to Credit Assist
         } else {
           errorMsg.textContent = "Invalid username or password.";
         }
