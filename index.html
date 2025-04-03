@@ -16,37 +16,37 @@
     .topbar {
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      align-items: flex-start;
       padding: 10px 20px;
       background-color: #0d2d5c;
-      flex-wrap: wrap;
     }
 
-    .topbar-left {
+    .top-left {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .welcome {
       font-size: 16px;
     }
 
-    .topbar-right {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-    }
-
-    .logout-button {
-      background-color: #ff4d4d;
+    .logout-icon {
+      background: none;
       border: none;
-      padding: 6px 14px;
       color: white;
-      border-radius: 5px;
+      font-size: 20px;
+      margin-top: 5px;
       cursor: pointer;
+      transition: color 0.3s;
     }
 
-    .logout-button:hover {
-      background-color: #e60000;
+    .logout-icon:hover {
+      color: #ff4d4d;
     }
 
     .logo {
-      height: 60px;
+      height: 70px;
     }
 
     .container {
@@ -108,11 +108,16 @@
       .topbar {
         flex-direction: column;
         align-items: flex-start;
-        gap: 10px;
       }
 
       .logo {
         height: 50px;
+        margin-top: 10px;
+        align-self: flex-end;
+      }
+
+      .logout-icon {
+        font-size: 18px;
       }
 
       h1 {
@@ -135,14 +140,16 @@
     }
   </script>
 
+  <!-- Top Bar: Welcome (left) + Logout Icon (under welcome) + Logo (right) -->
   <div class="topbar">
-    <div class="topbar-left" id="welcome">Welcome, user</div>
-    <div class="topbar-right">
-      <button class="logout-button" onclick="logout()">Logout</button>
-      <img src="LogoAC.png" alt="ACLEDA Logo" class="logo" />
+    <div class="top-left">
+      <div class="welcome" id="welcome">Welcome, user</div>
+      <button class="logout-icon" onclick="logout()" title="Logout">⎋</button>
     </div>
+    <img src="LogoAC.png" alt="ACLEDA Logo" class="logo" />
   </div>
 
+  <!-- Content -->
   <div class="container">
     <h1>Credit Assist</h1>
 
