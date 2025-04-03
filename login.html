@@ -20,7 +20,7 @@
       background-color: #2c3545;
       padding: 30px;
       border-radius: 10px;
-      box-shadow: 0 0 15px rgba(51, 153, 255, 0.3); /* subtle glow */
+      box-shadow: 0 0 15px rgba(51, 153, 255, 0.3);
       width: 300px;
       text-align: center;
 
@@ -48,6 +48,11 @@
       50% { transform: translateX(8px); }
       75% { transform: translateX(-6px); }
       100% { transform: translateX(0); }
+    }
+
+    .login-logo {
+      height: 70px;
+      margin-bottom: 15px;
     }
 
     input, label {
@@ -96,6 +101,7 @@
 </head>
 <body>
   <div class="login-box" id="loginBox">
+    <img src="LogoAC.png" alt="ACLEDA Logo" class="login-logo" />
     <h2>Login</h2>
     <input type="text" id="username" placeholder="Username" />
     <input type="password" id="password" placeholder="Password" />
@@ -152,7 +158,7 @@
 
       function triggerShake() {
         loginBox.classList.remove("shake");
-        void loginBox.offsetWidth; // trigger reflow
+        void loginBox.offsetWidth;
         loginBox.classList.add("shake");
       }
     }
