@@ -23,8 +23,6 @@
       box-shadow: 0 0 15px rgba(51, 153, 255, 0.3);
       width: 300px;
       text-align: center;
-
-      /* entrance animation */
       opacity: 0;
       transform: translateY(30px);
       animation: fadeSlideIn 0.8s ease-out forwards;
@@ -37,17 +35,15 @@
       }
     }
 
-    /* shake animation */
     .shake {
       animation: shake 0.4s ease;
     }
 
     @keyframes shake {
-      0% { transform: translateX(0); }
+      0%, 100% { transform: translateX(0); }
       25% { transform: translateX(-8px); }
       50% { transform: translateX(8px); }
       75% { transform: translateX(-6px); }
-      100% { transform: translateX(0); }
     }
 
     .login-logo {
@@ -55,17 +51,32 @@
       margin-bottom: 15px;
     }
 
-    input, label {
-      width: 100%;
+    .input-group {
+      position: relative;
       margin-top: 10px;
     }
 
-    input[type="text"], input[type="password"] {
-      padding: 10px;
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      padding: 10px 35px 10px 10px;
       border: none;
       border-radius: 5px;
       background: #1f2733;
       color: white;
+      font-size: 14px;
+    }
+
+    .toggle-visibility {
+      position: absolute;
+      top: 50%;
+      right: 10px;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: #ccc;
+      font-size: 16px;
+      cursor: pointer;
     }
 
     .remember {
@@ -103,8 +114,16 @@
   <div class="login-box" id="loginBox">
     <img src="LogoAC.png" alt="ACLEDA Logo" class="login-logo" />
     <h2>Login</h2>
-    <input type="text" id="username" placeholder="Username" />
-    <input type="password" id="password" placeholder="Password" />
+
+    <div class="input-group">
+      <input type="text" id="username" placeholder="Username" />
+      <button class="toggle-visibility" type="button" onclick="toggleVisibility('username')">👁️</button>
+    </div>
+
+    <div class="input-group">
+      <input type="password" id="password" placeholder="Password" />
+      <button class="toggle-visibility" type="button" onclick="toggleVisibility('password')">👁️</button>
+    </div>
 
     <div class="remember">
       <input type="checkbox" id="rememberMe" />
@@ -125,6 +144,18 @@
         document.getElementById("rememberMe").checked = true;
       }
     };
+
+    function toggleVisibility(id) {
+      const input = document.getElementById(id);
+      const btn = input.nextElementSibling;
+      if (input.type === "password") {
+        input.type = "text";
+        btn.textContent = "🙈";
+      } else {
+        input.type = "password";
+        btn.textContent = "👁️";
+      }
+    }
 
     async function login() {
       const username = document.getElementById("username").value.trim();
