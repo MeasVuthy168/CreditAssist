@@ -2,49 +2,27 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <title>Login</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ការងារឥណទាន</title>
   <style>
     body {
-      margin: 0;
-      padding: 0;
       background-color: #0d2d5c;
+      color: white;
       font-family: Arial, sans-serif;
-      color: white;
-    }
-
-    .topbar {
-      padding: 10px 20px;
-      background-color: #0d2d5c;
-    }
-
-    .top-left {
       display: flex;
-      flex-direction: column;
-      align-items: flex-start;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
     }
 
-    .welcome {
-      font-size: 16px;
-    }
-
-    .logout-icon {
-      background: none;
-      border: none;
-      color: white;
-      font-size: 20px;
-      margin-top: 5px;
-      cursor: pointer;
-      transition: color 0.3s;
-    }
-
-    .logout-icon:hover {
-      color: #ff4d4d;
-    }
-
-    .container {
+    .login-box {
+      background-color: #2c3545;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(51, 153, 255, 0.3);
+      width: 300px;
       text-align: center;
-      padding: 40px 20px;
       opacity: 0;
       transform: translateY(30px);
       animation: fadeSlideIn 0.8s ease-out forwards;
@@ -57,111 +35,134 @@
       }
     }
 
-    h1 {
-      margin-bottom: 30px;
-      color: #ffffff;
+    .shake {
+      animation: shake 0.4s ease;
     }
 
-    .menu-button {
-      display: block;
-      width: 90%;
-      max-width: 400px;
-      margin: 10px auto;
-      padding: 15px;
-      font-size: 18px;
+    @keyframes shake {
+      0% { transform: translateX(0); }
+      25% { transform: translateX(-8px); }
+      50% { transform: translateX(8px); }
+      75% { transform: translateX(-6px); }
+      100% { transform: translateX(0); }
+    }
+
+    .login-logo {
+      height: 70px;
+      margin-bottom: 15px;
+    }
+
+    input, label {
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    input[type="text"], input[type="password"] {
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      background: #1f2733;
+      color: white;
+    }
+
+    .remember {
+      display: flex;
+      align-items: center;
+      margin: 10px 0;
+    }
+
+    .remember input {
+      width: auto;
+      margin-right: 8px;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
       background-color: #3399ff;
       color: white;
       border: none;
-      border-radius: 8px;
+      border-radius: 5px;
       cursor: pointer;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-      transition: transform 0.2s ease, background-color 0.3s ease, box-shadow 0.3s ease;
     }
 
-    .menu-button:hover {
+    button:hover {
       background-color: #1a8cff;
-      transform: scale(1.03);
-      box-shadow: 0 6px 15px rgba(51, 153, 255, 0.4);
     }
 
-    .menu-button:disabled {
-      background-color: #555;
-      cursor: not-allowed;
-      opacity: 0.7;
-      box-shadow: none;
-    }
-
-    footer {
-      margin-top: 40px;
-      font-size: 14px;
-      color: #bbb;
-    }
-
-    @media (max-width: 600px) {
-      .logout-icon {
-        font-size: 18px;
-      }
-
-      h1 {
-        font-size: 22px;
-      }
-
-      .menu-button {
-        font-size: 16px;
-        padding: 12px;
-      }
+    .error {
+      color: #ff6666;
+      margin-top: 10px;
+      min-height: 20px;
     }
   </style>
 </head>
 <body>
+  <div class="login-box" id="loginBox">
+    <img src="LogoAC.png" alt="ACLEDA Logo" class="login-logo" />
+    <h2>Login</h2>
+    <input type="text" id="username" placeholder="Username" />
+    <input type="password" id="password" placeholder="Password" />
 
-  <script>
-    const user = sessionStorage.getItem("loggedInUser");
-    if (!user) {
-      window.location.href = "login.html";
-    }
-  </script>
-
-  <!-- Top Bar: Welcome + Logout Icon (no logo) -->
-  <div class="topbar">
-    <div class="top-left">
-      <div class="welcome" id="welcome">Welcome, user</div>
-      <button class="logout-icon" onclick="logout()" title="Logout">⎋</button>
+    <div class="remember">
+      <input type="checkbox" id="rememberMe" />
+      <label for="rememberMe">Remember Me</label>
     </div>
-  </div>
 
-  <div class="container">
-    <h1>Credit Assist</h1>
-
-    <button class="menu-button" onclick="window.location.href='https://measvuthy168.github.io/CRM_SVG/'">
-      🔍 Find Customer
-    </button>
-
-    <button class="menu-button" onclick="window.location.href='https://measvuthy168.github.io/RetiredCalculator/'">
-      🧮 Retired Calculator
-    </button>
-
-    <button class="menu-button" onclick="window.location.href='https://measvuthy168.github.io/Loan-Calculator/'">
-      💰 Loan Calculator
-    </button>
-
-    <button class="menu-button" onclick="window.location.href='https://measvuthy168.github.io/Average-Debit-Turnover/'">
-      📊 Average Debit Turnover
-    </button>
-
-    <button class="menu-button" disabled>
-      📅 Create Schedule Repay (Coming Soon)
-    </button>
-
-    <footer>© 2025 Built for Credit Team SVG</footer>
+    <button onclick="login()">Login</button>
+    <p class="error" id="error-msg"></p>
   </div>
 
   <script>
-    document.getElementById("welcome").textContent = "Welcome, " + sessionStorage.getItem("loggedInUser");
+    window.onload = () => {
+      const savedUser = localStorage.getItem("rememberedUser");
+      if (savedUser) {
+        const creds = JSON.parse(savedUser);
+        document.getElementById("username").value = creds.username;
+        document.getElementById("password").value = creds.password;
+        document.getElementById("rememberMe").checked = true;
+      }
+    };
 
-    function logout() {
-      sessionStorage.removeItem("loggedInUser");
-      window.location.href = "login.html";
+    async function login() {
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const rememberMe = document.getElementById("rememberMe").checked;
+      const errorMsg = document.getElementById("error-msg");
+      const loginBox = document.getElementById("loginBox");
+
+      try {
+        const res = await fetch("datapass.json");
+        const users = await res.json();
+        const user = users.find(u => u.username === username && u.password === password);
+
+        if (user) {
+          sessionStorage.setItem("loggedInUser", user.username);
+          if (rememberMe) {
+            localStorage.setItem("rememberedUser", JSON.stringify({ username, password }));
+          } else {
+            localStorage.removeItem("rememberedUser");
+          }
+          window.location.href = "index.html";
+        } else {
+          errorMsg.textContent = "Invalid username or password.";
+          loginBox.style.display = "block"; // Ensure it stays visible
+          triggerShake();
+        }
+      } catch (e) {
+        errorMsg.textContent = "Error loading user data.";
+        console.error(e);
+        loginBox.style.display = "block"; // Ensure it stays visible
+        triggerShake();
+      }
+    }
+
+    function triggerShake() {
+      const loginBox = document.getElementById("loginBox");
+      loginBox.classList.remove("shake");
+      requestAnimationFrame(() => {
+        loginBox.classList.add("shake");
+      });
     }
   </script>
 </body>
