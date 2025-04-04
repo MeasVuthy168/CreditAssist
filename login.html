@@ -23,21 +23,26 @@
       box-shadow: 0 0 15px rgba(51, 153, 255, 0.3);
       width: 300px;
       text-align: center;
+      display: block;
+      opacity: 1;
+      transition: opacity 0.5s ease;
+    }
 
-      /* entrance animation */
-      opacity: 0;
-      transform: translateY(30px);
-      animation: fadeSlideIn 0.8s ease-out forwards;
+    .fade-slide-in {
+      animation: fadeSlideIn 0.8s ease-out;
     }
 
     @keyframes fadeSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
       to {
         opacity: 1;
         transform: translateY(0);
       }
     }
 
-    /* shake animation */
     .shake {
       animation: shake 0.4s ease;
     }
@@ -96,11 +101,12 @@
     .error {
       color: #ff6666;
       margin-top: 10px;
+      min-height: 20px;
     }
   </style>
 </head>
 <body>
-  <div class="login-box" id="loginBox">
+  <div class="login-box fade-slide-in" id="loginBox">
     <img src="LogoAC.png" alt="ACLEDA Logo" class="login-logo" />
     <h2>Login</h2>
     <input type="text" id="username" placeholder="Username" />
@@ -145,14 +151,21 @@
           } else {
             localStorage.removeItem("rememberedUser");
           }
-          window.location.href = "index.html";
+
+          // Fade out login box before redirect
+          loginBox.style.opacity = 0;
+          setTimeout(() => {
+            window.location.href = "index.html";
+          }, 500); // Wait for fade-out animation
         } else {
           errorMsg.textContent = "Invalid username or password.";
+          loginBox.style.display = "block"; // Stay visible
           triggerShake();
         }
       } catch (e) {
         errorMsg.textContent = "Error loading user data.";
         console.error(e);
+        loginBox.style.display = "block"; // Stay visible
         triggerShake();
       }
     }
@@ -160,11 +173,8 @@
     function triggerShake() {
       const loginBox = document.getElementById("loginBox");
       loginBox.classList.remove("shake");
-
-      // Ensure reflow before adding the class again
-      requestAnimationFrame(() => {
-        loginBox.classList.add("shake");
-      });
+      void loginBox.offsetWidth; // Force reflow
+      loginBox.classList.add("shake");
     }
   </script>
 </body>
