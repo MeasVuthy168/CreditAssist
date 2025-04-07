@@ -4,15 +4,20 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ស្វែងរកអតិថិជន</title>
-
-  <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="theme-color" content="#0d2d5c" />
 
+  <!-- Font -->
+  <style>
+    @font-face {
+      font-family: 'Krasar';
+      src: url('../Krasar-Regular.ttf') format('truetype');
+    }
+  </style>
+
+  <!-- Session + Auto Logout -->
   <script>
     const user = sessionStorage.getItem("loggedInUser");
-    if (!user) {
-      window.location.href = "../login.html";
-    }
+    if (!user) window.location.href = "../login.html";
 
     const AUTO_LOGOUT_MINUTES = 1;
     let logoutTimer;
@@ -31,18 +36,14 @@
     document.onclick = resetLogoutTimer;
   </script>
 
+  <!-- Styles -->
   <style>
-    @font-face {
-      font-family: 'Krasar';
-      src: url('../Krasar-Regular.ttf') format('truetype');
-    }
-
     body {
       font-family: 'Krasar', Arial, sans-serif;
       background-color: #1c2331;
       color: white;
       margin: 0;
-      padding-bottom: 70px;
+      padding-bottom: 80px;
     }
 
     .header-bar {
@@ -83,14 +84,10 @@
       position: relative;
       width: 100%;
       max-width: 320px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
     }
 
     .search-wrapper input {
       width: 100%;
-      max-width: 280px;
       padding: 10px 45px 10px 15px;
       font-size: 16px;
       border-radius: 25px;
@@ -99,7 +96,7 @@
       color: #333;
     }
 
-    .search-wrapper .search-icon {
+    .search-icon {
       position: absolute;
       right: 15px;
       top: 50%;
@@ -159,11 +156,11 @@
       bottom: 0;
       left: 0;
       width: 100%;
-      background: #fff;
+      background: #ffffff;
       display: flex;
-      align-items: center;
-      padding: 8px 12px;
-      box-shadow: 0 -1px 4px rgba(0,0,0,0.1);
+      justify-content: center;
+      padding: 10px 0;
+      box-shadow: 0 -1px 4px rgba(0, 0, 0, 0.1);
       z-index: 1000;
     }
 
@@ -171,17 +168,18 @@
       display: flex;
       align-items: center;
       gap: 6px;
-      background-color: transparent;
+      background-color: #dbe1ea;
       border: none;
-      padding: 8px 14px;
-      border-radius: 20px;
-      font-size: 14px;
+      padding: 8px 20px;
+      border-radius: 24px;
+      font-size: 15px;
       color: #0d2d5c;
+      font-family: 'Krasar', Arial, sans-serif;
       cursor: pointer;
     }
 
-    .bottom-btn.active {
-      background-color: #dbe1ea;
+    .bottom-btn .icon {
+      font-size: 18px;
     }
 
     #loadingOverlay {
@@ -213,7 +211,6 @@
       text-align: center;
       color: #000;
       font-size: 16px;
-      font-family: Arial, sans-serif;
     }
 
     .spinner {
@@ -231,9 +228,7 @@
     }
 
     @media print {
-      .header-bar,
-      .bottom-bar,
-      #loadingOverlay {
+      .header-bar, .bottom-bar, #loadingOverlay {
         display: none !important;
       }
     }
@@ -257,7 +252,7 @@
 
   <span id="resultLabel">លទ្ធផលស្វែងរក៖ 0</span>
 
-  <!-- Results -->
+  <!-- Results Table -->
   <div class="table-container">
     <table id="results">
       <thead style="display: none;">
@@ -272,14 +267,15 @@
     </table>
   </div>
 
-  <!-- Bottom bar -->
+  <!-- Bottom Bar -->
   <div class="bottom-bar">
-    <button class="bottom-btn active" onclick="window.location.href='../index.html'">
-      🏠 Home
+    <button class="bottom-btn" onclick="window.location.href='../index.html'">
+      <span class="icon">🏠</span>
+      <span class="label">Home</span>
     </button>
   </div>
 
-  <!-- Loading Overlay -->
+  <!-- Loading -->
   <div id="loadingOverlay">
     <div class="loading-backdrop"></div>
     <div class="loading-box">
