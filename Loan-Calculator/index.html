@@ -2,10 +2,11 @@
 <html lang="km">
 <head>
   <meta charset="UTF-8" />
-  <title>​កម្មវិធី​គណនា​ឥណទាន</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>កម្មវិធី​គណនា​ឥណទាន</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
   <style>
     @font-face {
       font-family: 'Krasar';
@@ -22,7 +23,7 @@
       background-color: #121b29;
       color: white;
       margin: 0;
-      padding: 20px 20px 100px;
+      padding: 0 20px 80px;
     }
 
     .topbar {
@@ -30,13 +31,14 @@
       top: 0;
       left: 0;
       width: 100%;
-      background-color: #0d2d5c;
+      background-color: #2a8bf2;
       color: white;
       padding: 12px 16px;
       display: flex;
       align-items: center;
       z-index: 1000;
     }
+
     .topbar button {
       background: none;
       border: none;
@@ -46,13 +48,16 @@
       margin-right: 10px;
     }
 
+    .spacer {
+      height: 52px;
+    }
+
     .container {
       max-width: 700px;
       margin: auto;
       background: #1c2738;
       padding: 20px;
       border-radius: 10px;
-      margin-top: 60px;
     }
 
     .form-group {
@@ -76,7 +81,7 @@
       color: white;
     }
 
-    button.calculate-btn {
+    button {
       width: 100%;
       margin-top: 15px;
       padding: 12px;
@@ -114,21 +119,16 @@
       background: #1e2e3e;
       border-radius: 10px;
       font-size: 13px;
-      overflow: hidden;
-      margin-left: auto;
-      margin-right: auto;
     }
 
     th, td {
       border: 1px solid #444;
       padding: 8px;
       text-align: center;
-      font-size: 13px;
     }
 
     th {
       background-color: #2a8bf2;
-      color: white;
     }
 
     .total-row {
@@ -162,41 +162,56 @@
       cursor: pointer;
     }
 
+    @media (max-width: 600px) {
+      .form-group {
+        flex-direction: column;
+      }
+      .form-group label,
+      .form-group input,
+      .form-group select {
+        flex: 1 1 100%;
+      }
+    }
+
     @media print {
-      .topbar, .bottom-bar, .export-buttons, .calculate-btn, .form-group {
+      .topbar,
+      .export-buttons,
+      .bottom-bar {
         display: none !important;
       }
     }
   </style>
 </head>
 <body>
+
   <div class="topbar">
     <button onclick="window.location.href='../index.html'">←</button>
-    <span>​កម្មវិធី​គណនា​ឥណទាន</span>
+    <span>កម្មវិធី​គណនា​ឥណទាន</span>
   </div>
+  <div class="spacer"></div>
 
   <div class="container">
-    <h2 style="text-align:center;">​កម្មវិធី​គណនា​ឥណទាន</h2>
+    <h2 style="text-align:center;">កម្មវិធី​គណនា​ឥណទាន</h2>
 
-    <div class="form-group"><label>​ទំហំឥណទាន:</label><input id="loanAmount" type="number" /></div>
-    <div class="form-group"><label>​ប្រាក់សំណងខួប:</label><input id="periodicRepayment" type="number" /></div>
-    <div class="form-group"><label>​រយៈពេលខ្ចី (ខែ):</label><input id="term" type="number" /></div>
-    <div class="form-group"><label>​អត្រា​ការ​ប្រាក់​ប្រចាំឆ្នាំ (%):</label><input id="interestRate" type="number" /></div>
+    <div class="form-group"><label>ទំហំឥណទាន:</label><input id="loanAmount" type="number" /></div>
+    <div class="form-group"><label>ប្រាក់សំណងខួប:</label><input id="periodicRepayment" type="number" /></div>
+    <div class="form-group"><label>រយៈពេលខ្ចី (ខែ):</label><input id="term" type="number" /></div>
+    <div class="form-group"><label>អត្រា​ការ​ប្រាក់​ប្រចាំឆ្នាំ (%):</label><input id="interestRate" type="number" /></div>
     <div class="form-group">
-      <label>​ប្រភេទសង:</label>
+      <label>ប្រភេទសង:</label>
       <select id="repaymentPeriod">
-        <option value="Monthly">​រៀងរាល់ខែ</option>
+        <option value="Monthly">រៀងរាល់ខែ</option>
       </select>
     </div>
     <div class="form-group">
-      <label>​របៀបសងប្រាក់:</label>
+      <label>របៀបសងប្រាក់:</label>
       <select id="paymentMethod">
-        <option value="Linear">​បង់ថយ</option>
-        <option value="Annuity">​បង់ថេរ</option>
+        <option value="Linear">បង់ថយ</option>
+        <option value="Annuity">បង់ថេរ</option>
       </select>
     </div>
 
-    <button class="calculate-btn" onclick="calculateLoan()">​គណនា</button>
+    <button onclick="calculateLoan()">គណនា</button>
 
     <div class="export-buttons">
       <button onclick="exportToPDF()" title="Export to PDF">
@@ -216,6 +231,25 @@
     </button>
   </div>
 
-  <!-- Insert your existing JS logic here for calculateLoan, exportToPDF, exportToExcel -->
+  <!-- JavaScript (unchanged from your previous implementation) -->
+  <script>
+    const AUTO_LOGOUT_MINUTES = 1;
+    let logoutTimer;
+    function resetLogoutTimer() {
+      clearTimeout(logoutTimer);
+      logoutTimer = setTimeout(() => {
+        sessionStorage.removeItem("loggedInUser");
+        alert("Session expired due to inactivity. Please log in again.");
+        window.location.href = "https://measvuthy168.github.io/CreditAssist/login.html";
+      }, AUTO_LOGOUT_MINUTES * 60 * 1000);
+    }
+    window.onload = resetLogoutTimer;
+    document.onmousemove = resetLogoutTimer;
+    document.onkeydown = resetLogoutTimer;
+    document.onclick = resetLogoutTimer;
+
+    // ... (Keep your full calculation/export functions here unchanged)
+  </script>
+
 </body>
 </html>
