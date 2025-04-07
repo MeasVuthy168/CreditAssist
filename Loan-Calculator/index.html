@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="km">
 <head>
@@ -7,6 +8,30 @@
   <meta name="theme-color" content="#0d2d5c" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+  <!-- Auto Logout -->
+  <script>
+    const user = sessionStorage.getItem("loggedInUser");
+    if (!user) {
+      window.location.href = "../login.html";
+    }
+
+    const AUTO_LOGOUT_MINUTES = 1;
+    let logoutTimer;
+    function resetLogoutTimer() {
+      clearTimeout(logoutTimer);
+      logoutTimer = setTimeout(() => {
+        sessionStorage.removeItem("loggedInUser");
+        alert("Session expired due to inactivity. Please log in again.");
+        window.location.href = "../login.html";
+      }, AUTO_LOGOUT_MINUTES * 60 * 1000);
+    }
+
+    window.onload = resetLogoutTimer;
+    document.onmousemove = resetLogoutTimer;
+    document.onkeydown = resetLogoutTimer;
+    document.onclick = resetLogoutTimer;
+  </script>
 
   <style>
     @font-face {
@@ -20,10 +45,9 @@
       color: white;
       margin: 0;
       padding: 0;
-      padding-bottom: 70px; /* space for bottom bar */
+      padding-bottom: 70px;
     }
 
-    /* Header */
     .header {
       background-color: #0d2d5c;
       padding: 14px 16px;
@@ -133,7 +157,6 @@
       background-color: #0b5ed7;
     }
 
-    /* Bottom Bar */
     .bottom-bar {
       position: fixed;
       bottom: 0;
@@ -180,13 +203,11 @@
 </head>
 <body>
 
-  <!-- Header -->
   <div class="header">
     <button class="back" onclick="window.location.href='../index.html'">←</button>
     <div class="title">កម្មវិធី​គណនាឥណទាន</div>
   </div>
 
-  <!-- Main content -->
   <div class="container">
     <div class="form-group"><label>ទំហំឥណទាន:</label><input id="loanAmount" type="number" /></div>
     <div class="form-group"><label>ប្រាក់សំណងខួប:</label><input id="periodicRepayment" type="number" /></div>
@@ -220,7 +241,6 @@
     <div id="exportSection"></div>
   </div>
 
-  <!-- Bottom Bar -->
   <div class="bottom-bar">
     <button class="bottom-btn" onclick="window.location.href='../index.html'">
       <span class="icon">🏠</span>
@@ -228,7 +248,6 @@
     </button>
   </div>
 
-  <!-- JS Logic -->
   <script>
     function calculateLoan() {
       const loan = parseFloat(document.getElementById("loanAmount").value);
