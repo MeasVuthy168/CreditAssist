@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>កម្មវិធី​គណនាឥណទាន</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#0d2d5c" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -20,90 +19,92 @@
       background-color: #1c2331;
       color: white;
       margin: 0;
-      padding: 20px 20px 80px;
+      padding: 0;
     }
 
-    /* HEADER */
-    .header-bar {
+    /* Header */
+    .header {
+      background-color: #0d2d5c;
+      padding: 14px 16px;
       display: flex;
       align-items: center;
-      background-color: #0d2d5c;
-      padding: 12px 16px;
       position: fixed;
       top: 0;
       left: 0;
-      width: 100%;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      right: 0;
       z-index: 1000;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     }
 
-    .back-icon {
+    .header .back {
       font-size: 22px;
+      color: white;
       background: none;
       border: none;
-      color: white;
+      margin-right: 12px;
       cursor: pointer;
-      margin-right: 10px;
     }
 
-    .header-title {
-      font-size: 16px;
+    .header .title {
+      font-size: 17px;
+      font-weight: bold;
       color: white;
-      font-weight: normal;
     }
 
     .container {
       max-width: 700px;
-      margin: 80px auto 0;
+      margin: 80px auto 80px;
       background: #2c3545;
       padding: 20px;
-      border-radius: 10px;
+      border-radius: 12px;
     }
 
     .form-group {
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      margin-bottom: 10px;
+      margin-bottom: 14px;
     }
 
     .form-group label {
-      flex: 0 0 45%;
+      display: block;
+      margin-bottom: 5px;
     }
 
     .form-group input,
     .form-group select {
-      flex: 0 0 50%;
-      padding: 8px;
-      border-radius: 5px;
+      width: 100%;
+      padding: 10px;
+      border-radius: 6px;
       border: 1px solid #444;
       background: #223146;
       color: white;
+      font-size: 16px;
     }
 
-    button {
+    .calculate-btn {
       width: 100%;
-      margin-top: 15px;
       padding: 12px;
+      font-size: 16px;
       background-color: #3399ff;
       border: none;
       color: white;
-      font-size: 16px;
-      border-radius: 5px;
+      border-radius: 6px;
       cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .calculate-btn:hover {
+      background-color: #1a8cff;
     }
 
     .export-buttons {
+      margin-top: 20px;
       display: flex;
       justify-content: center;
       gap: 20px;
-      margin-top: 20px;
     }
 
     .export-buttons button {
       background: none;
       border: none;
-      padding: 8px;
       cursor: pointer;
     }
 
@@ -111,9 +112,10 @@
       width: 100%;
       border-collapse: collapse;
       margin-top: 20px;
-      background: #1e2e3e;
+      font-size: 14px;
+      background-color: #1e2e3e;
       border-radius: 10px;
-      font-size: 13px;
+      overflow: hidden;
     }
 
     th, td {
@@ -128,69 +130,27 @@
 
     .total-row {
       font-weight: bold;
-      background: #0b5ed7;
-      color: white;
+      background-color: #0b5ed7;
     }
 
-    /* FOOTER */
-    .bottom-bar {
+    .home-btn {
       position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      background: #fff;
-      display: flex;
-      align-items: center;
-      padding: 8px 12px;
-      box-shadow: 0 -1px 4px rgba(0,0,0,0.1);
-      z-index: 1000;
-    }
-
-    .bottom-btn {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      background-color: #dbe1ea;
-      border: none;
-      padding: 8px 14px;
-      border-radius: 20px;
-      font-size: 14px;
+      bottom: 14px;
+      left: 14px;
+      background: white;
       color: #0d2d5c;
-      font-family: 'Krasar', Arial, sans-serif;
+      border-radius: 20px;
+      padding: 8px 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      font-weight: bold;
+      font-size: 14px;
+      border: none;
       cursor: pointer;
-    }
-
-    .bottom-btn .icon {
-      font-size: 18px;
-    }
-
-    @media (max-width: 600px) {
-      .form-group {
-        flex-direction: column;
-      }
-
-      .form-group label,
-      .form-group input,
-      .form-group select {
-        flex: 1 1 100%;
-      }
-
-      .header-title {
-        font-size: 15px;
-      }
-
-      .back-icon {
-        font-size: 20px;
-      }
-
-      .bottom-btn {
-        font-size: 13px;
-      }
+      z-index: 999;
     }
 
     @media print {
-      .header-bar,
-      .bottom-bar {
+      .header, .home-btn {
         display: none !important;
       }
     }
@@ -203,13 +163,13 @@
 </head>
 <body>
 
-  <!-- HEADER -->
-  <div class="header-bar">
-    <button class="back-icon" onclick="window.location.href='../index.html'">←</button>
-    <div class="header-title">កម្មវិធី​គណនាឥណទាន</div>
+  <!-- Header -->
+  <div class="header">
+    <button class="back" onclick="window.location.href='../index.html'">←</button>
+    <div class="title">កម្មវិធី​គណនាឥណទាន</div>
   </div>
 
-  <!-- MAIN CALCULATOR -->
+  <!-- Content -->
   <div class="container">
     <div class="form-group"><label>ទំហំឥណទាន:</label><input id="loanAmount" type="number" /></div>
     <div class="form-group"><label>ប្រាក់សំណងខួប:</label><input id="periodicRepayment" type="number" /></div>
@@ -229,7 +189,7 @@
       </select>
     </div>
 
-    <button onclick="calculateLoan()">គណនា</button>
+    <button class="calculate-btn" onclick="calculateLoan()">គណនា</button>
 
     <div class="export-buttons">
       <button onclick="exportToPDF()" title="Export to PDF">
@@ -243,32 +203,11 @@
     <div id="exportSection"></div>
   </div>
 
-  <!-- FOOTER -->
-  <div class="bottom-bar">
-    <button class="bottom-btn" onclick="window.location.href='../index.html'">
-      <span class="icon">🏠</span>
-      <span class="label">Home</span>
-    </button>
-  </div>
+  <!-- Home Button -->
+  <button class="home-btn" onclick="window.location.href='../index.html'">🏠 Home</button>
 
-  <!-- JS Logic -->
+  <!-- JS -->
   <script>
-    const AUTO_LOGOUT_MINUTES = 1;
-    let logoutTimer;
-    function resetLogoutTimer() {
-      clearTimeout(logoutTimer);
-      logoutTimer = setTimeout(() => {
-        sessionStorage.removeItem("loggedInUser");
-        alert("Session expired due to inactivity. Please log in again.");
-        window.location.href = "../login.html";
-      }, AUTO_LOGOUT_MINUTES * 60 * 1000);
-    }
-
-    window.onload = resetLogoutTimer;
-    document.onmousemove = resetLogoutTimer;
-    document.onkeydown = resetLogoutTimer;
-    document.onclick = resetLogoutTimer;
-
     function calculateLoan() {
       const loan = parseFloat(document.getElementById("loanAmount").value);
       const repayment = parseFloat(document.getElementById("periodicRepayment").value);
@@ -298,17 +237,12 @@
 
       let balance = loanVal;
       let totalPrincipal = 0, totalInterest = 0, totalPayment = 0;
-      let html = `<div class="pdf-wrapper">
-        <div style="text-align:center; font-size:22px; font-weight:bold; margin-bottom:15px;">
-          តារាងកាលវិភាគសងប្រាក់
-        </div>`;
-
+      let html = `<div class="pdf-wrapper"><div style="text-align:center; font-size:22px; font-weight:bold; margin-bottom:15px;">តារាងកាលវិភាគសងប្រាក់</div>`;
       html += `<table><tr><th>ទំហំឥណទាន</th><td>${loanVal.toFixed(2)}</td></tr>
         <tr><th>ប្រាក់សំណងខួប</th><td>${payVal.toFixed(2)}</td></tr>
         <tr><th>រយៈពេលខ្ចី (ខែ)</th><td>${months}</td></tr>
         <tr><th>អត្រា​ការ​ប្រាក់​ប្រចាំឆ្នាំ</th><td>${interestRate}%</td></tr>
         <tr><th>របៀបសងប្រាក់</th><td>${method === "Annuity" ? "បង់ថេរ" : "បង់ថយ"}</td></tr></table>`;
-
       html += `<table><thead><tr><th>ល.រ</th><th>ប្រាក់ដើម</th><th>ការប្រាក់</th><th>សរុបបង់</th><th>សមតុល្យ</th></tr></thead><tbody>`;
 
       for (let i = 1; i <= months; i++) {
