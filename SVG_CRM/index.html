@@ -35,8 +35,6 @@
     @font-face {
       font-family: 'Krasar';
       src: url('../Krasar-Regular.ttf') format('truetype');
-      font-weight: normal;
-      font-style: normal;
     }
 
     body {
@@ -52,12 +50,12 @@
       align-items: center;
       background-color: #0d2d5c;
       padding: 12px 16px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       z-index: 1000;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
     }
 
     .back-icon {
@@ -72,7 +70,6 @@
     .header-title {
       font-size: 16px;
       color: white;
-      font-weight: normal;
     }
 
     .search-container {
@@ -130,7 +127,6 @@
       max-width: 1000px;
       margin: 20px auto 40px;
       padding: 0 16px;
-      display: block;
     }
 
     table {
@@ -181,20 +177,13 @@
       border-radius: 20px;
       font-size: 14px;
       color: #0d2d5c;
-      font-family: 'Krasar', Arial, sans-serif;
       cursor: pointer;
-      transition: background-color 0.2s;
-    }
-
-    .bottom-btn .icon {
-      font-size: 18px;
     }
 
     .bottom-btn.active {
       background-color: #dbe1ea;
     }
 
-    /* Loading Overlay */
     #loadingOverlay {
       position: fixed;
       top: 0;
@@ -262,7 +251,7 @@
   <div class="search-container">
     <div class="search-wrapper">
       <input type="text" id="searchBox" placeholder="Search by CIF, Name, or Phone" />
-      <button id="searchButton" class="search-icon">🔍</button>
+      <button id="searchButton" class="search-icon" disabled>🔍</button>
     </div>
   </div>
 
@@ -286,8 +275,7 @@
   <!-- Bottom bar -->
   <div class="bottom-bar">
     <button class="bottom-btn active" onclick="window.location.href='../index.html'">
-      <span class="icon">🏠</span>
-      <span class="label">Home</span>
+      🏠 Home
     </button>
   </div>
 
@@ -310,15 +298,16 @@
           const res = await fetch("https://secure-backend-tzj9.onrender.com/api/customers");
           const json = await res.json();
           data = Array.isArray(json) ? json : [];
+          document.getElementById("searchButton").disabled = false;
         } catch (err) {
-          alert("មិនអាចផ្ទុកទិន្នន័យបានទេ");
-          console.error(err);
+          console.error("ទិន្នន័យមិនអាចផ្ទុកបាន:", err);
         }
       }
 
       function performSearch() {
-        if (data.length === 0) {
-          alert("ទិន្នន័យមិនទាន់មានទេ។");
+        if (!data || data.length === 0) {
+          console.warn("ទិន្នន័យមិនទាន់មានទេ។");
+          document.getElementById("loadingOverlay").style.display = "none";
           return;
         }
 
