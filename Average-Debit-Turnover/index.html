@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>អត្រាជាមធ្យមប្រចាំឆ្នាំ</title>
 
-  <!-- Load Krasar Font -->
+  <!-- Font -->
   <style>
     @font-face {
       font-family: 'Krasar';
@@ -135,17 +135,17 @@
 
     table {
       width: 100%;
-      min-width: 600px;
       border-collapse: collapse;
       background-color: white;
       font-size: 13px;
+      table-layout: auto;
+      word-break: break-word;
     }
 
     th, td {
       border: 1px solid #ccc;
       padding: 6px;
       text-align: center;
-      word-break: break-word;
     }
 
     th {
@@ -241,7 +241,7 @@
 
   <!-- Top Navigation -->
   <div class="topbar">
-    <button onclick="window.location.href='https://measvuthy168.github.io/CreditAssist/'">←</button>
+    <button onclick="window.location.href='https://measvuthy168.github.io/CreditAssist/'">⬅</button>
     <span>អត្រាជាមធ្យមប្រចាំឆ្នាំ (Turnover)</span>
   </div>
   <div class="spacer"></div>
@@ -311,7 +311,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
-  <!-- Full JS Logic -->
+  <!-- JS Logic -->
   <script>
     let combinedData = [];
     let monthList = [];
@@ -347,7 +347,6 @@
         const data = await response.json();
         combinedData = Array.isArray(data) ? data : [];
       } catch (error) {
-        console.error("Failed to load turnover data:", error);
         alert("មានបញ្ហាក្នុងការទាញយកទិន្នន័យពីម៉ាស៊ីនមេ។");
       }
     }
@@ -438,10 +437,14 @@
     }
 
     function exportToPDF() {
-      const backBtn = document.querySelector(".topbar");
+      const topbar = document.querySelector(".topbar");
       const actionSection = document.querySelector(".actions");
-      if (backBtn) backBtn.style.display = "none";
+      const bottombar = document.querySelector(".bottom-bar");
+
+      if (topbar) topbar.style.display = "none";
       if (actionSection) actionSection.style.display = "none";
+      if (bottombar) bottombar.style.display = "none";
+
       const element = document.body;
       const opt = {
         margin: 0.5,
@@ -451,8 +454,9 @@
         jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
       };
       html2pdf().from(element).set(opt).save().then(() => {
-        if (backBtn) backBtn.style.display = "flex";
+        if (topbar) topbar.style.display = "flex";
         if (actionSection) actionSection.style.display = "block";
+        if (bottombar) bottombar.style.display = "flex";
       });
     }
 
