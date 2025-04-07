@@ -305,6 +305,13 @@
       }
 
       function performSearch() {
+        const query = document.getElementById("searchBox").value.trim().toLowerCase();
+
+        if (query === "") {
+          alert("សូមបញ្ចូលលេខ​ CIF ឬឈ្មោះ​ ឬលេខទូរសព្ទ​ ឬ​អាស័យដ្ឋាន​");
+          return;
+        }
+
         if (!data || data.length === 0) {
           console.warn("ទិន្នន័យមិនទាន់មានទេ។");
           document.getElementById("loadingOverlay").style.display = "none";
@@ -314,7 +321,6 @@
         document.getElementById("loadingOverlay").style.display = "block";
 
         setTimeout(() => {
-          const query = document.getElementById("searchBox").value.toLowerCase();
           const results = data.filter(item =>
             item.CIF.toLowerCase().includes(query) ||
             item.Name.toLowerCase().includes(query) ||
