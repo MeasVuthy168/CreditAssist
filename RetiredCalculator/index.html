@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+  <meta charset="UTF-8" />
+  <title>ការគណនាចំនួនខែចូលនិវត្តន៍</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0d2d5c" />
+
+  <style>
+    @font-face {
+      font-family: 'Krasar';
+      src: url('https://measvuthy168.github.io/CreditAssist/Krasar-Regular.ttf') format('truetype');
+    }
+
+    body {
+      font-family: 'Krasar', Arial, sans-serif;
+      background-color: #1c2331;
+      color: white;
+      margin: 0;
+      padding: 0;
+      padding-bottom: 70px;
+    }
+
+    /* Header */
+    .header {
+      background-color: #0d2d5c;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    .header .back {
+      font-size: 22px;
+      color: white;
+      background: none;
+      border: none;
+      margin-right: 12px;
+      cursor: pointer;
+    }
+
+    .header .title {
+      font-size: 17px;
+      font-weight: bold;
+      color: white;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: 80px auto 0;
+      background: #2c3545;
+      padding: 20px;
+      border-radius: 12px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: transparent;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 12px 10px;
+      font-size: 16px;
+    }
+
+    th {
+      color: #ccc;
+      font-weight: bold;
+    }
+
+    input[type="date"],
+    input[type="number"] {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      background-color: #1f2733;
+      color: white;
+      border: 1px solid #555;
+      border-radius: 6px;
+      box-sizing: border-box;
+      font-family: 'Krasar', Arial, sans-serif;
+    }
+
+    #monthsLeft {
+      font-weight: bold;
+      color: #3399ff;
+    }
+
+    #description {
+      text-align: center;
+      font-size: 18px;
+      margin-top: 15px;
+      color: #f0f0f0;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 14px;
+      color: #aaa;
+      margin-top: 40px;
+    }
+
+    /* Bottom bar */
+    .bottom-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      padding: 8px 12px;
+      box-shadow: 0 -1px 4px rgba(0,0,0,0.1);
+      z-index: 1000;
+    }
+
+    .bottom-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background-color: #dbe1ea;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 20px;
+      font-size: 14px;
+      color: #0d2d5c;
+      font-family: 'Krasar', Arial, sans-serif;
+      cursor: pointer;
+    }
+
+    .bottom-btn .icon {
+      font-size: 18px;
+    }
+
+    @media print {
+      .header,
+      .bottom-bar {
+        display: none !important;
+      }
+    }
+  </style>
+
+  <!-- Session & Auto Logout -->
+  <script>
+    const user = sessionStorage.getItem("loggedInUser");
+    if (!user) {
+      window.location.href = "https://measvuthy168.github.io/CreditAssist/login.html";
+    }
+
+    const AUTO_LOGOUT_MINUTES = 1;
+    let logoutTimer;
+    function resetLogoutTimer() {
+      clearTimeout(logoutTimer);
+      logoutTimer = setTimeout(() => {
+        sessionStorage.removeItem("loggedInUser");
+        alert("Session expired due to inactivity. Please log in again.");
+        window.location.href = "https://measvuthy168.github.io/CreditAssist/login.html";
+      }, AUTO_LOGOUT_MINUTES * 60 * 1000);
+    }
+
+    window.onload = resetLogoutTimer;
+    document.onmousemove = resetLogoutTimer;
+    document.onkeydown = resetLogoutTimer;
+    document.onclick = resetLogoutTimer;
+  </script>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="header">
+    <button class="back" onclick="window.location.href='../index.html'">←</button>
+    <div class="title">ការគណនាចំនួនខែចូលនិវត្តន៍</div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="container">
+    <table>
+      <tr>
+        <th>ថ្ងៃខែឆ្នាំកំណើត</th>
+        <td><input type="date" id="dob" value="1989-09-14"></td>
+      </tr>
+      <tr>
+        <th>អាយុចូលនិវត្តន៍</th>
+        <td><input type="number" id="retirementAge" min="0" max="100" value="55"> ឆ្នាំ</td>
+      </tr>
+      <tr>
+        <th>ថ្ងៃខែឆ្នាំបច្ចុប្បន្ន</th>
+        <td><input type="date" id="currentDate"></td>
+      </tr>
+      <tr>
+        <th>ចំនួនខែដែលនៅសល់</th>
+        <td id="monthsLeft"></td>
+      </tr>
+    </table>
+
+    <div id="description"></div>
+    <footer>© 2025 បង្កើតដោយក្រុមការងារឥណទានសាខាស្វាយរៀង</footer>
+  </div>
+
+  <!-- Bottom Bar -->
+  <div class="bottom-bar">
+    <button class="bottom-btn" onclick="window.location.href='../index.html'">
+      <span class="icon">🏠</span>
+      <span class="label">Home</span>
+    </button>
+  </div>
+
+  <!-- Calculator Logic -->
+  <script>
+    function setMaxDateToToday() {
+      const today = new Date();
+      const year = today.getFullYear();
+      const month = String(today.getMonth() + 1).padStart(2, '0');
+      const day = String(today.getDate()).padStart(2, '0');
+      const maxDate = `${year}-${month}-${day}`;
+      document.getElementById("dob").setAttribute("max", maxDate);
+      document.getElementById("currentDate").setAttribute("max", maxDate);
+      document.getElementById("currentDate").value = maxDate;
+    }
+
+    function calculateMonthsLeft() {
+      const dobInput = document.getElementById("dob").value;
+      const retirementAge = parseInt(document.getElementById("retirementAge").value);
+      const currentDateInput = document.getElementById("currentDate").value;
+      const monthsLeftCell = document.getElementById("monthsLeft");
+      const description = document.getElementById("description");
+
+      const dob = new Date(dobInput);
+      const currentDate = new Date(currentDateInput);
+      const retirementDate = new Date(dob);
+      retirementDate.setFullYear(dob.getFullYear() + retirementAge);
+
+      let totalMonths = (retirementDate.getFullYear() - currentDate.getFullYear()) * 12 + (retirementDate.getMonth() - currentDate.getMonth());
+      if (currentDate.getDate() > retirementDate.getDate()) totalMonths--;
+
+      monthsLeftCell.textContent = totalMonths >= 0 ? totalMonths + " ខែ" : "បានចូលនិវត្តន៍រួចហើយ";
+
+      if (totalMonths < 0) {
+        description.textContent = "បានចូលនិវត្តន៍រួចហើយ";
+      } else {
+        const years = Math.floor(totalMonths / 12);
+        const months = totalMonths % 12;
+        const days = Math.max(0, retirementDate.getDate() - currentDate.getDate());
+        description.textContent = `នៅសល់ ${years.toString().padStart(2, '0')} ឆ្នាំ ${months.toString().padStart(2, '0')} ខែ និង ${days.toString().padStart(2, '0')} ថ្ងៃទៀត`;
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      setMaxDateToToday();
+      calculateMonthsLeft();
+      document.getElementById("dob").addEventListener("change", calculateMonthsLeft);
+      document.getElementById("retirementAge").addEventListener("change", calculateMonthsLeft);
+      document.getElementById("currentDate").addEventListener("change", calculateMonthsLeft);
+    });
+  </script>
+</body>
+</html>
