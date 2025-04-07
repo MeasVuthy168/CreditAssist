@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#0d2d5c" />
 
-  <!-- Embed Krasar Font -->
+  <!-- Fonts & Styles -->
   <style>
     @font-face {
       font-family: 'Krasar';
@@ -20,7 +20,6 @@
       padding: 0 20px 80px;
     }
 
-    /* Header */
     .header {
       background-color: #0d2d5c;
       padding: 14px 16px;
@@ -70,10 +69,9 @@
     }
 
     label {
-      font-weight: normal;
-      margin-bottom: 4px;
-      display: block;
       font-size: 14px;
+      display: block;
+      margin-bottom: 4px;
     }
 
     input {
@@ -82,17 +80,16 @@
       border: 1px solid #ccc;
       border-radius: 4px;
       font-size: 14px;
-      font-family: 'Krasar', Arial, sans-serif;
     }
 
     .readonly-label {
       padding: 6px 8px;
-      display: block;
       border: 1px solid #ccc;
       border-radius: 4px;
       background-color: #f0f0f0;
       font-size: 14px;
       font-weight: bold;
+      display: block;
     }
 
     .actions {
@@ -120,14 +117,15 @@
       width: 100%;
       border-collapse: collapse;
       background-color: white;
-      font-size: 13px;
-      table-layout: fixed;
+      font-size: 12px;
+      table-layout: auto;
       word-break: break-word;
     }
 
     th, td {
       border: 1px solid #ccc;
-      padding: 6px;
+      padding: 5px;
+      font-size: 12px;
       text-align: center;
     }
 
@@ -180,18 +178,6 @@
       color: #0d2d5c;
     }
 
-    @media (max-width: 600px) {
-      .form-section {
-        flex-direction: column;
-      }
-      input {
-        font-size: 13px;
-      }
-      table {
-        font-size: 13px;
-      }
-    }
-
     @media print {
       .header, .bottom-bar, .actions, .form-section {
         display: none !important;
@@ -199,18 +185,24 @@
     }
   </style>
 </head>
-<body>
 
-  <!-- Top Header Bar -->
+  <body>
+
+  <!-- Header Bar -->
   <div class="header">
     <button class="back" onclick="window.location.href='../index.html'">←</button>
     <div class="title">អត្រាប្រចាំឆ្នាំ (Turnover)</div>
   </div>
 
-  <!-- Spacer to push content below fixed header -->
+  <!-- Spacer to offset fixed header -->
   <div class="spacer"></div>
 
-  <!-- Input Form -->
+  <!-- Centered Title -->
+  <h2 style="text-align:center; margin: 10px 0 20px; font-size: 16px; color: #0d2d5c;">
+    អត្រាជាមធ្យមប្រចាំឆ្នាំ (Turnover)
+  </h2>
+
+  <!-- Input Form Section -->
   <div class="form-section">
     <div class="half">
       <label for="prepared-date">Prepared Date</label>
@@ -226,14 +218,14 @@
     </div>
   </div>
 
-  <!-- Action Buttons -->
+  <!-- Export/Print Icons -->
   <div class="actions">
     <img src="https://img.icons8.com/color/48/print.png" title="Print" onclick="printPage()" />
     <img src="https://img.icons8.com/color/48/ms-excel.png" title="Export to Excel" onclick="exportToExcel()" />
     <img src="https://img.icons8.com/color/48/pdf.png" title="Export to PDF" onclick="exportToPDF()" />
   </div>
 
-  <!-- Table -->
+  <!-- Data Table -->
   <div class="table-container">
     <table id="turnover-table">
       <thead>
@@ -264,11 +256,12 @@
       🏠 Home
     </button>
   </div>
-    <!-- Libraries -->
+
+      <!-- Libraries -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
-  <!-- Logic & Data Handling -->
+  <!-- Logic & Auto Logout -->
   <script>
     let combinedData = [];
     let monthList = [];
