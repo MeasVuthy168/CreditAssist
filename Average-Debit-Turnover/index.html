@@ -2,19 +2,15 @@
 <html lang="km">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>អត្រាប្រចាំឆ្នាំ (Turnover)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0d2d5c" />
 
-  <!-- Load Krasar Font -->
+  <!-- Embed Krasar Font -->
   <style>
     @font-face {
       font-family: 'Krasar';
       src: url('https://measvuthy168.github.io/CreditAssist/Krasar-Regular.ttf') format('truetype');
-    }
-    @font-face {
-      font-family: 'Krasar';
-      src: url('https://measvuthy168.github.io/CreditAssist/Krasar-Bold.ttf') format('truetype');
-      font-weight: bold;
     }
 
     body {
@@ -24,59 +20,37 @@
       padding: 0 20px 80px;
     }
 
-    .topbar {
+    /* Header */
+    .header {
+      background-color: #0d2d5c;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
       position: fixed;
       top: 0;
       left: 0;
-      width: 100%;
-      background-color: #0d2d5c;
-      color: white;
-      padding: 12px 16px;
-      display: flex;
-      align-items: center;
+      right: 0;
       z-index: 1000;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     }
 
-    .topbar button {
-      background: none;
-      border: none;
-      font-size: 20px;
-      color: white;
-      cursor: pointer;
-      margin-right: 10px;
-    }
-
-    .topbar span {
-      font-size: 16px;
-    }
-
-    .back-icon {
-      background: none;
-      border: none;
+    .header .back {
       font-size: 22px;
       color: white;
+      background: none;
+      border: none;
+      margin-right: 12px;
       cursor: pointer;
-      margin-right: 10px;
     }
-    
+
+    .header .title {
+      font-size: 17px;
+      font-weight: bold;
+      color: white;
+    }
+
     .spacer {
-      height: 52px;
-    }
-
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 10px;
-    }
-
-    .header h2 {
-      margin: 0;
-      font-size: 16px;
-    }
-
-    .header img {
-      height: 60px;
+      height: 58px;
     }
 
     .form-section {
@@ -108,6 +82,7 @@
       border: 1px solid #ccc;
       border-radius: 4px;
       font-size: 14px;
+      font-family: 'Krasar', Arial, sans-serif;
     }
 
     .readonly-label {
@@ -201,6 +176,8 @@
       padding: 8px 16px;
       font-size: 14px;
       cursor: pointer;
+      font-family: 'Krasar', Arial, sans-serif;
+      color: #0d2d5c;
     }
 
     @media (max-width: 600px) {
@@ -216,7 +193,7 @@
     }
 
     @media print {
-      .topbar, .bottom-bar, .actions, .form-section {
+      .header, .bottom-bar, .actions, .form-section {
         display: none !important;
       }
     }
@@ -224,19 +201,14 @@
 </head>
 <body>
 
-  <!-- Top Navigation -->
-  <div class="topbar">
-  <button class="back-icon" onclick="window.location.href='../index.html'">←</button>
-  <span>Average Debit Turnover</span>
-  </div>
-  
-  <div class="spacer"></div>
-
-  <!-- Header -->
+  <!-- Top Header Bar -->
   <div class="header">
-    <h2>អត្រាជាមធ្យមប្រចាំឆ្នាំ (Turnover)</h2>
-    <img src="logo.png" alt="Logo" />
+    <button class="back" onclick="window.location.href='../index.html'">←</button>
+    <div class="title">អត្រាប្រចាំឆ្នាំ (Turnover)</div>
   </div>
+
+  <!-- Spacer to push content below fixed header -->
+  <div class="spacer"></div>
 
   <!-- Input Form -->
   <div class="form-section">
@@ -254,7 +226,7 @@
     </div>
   </div>
 
-  <!-- Icon Action Buttons -->
+  <!-- Action Buttons -->
   <div class="actions">
     <img src="https://img.icons8.com/color/48/print.png" title="Print" onclick="printPage()" />
     <img src="https://img.icons8.com/color/48/ms-excel.png" title="Export to Excel" onclick="exportToExcel()" />
@@ -286,17 +258,17 @@
     </table>
   </div>
 
-  <!-- Bottom Home Button -->
+  <!-- Bottom Bar -->
   <div class="bottom-bar">
-    <button class="bottom-btn" onclick="window.location.href='https://measvuthy168.github.io/CreditAssist/'">
+    <button class="bottom-btn" onclick="window.location.href='../index.html'">
       🏠 Home
     </button>
   </div>
-
-  <!-- Scripts -->
+    <!-- Libraries -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
+  <!-- Logic & Data Handling -->
   <script>
     let combinedData = [];
     let monthList = [];
@@ -422,7 +394,7 @@
     }
 
     function exportToPDF() {
-      const topbar = document.querySelector(".topbar");
+      const topbar = document.querySelector(".header");
       const actionSection = document.querySelector(".actions");
       const bottombar = document.querySelector(".bottom-bar");
 
@@ -448,6 +420,24 @@
     function printPage() {
       window.print();
     }
+
+    // Auto Logout Script
+    const AUTO_LOGOUT_MINUTES = 1;
+    let logoutTimer;
+    function resetLogoutTimer() {
+      clearTimeout(logoutTimer);
+      logoutTimer = setTimeout(() => {
+        sessionStorage.removeItem("loggedInUser");
+        alert("Session expired due to inactivity. Please log in again.");
+        window.location.href = "../login.html";
+      }, AUTO_LOGOUT_MINUTES * 60 * 1000);
+    }
+
+    window.onload = resetLogoutTimer;
+    document.onmousemove = resetLogoutTimer;
+    document.onkeydown = resetLogoutTimer;
+    document.onclick = resetLogoutTimer;
   </script>
+
 </body>
 </html>
