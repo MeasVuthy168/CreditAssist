@@ -72,9 +72,7 @@
 
     .header h2 {
       margin: 0;
-      font-size: 18px;
-      text-align: center;
-      align-items: center;
+      font-size: 16px;
     }
 
     .header img {
@@ -434,11 +432,11 @@
 
       const element = document.body;
       const opt = {
-        margin: 1.8,
+        margin: 1.5,
         filename: 'Turnover_Average.pdf',
         image: { type: 'jpeg', quality: 0.98 },
         html2canvas: { scale: 2 },
-        jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+        jsPDF: { unit: 'in', format: 'a5', orientation: 'portrait' }
       };
       html2pdf().from(element).set(opt).save().then(() => {
         if (topbar) topbar.style.display = "flex";
