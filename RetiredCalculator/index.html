@@ -75,36 +75,35 @@
       font-weight: bold;
     }
 
-    input[type="date"] {
+    input[type="date"],
+    .age-input-wrap {
       width: 100%;
-      padding: 10px;
+      padding: 0;
       font-size: 16px;
       background-color: #1f2733;
       color: white;
       border: 1px solid #555;
       border-radius: 6px;
       box-sizing: border-box;
-      font-family: 'Krasar', Arial, sans-serif;
+      height: 44px;
+    }
+
+    input[type="date"] {
+      padding: 10px;
     }
 
     .age-input-wrap {
       display: flex;
       align-items: center;
-      gap: 6px;
-      background-color: #1f2733;
       padding: 0 10px;
-      border: 1px solid #555;
-      border-radius: 6px;
     }
 
     .age-input-wrap input {
       flex: 1;
-      padding: 10px 5px;
-      background: transparent;
       border: none;
+      background: transparent;
       font-size: 16px;
       color: white;
-      font-family: 'Krasar', Arial, sans-serif;
     }
 
     .age-input-wrap input:focus {
@@ -112,14 +111,15 @@
     }
 
     .age-input-wrap .suffix {
-      color: #ccc;
       font-size: 15px;
+      color: #ccc;
       white-space: nowrap;
     }
 
     #monthsLeft {
       font-weight: bold;
       color: #3399ff;
+      font-size: 24px;
     }
 
     #description {
@@ -129,6 +129,11 @@
       color: #f0f0f0;
     }
 
+    .highlight {
+      color: #3399ff;
+      font-weight: bold;
+    }
+
     footer {
       text-align: center;
       font-size: 14px;
@@ -136,7 +141,6 @@
       margin-top: 40px;
     }
 
-    /* Bottom bar */
     .bottom-bar {
       position: fixed;
       bottom: 0;
@@ -169,14 +173,12 @@
     }
 
     @media print {
-      .header,
-      .bottom-bar {
+      .header, .bottom-bar {
         display: none !important;
       }
     }
   </style>
 
-  <!-- Session & Auto Logout -->
   <script>
     const user = sessionStorage.getItem("loggedInUser");
     if (!user) {
@@ -235,6 +237,7 @@
     </table>
 
     <div id="description"></div>
+
     <footer>© 2025 បង្កើតដោយក្រុមការងារឥណទានសាខាស្វាយរៀង</footer>
   </div>
 
@@ -246,7 +249,6 @@
     </button>
   </div>
 
-  <!-- Calculator Logic -->
   <script>
     function setMaxDateToToday() {
       const today = new Date();
@@ -274,15 +276,18 @@
       let totalMonths = (retirementDate.getFullYear() - currentDate.getFullYear()) * 12 + (retirementDate.getMonth() - currentDate.getMonth());
       if (currentDate.getDate() > retirementDate.getDate()) totalMonths--;
 
-      monthsLeftCell.textContent = totalMonths >= 0 ? totalMonths + " ខែ" : "បានចូលនិវត្តន៍រួចហើយ";
-
       if (totalMonths < 0) {
+        monthsLeftCell.textContent = "បានចូលនិវត្តន៍រួចហើយ";
         description.textContent = "បានចូលនិវត្តន៍រួចហើយ";
       } else {
+        monthsLeftCell.textContent = totalMonths + " ខែ";
         const years = Math.floor(totalMonths / 12);
         const months = totalMonths % 12;
         const days = Math.max(0, retirementDate.getDate() - currentDate.getDate());
-        description.textContent = `នៅសល់ ${years.toString().padStart(2, '0')} ឆ្នាំ ${months.toString().padStart(2, '0')} ខែ និង ${days.toString().padStart(2, '0')} ថ្ងៃទៀត`;
+
+        description.innerHTML = `នៅសល់ <span class="highlight">${years.toString().padStart(2, '0')}</span> ឆ្នាំ 
+          <span class="highlight">${months.toString().padStart(2, '0')}</span> ខែ 
+          និង <span class="highlight">${days.toString().padStart(2, '0')}</span> ថ្ងៃទៀត`;
       }
     }
 
