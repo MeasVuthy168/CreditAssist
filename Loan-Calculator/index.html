@@ -1,1 +1,221 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+  <meta charset="UTF-8" />
+  <title>​កម្មវិធី​គណនា​ឥណទាន</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <style>
+    @font-face {
+      font-family: 'Krasar';
+      src: url('https://measvuthy168.github.io/CreditAssist/Krasar-Regular.ttf') format('truetype');
+    }
+    @font-face {
+      font-family: 'Krasar';
+      src: url('https://measvuthy168.github.io/CreditAssist/Krasar-Bold.ttf') format('truetype');
+      font-weight: bold;
+    }
 
+    body {
+      font-family: 'Krasar', Arial, sans-serif;
+      background-color: #121b29;
+      color: white;
+      margin: 0;
+      padding: 20px 20px 100px;
+    }
+
+    .topbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background-color: #0d2d5c;
+      color: white;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      z-index: 1000;
+    }
+    .topbar button {
+      background: none;
+      border: none;
+      font-size: 20px;
+      color: white;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: auto;
+      background: #1c2738;
+      padding: 20px;
+      border-radius: 10px;
+      margin-top: 60px;
+    }
+
+    .form-group {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+
+    .form-group label {
+      flex: 0 0 45%;
+    }
+
+    .form-group input,
+    .form-group select {
+      flex: 0 0 50%;
+      padding: 8px;
+      border-radius: 5px;
+      border: 1px solid #444;
+      background: #223146;
+      color: white;
+    }
+
+    button.calculate-btn {
+      width: 100%;
+      margin-top: 15px;
+      padding: 12px;
+      background-color: #2a8bf2;
+      border: none;
+      color: white;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .export-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .export-buttons button {
+      background: none;
+      border: none;
+      padding: 8px;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .export-buttons button:hover {
+      transform: scale(1.2);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background: #1e2e3e;
+      border-radius: 10px;
+      font-size: 13px;
+      overflow: hidden;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    th, td {
+      border: 1px solid #444;
+      padding: 8px;
+      text-align: center;
+      font-size: 13px;
+    }
+
+    th {
+      background-color: #2a8bf2;
+      color: white;
+    }
+
+    .total-row {
+      font-weight: bold;
+      background: #0b5ed7;
+      color: white;
+    }
+
+    .bottom-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: #fff;
+      display: flex;
+      justify-content: start;
+      padding: 10px 20px;
+      box-shadow: 0 -1px 4px rgba(0,0,0,0.1);
+      z-index: 999;
+    }
+
+    .bottom-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background-color: #dbe1ea;
+      border: none;
+      border-radius: 20px;
+      padding: 8px 16px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    @media print {
+      .topbar, .bottom-bar, .export-buttons, .calculate-btn, .form-group {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <button onclick="window.location.href='../index.html'">←</button>
+    <span>​កម្មវិធី​គណនា​ឥណទាន</span>
+  </div>
+
+  <div class="container">
+    <h2 style="text-align:center;">​កម្មវិធី​គណនា​ឥណទាន</h2>
+
+    <div class="form-group"><label>​ទំហំឥណទាន:</label><input id="loanAmount" type="number" /></div>
+    <div class="form-group"><label>​ប្រាក់សំណងខួប:</label><input id="periodicRepayment" type="number" /></div>
+    <div class="form-group"><label>​រយៈពេលខ្ចី (ខែ):</label><input id="term" type="number" /></div>
+    <div class="form-group"><label>​អត្រា​ការ​ប្រាក់​ប្រចាំឆ្នាំ (%):</label><input id="interestRate" type="number" /></div>
+    <div class="form-group">
+      <label>​ប្រភេទសង:</label>
+      <select id="repaymentPeriod">
+        <option value="Monthly">​រៀងរាល់ខែ</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>​របៀបសងប្រាក់:</label>
+      <select id="paymentMethod">
+        <option value="Linear">​បង់ថយ</option>
+        <option value="Annuity">​បង់ថេរ</option>
+      </select>
+    </div>
+
+    <button class="calculate-btn" onclick="calculateLoan()">​គណនា</button>
+
+    <div class="export-buttons">
+      <button onclick="exportToPDF()" title="Export to PDF">
+        <img src="https://img.icons8.com/color/48/pdf.png" alt="PDF" width="32" height="32" />
+      </button>
+      <button onclick="exportToExcel()" title="Export to Excel">
+        <img src="https://img.icons8.com/color/48/ms-excel.png" alt="Excel" width="32" height="32" />
+      </button>
+    </div>
+
+    <div id="exportSection"></div>
+  </div>
+
+  <div class="bottom-bar">
+    <button class="bottom-btn" onclick="window.location.href='https://measvuthy168.github.io/CreditAssist/'">
+      🏠 Home
+    </button>
+  </div>
+
+  <!-- Insert your existing JS logic here for calculateLoan, exportToPDF, exportToExcel -->
+</body>
+</html>
