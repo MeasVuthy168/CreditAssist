@@ -436,7 +436,7 @@
         filename: 'Turnover_Average.pdf',
         image: { type: 'jpeg', quality: 0.98 },
         html2canvas: { scale: 2 },
-        jsPDF: { unit: 'in', format: 'a5', orientation: 'portrait' }
+        jsPDF: { unit: 'in', format: 'a3', orientation: 'portrait' }
       };
       html2pdf().from(element).set(opt).save().then(() => {
         if (topbar) topbar.style.display = "flex";
