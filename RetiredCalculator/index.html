@@ -75,8 +75,7 @@
       font-weight: bold;
     }
 
-    input[type="date"],
-    input[type="number"] {
+    input[type="date"] {
       width: 100%;
       padding: 10px;
       font-size: 16px;
@@ -86,6 +85,36 @@
       border-radius: 6px;
       box-sizing: border-box;
       font-family: 'Krasar', Arial, sans-serif;
+    }
+
+    .age-input-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background-color: #1f2733;
+      padding: 0 10px;
+      border: 1px solid #555;
+      border-radius: 6px;
+    }
+
+    .age-input-wrap input {
+      flex: 1;
+      padding: 10px 5px;
+      background: transparent;
+      border: none;
+      font-size: 16px;
+      color: white;
+      font-family: 'Krasar', Arial, sans-serif;
+    }
+
+    .age-input-wrap input:focus {
+      outline: none;
+    }
+
+    .age-input-wrap .suffix {
+      color: #ccc;
+      font-size: 15px;
+      white-space: nowrap;
     }
 
     #monthsLeft {
@@ -188,7 +217,12 @@
       </tr>
       <tr>
         <th>អាយុចូលនិវត្តន៍</th>
-        <td><input type="number" id="retirementAge" min="0" max="100" value="55"> ឆ្នាំ</td>
+        <td>
+          <div class="age-input-wrap">
+            <input type="number" id="retirementAge" min="0" max="100" value="55">
+            <span class="suffix">ឆ្នាំ</span>
+          </div>
+        </td>
       </tr>
       <tr>
         <th>ថ្ងៃខែឆ្នាំបច្ចុប្បន្ន</th>
