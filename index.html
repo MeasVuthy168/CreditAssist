@@ -2,10 +2,10 @@
 <html lang="km">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ជំនួយការឥណទាន</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="theme-color" content="#0d2d5c">
+  <meta name="theme-color" content="#002c5f">
 
   <style>
     @font-face {
@@ -18,24 +18,26 @@
       font-weight: bold;
     }
 
-    body {
+    html, body {
+      height: 100%;
       margin: 0;
-      padding: 0;
       font-family: 'Krasar', Arial, sans-serif;
-      background-color: #0d2d5c;
+      background-color: #002c5f;
       color: white;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
     }
 
     .header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background-color: #0d2d5c;
+      background-color: #002c5f;
       padding: 10px 16px;
       box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-      position: sticky;
-      top: 0;
-      z-index: 1000;
     }
 
     .header img {
@@ -63,9 +65,13 @@
       color: #ff4d4d;
     }
 
-    .container {
-      text-align: center;
+    .content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       padding: 40px 20px 20px;
+      text-align: center;
     }
 
     h1 {
@@ -103,26 +109,23 @@
     }
 
     .footer {
-      background-color: #0d2d5c;
-      padding: 10px 20px;
-      text-align: center;
+      background-color: #002c5f;
+      padding: 12px 20px;
       font-size: 13px;
-      color: #bbb;
-      position: fixed;
-      bottom: 0;
-      width: 100%;
+      color: #ffd700;
+      text-align: left;
     }
 
     @media (max-width: 600px) {
+      .header img {
+        height: 32px;
+      }
       h1 {
         font-size: 20px;
       }
       .menu-button {
         font-size: 16px;
         padding: 12px;
-      }
-      .header img {
-        height: 32px;
       }
     }
   </style>
@@ -152,10 +155,9 @@
   </script>
 </head>
 <body>
-
   <!-- Header -->
   <div class="header">
-    <img src="LogoAC2.png" alt="Logo" />
+    <img src="LogoAC2.png" alt="LogoAC2" />
     <div class="header-right">
       <div class="welcome" id="welcome">សូមស្វាគមន៍</div>
       <button class="logout-icon" onclick="logout()" title="Logout">⎋</button>
@@ -163,7 +165,7 @@
   </div>
 
   <!-- Main Content -->
-  <div class="container">
+  <div class="content">
     <h1>កម្មវិធីជំនួយឥណទាន</h1>
 
     <button class="menu-button" onclick="window.location.href='SVG_CRM/index.html'">🔍 ស្វែងរកអតិថិជន</button>
@@ -187,6 +189,5 @@
       window.location.href = "login.html";
     }
   </script>
-
 </body>
 </html>
