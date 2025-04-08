@@ -4,47 +4,50 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ជំនួយការឥណទាន</title>
-
-  <!-- App-like fullscreen PWA appearance -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="theme-color" content="#0d2d5c">
 
-  <!-- Load Krasar Font -->
   <style>
     @font-face {
       font-family: 'Krasar';
       src: url('Krasar-Regular.ttf') format('truetype');
-      font-weight: normal;
-      font-style: normal;
     }
     @font-face {
       font-family: 'Krasar';
       src: url('Krasar-Bold.ttf') format('truetype');
       font-weight: bold;
-      font-style: normal;
     }
 
     body {
       margin: 0;
       padding: 0;
-      background-color: #0d2d5c;
       font-family: 'Krasar', Arial, sans-serif;
+      background-color: #0d2d5c;
       color: white;
     }
 
-    .topbar {
-      padding: 10px 20px;
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       background-color: #0d2d5c;
+      padding: 10px 16px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
     }
 
-    .top-left {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
+    .header img {
+      height: 36px;
+    }
+
+    .header-right {
+      text-align: right;
     }
 
     .welcome {
-      font-size: 16px;
+      font-size: 15px;
     }
 
     .logout-icon {
@@ -52,7 +55,6 @@
       border: none;
       color: white;
       font-size: 20px;
-      margin-top: 5px;
       cursor: pointer;
       transition: color 0.3s;
     }
@@ -63,22 +65,12 @@
 
     .container {
       text-align: center;
-      padding: 40px 20px;
-      opacity: 0;
-      transform: translateY(30px);
-      animation: fadeSlideIn 0.8s ease-out forwards;
-    }
-
-    @keyframes fadeSlideIn {
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      padding: 40px 20px 20px;
     }
 
     h1 {
       margin-bottom: 30px;
-      color: #ffffff;
+      font-size: 24px;
     }
 
     .menu-button {
@@ -95,7 +87,6 @@
       cursor: pointer;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
       transition: transform 0.2s ease, background-color 0.3s ease, box-shadow 0.3s ease;
-      font-family: 'Krasar', Arial, sans-serif;
     }
 
     .menu-button:hover {
@@ -111,29 +102,31 @@
       box-shadow: none;
     }
 
-    footer {
-      margin-top: 40px;
-      font-size: 14px;
+    .footer {
+      background-color: #0d2d5c;
+      padding: 10px 20px;
+      text-align: center;
+      font-size: 13px;
       color: #bbb;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
     }
 
     @media (max-width: 600px) {
-      .logout-icon {
-        font-size: 18px;
-      }
-
       h1 {
-        font-size: 22px;
+        font-size: 20px;
       }
-
       .menu-button {
         font-size: 16px;
         padding: 12px;
       }
+      .header img {
+        height: 32px;
+      }
     }
   </style>
 
-  <!-- Session check + Auto Logout Script -->
   <script>
     const user = sessionStorage.getItem("loggedInUser");
     if (!user) {
@@ -160,37 +153,29 @@
 </head>
 <body>
 
-  <div class="topbar">
-    <div class="top-left">
+  <!-- Header -->
+  <div class="header">
+    <img src="LogoAC2.png" alt="Logo" />
+    <div class="header-right">
       <div class="welcome" id="welcome">សូមស្វាគមន៍</div>
       <button class="logout-icon" onclick="logout()" title="Logout">⎋</button>
     </div>
   </div>
 
+  <!-- Main Content -->
   <div class="container">
     <h1>កម្មវិធីជំនួយឥណទាន</h1>
 
-    <button class="menu-button" onclick="window.location.href='SVG_CRM/index.html'">
-      🔍 ស្វែងរកអតិថិជន
-    </button>
+    <button class="menu-button" onclick="window.location.href='SVG_CRM/index.html'">🔍 ស្វែងរកអតិថិជន</button>
+    <button class="menu-button" onclick="window.location.href='RetiredCalculator/index.html'">🧮 កម្មវិធីគណនារកចំនួនខែចូលនិវត្តន៍</button>
+    <button class="menu-button" onclick="window.location.href='Loan-Calculator/index.html'">💰 កម្មវិធីគណនាឥណទាន</button>
+    <button class="menu-button" onclick="window.location.href='Average-Debit-Turnover/index.html'">📊 Average Debit Turnover</button>
+    <button class="menu-button" disabled>📅 របាយការណ៍ប្រចាំថ្ងៃរបស់ភ្នាក់ងារឥណទាន</button>
+  </div>
 
-    <button class="menu-button" onclick="window.location.href='RetiredCalculator/index.html'">
-      🧮 កម្មវិធីគណនារកចំនួនខែចូលនិវត្តន៍
-    </button>
-
-    <button class="menu-button" onclick="window.location.href='Loan-Calculator/index.html'">
-      💰 កម្មវិធីគណនាឥណទាន
-    </button>
-
-    <button class="menu-button" onclick="window.location.href='Average-Debit-Turnover/index.html'">
-      📊 Average Debit Turnover
-    </button>
-
-    <button class="menu-button" disabled>
-      📅 របាយការណ៍ប្រចាំថ្ងៃរបស់ភ្នាក់ងារឥណទាន
-    </button>
-
-    <footer>© ២០២៥-២០២៦ បង្កើតសម្រាប់ក្រុមការងារឥណទានសាខាខេត្តស្វាយរៀង</footer>
+  <!-- Footer -->
+  <div class="footer">
+    © ២០២៥-២០២៦ បង្កើតសម្រាប់ក្រុមការងារឥណទានសាខាខេត្តស្វាយរៀង
   </div>
 
   <script>
@@ -202,5 +187,6 @@
       window.location.href = "login.html";
     }
   </script>
+
 </body>
 </html>
