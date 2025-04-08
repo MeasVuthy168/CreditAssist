@@ -151,21 +151,6 @@
       font-weight: bold;
     }
 
-    .bottom-bar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background: #fff;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px 12px;
-  box-shadow: 0 -1px 4px rgba(0,0,0,0.1);
-  z-index: 1000;
-  height: 56px;
-}
-
 .bottom-bar {
   position: fixed;
   bottom: 0;
@@ -280,11 +265,10 @@
   </div>
 
   <!-- Bottom Bar -->
-  <div class="bottom-bar">
-    <button class="bottom-btn" onclick="window.location.href='../index.html'">
-      🏠 Home
-    </button>
-  </div>
+  <button class="bottom-btn" onclick="window.location.href='../index.html'">
+  <span class="icon">🏠</span>
+  <span class="label">Home</span>
+</button>
 
       <!-- Libraries -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
