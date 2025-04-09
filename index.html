@@ -98,7 +98,7 @@
       display: flex;
       justify-content: space-around;
       align-items: center;
-      padding: 6px 0;
+      padding: 8px 0;
       box-shadow: 0 -1px 5px rgba(0,0,0,0.15);
       z-index: 1000;
       height: 56px;
@@ -108,22 +108,18 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      font-size: 12px;
+      justify-content: center;
+      gap: 2px;
+      font-size: 13px;
       color: #0d2d5c;
       background: none;
       border: none;
       font-family: 'Krasar', Arial, sans-serif;
+      cursor: pointer;
     }
 
     .bottom-btn .icon {
       font-size: 20px;
-      margin-bottom: 2px;
-    }
-
-    .bottom-btn.active {
-      background-color: #dbe1ea;
-      padding: 6px 16px;
-      border-radius: 20px;
     }
 
     @media (max-width: 600px) {
@@ -179,16 +175,16 @@
   <!-- Bottom Bar -->
   <div class="bottom-bar">
     <button class="bottom-btn active" onclick="window.location.href='index.html'">
-      <span class="icon">🏠</span>
-      <span>Home</span>
+      <div class="icon">🏠</div>
+      <div>Home</div>
     </button>
     <button class="bottom-btn" onclick="window.location.href='Setting/index.html'">
-      <span class="icon">⚙️</span>
-      <span>Setting</span>
+      <div class="icon">⚙️</div>
+      <div>Setting</div>
     </button>
     <button class="bottom-btn">
-      <span class="icon">🔔</span>
-      <span>Notification</span>
+      <div class="icon">🔔</div>
+      <div>Notification</div>
     </button>
   </div>
 
