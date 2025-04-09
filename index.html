@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="km">
 <head>
@@ -54,7 +55,7 @@
       object-fit: cover;
     }
 
-    .Hello {
+    .welcome {
       font-size: 12px;
       color: #ffd700;
       text-align: center;
@@ -168,7 +169,7 @@
     <img class="logo" src="LogoAC2.PNG" alt="Logo" />
     <div class="profile">
       <img id="profile-photo" src="profile.jpg" alt="User" />
-      <div class="Hello" id="Hello">សួស្តី,</div>
+      <div class="welcome" id="welcome">សួស្តី</div>
     </div>
   </div>
 
@@ -202,7 +203,7 @@
     document.addEventListener("DOMContentLoaded", () => {
       const name = sessionStorage.getItem("fullname") || "អ្នកប្រើ";
       const imgPath = sessionStorage.getItem("image") || "profile.jpg";
-      document.getElementById("welcome").textContent = "សូមស្វាគមន៍ " + name;
+      document.getElementById("welcome").textContent = "សួស្តី, " + name;
       document.getElementById("profile-photo").src = "https://secure-backend-tzj9.onrender.com/" + imgPath;
     });
   </script>
