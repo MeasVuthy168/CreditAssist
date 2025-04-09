@@ -144,31 +144,32 @@
   width: 100%;
   background: #fff;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: center;
-  padding: 8px 12px;
+  height: 56px;
   box-shadow: 0 -1px 4px rgba(0,0,0,0.1);
   z-index: 1000;
-  height: 56px;
 }
 
 .bottom-btn {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 6px;
-  background-color: #dbe1ea;
+  justify-content: center;
+  background: none;
   border: none;
-  padding: 8px 14px;
-  border-radius: 20px;
-  font-size: 14px;
-  color: #0d2d5c;
   font-family: 'Krasar', Arial, sans-serif;
+  color: #0d2d5c;
+  font-size: 11px;
+  line-height: 1.2;
+  padding: 2px;
   cursor: pointer;
-  height: 40px;
 }
 
 .bottom-btn .icon {
   font-size: 18px;
+  line-height: 1;
+  margin-bottom: 1px;
 }
 
 .footer-text {
@@ -247,20 +248,22 @@
   </div>
 
   <!-- Bottom Bar -->
-  <div class="bottom-bar">
-    <button class="bottom-btn active" onclick="window.location.href='index.html'">
-      <div class="icon">🏠</div>
-      <div>Home</div>
-    </button>
-    <button class="bottom-btn" onclick="window.location.href='Setting/index.html'">
-      <div class="icon">⚙️</div>
-      <div>Setting</div>
-    </button>
-    <button class="bottom-btn" onclick="alert('Coming soon!')">
-      <div class="icon">🔔</div>
-      <div>Notification</div>
-    </button>
-  </div>
+  <!-- Bottom Bar -->
+<div class="bottom-bar">
+  <button class="bottom-btn" onclick="window.location.href='../index.html'">
+    <div class="icon">🏠</div>
+    <div>Home</div>
+  </button>
+  <button class="bottom-btn" onclick="window.location.href='../Setting/index.html'">
+    <div class="icon">⚙️</div>
+    <div>Setting</div>
+  </button>
+  <button class="bottom-btn" onclick="alert('Coming soon!')">
+    <div class="icon">🔔</div>
+    <div>Notification</div>
+  </button>
+</div>
+  
   <!-- Scripts -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
