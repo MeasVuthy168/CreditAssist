@@ -56,6 +56,7 @@
     .welcome {
       font-size: 12px;
       color: #ffd700;
+      white-space: nowrap;
     }
 
     .content {
@@ -133,6 +134,9 @@
 
   <script>
     const user = sessionStorage.getItem("loggedInUser");
+    const fullName = sessionStorage.getItem("fullName");
+    const image = sessionStorage.getItem("image");
+
     if (!user) {
       window.location.href = "login.html";
     }
@@ -142,7 +146,7 @@
     function resetLogoutTimer() {
       clearTimeout(logoutTimer);
       logoutTimer = setTimeout(() => {
-        sessionStorage.removeItem("loggedInUser");
+        sessionStorage.clear();
         alert("Session expired due to inactivity. Please log in again.");
         window.location.href = "login.html";
       }, AUTO_LOGOUT_MINUTES * 60 * 1000);
@@ -160,7 +164,7 @@
     <img class="logo" src="LogoAC2.PNG" alt="Logo" />
     <div class="profile">
       <div class="welcome" id="welcome">សូមស្វាគមន៍</div>
-      <img id="userImage" src="profile.jpg" alt="User" />
+      <img id="profile-photo" src="profile.jpg" alt="User" />
     </div>
   </div>
 
@@ -190,15 +194,13 @@
     </button>
   </div>
 
-  <!-- Script to set welcome message and image -->
   <script>
-    const fullName = sessionStorage.getItem("fullName") || "អ្នកប្រើ";
-    const imagePath = sessionStorage.getItem("image")
-      ? `https://secure-backend-tzj9.onrender.com/${sessionStorage.getItem("image")}`
-      : "profile.jpg";
-
-    document.getElementById("welcome").textContent = "សូមស្វាគមន៍, " + fullName;
-    document.getElementById("userImage").src = imagePath;
+    document.addEventListener("DOMContentLoaded", () => {
+      const name = sessionStorage.getItem("fullName") || "អ្នកប្រើ";
+      const imgPath = sessionStorage.getItem("image") || "profile.jpg";
+      document.getElementById("welcome").textContent = "សូមស្វាគមន៍, " + name;
+      document.getElementById("profile-photo").src = "https://secure-backend-tzj9.onrender.com/" + imgPath;
+    });
   </script>
 </body>
 </html>
