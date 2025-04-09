@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -125,6 +126,11 @@
       const rememberMe = document.getElementById("rememberMe").checked;
       const errorMsg = document.getElementById("error-msg");
 
+      if (!username || !password) {
+        errorMsg.textContent = "សូមបំពេញឈ្មោះ និង លេខសម្ងាត់។";
+        return;
+      }
+
       try {
         const res = await fetch("https://secure-backend-tzj9.onrender.com/api/login", {
           method: "POST",
@@ -136,7 +142,7 @@
 
         if (res.ok && data.success) {
           sessionStorage.setItem("loggedUserInfo", JSON.stringify(data));
-          
+
           if (rememberMe) {
             localStorage.setItem("rememberedUser", JSON.stringify({ username, password }));
           } else {
@@ -145,12 +151,12 @@
 
           window.location.href = "index.html";
         } else {
-          errorMsg.textContent = data.message || "Invalid username or password.";
+          errorMsg.textContent = data.message || "ឈ្មោះអ្នកប្រើ ឬ លេខសម្ងាត់ មិនត្រឹមត្រូវ។";
         }
 
-      } catch (e) {
-        errorMsg.textContent = "Cannot connect to server.";
-        console.error(e);
+      } catch (err) {
+        console.error(err);
+        errorMsg.textContent = "មិនអាចភ្ជាប់ម៉ាស៊ីនមេបានទេ។";
       }
     }
   </script>
