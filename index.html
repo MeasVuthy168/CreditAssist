@@ -87,36 +87,46 @@
       transform: scale(1.02);
     }
 
-    .bottom-bar {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      background: #fff;
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      padding: 6px 0;
-      box-shadow: 0 -1px 5px rgba(0,0,0,0.15);
-      z-index: 1000;
-      height: 56px;
-    }
+    <style>
+  .bottom-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: #fff;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 6px 0;
+    box-shadow: 0 -1px 5px rgba(0,0,0,0.15);
+    z-index: 1000;
+    height: 56px;
+  }
 
-    .bottom-btn {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      font-size: 12px;
-      color: #0d2d5c;
-      background: none;
-      border: none;
-      font-family: 'Krasar', Arial, sans-serif;
-    }
+  .bottom-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    font-size: 13px;
+    color: #0d2d5c;
+    background: none;
+    border: none;
+    font-family: 'Krasar', Arial, sans-serif;
+    cursor: pointer;
+  }
 
-    .bottom-btn .icon {
-      font-size: 20px;
-      margin-bottom: 2px;
-    }
+  .bottom-btn .icon {
+    font-size: 20px;
+  }
+
+  .bottom-btn.active {
+    background-color: #dbe1ea;
+    padding: 6px 16px;
+    border-radius: 20px;
+  }
+</style>
 
     @media (max-width: 600px) {
       .header img.logo { height: 32px; }
@@ -170,20 +180,20 @@
   </div>
 
   <!-- Bottom Bar -->
-  <div class="bottom-bar">
-    <button class="bottom-btn" onclick="window.location.href='index.html'">
-      <div class="icon">🏠</div>
-      <div>Home</div>
-    </button>
-    <button class="bottom-btn" onclick="window.location.href='Setting/index.html'">
-      <div class="icon">⚙️</div>
-      <div>Setting</div>
-    </button>
-    <button class="bottom-btn">
-      <div class="icon">🔔</div>
-      <div>Notification</div>
-    </button>
-  </div>
+<div class="bottom-bar">
+  <button class="bottom-btn active" onclick="window.location.href='index.html'">
+    <div class="icon">🏠</div>
+    <div>Home</div>
+  </button>
+  <button class="bottom-btn" onclick="window.location.href='Setting/index.html'">
+    <div class="icon">⚙️</div>
+    <div>Setting</div>
+  </button>
+  <button class="bottom-btn">
+    <div class="icon">🔔</div>
+    <div>Notification</div>
+  </button>
+</div>
 
   <script>
     const username = sessionStorage.getItem("loggedInUser") || "អ្នកប្រើ";
