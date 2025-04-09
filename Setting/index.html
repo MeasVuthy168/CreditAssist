@@ -21,34 +21,31 @@
     }
 
     .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
       background-color: #0d2d5c;
-      padding: 10px 16px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+      color: white;
+      padding: 14px 16px;
+      font-size: 18px;
+      font-weight: bold;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
       position: fixed;
       top: 0;
       left: 0;
       right: 0;
-      z-index: 1000;
-    }
-
-    .header .title {
-      font-size: 17px;
-      font-weight: bold;
-      color: white;
+      z-index: 999;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
     .profile {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
     }
 
     .profile img {
-      width: 38px;
-      height: 38px;
+      width: 34px;
+      height: 34px;
       border-radius: 50%;
       border: 2px solid white;
       object-fit: cover;
@@ -99,10 +96,10 @@
       display: flex;
       justify-content: space-around;
       align-items: center;
-      padding: 8px 0;
+      padding: 6px 0;
       box-shadow: 0 -1px 5px rgba(0,0,0,0.15);
       z-index: 1000;
-      height: 56px;
+      height: 52px;
     }
 
     .bottom-btn {
@@ -110,22 +107,23 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 2px;
-      font-size: 13px;
-      color: #0d2d5c;
       background: none;
       border: none;
+      color: #0d2d5c;
       font-family: 'Krasar', Arial, sans-serif;
+      font-size: 11px;
+      line-height: 1.1;
       cursor: pointer;
+      padding: 2px 6px;
     }
 
     .bottom-btn .icon {
-      font-size: 20px;
+      font-size: 16px;
+      line-height: 1;
     }
 
     .bottom-btn.active {
       background-color: #dbe1ea;
-      padding: 6px 16px;
       border-radius: 20px;
     }
   </style>
@@ -134,7 +132,7 @@
 
   <!-- Header -->
   <div class="header">
-    <div class="title">Setting</div>
+    <div>Setting</div>
     <div class="profile">
       <div class="welcome" id="welcome">សូមស្វាគមន៍</div>
       <img src="../profile.jpg" alt="User" />
@@ -167,12 +165,9 @@
 
   <script>
     const user = sessionStorage.getItem("loggedInUser");
-    if (!user) {
-      window.location.href = "../login.html";
-    }
+    if (!user) window.location.href = "../login.html";
 
-    const username = user || "អ្នកប្រើ";
-    document.getElementById("welcome").textContent = "សូមស្វាគមន៍, " + username;
+    document.getElementById("welcome").textContent = "សូមស្វាគមន៍, " + user;
 
     function logout() {
       sessionStorage.removeItem("loggedInUser");
