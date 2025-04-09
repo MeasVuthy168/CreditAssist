@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -127,7 +126,7 @@
       const errorMsg = document.getElementById("error-msg");
 
       if (!username || !password) {
-        errorMsg.textContent = "សូមបំពេញឈ្មោះ និង លេខសម្ងាត់។";
+        errorMsg.textContent = "សូមបញ្ចូលឈ្មោះ និង លេខសម្ងាត់។";
         return;
       }
 
@@ -140,8 +139,9 @@
 
         const data = await res.json();
 
-        if (res.ok && data.success) {
-          sessionStorage.setItem("loggedUserInfo", JSON.stringify(data));
+        if (res.ok && data.success && data.user) {
+          const user = data.user;
+          sessionStorage.setItem("loggedUserInfo", JSON.stringify(user));
 
           if (rememberMe) {
             localStorage.setItem("rememberedUser", JSON.stringify({ username, password }));
@@ -154,9 +154,9 @@
           errorMsg.textContent = data.message || "ឈ្មោះអ្នកប្រើ ឬ លេខសម្ងាត់ មិនត្រឹមត្រូវ។";
         }
 
-      } catch (err) {
-        console.error(err);
+      } catch (e) {
         errorMsg.textContent = "មិនអាចភ្ជាប់ម៉ាស៊ីនមេបានទេ។";
+        console.error(e);
       }
     }
   </script>
