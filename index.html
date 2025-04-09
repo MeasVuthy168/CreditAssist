@@ -194,13 +194,17 @@
     </button>
   </div>
 
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const name = sessionStorage.getItem("fullName") || "អ្នកប្រើ";
-      const imgPath = sessionStorage.getItem("image") || "profile.jpg";
-      document.getElementById("welcome").textContent = "សូមស្វាគមន៍, " + name;
-      document.getElementById("profile-photo").src = "https://secure-backend-tzj9.onrender.com/" + imgPath;
-    });
-  </script>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const user = JSON.parse(sessionStorage.getItem("loggedUserInfo")) || {};
+    const name = user.fullName || "អ្នកប្រើ";
+    const imgPath = user.image || "profile.jpg";
+
+    document.getElementById("welcome").textContent = "សូមស្វាគមន៍, " + name;
+    document.getElementById("profile-photo").src = "https://secure-backend-tzj9.onrender.com/" + imgPath;
+  });
+</script>
+
+  
 </body>
 </html>
