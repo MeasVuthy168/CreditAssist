@@ -2,8 +2,8 @@
 <html lang="km">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ស្វែងរកអតិថិជន</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#0d2d5c" />
 
   <style>
@@ -137,7 +137,7 @@
       justify-content: space-around;
       align-items: center;
       padding: 6px 0;
-      box-shadow: 0 -1px 4px rgba(0,0,0,0.1);
+      box-shadow: 0 -1px 5px rgba(0,0,0,0.15);
       z-index: 1000;
       height: 56px;
     }
@@ -146,11 +146,13 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      justify-content: center;
       font-size: 12px;
       color: #0d2d5c;
       background: none;
       border: none;
       font-family: 'Krasar', Arial, sans-serif;
+      cursor: pointer;
     }
 
     .bottom-btn .icon {
@@ -274,15 +276,15 @@
   <div class="bottom-bar">
     <button class="bottom-btn" onclick="window.location.href='../index.html'">
       <div class="icon">🏠</div>
-      <div>Home</div>
+      <div class="label">Home</div>
     </button>
     <button class="bottom-btn" onclick="window.location.href='../Setting/index.html'">
       <div class="icon">⚙️</div>
-      <div>Setting</div>
+      <div class="label">Setting</div>
     </button>
     <button class="bottom-btn">
       <div class="icon">🔔</div>
-      <div>Notification</div>
+      <div class="label">Notification</div>
     </button>
   </div>
 
