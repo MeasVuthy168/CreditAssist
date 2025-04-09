@@ -1,1 +1,161 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+  <meta charset="UTF-8" />
+  <title>Setting</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0d2d5c" />
 
+  <style>
+    @font-face {
+      font-family: 'Krasar';
+      src: url('Krasar-Regular.ttf') format('truetype');
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Krasar', Arial, sans-serif;
+      background-color: #f1f4f8;
+      color: #333;
+      padding-bottom: 70px;
+    }
+
+    .header {
+      background-color: #0d2d5c;
+      color: white;
+      padding: 14px 16px;
+      font-size: 18px;
+      font-weight: bold;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 999;
+    }
+
+    .profile-section {
+      margin-top: 60px;
+      padding: 20px;
+      background-color: white;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .profile-section img {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .profile-section .info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .info .name {
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .info .position {
+      font-size: 14px;
+      color: #555;
+    }
+
+    .setting-item {
+      background-color: white;
+      padding: 16px;
+      border-bottom: 1px solid #ddd;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+    }
+
+    .setting-item:hover {
+      background-color: #eef2f7;
+    }
+
+    .setting-item i {
+      font-size: 16px;
+      margin-right: 10px;
+      color: #0d2d5c;
+    }
+
+    .bottom-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: #fff;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 8px 12px;
+      box-shadow: 0 -1px 4px rgba(0,0,0,0.1);
+      z-index: 1000;
+      height: 56px;
+    }
+
+    .bottom-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background-color: transparent;
+      border: none;
+      color: #0d2d5c;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .bottom-btn.active {
+      background-color: #dbe1ea;
+      border-radius: 20px;
+      padding: 4px 12px;
+    }
+
+    .bottom-btn .icon {
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">Setting</div>
+
+  <div class="profile-section">
+    <img src="profile.jpg" alt="User Photo">
+    <div class="info">
+      <div class="name">Meas Vuthy</div>
+      <div class="position">Assistant Branch Credit Manager "A"</div>
+    </div>
+  </div>
+
+  <div class="setting-item"><span><i>i</i> About</span><span>&gt;</span></div>
+  <div class="setting-item" onclick="logout()"><span><i>⎋</i> Sign Out</span></div>
+
+  <div class="bottom-bar">
+    <button class="bottom-btn" onclick="window.location.href='../index.html'">
+      <div class="icon">🏠</div>
+      <div class="label">Home</div>
+    </button>
+    <button class="bottom-btn active">
+      <div class="icon">⚙️</div>
+      <div class="label">Setting</div>
+    </button>
+    <button class="bottom-btn" onclick="alert('Coming soon!')">
+      <div class="icon">🔔</div>
+      <div class="label">Notification</div>
+    </button>
+  </div>
+
+  <script>
+    function logout() {
+      sessionStorage.removeItem("loggedInUser");
+      window.location.href = "../login.html";
+    }
+  </script>
+</body>
+</html>
