@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="km">
 <head>
@@ -9,46 +8,22 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
-  <!-- Auto Logout -->
-  <script>
-    const user = sessionStorage.getItem("loggedInUser");
-    if (!user) {
-      window.location.href = "../login.html";
-    }
-
-    const AUTO_LOGOUT_MINUTES = 1;
-    let logoutTimer;
-    function resetLogoutTimer() {
-      clearTimeout(logoutTimer);
-      logoutTimer = setTimeout(() => {
-        sessionStorage.removeItem("loggedInUser");
-        alert("Session expired due to inactivity. Please log in again.");
-        window.location.href = "../login.html";
-      }, AUTO_LOGOUT_MINUTES * 60 * 1000);
-    }
-
-    window.onload = resetLogoutTimer;
-    document.onmousemove = resetLogoutTimer;
-    document.onkeydown = resetLogoutTimer;
-    document.onclick = resetLogoutTimer;
-  </script>
-
   <style>
     @font-face {
       font-family: 'Krasar';
       src: url('../Krasar-Regular.ttf') format('truetype');
     }
 
-    
-      body {
-  font-family: 'Krasar', Arial, sans-serif;
-  background-color: #1c2331;
-  color: white;
-  margin: 0;
-  padding: 0;
-  height: 100vh; /* Ensures full screen height */
-  overflow-x: hidden;
-  box-sizing: border-box;
+    body {
+      font-family: 'Krasar', Arial, sans-serif;
+      background-color: #1c2331;
+      color: white;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      overflow-x: hidden;
+      box-sizing: border-box;
+      padding-bottom: 70px;
     }
 
     .header {
@@ -161,66 +136,64 @@
     }
 
     .bottom-bar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background: #fff;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px 12px;
-  box-shadow: 0 -1px 4px rgba(0,0,0,0.1);
-  z-index: 1000;
-  height: 56px;
-}
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: #fff;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 6px 0;
+      box-shadow: 0 -1px 5px rgba(0,0,0,0.15);
+      z-index: 1000;
+      height: 56px;
+    }
 
-.bottom-btn {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  background-color: #dbe1ea;
-  border: none;
-  padding: 8px 14px;
-  border-radius: 20px;
-  font-size: 14px;
-  color: #0d2d5c;
-  font-family: 'Krasar', Arial, sans-serif;
-  cursor: pointer;
-  height: 40px;
-}
+    .bottom-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-size: 12px;
+      color: #0d2d5c;
+      background: none;
+      border: none;
+      font-family: 'Krasar', Arial, sans-serif;
+    }
 
-.bottom-btn .icon {
-  font-size: 18px;
-}
+    .bottom-btn .icon {
+      font-size: 20px;
+      margin-bottom: 2px;
+    }
 
-.footer-text {
-  font-size: 13px;
-  color: #ffd700;
-  font-family: 'Krasar', Arial, sans-serif;
-  white-space: nowrap;
-}
-
-    @media print {
-      .header,
-      .bottom-bar {
-        display: none !important;
-      }
+    .footer-text {
+      font-size: 13px;
+      color: #ffd700;
+      font-family: 'Krasar', Arial, sans-serif;
+      white-space: nowrap;
     }
 
     .pdf-wrapper {
       font-size: 18px;
       line-height: 1.6;
     }
+
+    @media print {
+      .header, .bottom-bar {
+        display: none !important;
+      }
+    }
   </style>
 </head>
 <body>
 
+  <!-- Header -->
   <div class="header">
     <button class="back" onclick="window.location.href='../index.html'">←</button>
     <div class="title">កម្មវិធី​គណនាឥណទាន</div>
   </div>
 
+  <!-- Main Content -->
   <div class="container">
     <div class="form-group"><label>ទំហំឥណទាន:</label><input id="loanAmount" type="number" /></div>
     <div class="form-group"><label>ប្រាក់សំណងខួប:</label><input id="periodicRepayment" type="number" /></div>
@@ -254,21 +227,23 @@
     <div id="exportSection"></div>
   </div>
 
+  <!-- Bottom Bar -->
   <div class="bottom-bar">
-  <button class="bottom-btn" onclick="window.location.href='../index.html'">
-    <span class="icon">🏠</span>
-    <span class="label">Home</span>
-  </button>
-  <button class="bottom-btn" onclick="window.location.href='../Setting/index.html'">
-    <span class="icon">⚙️</span>
-    <span class="label">Setting</span>
-  </button>
-  <button class="bottom-btn">
-    <span class="icon">🔔</span>
-    <span class="label">Notification</span>
-  </button>
-</div>
+    <button class="bottom-btn" onclick="window.location.href='../index.html'">
+      <div class="icon">🏠</div>
+      <div>Home</div>
+    </button>
+    <button class="bottom-btn" onclick="window.location.href='../Setting/index.html'">
+      <div class="icon">⚙️</div>
+      <div>Setting</div>
+    </button>
+    <button class="bottom-btn">
+      <div class="icon">🔔</div>
+      <div>Notification</div>
+    </button>
+  </div>
 
+  <!-- Scripts -->
   <script>
     function calculateLoan() {
       const loan = parseFloat(document.getElementById("loanAmount").value);
@@ -360,6 +335,7 @@
         alert("សូមគណនាមុននឹងនាំចេញ។");
         return;
       }
+
       const tables = exportSection.querySelectorAll("table");
       const wb = XLSX.utils.book_new();
       let allData = [];
