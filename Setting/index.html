@@ -1,4 +1,4 @@
-
+<!-- Setting Page Updated -->
 <!DOCTYPE html>
 <html lang="km">
 <head>
@@ -130,7 +130,6 @@
       margin-bottom: 1px;
       line-height: 1;
     }
-    
   </style>
 </head>
 <body>
@@ -142,10 +141,10 @@
 
   <!-- Profile -->
   <div class="profile-section">
-    <img src="profile.jpg" alt="User Photo">
+    <img id="profile-photo" src="profile.jpg" alt="User Photo">
     <div class="info">
-      <div class="name">Meas Vuthy</div>
-      <div class="position">Assistant Branch Credit Manager "A"</div>
+      <div class="name" id="user-fullname">User Name</div>
+      <div class="position" id="user-position">Position</div>
     </div>
   </div>
 
@@ -153,7 +152,7 @@
   <div class="setting-item"><span><i>ℹ️</i> About</span><span>&gt;</span></div>
   <div class="setting-item" onclick="logout()"><span><i>⎋</i> Sign Out</span></div>
 
-  <!-- Bottom Bar (no highlight style like Home) -->
+  <!-- Bottom Bar -->
   <div class="bottom-bar">
     <button class="bottom-btn" onclick="window.location.href='../index.html'">
       <div class="icon">🏠</div>
@@ -171,9 +170,19 @@
 
   <script>
     function logout() {
-      sessionStorage.removeItem("loggedInUser");
+      sessionStorage.clear();
       window.location.href = "../login.html";
     }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const name = sessionStorage.getItem("fullname") || "អ្នកប្រើ";
+      const position = sessionStorage.getItem("userPosition") || "មិនដំណើរការ";
+      const image = sessionStorage.getItem("image") || "profile.jpg";
+
+      document.getElementById("user-fullname").textContent = name;
+      document.getElementById("user-position").textContent = position;
+      document.getElementById("profile-photo").src = "https://secure-backend-tzj9.onrender.com/" + image;
+    });
   </script>
 </body>
 </html>
