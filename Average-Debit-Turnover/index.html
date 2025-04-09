@@ -5,8 +5,6 @@
   <title>អត្រាប្រចាំឆ្នាំ (Turnover)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#0d2d5c" />
-
-  <!-- Fonts & Styles -->
   <style>
     @font-face {
       font-family: 'Krasar';
@@ -118,14 +116,11 @@
       border-collapse: collapse;
       background-color: white;
       font-size: 12px;
-      table-layout: auto;
-      word-break: break-word;
     }
 
     th, td {
       border: 1px solid #ccc;
       padding: 5px;
-      font-size: 12px;
       text-align: center;
     }
 
@@ -138,59 +133,40 @@
       background-color: #e3edf7;
     }
 
-    .not-found {
-      background-color: #fff3cd !important;
+    .not-found { background-color: #fff3cd !important; }
+    .oldest { background-color: #f2f2f2; }
+    .newest { background-color: #e1f5e6; font-weight: bold; }
+
+    .bottom-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: #fff;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 6px 0;
+      box-shadow: 0 -1px 4px rgba(0,0,0,0.1);
+      z-index: 1000;
+      height: 56px;
     }
 
-    .oldest {
-      background-color: #f2f2f2;
+    .bottom-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-size: 12px;
+      color: #0d2d5c;
+      background: none;
+      border: none;
+      font-family: 'Krasar', Arial, sans-serif;
     }
 
-    .newest {
-      background-color: #e1f5e6;
-      font-weight: bold;
+    .bottom-btn .icon {
+      font-size: 20px;
+      margin-bottom: 2px;
     }
-
-.bottom-bar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background: #fff;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px 12px;
-  box-shadow: 0 -1px 4px rgba(0,0,0,0.1);
-  z-index: 1000;
-  height: 56px;
-}
-
-.bottom-btn {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  background-color: #dbe1ea;
-  border: none;
-  padding: 8px 14px;
-  border-radius: 20px;
-  font-size: 14px;
-  color: #0d2d5c;
-  font-family: 'Krasar', Arial, sans-serif;
-  cursor: pointer;
-  height: 40px;
-}
-
-.bottom-btn .icon {
-  font-size: 18px;
-}
-
-.footer-text {
-  font-size: 13px;
-  color: #ffd700;
-  font-family: 'Krasar', Arial, sans-serif;
-  white-space: nowrap;
-}
 
     @media print {
       .header, .bottom-bar, .actions, .form-section {
@@ -199,24 +175,20 @@
     }
   </style>
 </head>
-
-  <body>
-
-  <!-- Header Bar -->
+<body>
+  <!-- Header -->
   <div class="header">
     <button class="back" onclick="window.location.href='../index.html'">←</button>
     <div class="title">អត្រាប្រចាំឆ្នាំ (Turnover)</div>
   </div>
 
-  <!-- Spacer to offset fixed header -->
   <div class="spacer"></div>
 
-  <!-- Centered Title -->
   <h2 style="text-align:center; margin: 10px 0 20px; font-size: 16px; color: #0d2d5c;">
     អត្រាជាមធ្យមប្រចាំឆ្នាំ (Turnover)
   </h2>
 
-  <!-- Input Form Section -->
+  <!-- Input Form -->
   <div class="form-section">
     <div class="half">
       <label for="prepared-date">Prepared Date</label>
@@ -232,14 +204,14 @@
     </div>
   </div>
 
-  <!-- Export/Print Icons -->
+  <!-- Export Buttons -->
   <div class="actions">
     <img src="https://img.icons8.com/color/48/print.png" title="Print" onclick="printPage()" />
     <img src="https://img.icons8.com/color/48/ms-excel.png" title="Export to Excel" onclick="exportToExcel()" />
     <img src="https://img.icons8.com/color/48/pdf.png" title="Export to PDF" onclick="exportToPDF()" />
   </div>
 
-  <!-- Data Table -->
+  <!-- Table -->
   <div class="table-container">
     <table id="turnover-table">
       <thead>
@@ -263,18 +235,26 @@
       </tfoot>
     </table>
   </div>
-<div class="bottom-bar">
-  <button class="bottom-btn" onclick="window.location.href='../index.html'">
-    <span class="icon">🏠</span>
-    <span class="label">Home</span>
-  </button>
-</div>
 
-      <!-- Libraries -->
+  <!-- Unified Footer -->
+  <div class="bottom-bar">
+    <button class="bottom-btn" onclick="window.location.href='../index.html'">
+      <div class="icon">🏠</div>
+      <div>Home</div>
+    </button>
+    <button class="bottom-btn" onclick="window.location.href='../Setting/index.html'">
+      <div class="icon">⚙️</div>
+      <div>Setting</div>
+    </button>
+    <button class="bottom-btn">
+      <div class="icon">🔔</div>
+      <div>Notification</div>
+    </button>
+  </div>
+
+  <!-- Scripts -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-
-  <!-- Logic & Auto Logout -->
   <script>
     let combinedData = [];
     let monthList = [];
@@ -306,42 +286,28 @@
 
     async function loadAllData() {
       try {
-        const response = await fetch("https://secure-backend-tzj9.onrender.com/api/turnover");
-        const data = await response.json();
-        combinedData = Array.isArray(data) ? data : [];
-      } catch (error) {
-        alert("មានបញ្ហាក្នុងការទាញយកទិន្នន័យពីម៉ាស៊ីនមេ។");
+        const res = await fetch("https://secure-backend-tzj9.onrender.com/api/turnover");
+        combinedData = await res.json();
+      } catch {
+        alert("បញ្ហាភ្ជាប់ម៉ាស៊ីនមេ");
       }
-    }
-
-    function formatDate(dateStr) {
-      const parts = dateStr.split('-');
-      if (parts.length !== 3) return dateStr;
-      let [dd, mm, yy] = parts;
-      if (yy.length === 4) yy = yy.slice(-2);
-      return `${dd.padStart(2, '0')}-${mm.padStart(2, '0')}-${yy}`;
     }
 
     async function fetchAndFillData(cif) {
       let totalAmtIn = 0, totalOd = 0, totalRate = 0, count = 0;
       const tbody = document.getElementById('data-body');
-      let latestEff = null, oldestEff = null;
 
-      combinedData.forEach(d => {
-        if (d.CUSTOMER === cif && d.Effective_Date) {
-          const dParts = d.Effective_Date.split('-');
-          const formatted = new Date(`${dParts[2].length === 2 ? '20' + dParts[2] : dParts[2]}-${dParts[1]}-${dParts[0]}`);
-          if (!latestEff || formatted > latestEff) latestEff = formatted;
-          if (!oldestEff || formatted < oldestEff) oldestEff = formatted;
-        }
-      });
+      const getDate = d => new Date(d.split('-').reverse().join('-'));
 
-      const latestEffStr = latestEff ? formatDate(`${latestEff.getDate()}-${latestEff.getMonth() + 1}-${latestEff.getFullYear()}`) : null;
-      const oldestEffStr = oldestEff ? formatDate(`${oldestEff.getDate()}-${oldestEff.getMonth() + 1}-${oldestEff.getFullYear()}`) : null;
+      const latestEff = combinedData.filter(d => d.CUSTOMER === cif && d.Effective_Date)
+        .map(d => getDate(d.Effective_Date)).sort((a,b) => b - a)[0];
+
+      const oldestEff = combinedData.filter(d => d.CUSTOMER === cif && d.Effective_Date)
+        .map(d => getDate(d.Effective_Date)).sort((a,b) => a - b)[0];
 
       [...tbody.rows].forEach(row => {
-        const month = formatDate(row.cells[0].innerText);
-        const match = combinedData.find(d => d.CUSTOMER === cif && formatDate(d.MONTH) === month);
+        const month = row.cells[0].innerText;
+        const match = combinedData.find(d => d.CUSTOMER === cif && d.MONTH.includes(month.slice(3)));
 
         if (match) {
           row.cells[1].innerText = parseFloat(match.AMT_IN).toLocaleString();
@@ -352,14 +318,11 @@
           totalAmtIn += parseFloat(match.AMT_IN);
           totalOd += parseFloat(match.CURRENT_OD);
 
-          if (formatDate(match.Effective_Date) === latestEffStr) {
-            totalRate += parseFloat(match.TURNOVER_RATE);
-            count++;
-            row.classList.add('newest');
-          }
-          if (formatDate(match.Effective_Date) === oldestEffStr) {
-            row.classList.add('oldest');
-          }
+          if (match.Effective_Date === latestEff.toLocaleDateString('en-GB')) row.classList.add('newest');
+          if (match.Effective_Date === oldestEff.toLocaleDateString('en-GB')) row.classList.add('oldest');
+
+          totalRate += parseFloat(match.TURNOVER_RATE);
+          count++;
         } else {
           row.classList.add("not-found");
           row.cells[1].innerText = row.cells[2].innerText = row.cells[3].innerText = row.cells[4].innerText = 'No Data';
@@ -368,7 +331,7 @@
 
       document.getElementById('avg-amt-in').innerText = totalAmtIn.toLocaleString(undefined, { maximumFractionDigits: 2 });
       document.getElementById('avg-current-od').innerText = totalOd.toLocaleString(undefined, { maximumFractionDigits: 2 });
-      document.getElementById('avg-turnover-rate').innerText = count > 0 ? (totalRate / count).toFixed(2) + '%' : '';
+      document.getElementById('avg-turnover-rate').innerText = count ? (totalRate / count).toFixed(2) + '%' : '';
     }
 
     document.getElementById('prepared-date').addEventListener('change', async (e) => {
@@ -404,22 +367,20 @@
       const actionSection = document.querySelector(".actions");
       const bottombar = document.querySelector(".bottom-bar");
 
-      if (topbar) topbar.style.display = "none";
-      if (actionSection) actionSection.style.display = "none";
-      if (bottombar) bottombar.style.display = "none";
+      topbar.style.display = "none";
+      actionSection.style.display = "none";
+      bottombar.style.display = "none";
 
-      const element = document.body;
-      const opt = {
+      html2pdf().from(document.body).set({
         margin: 0.5,
         filename: 'Turnover_Average.pdf',
         image: { type: 'jpeg', quality: 0.98 },
         html2canvas: { scale: 2 },
         jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
-      };
-      html2pdf().from(element).set(opt).save().then(() => {
-        if (topbar) topbar.style.display = "flex";
-        if (actionSection) actionSection.style.display = "block";
-        if (bottombar) bottombar.style.display = "flex";
+      }).save().then(() => {
+        topbar.style.display = "flex";
+        actionSection.style.display = "block";
+        bottombar.style.display = "flex";
       });
     }
 
@@ -427,7 +388,7 @@
       window.print();
     }
 
-    // Auto Logout Script
+    // Auto Logout
     const AUTO_LOGOUT_MINUTES = 1;
     let logoutTimer;
     function resetLogoutTimer() {
@@ -444,6 +405,5 @@
     document.onkeydown = resetLogoutTimer;
     document.onclick = resetLogoutTimer;
   </script>
-
 </body>
 </html>
