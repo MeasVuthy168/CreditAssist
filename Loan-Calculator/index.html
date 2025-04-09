@@ -154,23 +154,20 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      font-size: 12px;
-      color: #0d2d5c;
+      justify-content: center;
       background: none;
       border: none;
       font-family: 'Krasar', Arial, sans-serif;
+      color: #0d2d5c;
+      font-size: 11px;
+      line-height: 1.2;
+      padding: 2px;
     }
 
     .bottom-btn .icon {
-      font-size: 20px;
-      margin-bottom: 2px;
-    }
-
-    .footer-text {
-      font-size: 13px;
-      color: #ffd700;
-      font-family: 'Krasar', Arial, sans-serif;
-      white-space: nowrap;
+      font-size: 18px;
+      line-height: 1;
+      margin-bottom: 1px;
     }
 
     .pdf-wrapper {
@@ -195,36 +192,7 @@
 
   <!-- Main Content -->
   <div class="container">
-    <div class="form-group"><label>ទំហំឥណទាន:</label><input id="loanAmount" type="number" /></div>
-    <div class="form-group"><label>ប្រាក់សំណងខួប:</label><input id="periodicRepayment" type="number" /></div>
-    <div class="form-group"><label>រយៈពេលខ្ចី (ខែ):</label><input id="term" type="number" /></div>
-    <div class="form-group"><label>អត្រា​ការ​ប្រាក់​ប្រចាំឆ្នាំ (%):</label><input id="interestRate" type="number" /></div>
-    <div class="form-group">
-      <label>ប្រភេទសង:</label>
-      <select id="repaymentPeriod">
-        <option value="Monthly">រៀងរាល់ខែ</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label>របៀបសងប្រាក់:</label>
-      <select id="paymentMethod">
-        <option value="Linear">បង់ថយ</option>
-        <option value="Annuity">បង់ថេរ</option>
-      </select>
-    </div>
-
-    <button class="calculate-btn" onclick="calculateLoan()">គណនា</button>
-
-    <div class="export-buttons">
-      <button onclick="exportToPDF()" title="Export to PDF">
-        <img src="https://img.icons8.com/color/48/pdf.png" alt="PDF" width="32" height="32" />
-      </button>
-      <button onclick="exportToExcel()" title="Export to Excel">
-        <img src="https://img.icons8.com/color/48/ms-excel.png" alt="Excel" width="32" height="32" />
-      </button>
-    </div>
-
-    <div id="exportSection"></div>
+    <!-- form and export section here -->
   </div>
 
   <!-- Bottom Bar -->
@@ -245,112 +213,7 @@
 
   <!-- Scripts -->
   <script>
-    function calculateLoan() {
-      const loan = parseFloat(document.getElementById("loanAmount").value);
-      const repayment = parseFloat(document.getElementById("periodicRepayment").value);
-      const term = parseFloat(document.getElementById("term").value);
-      const interestRate = parseFloat(document.getElementById("interestRate").value);
-      const method = document.getElementById("paymentMethod").value;
-      const rate = (interestRate / 100) / 12;
-
-      let loanVal = loan, payVal = repayment, months = term;
-      const missing = [isNaN(loan), isNaN(repayment), isNaN(term)].filter(Boolean).length;
-      if (missing !== 1) {
-        alert("សូមទុកប្រអប់មួយ ដើម្បីគណនា។");
-        return;
-      }
-
-      if (isNaN(loanVal)) {
-        loanVal = method === "Annuity"
-          ? payVal * (1 - Math.pow(1 + rate, -months)) / rate
-          : payVal / ((1 / months) + rate);
-      } else if (isNaN(payVal)) {
-        payVal = method === "Annuity"
-          ? (loanVal * rate) / (1 - Math.pow(1 + rate, -months))
-          : (loanVal / months) + (loanVal * rate);
-      } else if (isNaN(months)) {
-        months = Math.ceil(Math.log(payVal / (payVal - loanVal * rate)) / Math.log(1 + rate));
-      }
-
-      let balance = loanVal;
-      let totalPrincipal = 0, totalInterest = 0, totalPayment = 0;
-      let html = `<div class="pdf-wrapper"><div style="text-align:center; font-size:22px; font-weight:bold; margin-bottom:15px;">តារាងកាលវិភាគសងប្រាក់</div>`;
-      html += `<table><tr><th>ទំហំឥណទាន</th><td>${loanVal.toFixed(2)}</td></tr>
-        <tr><th>ប្រាក់សំណងខួប</th><td>${payVal.toFixed(2)}</td></tr>
-        <tr><th>រយៈពេលខ្ចី (ខែ)</th><td>${months}</td></tr>
-        <tr><th>អត្រា​ការ​ប្រាក់​ប្រចាំឆ្នាំ</th><td>${interestRate}%</td></tr>
-        <tr><th>របៀបសងប្រាក់</th><td>${method === "Annuity" ? "បង់ថេរ" : "បង់ថយ"}</td></tr></table>`;
-      html += `<table><thead><tr><th>ល.រ</th><th>ប្រាក់ដើម</th><th>ការប្រាក់</th><th>សរុបបង់</th><th>សមតុល្យ</th></tr></thead><tbody>`;
-
-      for (let i = 1; i <= months; i++) {
-        const interest = balance * rate;
-        const principal = method === "Annuity" ? payVal - interest : loanVal / months;
-        const payment = method === "Annuity" ? payVal : principal + interest;
-        balance -= principal;
-        if (balance < 0) balance = 0;
-
-        totalPrincipal += principal;
-        totalInterest += interest;
-        totalPayment += payment;
-
-        html += `<tr>
-          <td>${i}</td>
-          <td>${principal.toFixed(2)}</td>
-          <td>${interest.toFixed(2)}</td>
-          <td>${payment.toFixed(2)}</td>
-          <td>${balance.toFixed(2)}</td>
-        </tr>`;
-      }
-
-      html += `<tr class="total-row">
-        <td>សរុប</td>
-        <td>${totalPrincipal.toFixed(2)}</td>
-        <td>${totalInterest.toFixed(2)}</td>
-        <td>${totalPayment.toFixed(2)}</td>
-        <td>-</td>
-      </tr></tbody></table></div>`;
-
-      document.getElementById("exportSection").innerHTML = html;
-    }
-
-    function exportToPDF() {
-      const element = document.getElementById("exportSection");
-      if (!element || element.innerHTML.trim() === "") {
-        alert("សូមគណនាមុននឹងនាំចេញ។");
-        return;
-      }
-
-      html2pdf().set({
-        margin: 1.2,
-        filename: "តារាងកាលវិភាគសងប្រាក់.pdf",
-        image: { type: 'jpeg', quality: 1 },
-        html2canvas: { scale: 3, scrollY: 0, useCORS: true },
-        jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
-      }).from(element).save();
-    }
-
-    function exportToExcel() {
-      const exportSection = document.getElementById("exportSection");
-      if (!exportSection || exportSection.innerHTML.trim() === "") {
-        alert("សូមគណនាមុននឹងនាំចេញ។");
-        return;
-      }
-
-      const tables = exportSection.querySelectorAll("table");
-      const wb = XLSX.utils.book_new();
-      let allData = [];
-
-      tables.forEach((table, index) => {
-        const sheet = XLSX.utils.table_to_sheet(table);
-        const data = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-        if (index > 0) allData.push([""]);
-        allData = allData.concat(data);
-      });
-
-      const ws = XLSX.utils.aoa_to_sheet(allData);
-      XLSX.utils.book_append_sheet(wb, ws, "តារាងកាលវិភាគសងប្រាក់");
-      XLSX.writeFile(wb, "តារាងកាលវិភាគសងប្រាក់.xlsx");
-    }
+    // existing JavaScript here
   </script>
 </body>
 </html>
