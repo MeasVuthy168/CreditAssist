@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="km">
 <head>
@@ -5,7 +6,6 @@
   <title>Setting</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#0d2d5c" />
-
   <style>
     @font-face {
       font-family: 'Krasar';
@@ -32,6 +32,17 @@
       left: 0;
       right: 0;
       z-index: 999;
+      display: flex;
+      align-items: center;
+    }
+
+    .header .back {
+      font-size: 22px;
+      color: white;
+      background: none;
+      border: none;
+      margin-right: 12px;
+      cursor: pointer;
     }
 
     .profile-section {
@@ -86,44 +97,49 @@
     }
 
     .bottom-bar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background: #fff;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  height: 56px;
-  box-shadow: 0 -1px 4px rgba(0,0,0,0.1);
-  z-index: 1000;
-}
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: #fff;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      height: 56px;
+      box-shadow: 0 -1px 4px rgba(0,0,0,0.1);
+      z-index: 1000;
+    }
 
-.bottom-btn {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: none;
-  border: none;
-  font-family: 'Krasar', Arial, sans-serif;
-  color: #0d2d5c;
-  font-size: 11px;
-  line-height: 1.2;
-  padding: 2px;
-  cursor: pointer;
-}
+    .bottom-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: none;
+      border: none;
+      color: #0d2d5c;
+      font-size: 11px;
+      line-height: 1.2;
+      padding: 2px;
+      font-family: 'Krasar', Arial, sans-serif;
+      cursor: pointer;
+    }
 
-.bottom-btn .icon {
-  font-size: 18px;
-  line-height: 1;
-  margin-bottom: 1px;
-}
+    .bottom-btn .icon {
+      font-size: 18px;
+      line-height: 1;
+      margin-bottom: 1px;
+    }
   </style>
 </head>
 <body>
-  <div class="header">Setting</div>
+  <!-- Header with Back -->
+  <div class="header">
+    <button class="back" onclick="window.location.href='../index.html'">←</button>
+    <div>Setting</div>
+  </div>
 
+  <!-- Profile -->
   <div class="profile-section">
     <img src="profile.jpg" alt="User Photo">
     <div class="info">
@@ -132,22 +148,17 @@
     </div>
   </div>
 
+  <!-- Setting Items -->
   <div class="setting-item"><span><i>ℹ️</i> About</span><span>&gt;</span></div>
   <div class="setting-item" onclick="logout()"><span><i>⎋</i> Sign Out</span></div>
 
-  <!-- Header -->
-  <div class="header">
-    <button class="back" onclick="window.location.href='../index.html'">←</button>
-    <div class="title">កម្មវិធី​គណនាឥណទាន</div>
-  </div>
-  
-  <!-- Bottom Bar -->
+  <!-- Bottom Bar (no highlight style like Home) -->
   <div class="bottom-bar">
     <button class="bottom-btn" onclick="window.location.href='../index.html'">
       <div class="icon">🏠</div>
       <div>Home</div>
     </button>
-    <button class="bottom-btn active">
+    <button class="bottom-btn" onclick="window.location.href='../Setting/index.html'">
       <div class="icon">⚙️</div>
       <div>Setting</div>
     </button>
