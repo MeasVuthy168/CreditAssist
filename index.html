@@ -133,9 +133,6 @@
 
   <script>
     const user = sessionStorage.getItem("loggedInUser");
-    const fullname = sessionStorage.getItem("fullname");
-    const image = sessionStorage.getItem("image");
-
     if (!user) {
       window.location.href = "login.html";
     }
@@ -146,21 +143,12 @@
       clearTimeout(logoutTimer);
       logoutTimer = setTimeout(() => {
         sessionStorage.removeItem("loggedInUser");
-        sessionStorage.removeItem("fullname");
-        sessionStorage.removeItem("image");
         alert("Session expired due to inactivity. Please log in again.");
         window.location.href = "login.html";
       }, AUTO_LOGOUT_MINUTES * 60 * 1000);
     }
 
-    window.onload = () => {
-      resetLogoutTimer();
-      document.getElementById("welcome").textContent = "សូមស្វាគមន៍, " + (fullname || user);
-      if (image) {
-        document.getElementById("userImage").src = "https://secure-backend-tzj9.onrender.com/" + image;
-      }
-    }
-
+    window.onload = resetLogoutTimer;
     document.onmousemove = resetLogoutTimer;
     document.onkeydown = resetLogoutTimer;
     document.onclick = resetLogoutTimer;
@@ -186,7 +174,7 @@
     <button class="menu-button" disabled>📅 របាយការណ៍ប្រចាំថ្ងៃរបស់ភ្នាក់ងារ</button>
   </div>
 
-  <!-- Footer -->
+  <!-- Bottom Bar -->
   <div class="bottom-bar">
     <button class="bottom-btn active" onclick="window.location.href='index.html'">
       <div class="icon">🏠</div>
@@ -201,5 +189,16 @@
       <div>Notification</div>
     </button>
   </div>
+
+  <!-- Script to set welcome message and image -->
+  <script>
+    const fullName = sessionStorage.getItem("fullName") || "អ្នកប្រើ";
+    const imagePath = sessionStorage.getItem("image")
+      ? `https://secure-backend-tzj9.onrender.com/${sessionStorage.getItem("image")}`
+      : "profile.jpg";
+
+    document.getElementById("welcome").textContent = "សូមស្វាគមន៍, " + fullName;
+    document.getElementById("userImage").src = imagePath;
+  </script>
 </body>
 </html>
