@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+  <meta charset="UTF-8" />
+  <title>ព័ត៌មានផ្ទាល់ខ្លួន</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0d2d5c" />
+  <style>
+    @font-face {
+      font-family: 'Krasar';
+      src: url('../Krasar-Regular.ttf') format('truetype');
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Krasar', Arial, sans-serif;
+      background-color: #0d2d5c;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .info-box {
+      background-color: white;
+      border-radius: 16px;
+      padding: 24px;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+      color: #1a1a1a;
+    }
+
+    .profile-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .profile-header img {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #0d2d5c;
+    }
+
+    .profile-header .name {
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .info-label {
+      font-weight: bold;
+      margin-top: 12px;
+      font-size: 14px;
+    }
+
+    .info-value {
+      font-size: 15px;
+      color: #333;
+    }
+
+    .btn-close {
+      margin-top: 24px;
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      background-color: #0d2d5c;
+      color: white;
+      font-family: 'Krasar', Arial, sans-serif;
+      cursor: pointer;
+    }
+
+    .btn-close:hover {
+      background-color: #09306d;
+    }
+  </style>
+</head>
+<body>
+  <div class="info-box">
+    <div class="profile-header">
+      <img id="profile-photo" src="profile.jpg" alt="Profile Photo" />
+      <div class="name" id="user-fullname">ឈ្មោះបុគ្គលិក</div>
+    </div>
+
+    <div class="info-label">តួនាទី</div>
+    <div class="info-value" id="user-position">-</div>
+
+    <div class="info-label">លេខកាត</div>
+    <div class="info-value" id="user-username">-</div>
+
+    <div class="info-label">លេខទូរសព្ទ</div>
+    <div class="info-value" id="user-phone">-</div>
+
+    <button class="btn-close" onclick="window.history.back()">បិទប្រអប់</button>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("user-fullname").textContent = sessionStorage.getItem("fullname") || "ឈ្មោះមិនមាន";
+      document.getElementById("user-position").textContent = sessionStorage.getItem("userPosition") || "-";
+      document.getElementById("user-username").textContent = sessionStorage.getItem("loggedInUser") || "-";
+      document.getElementById("user-phone").textContent = sessionStorage.getItem("phone") || "-";
+      document.getElementById("profile-photo").src = "https://secure-backend-tzj9.onrender.com/" + (sessionStorage.getItem("image") || "profile.jpg");
+    });
+  </script>
+</body>
+</html>
