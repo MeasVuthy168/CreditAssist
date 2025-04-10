@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -32,7 +33,6 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      font-family: 'Krasar', Arial, sans-serif;
       z-index: 9999;
       text-align: center;
       opacity: 0;
@@ -47,7 +47,7 @@
     #splash-screen h1 {
       font-size: 28px;
       color: #ffd700;
-      margin: 4px 0;
+      margin-bottom: 4px;
     }
 
     #splash-screen p {
@@ -68,6 +68,35 @@
       border-top: 4px solid #ffd700;
       border-radius: 50%;
       animation: spin 1s linear infinite;
+    }
+
+    /* Login Loading Overlay */
+    #login-loading {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: rgba(13, 45, 92, 0.95);
+      z-index: 9999;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      color: white;
+      font-family: 'Krasar', Arial, sans-serif;
+    }
+
+    #login-loading .spinner {
+      width: 36px;
+      height: 36px;
+      border: 4px solid #ffffff40;
+      border-top: 4px solid #ffd700;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 12px;
+    }
+
+    #login-loading p {
+      font-size: 18px;
+      margin: 0;
     }
 
     @keyframes spin {
@@ -164,7 +193,7 @@
 </head>
 <body>
 
-  <!-- Splash Screen -->
+  <!-- Splash -->
   <div id="splash-screen">
     <img src="LogoAC.png" alt="ACLEDA Logo" class="splash-logo" />
     <h1>Credit Assist</h1>
@@ -173,7 +202,13 @@
     <div class="spinner"></div>
   </div>
 
-  <!-- Login Box -->
+  <!-- Login Loading -->
+  <div id="login-loading">
+    <div class="spinner"></div>
+    <p>កំពុងចូលប្រើកម្មវិធី...</p>
+  </div>
+
+  <!-- Login Form -->
   <div class="login-box" id="loginBox">
     <img src="LogoAC.png" alt="ACLEDA Logo" class="login-logo" />
     <h2 style="font-size: 24px;">ចូលប្រើកម្មវិធីជំនួយឥណទាន</h2>
@@ -185,7 +220,7 @@
       <label for="rememberMe">Remember Me</label>
     </div>
 
-    <button onclick="login()">Login</button>
+    <button id="loginBtn" onclick="login()">Login</button>
     <p class="error" id="error-msg"></p>
   </div>
 
@@ -211,6 +246,10 @@
       const password = document.getElementById("password").value.trim();
       const rememberMe = document.getElementById("rememberMe").checked;
       const errorMsg = document.getElementById("error-msg");
+      const loginBtn = document.getElementById("loginBtn");
+
+      loginBtn.disabled = true;
+      errorMsg.textContent = "";
 
       try {
         const res = await fetch("https://secure-backend-tzj9.onrender.com/api/login", {
@@ -234,14 +273,21 @@
             localStorage.removeItem("rememberedUser");
           }
 
-          window.location.href = "index.html";
+          // Show loading overlay
+          document.getElementById("login-loading").style.display = "flex";
+          setTimeout(() => {
+            window.location.href = "index.html";
+          }, 1000);
+
         } else {
           errorMsg.textContent = data.message || "Invalid username or password.";
+          loginBtn.disabled = false;
         }
 
       } catch (e) {
         errorMsg.textContent = "Cannot connect to server.";
         console.error(e);
+        loginBtn.disabled = false;
       }
     }
   </script>
