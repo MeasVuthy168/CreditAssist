@@ -35,7 +35,7 @@
       display: flex;
       align-items: center;
       gap: 16px;
-      margin-bottom: 20px;
+      margin-bottom: 8px;
     }
 
     .profile-header img {
@@ -49,17 +49,27 @@
     .profile-header .name {
       font-size: 18px;
       font-weight: bold;
+      color: goldenrod;
+    }
+
+    .divider {
+      border-bottom: 2px solid goldenrod;
+      margin: 12px 0 16px;
+    }
+
+    .info-row {
+      font-size: 15px;
+      margin-top: 10px;
     }
 
     .info-label {
       font-weight: bold;
-      margin-top: 12px;
-      font-size: 14px;
+      margin-right: 6px;
     }
 
     .info-value {
-      font-size: 15px;
-      color: #333;
+      color: goldenrod;
+      font-weight: normal;
     }
 
     .btn-close {
@@ -86,15 +96,22 @@
       <img id="profile-photo" src="profile.jpg" alt="Profile Photo" />
       <div class="name" id="user-fullname">ឈ្មោះបុគ្គលិក</div>
     </div>
+    <div class="divider"></div>
 
-    <div class="info-label">តួនាទី</div>
-    <div class="info-value" id="user-position">-</div>
+    <div class="info-row">
+      <span class="info-label">តួនាទី :</span>
+      <span class="info-value" id="user-position">-</span>
+    </div>
 
-    <div class="info-label">លេខកាត</div>
-    <div class="info-value" id="user-username">-</div>
+    <div class="info-row">
+      <span class="info-label">លេខកាត :</span>
+      <span class="info-value" id="user-username">-</span>
+    </div>
 
-    <div class="info-label">លេខទូរសព្ទ</div>
-    <div class="info-value" id="user-phone">-</div>
+    <div class="info-row">
+      <span class="info-label">លេខទូរសព្ទ :</span>
+      <span class="info-value" id="user-phone">-</span>
+    </div>
 
     <button class="btn-close" onclick="window.history.back()">បិទប្រអប់</button>
   </div>
