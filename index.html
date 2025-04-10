@@ -48,6 +48,7 @@
     }
 
     .profile-wrapper {
+      position: relative;
       width: 54px;
       height: 54px;
     }
@@ -57,22 +58,26 @@
       height: 100%;
       border-radius: 50%;
       object-fit: cover;
-      background: white;
-      outline: 3px dashed #ffd700;
-      outline-offset: -2px;
-      animation: pulseGlow 2s infinite ease-in-out;
+      z-index: 2;
+      position: relative;
     }
 
-    @keyframes pulseGlow {
-      0% {
-        box-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
-      }
-      50% {
-        box-shadow: 0 0 14px rgba(255, 215, 0, 1);
-      }
-      100% {
-        box-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
-      }
+    .spinner {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 2px dashed #ffd700;
+      border-radius: 50%;
+      z-index: 1;
+      animation: spin 2s linear infinite;
+      box-shadow: 0 0 6px 2px rgba(255, 215, 0, 0.4);
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
 
     .welcome {
@@ -152,10 +157,8 @@
     @media (max-width: 600px) {
       .header img.logo { height: 40px; }
       .profile-wrapper { width: 46px; height: 46px; }
-      .profile-wrapper img {
-        width: 100%;
-        height: 100%;
-      }
+      .profile-wrapper img,
+      .spinner { width: 46px; height: 46px; }
       h1 { font-size: 20px; }
       .menu-button { font-size: 16px; padding: 12px; }
     }
@@ -193,6 +196,7 @@
     <img class="logo" src="LogoAC2.PNG" alt="Logo" />
     <a href="Setting/userinfo.html" class="profile">
       <div class="profile-wrapper">
+        <div class="spinner"></div>
         <img id="profile-photo" src="profile.jpg" alt="User" />
       </div>
       <div class="welcome" id="welcome">សួស្តី</div>
@@ -225,7 +229,7 @@
     </button>
   </div>
 
-  <!-- Profile Info Loader -->
+  <!-- Load Profile Info -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const name = sessionStorage.getItem("fullname") || "អ្នកប្រើ";
