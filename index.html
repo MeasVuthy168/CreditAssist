@@ -60,7 +60,19 @@
       background: white;
       outline: 3px dashed #ffd700;
       outline-offset: -2px;
-      box-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
+      animation: pulseGlow 2s infinite ease-in-out;
+    }
+
+    @keyframes pulseGlow {
+      0% {
+        box-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
+      }
+      50% {
+        box-shadow: 0 0 14px rgba(255, 215, 0, 1);
+      }
+      100% {
+        box-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
+      }
     }
 
     .welcome {
@@ -213,7 +225,7 @@
     </button>
   </div>
 
-  <!-- Load Profile Info -->
+  <!-- Profile Info Loader -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const name = sessionStorage.getItem("fullname") || "អ្នកប្រើ";
