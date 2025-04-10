@@ -139,7 +139,8 @@
           sessionStorage.setItem("userPosition", data.position);
           sessionStorage.setItem("fullname", data.fullname);
           sessionStorage.setItem("image", data.image); // example: "profile/10522.jpg"
-
+          sessionStorage.setItem("phone", data.phone);
+          
           if (rememberMe) {
             localStorage.setItem("rememberedUser", JSON.stringify({ username, password }));
           } else {
