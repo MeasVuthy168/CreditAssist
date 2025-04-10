@@ -106,6 +106,16 @@
       height: 20px;
     }
 
+    .signout span {
+      color: red;
+      font-weight: bold;
+      text-decoration: underline;
+    }
+
+    .signout img.icon {
+      filter: brightness(0) saturate(100%) invert(19%) sepia(100%) saturate(6486%) hue-rotate(355deg) brightness(93%) contrast(104%);
+    }
+
     .bottom-bar {
       position: fixed;
       bottom: 0;
@@ -140,6 +150,79 @@
       margin-bottom: 1px;
       line-height: 1;
     }
+
+    /* Modal styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 2000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal.show {
+      display: flex;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateY(30px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .modal-content {
+      background-color: white;
+      font-family: 'Krasar', Arial, sans-serif;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+      width: 90%;
+      max-width: 320px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+      animation: slideIn 0.3s ease-out;
+    }
+
+    .modal-content p {
+      font-size: 16px;
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .confirm-btn, .cancel-btn {
+      flex: 1;
+      padding: 10px;
+      font-family: 'Krasar', Arial, sans-serif;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .confirm-btn {
+      background-color: #d9534f;
+      color: white;
+    }
+
+    .cancel-btn {
+      background-color: #f1f1f1;
+      color: #333;
+    }
   </style>
 </head>
 <body>
@@ -158,7 +241,7 @@
     </div>
   </div>
 
-  <!-- Setting Items (icons directly in Setting folder) -->
+  <!-- Setting Items -->
   <div class="setting-section">
     <div class="setting-item" onclick="alert('មិនទាន់មានព័ត៌មានផ្ទាល់។')">
       <span>
@@ -176,7 +259,7 @@
       <span>›</span>
     </div>
 
-    <div class="setting-item" onclick="logout()">
+    <div class="setting-item signout" onclick="confirmLogout()">
       <span>
         <img class="icon" src="logout-rounded-left.png" alt="Logout" />
         ចាកចេញ
@@ -200,10 +283,34 @@
     </button>
   </div>
 
+  <!-- Custom Modal -->
+  <div id="logoutModal" class="modal">
+    <div class="modal-content">
+      <p>តើអ្នកប្រាកដចង់ចាកចេញពីប្រព័ន្ធមែនទេ?</p>
+      <div class="modal-actions">
+        <button onclick="logout()" class="confirm-btn">ចាកចេញ</button>
+        <button onclick="closeModal()" class="cancel-btn">បោះបង់</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     function logout() {
       sessionStorage.clear();
       window.location.href = "../login.html";
+    }
+
+    function confirmLogout() {
+      const modal = document.getElementById("logoutModal");
+      modal.classList.add("show");
+
+      // Optional sound effect (local or hosted file)
+      const audio = new Audio("logout-sound.mp3"); // or use URL version
+      audio.play();
+    }
+
+    function closeModal() {
+      document.getElementById("logoutModal").classList.remove("show");
     }
 
     document.addEventListener("DOMContentLoaded", () => {
