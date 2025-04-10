@@ -8,7 +8,7 @@
   <style>
     @font-face {
       font-family: 'Krasar';
-      src: url('Krasar-Regular.ttf') format('truetype');
+      src: url('../Krasar-Regular.ttf') format('truetype');
     }
 
     body {
@@ -304,8 +304,7 @@
       const modal = document.getElementById("logoutModal");
       modal.classList.add("show");
 
-      // Optional sound effect (local or hosted file)
-      const audio = new Audio("logout-sound.mp3"); // or use URL version
+      const audio = new Audio("logout-sound.mp3");
       audio.play();
     }
 
