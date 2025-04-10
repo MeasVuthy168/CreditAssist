@@ -49,32 +49,30 @@
 
     .profile-wrapper {
       position: relative;
-      width: 54px;
-      height: 54px;
+      width: 50px;
+      height: 50px;
     }
 
     .profile-wrapper img {
-      position: absolute;
-      top: 2px;
-      left: 2px;
-      width: 50px;
-      height: 50px;
+      width: 100%;
+      height: 100%;
       border-radius: 50%;
       border: 2px solid white;
       object-fit: cover;
+      position: relative;
       z-index: 2;
     }
 
     .spinner {
-      width: 54px;
-      height: 54px;
-      border: 2px dashed #ffd700;
-      border-radius: 50%;
       position: absolute;
       top: 0;
       left: 0;
-      animation: spin 2s linear infinite;
+      width: 100%;
+      height: 100%;
+      border: 2px dashed #ffd700;
+      border-radius: 50%;
       z-index: 1;
+      animation: spin 2s linear infinite;
     }
 
     @keyframes spin {
@@ -229,7 +227,7 @@
     </button>
   </div>
 
-  <!-- Profile Info Script -->
+  <!-- Script to populate user info -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const name = sessionStorage.getItem("fullname") || "អ្នកប្រើ";
