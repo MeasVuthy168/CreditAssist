@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="km">
 <head>
@@ -45,14 +44,42 @@
       flex-direction: column;
       align-items: center;
       gap: 4px;
+      text-decoration: none;
     }
 
-    .profile img {
+    .profile-wrapper {
+      position: relative;
+      width: 54px;
+      height: 54px;
+    }
+
+    .profile-wrapper img {
+      position: absolute;
+      top: 2px;
+      left: 2px;
       width: 50px;
       height: 50px;
       border-radius: 50%;
       border: 2px solid white;
       object-fit: cover;
+      z-index: 2;
+    }
+
+    .spinner {
+      width: 54px;
+      height: 54px;
+      border: 2px dashed #ffd700;
+      border-radius: 50%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      animation: spin 2s linear infinite;
+      z-index: 1;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
 
     .welcome {
@@ -131,7 +158,7 @@
 
     @media (max-width: 600px) {
       .header img.logo { height: 40px; }
-      .profile img { width: 42px; height: 42px; }
+      .profile-wrapper img { width: 42px; height: 42px; }
       h1 { font-size: 20px; }
       .menu-button { font-size: 16px; padding: 12px; }
     }
@@ -164,13 +191,17 @@
   </script>
 </head>
 <body>
+  <!-- Header -->
   <div class="header">
-  <img class="logo" src="LogoAC2.PNG" alt="Logo" />
-  <a href="Setting/userinfo.html" class="profile" style="text-decoration: none;">
-    <img id="profile-photo" src="profile.jpg" alt="User" />
-    <div class="welcome" id="welcome">សួស្តី</div>
-  </a>
-</div>
+    <img class="logo" src="LogoAC2.PNG" alt="Logo" />
+    <a href="Setting/userinfo.html" class="profile">
+      <div class="profile-wrapper">
+        <div class="spinner"></div>
+        <img id="profile-photo" src="profile.jpg" alt="User" />
+      </div>
+      <div class="welcome" id="welcome">សួស្តី</div>
+    </a>
+  </div>
 
   <!-- Content -->
   <div class="content">
@@ -198,6 +229,7 @@
     </button>
   </div>
 
+  <!-- Profile Info Script -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const name = sessionStorage.getItem("fullname") || "អ្នកប្រើ";
