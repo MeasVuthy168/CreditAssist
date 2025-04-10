@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+  <meta charset="UTF-8" />
+  <title>អំពីកម្មវិធី</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0d2d5c" />
+  <style>
+    @font-face {
+      font-family: 'Krasar';
+      src: url('../Krasar-Regular.ttf') format('truetype');
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Krasar', Arial, sans-serif;
+      background-color: #0d2d5c;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .about-box {
+      background-color: white;
+      border-radius: 16px;
+      padding: 24px;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+      color: #1a1a1a;
+    }
+
+    .about-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .about-header img {
+      width: 40px;
+      height: 40px;
+    }
+
+    .about-title {
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .about-version {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 20px;
+    }
+
+    .section-title {
+      font-weight: bold;
+      margin-top: 15px;
+      margin-bottom: 5px;
+    }
+
+    .section-text {
+      font-size: 14px;
+      color: #333;
+      line-height: 1.5;
+    }
+
+    .btn-close {
+      margin-top: 20px;
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      background-color: #0d2d5c;
+      color: white;
+      font-family: 'Krasar', Arial, sans-serif;
+      cursor: pointer;
+    }
+
+    .btn-close:hover {
+      background-color: #09306d;
+    }
+  </style>
+</head>
+<body>
+  <div class="about-box">
+    <div class="about-header">
+      <img src="../LogoAC2.PNG" alt="App Logo" />
+      <div>
+        <div class="about-title">ACLEDA Office</div>
+        <div class="about-version">Version 1.2.1</div>
+      </div>
+    </div>
+
+    <div class="section-title">About</div>
+    <div class="section-text">
+      ACLEDA Office is a Comprehensive Office Automation Application running on Smart Phone enabling ACLEDA's staff to access from anytime anywhere.
+    </div>
+
+    <div class="section-title">Terms of Service</div>
+    <div class="section-text">
+      ACLEDA Office might use your information such as ID, Name & Branch Code to identify who is the sender and receiver mail or other request.
+    </div>
+
+    <div class="section-title">Version History</div>
+    <div class="section-text">
+      The latest version was released on 22 February 2025. Please update to enjoy the new features and improvements.
+    </div>
+
+    <button class="btn-close" onclick="window.history.back()">បិទប្រអប់</button>
+  </div>
+</body>
+</html>
