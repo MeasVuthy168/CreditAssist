@@ -119,6 +119,15 @@
       text-align: center;
       position: relative;
       overflow: hidden;
+      user-select: none;
+      -webkit-user-select: none;
+      transition: all 0.3s ease;
+    }
+
+    .menu-item:hover {
+      background-color: #f0f8ff;
+      box-shadow: 0 0 12px rgba(255, 215, 0, 0.6);
+      border: 1.5px solid #ffd700;
     }
 
     .menu-item img {
@@ -273,7 +282,7 @@
     </button>
   </div>
 
-  <!-- Load Profile & Ripple Script -->
+  <!-- Script: Load Profile + Ripple + Sound -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const name = sessionStorage.getItem("fullname") || "អ្នកប្រើ";
@@ -282,8 +291,15 @@
       document.getElementById("profile-photo").src = "https://secure-backend-tzj9.onrender.com/" + imgPath;
     });
 
+    const clickSound = new Audio("sound/click.wav");
+
     document.querySelectorAll(".menu-item").forEach(item => {
       item.addEventListener("click", function (e) {
+        // Play sound
+        clickSound.currentTime = 0;
+        clickSound.play();
+
+        // Ripple effect
         const ripple = document.createElement("span");
         ripple.className = "ripple";
         const rect = this.getBoundingClientRect();
