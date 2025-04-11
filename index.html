@@ -239,27 +239,27 @@
   <!-- Content -->
   <div class="content">
     <div class="menu-grid">
-      <div class="menu-item" onclick="window.location.href='SVG_CRM/index.html'">
+      <div class="menu-item" data-href="SVG_CRM/index.html">
         <img src="icons/search.PNG" alt="Search">
         <div class="label">ស្វែងរកអតិថិជន</div>
       </div>
-      <div class="menu-item" onclick="window.location.href='RetiredCalculator/index.html'">
+      <div class="menu-item" data-href="RetiredCalculator/index.html">
         <img src="icons/retirement.PNG" alt="Retirement">
         <div class="label">ចំនួនខែចូលនិវត្តន៍</div>
       </div>
-      <div class="menu-item" onclick="window.location.href='Loan-Calculator/index.html'">
+      <div class="menu-item" data-href="Loan-Calculator/index.html">
         <img src="icons/loan.PNG" alt="Loan">
         <div class="label">គណនាឥណទាន</div>
       </div>
-      <div class="menu-item" onclick="window.location.href='Average-Debit-Turnover/index.html'">
+      <div class="menu-item" data-href="Average-Debit-Turnover/index.html">
         <img src="icons/turnover.PNG" alt="Turnover">
         <div class="label">អត្រាប្រចាំឆ្នាំ</div>
       </div>
-      <div class="menu-item" onclick="alert('Coming soon!')">
+      <div class="menu-item" data-href="#">
         <img src="icons/report.PNG" alt="Report">
         <div class="label">របាយការណ៍ប្រចាំថ្ងៃ</div>
       </div>
-      <div class="menu-item" onclick="alert('Coming soon!')">
+      <div class="menu-item" data-href="#">
         <img src="icons/check.PNG" alt="Check">
         <div class="label">ត្រួតពិនិត្យឥណទាន</div>
       </div>
@@ -282,7 +282,7 @@
     </button>
   </div>
 
-  <!-- Script: Load Profile + Ripple + Sound -->
+  <!-- Script: Load Profile + Ripple + Sound + Delayed Nav -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const name = sessionStorage.getItem("fullname") || "អ្នកប្រើ";
@@ -294,12 +294,10 @@
     const clickSound = new Audio("sound/click.wav");
 
     document.querySelectorAll(".menu-item").forEach(item => {
-      item.addEventListener("click", function (e) {
-        // Play sound
-        clickSound.currentTime = 0;
-        clickSound.play();
+      const href = item.getAttribute("data-href");
 
-        // Ripple effect
+      item.addEventListener("click", function (e) {
+        // Ripple
         const ripple = document.createElement("span");
         ripple.className = "ripple";
         const rect = this.getBoundingClientRect();
@@ -309,6 +307,16 @@
         ripple.style.top = (e.clientY - rect.top - size / 2) + "px";
         this.appendChild(ripple);
         setTimeout(() => ripple.remove(), 600);
+
+        // Sound + delayed navigation
+        clickSound.currentTime = 0;
+        clickSound.play();
+
+        if (href && href !== "#") {
+          setTimeout(() => {
+            window.location.href = href;
+          }, 180); // allow sound to play before redirect
+        }
       });
     });
   </script>
