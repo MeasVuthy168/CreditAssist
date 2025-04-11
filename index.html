@@ -281,7 +281,7 @@
     </button>
   </div>
 
-  <!-- JavaScript -->
+  <!-- JavaScript: preload audio and handle interaction -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const name = sessionStorage.getItem("fullname") || "អ្នកប្រើ";
@@ -290,7 +290,15 @@
       document.getElementById("profile-photo").src = "https://secure-backend-tzj9.onrender.com/" + imgPath;
     });
 
-    const clickSound = new Audio("sound/click.wav");
+    const clickSound = new Audio();
+    clickSound.src = "sound/click.wav";
+    clickSound.preload = "auto";
+
+    document.body.addEventListener("click", () => {
+      clickSound.play().catch(() => {});
+      clickSound.pause();
+      clickSound.currentTime = 0;
+    }, { once: true });
 
     document.querySelectorAll(".menu-item").forEach(item => {
       const href = item.getAttribute("data-href");
@@ -298,7 +306,6 @@
       item.addEventListener("click", function (e) {
         e.preventDefault();
 
-        // Ripple
         const ripple = document.createElement("span");
         ripple.className = "ripple";
         const rect = this.getBoundingClientRect();
@@ -309,7 +316,6 @@
         this.appendChild(ripple);
         setTimeout(() => ripple.remove(), 600);
 
-        // Play sound and wait before redirect
         clickSound.currentTime = 0;
         clickSound.play()
           .then(() => {
