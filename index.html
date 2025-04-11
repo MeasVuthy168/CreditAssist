@@ -91,7 +91,7 @@
     }
 
     .content {
-      padding: 80px 20px 20px;
+      padding: 110px 20px 20px;
     }
 
     .menu-grid {
@@ -227,28 +227,32 @@
     </a>
   </div>
 
-  <!-- Content with Icon Grid -->
+  <!-- Content -->
   <div class="content">
     <div class="menu-grid">
       <div class="menu-item" onclick="window.location.href='SVG_CRM/index.html'">
-        <img src="icons/search.PNG" alt="Search">
+        <img src="icons/search.png" alt="Search">
         <div class="label">ស្វែងរកអតិថិជន</div>
       </div>
       <div class="menu-item" onclick="window.location.href='RetiredCalculator/index.html'">
-        <img src="icons/retirement.PNG" alt="Retirement">
+        <img src="icons/retirement.png" alt="Retirement">
         <div class="label">ចំនួនខែចូលនិវត្តន៍</div>
       </div>
       <div class="menu-item" onclick="window.location.href='Loan-Calculator/index.html'">
-        <img src="icons/loan.PNG" alt="Loan">
+        <img src="icons/loan.png" alt="Loan">
         <div class="label">គណនាឥណទាន</div>
       </div>
       <div class="menu-item" onclick="window.location.href='Average-Debit-Turnover/index.html'">
-        <img src="icons/turnover.PNG" alt="Turnover">
+        <img src="icons/turnover.png" alt="Turnover">
         <div class="label">អត្រាប្រចាំឆ្នាំ</div>
       </div>
       <div class="menu-item" onclick="alert('Coming soon!')">
-        <img src="icons/report.PNG" alt="Report">
+        <img src="icons/report.png" alt="Report">
         <div class="label">របាយការណ៍ប្រចាំថ្ងៃ</div>
+      </div>
+      <div class="menu-item" onclick="alert('Coming soon!')">
+        <img src="icons/check.png" alt="Check">
+        <div class="label">ត្រួតពិនិត្យឥណទាន</div>
       </div>
     </div>
   </div>
@@ -269,7 +273,7 @@
     </button>
   </div>
 
-  <!-- Load Profile Info -->
+  <!-- Load Profile & Ripple Script -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const name = sessionStorage.getItem("fullname") || "អ្នកប្រើ";
@@ -278,7 +282,6 @@
       document.getElementById("profile-photo").src = "https://secure-backend-tzj9.onrender.com/" + imgPath;
     });
 
-    // Ripple effect
     document.querySelectorAll(".menu-item").forEach(item => {
       item.addEventListener("click", function (e) {
         const ripple = document.createElement("span");
