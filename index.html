@@ -255,11 +255,11 @@
         <img src="icons/turnover.PNG" alt="Turnover">
         <div class="label">អត្រាប្រចាំឆ្នាំ</div>
       </div>
-      <div class="menu-item" data-href="#">
+      <div class="menu-item" data-href="">
         <img src="icons/report.PNG" alt="Report">
         <div class="label">របាយការណ៍ប្រចាំថ្ងៃ</div>
       </div>
-      <div class="menu-item" data-href="#">
+      <div class="menu-item" data-href="">
         <img src="icons/check.PNG" alt="Check">
         <div class="label">ត្រួតពិនិត្យឥណទាន</div>
       </div>
@@ -282,7 +282,7 @@
     </button>
   </div>
 
-  <!-- Script: Load Profile + Ripple + Sound + Delayed Nav -->
+  <!-- JavaScript: Load + Sound + Ripple + Navigation -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const name = sessionStorage.getItem("fullname") || "អ្នកប្រើ";
@@ -297,7 +297,13 @@
       const href = item.getAttribute("data-href");
 
       item.addEventListener("click", function (e) {
-        // Ripple
+        e.preventDefault();
+
+        // Play sound
+        clickSound.currentTime = 0;
+        clickSound.play();
+
+        // Ripple effect
         const ripple = document.createElement("span");
         ripple.className = "ripple";
         const rect = this.getBoundingClientRect();
@@ -308,15 +314,14 @@
         this.appendChild(ripple);
         setTimeout(() => ripple.remove(), 600);
 
-        // Sound + delayed navigation
-        clickSound.currentTime = 0;
-        clickSound.play();
-
-        if (href && href !== "#") {
-          setTimeout(() => {
+        // After delay, navigate or show alert
+        setTimeout(() => {
+          if (href && href !== "") {
             window.location.href = href;
-          }, 180); // allow sound to play before redirect
-        }
+          } else {
+            alert("Coming soon!");
+          }
+        }, 200);
       });
     });
   </script>
