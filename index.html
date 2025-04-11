@@ -6,7 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#0d2d5c" />
   <meta name="apple-mobile-web-app-capable" content="yes">
-
   <style>
     @font-face {
       font-family: 'Krasar';
@@ -282,7 +281,7 @@
     </button>
   </div>
 
-  <!-- JavaScript: Load + Sound + Ripple + Navigation -->
+  <!-- JavaScript -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const name = sessionStorage.getItem("fullname") || "អ្នកប្រើ";
@@ -299,11 +298,7 @@
       item.addEventListener("click", function (e) {
         e.preventDefault();
 
-        // Play sound
-        clickSound.currentTime = 0;
-        clickSound.play();
-
-        // Ripple effect
+        // Ripple
         const ripple = document.createElement("span");
         ripple.className = "ripple";
         const rect = this.getBoundingClientRect();
@@ -314,14 +309,25 @@
         this.appendChild(ripple);
         setTimeout(() => ripple.remove(), 600);
 
-        // After delay, navigate or show alert
-        setTimeout(() => {
-          if (href && href !== "") {
-            window.location.href = href;
-          } else {
-            alert("Coming soon!");
-          }
-        }, 200);
+        // Play sound and wait before redirect
+        clickSound.currentTime = 0;
+        clickSound.play()
+          .then(() => {
+            setTimeout(() => {
+              if (href && href !== "") {
+                window.location.href = href;
+              } else {
+                alert("Coming soon!");
+              }
+            }, 180);
+          })
+          .catch(() => {
+            if (href && href !== "") {
+              window.location.href = href;
+            } else {
+              alert("Coming soon!");
+            }
+          });
       });
     });
   </script>
