@@ -213,11 +213,6 @@
   box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
   overflow: hidden;
 }
-    
-.robot-content {
-  display: flex;
-  align-items: center;
-}
 
 .robot-icon {
   width: 60px;
@@ -293,10 +288,12 @@
     </div>
 
     <!-- Robot Box -->
-    <div class="robot-content">
-  <img src="icons/Robot.svg" alt="Robot" class="robot-icon">
-  <div class="robot-message" id="robotMessage">កំពុងផ្ទុកសារ...</div>
-</div>
+    <div class="robot-box">
+  <div style="display: flex; align-items: flex-start;">
+    <img src="icons/Robot.svg" alt="Robot">
+    <div class="robot-message" id="robotMessage">កំពុងផ្ទុកសារ...</div>
+  </div>
+
 
   <div id="admin-input" style="display: none;">
     <textarea id="newMessage" placeholder="សរសេរសារថ្មី..."></textarea>
