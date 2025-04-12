@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="km">
 <head>
@@ -237,15 +238,25 @@
 #admin-input {
   width: 100%;
   margin-top: auto;
+  position: relative;
 }
 
-.admin-input-inner {
-  display: flex;
-  align-items: center; /* vertical centering */
-  gap: 10px;
+#admin-input textarea {
+  width: 100%;
+  font-family: 'Krasar';
+  padding: 6px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  resize: none;
+  box-sizing: border-box;
+  font-size: 14px;
+  padding-righy:5px
 }
 
-.admin-input-inner button {
+#admin-input button {
+  position: absolute;
+  bottom: 6px;
+  right: 6px;
   padding: 6px 12px;
   background: #0d2d5c;
   color: white;
@@ -253,18 +264,6 @@
   border-radius: 6px;
   cursor: pointer;
   font-family: 'Krasar';
-  font-size: 14px;
-  white-space: nowrap;
-}
-
-.admin-input-inner textarea {
-  flex: 1;
-  font-family: 'Krasar';
-  padding: 6px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  resize: none;
-  box-sizing: border-box;
   font-size: 14px;
 }
 
@@ -292,16 +291,6 @@
   filter: invert(100%);
   display: block;
   padding-left: 12px
-}
-.mic-btn:hover {
-  background-color: #174080; /* slightly lighter blue */
-  box-shadow: 0 0 12px rgba(255, 215, 0, 0.6); /* golden glow */
-  transform: scale(1.05); /* subtle zoom */
-  transition: all 0.3s ease;
-}
-
-.mic-btn:active {
-  transform: scale(0.95); /* click press effect */
 }
   </style>
 </head>
@@ -360,15 +349,13 @@
     <div class="robot-message" id="robotMessage">កំពុងផ្ទុកសារ...</div>
   </div>
 
-  <div id="admin-input">
-  <div class="admin-input-inner">
-    <button onclick="postRobotMessage()">បញ្ជូន</button>
+  <div id="admin-input" style="display: none;">
     <textarea id="newMessage" placeholder="សរសេរសារថ្មី..."></textarea>
+    <button onclick="postRobotMessage()">បញ្ចូន</button>
   </div>
-</div>
 
-  <button class="mic-btn" onclick="alert('Voice assistant coming soon!')">
-  <img src="icons/mic.svg" class="mic-icon" alt="Mic" />
+  <button class="mic-btn">
+  <img src="icons/mic.svg" alt="Mic" />
 </button>
       
 </div> 
