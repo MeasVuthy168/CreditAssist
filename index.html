@@ -194,7 +194,6 @@
       font-size: 18px;
       margin-bottom: 1px;
     }
-    
     .robot-box {
   position: fixed;
   bottom: 76px;
@@ -204,28 +203,15 @@
   border: 2px solid #d4af37;
   border-radius: 12px;
   display: flex;
-  align-items: center;
-  padding: 20px 20px; /* more spacing inside */
+  flex-direction: column; /* now vertical layout */
+  padding: 16px 16px 60px; /* bottom space for button */
   z-index: 999;
   font-family: 'Krasar', sans-serif;
   color: white;
-
-  /* Taller height visually */
-  min-height: 110px;
-
-  /* Pulse Shadow Animation */
+  min-height: 130px;
   animation: robotPulse 2s infinite;
   box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
   overflow: hidden;
-}
-
-@keyframes robotPulse {
-  0%, 100% {
-    box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
-  }
-  50% {
-    box-shadow: 0 0 18px rgba(212, 175, 55, 0.8);
-  }
 }
 
 .robot-box img {
@@ -235,10 +221,46 @@
 }
 
 .robot-message {
-  flex: 1;
+  display: flex;
+  align-items: flex-start;
   font-size: 16px;
   line-height: 1.6;
-  margin-right: 10px; /* space from mic button */
+  margin-bottom: 8px;
+  white-space: normal;
+  word-break: break-word;
+  padding-left: 62px; /* align with robot icon */
+  min-height: 50px;
+}
+
+#admin-input {
+  width: 100%;
+  margin-top: auto;
+  position: relative;
+}
+
+#admin-input textarea {
+  width: 100%;
+  font-family: 'Krasar';
+  padding: 6px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  resize: none;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+
+#admin-input button {
+  position: absolute;
+  bottom: 6px;
+  right: 6px;
+  padding: 6px 12px;
+  background: #0d2d5c;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: 'Krasar';
+  font-size: 14px;
 }
 
 .mic-btn {
@@ -254,40 +276,6 @@
   height: 46px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
-    
-    #admin-input {
-       position: fixed;
-  bottom: 180px; /* above robot-box */
-  left: 16px;
-  right: 16px;
-  background-color: transparent;
-  border: 2px solid #d4af37;
-  border-radius: 12px;
-  padding: 12px;
-  z-index: 999;
-  font-family: 'Krasar';
-  color: white;
-    }
-
-    #admin-input textarea {
-       width: 100%;
-       font-family: 'Krasar';
-       padding: 6px;
-       border-radius: 6px;
-       border: 1px solid #ccc;
-       resize: none;
-}
-
-    #admin-input button {
-       margin-top: 6px;
-       padding: 6px 12px;
-       background: #0d2d5c;
-       color: white;
-       border: none;
-       border-radius: 6px;
-       cursor: pointer;
-       font-family: 'Krasar';
-    }
   </style>
 </head>
 <body oncontextmenu="return false;">
@@ -335,15 +323,18 @@
 
     <!-- Robot Box -->
     <div class="robot-box">
-      <img src="icons/Robot.svg" alt="Robot">
-      <div class="robot-message" id="robotMessage">កំពុងផ្ទុកសារ...</div>
-      <div id="admin-input">
-        <textarea id="newMessage" placeholder="សរសេរសារថ្មី..."></textarea>
-        <button onclick="postRobotMessage()">បញ្ចូន</button>
-      </div>
-      <button class="mic-btn">🎤</button>
-    </div>
+  <div style="display: flex; align-items: flex-start;">
+    <img src="icons/Robot.svg" alt="Robot">
+    <div class="robot-message" id="robotMessage">កំពុងផ្ទុកសារ...</div>
   </div>
+
+  <div id="admin-input" style="display: none;">
+    <textarea id="newMessage" placeholder="សរសេរសារថ្មី..."></textarea>
+    <button onclick="postRobotMessage()">បញ្ចូន</button>
+  </div>
+
+  <button class="mic-btn">🎤</button>
+</div> 
 
   <!-- Footer -->
   <div class="bottom-bar">
