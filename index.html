@@ -213,54 +213,25 @@
   box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
   overflow: hidden;
 }
+    
+.robot-content {
+  display: flex;
+  align-items: center;
+}
 
-.robot-box img {
-  width: 50px;
-  height: 50px;
+.robot-icon {
+  width: 60px;
+  height: 60px;
   margin-right: 12px;
+  flex-shrink: 0;
 }
 
 .robot-message {
-  display: flex;
-  align-items: flex-start;
   font-size: 16px;
   line-height: 1.6;
-  margin-bottom: 8px;
-  white-space: normal;
   word-break: break-word;
-  padding-left: 62px; /* align with robot icon */
-  min-height: 50px;
-}
-
-#admin-input {
-  width: 100%;
-  margin-top: auto;
-  position: relative;
-}
-
-#admin-input textarea {
-  width: 100%;
-  font-family: 'Krasar';
-  padding: 6px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  resize: none;
-  box-sizing: border-box;
-  font-size: 14px;
-}
-
-#admin-input button {
-  position: absolute;
-  bottom: 6px;
-  right: 6px;
-  padding: 6px 12px;
-  background: #0d2d5c;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-family: 'Krasar';
-  font-size: 14px;
+  flex: 1;
+  margin: 0; /* removes excess space */
 }
 
 .mic-btn {
@@ -322,11 +293,10 @@
     </div>
 
     <!-- Robot Box -->
-    <div class="robot-box">
-  <div style="display: flex; align-items: flex-start;">
-    <img src="icons/Robot.svg" alt="Robot">
-    <div class="robot-message" id="robotMessage">កំពុងផ្ទុកសារ...</div>
-  </div>
+    <div class="robot-content">
+  <img src="icons/Robot.svg" alt="Robot" class="robot-icon">
+  <div class="robot-message" id="robotMessage">កំពុងផ្ទុកសារ...</div>
+</div>
 
   <div id="admin-input" style="display: none;">
     <textarea id="newMessage" placeholder="សរសេរសារថ្មី..."></textarea>
