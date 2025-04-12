@@ -288,11 +288,15 @@
   </div>
 
   <!-- Robot Assistant Box -->
-<div class="robot-box" style="background: #fff8e1; border: 1px solid #ffe082; padding: 16px; border-radius: 12px; margin: 24px auto 0; max-width: 380px; box-shadow: 0 2px 6px rgba(0,0,0,0.2); position: relative;">
-  <img src="icons/robot.svg" alt="Robot" style="width: 54px; float: left; margin-right: 12px; margin-top: -5px;" />
-  <div class="robot-message" id="robotMessage" style="font-size: 15px; color: #333; line-height: 1.6; font-family: 'Krasar'; overflow: hidden;"></div>
-  <div id="admin-input" style="display: none; clear: both; margin-top: 10px;">
-    <textarea id="newMessage" placeholder="សរសេរសារ..." style="width: 100%; font-family: 'Krasar'; padding: 6px; border-radius: 6px; border: 1px solid #ccc;"></textarea>
+<div class="robot-box" style="background: #fff8e1; border: 1px solid #ffe082; padding: 16px; border-radius: 12px; margin: 24px auto 0; max-width: 380px; box-shadow: 0 2px 6px rgba(0,0,0,0.2); position: relative; overflow: hidden;">
+  <div style="display: flex; align-items: flex-start;">
+    <img src="icons/robot.svg" alt="Robot" style="width: 54px; flex-shrink: 0; margin-right: 12px;" />
+    <div class="robot-message" id="robotMessage" style="font-size: 15px; color: #333; line-height: 1.6; font-family: 'Krasar'; flex: 1;">
+      កំពុងផ្ទុកសារ...
+    </div>
+  </div>
+  <div id="admin-input" style="display: none; margin-top: 12px;">
+    <textarea id="newMessage" placeholder="សរសេរសារថ្មី..." style="width: 100%; font-family: 'Krasar'; padding: 6px; border-radius: 6px; border: 1px solid #ccc;"></textarea>
     <button onclick="postRobotMessage()" style="margin-top: 6px; padding: 6px 12px; background: #0d2d5c; color: white; border: none; border-radius: 6px; cursor: pointer; font-family: 'Krasar';">បញ្ចូន</button>
   </div>
 </div>
