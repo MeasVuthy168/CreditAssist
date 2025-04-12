@@ -196,34 +196,32 @@
     }
 
     .robot-box {
+  po.robot-box {
   position: fixed;
-  bottom: 56px; /* height of your footer */
+  bottom: 56px; /* Adjust based on your footer */
   left: 16px;
   right: 16px;
-  padding: 12px;
-  border-radius: 12px;
   display: flex;
   align-items: center;
-  backdrop-filter: blur(8px); /* optional for glass effect */
+  padding: 12px 16px;
+  border-radius: 16px;
   background-color: transparent;
-  z-index: 999;
+  border: 2px solid #d4af37; /* Golden border */
+  color: white;
   font-family: 'Krasar', sans-serif;
+  z-index: 999;
 }
 
-    .robot-box img {
-      width: 54px;
-      float: left;
-      margin-right: 12px;
-      margin-top: -5px;
-    }
+.robot-box img {
+  height: 60px;
+  width: auto;
+  margin-right: 16px;
+}
 
-    .robot-message {
-      font-size: 15px;
-      color: #333;
-      line-height: 1.6;
-      font-family: 'Krasar';
-      overflow: hidden;
-    }
+.robot-message {
+  flex: 1;
+  font-size: 18px;
+}
 
     #admin-input {
       display: none;
