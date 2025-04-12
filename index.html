@@ -205,15 +205,18 @@
   border-radius: 12px;
   display: flex;
   align-items: center;
-  padding: 12px 16px;
+  padding: 20px 20px; /* more spacing inside */
   z-index: 999;
   font-family: 'Krasar', sans-serif;
   color: white;
 
+  /* Taller height visually */
+  min-height: 110px;
+
   /* Pulse Shadow Animation */
   animation: robotPulse 2s infinite;
   box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
-  overflow: hidden; /* ensures text stays in box */
+  overflow: hidden;
 }
 
 @keyframes robotPulse {
@@ -234,7 +237,8 @@
 .robot-message {
   flex: 1;
   font-size: 16px;
-  line-height: 1.4;
+  line-height: 1.6;
+  margin-right: 10px; /* space from mic button */
 }
 
 .mic-btn {
