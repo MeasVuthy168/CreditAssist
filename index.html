@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="km">
 <head>
@@ -203,23 +204,6 @@
       margin-bottom: 1px;
       line-height: 1;
     }
-
-    @media (max-width: 600px) {
-      .header img.logo { height: 40px; }
-      .profile-wrapper { width: 52px; height: 52px; }
-      .profile-wrapper img {
-        width: calc(100% - 2px);
-        height: calc(100% - 2px);
-        margin: 1px;
-      }
-      .menu-item img {
-        width: 32px;
-        height: 32px;
-      }
-      .menu-item .label {
-        font-size: 13px;
-      }
-    }
   </style>
 </head>
 <body>
@@ -281,8 +265,9 @@
     </button>
   </div>
 
-  <!-- JavaScript: preload audio and handle interaction -->
+  <!-- JavaScript: Unlock sound + ripple + redirect -->
   <script>
+    // Set profile name and image
     document.addEventListener("DOMContentLoaded", () => {
       const name = sessionStorage.getItem("fullname") || "អ្នកប្រើ";
       const imgPath = sessionStorage.getItem("image") || "profile.jpg";
@@ -290,22 +275,25 @@
       document.getElementById("profile-photo").src = "https://secure-backend-tzj9.onrender.com/" + imgPath;
     });
 
-    const clickSound = new Audio();
-    clickSound.src = "sound/click.wav";
+    // Preload & unlock sound
+    const clickSound = new Audio("sound/click.wav");
     clickSound.preload = "auto";
 
+    // Unlock audio on first user interaction
     document.body.addEventListener("click", () => {
       clickSound.play().catch(() => {});
       clickSound.pause();
       clickSound.currentTime = 0;
     }, { once: true });
 
+    // Ripple + sound + delay redirect
     document.querySelectorAll(".menu-item").forEach(item => {
       const href = item.getAttribute("data-href");
 
       item.addEventListener("click", function (e) {
         e.preventDefault();
 
+        // Ripple
         const ripple = document.createElement("span");
         ripple.className = "ripple";
         const rect = this.getBoundingClientRect();
@@ -316,24 +304,24 @@
         this.appendChild(ripple);
         setTimeout(() => ripple.remove(), 600);
 
+        // Sound then redirect
         clickSound.currentTime = 0;
-        clickSound.play()
-          .then(() => {
-            setTimeout(() => {
-              if (href && href !== "") {
-                window.location.href = href;
-              } else {
-                alert("Coming soon!");
-              }
-            }, 180);
-          })
-          .catch(() => {
+        clickSound.play().then(() => {
+          setTimeout(() => {
             if (href && href !== "") {
               window.location.href = href;
             } else {
               alert("Coming soon!");
             }
-          });
+          }, 200);
+        }).catch(() => {
+          // fallback
+          if (href && href !== "") {
+            window.location.href = href;
+          } else {
+            alert("Coming soon!");
+          }
+        });
       });
     });
   </script>
