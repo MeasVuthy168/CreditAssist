@@ -265,9 +265,9 @@
     </button>
   </div>
 
-  <!-- JavaScript: Unlock sound + ripple + redirect -->
+  <!-- JavaScript -->
   <script>
-    // Set profile name and image
+    // Load profile info
     document.addEventListener("DOMContentLoaded", () => {
       const name = sessionStorage.getItem("fullname") || "អ្នកប្រើ";
       const imgPath = sessionStorage.getItem("image") || "profile.jpg";
@@ -275,18 +275,18 @@
       document.getElementById("profile-photo").src = "https://secure-backend-tzj9.onrender.com/" + imgPath;
     });
 
-    // Preload & unlock sound
+    // Preload sound
     const clickSound = new Audio("sound/click.wav");
     clickSound.preload = "auto";
 
-    // Unlock audio on first user interaction
+    // Unlock sound on first interaction
     document.body.addEventListener("click", () => {
       clickSound.play().catch(() => {});
       clickSound.pause();
       clickSound.currentTime = 0;
     }, { once: true });
 
-    // Ripple + sound + delay redirect
+    // Handle menu item click
     document.querySelectorAll(".menu-item").forEach(item => {
       const href = item.getAttribute("data-href");
 
@@ -304,9 +304,9 @@
         this.appendChild(ripple);
         setTimeout(() => ripple.remove(), 600);
 
-        // Sound then redirect
-        clickSound.currentTime = 0;
-        clickSound.play().then(() => {
+        // Clone and play sound
+        const newSound = clickSound.cloneNode();
+        newSound.play().then(() => {
           setTimeout(() => {
             if (href && href !== "") {
               window.location.href = href;
@@ -315,7 +315,6 @@
             }
           }, 200);
         }).catch(() => {
-          // fallback
           if (href && href !== "") {
             window.location.href = href;
           } else {
