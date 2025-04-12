@@ -288,7 +288,17 @@
   object-fit: contain;
   filter: invert(100%);
   display: block;
-  padding-left: 10px
+  padding-left: 12px
+}
+.mic-btn:hover {
+  background-color: #174080; /* slightly lighter blue */
+  box-shadow: 0 0 12px rgba(255, 215, 0, 0.6); /* golden glow */
+  transform: scale(1.05); /* subtle zoom */
+  transition: all 0.3s ease;
+}
+
+.mic-btn:active {
+  transform: scale(0.95); /* click press effect */
 }
   </style>
 </head>
@@ -352,8 +362,8 @@
     <button onclick="postRobotMessage()">បញ្ចូន</button>
   </div>
 
-  <button class="mic-btn">
-  <img src="icons/mic.svg" alt="Mic" />
+  <button class="mic-btn" onclick="alert('Voice assistant coming soon!')">
+  <img src="icons/mic.svg" class="mic-icon" alt="Mic" />
 </button>
       
 </div> 
