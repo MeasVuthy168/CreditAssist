@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="km">
 <head>
@@ -91,7 +90,7 @@
     }
 
     .content {
-      padding: 110px 20px 20px;
+      padding: 130px 20px 20px;
     }
 
     .menu-grid {
@@ -120,7 +119,6 @@
       position: relative;
       overflow: hidden;
       user-select: none;
-      -webkit-user-select: none;
       transition: all 0.3s ease;
     }
 
@@ -279,19 +277,23 @@
     const clickSound = new Audio("sound/click.wav");
     clickSound.preload = "auto";
 
-    // Unlock on first interaction
+    // Unlock sound on first interaction
     document.body.addEventListener("click", () => {
       clickSound.play().catch(() => {});
       clickSound.pause();
       clickSound.currentTime = 0;
     }, { once: true });
 
-    // Menu item click handler
+    // Menu item click
     document.querySelectorAll(".menu-item").forEach(item => {
       const href = item.getAttribute("data-href");
       item.addEventListener("click", function (e) {
         e.preventDefault();
 
+        // Vibrate
+        if (navigator.vibrate) navigator.vibrate(50);
+
+        // Ripple
         const ripple = document.createElement("span");
         ripple.className = "ripple";
         const rect = this.getBoundingClientRect();
@@ -302,26 +304,21 @@
         this.appendChild(ripple);
         setTimeout(() => ripple.remove(), 600);
 
+        // Sound
         const newSound = clickSound.cloneNode();
         newSound.play().then(() => {
           setTimeout(() => {
-            if (href && href !== "") {
-              window.location.href = href;
-            } else {
-              alert("Coming soon!");
-            }
+            if (href) window.location.href = href;
+            else alert("Coming soon!");
           }, 200);
         }).catch(() => {
-          if (href && href !== "") {
-            window.location.href = href;
-          } else {
-            alert("Coming soon!");
-          }
+          if (href) window.location.href = href;
+          else alert("Coming soon!");
         });
       });
     });
 
-    // Auto logout after 1 minute of inactivity
+    // Auto logout after 1 minute
     const AUTO_LOGOUT_MINUTES = 1;
     let logoutTimer;
 
