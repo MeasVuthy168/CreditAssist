@@ -196,32 +196,35 @@
     }
 
     .robot-box {
-      background: white;
-      margin: 24px auto 0;
-      padding: 14px;
+      background: #fff8e1;
+      border: 1px solid #ffe082;
+      padding: 16px;
       border-radius: 12px;
+      margin: 24px auto 0;
+      max-width: 380px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-      color: #002c5f;
-      max-width: 360px;
-      display: flex;
-      gap: 12px;
-      align-items: flex-start;
+      position: relative;
     }
 
-    .robot-box svg {
-      width: 40px;
-      flex-shrink: 0;
+    .robot-box img {
+      width: 54px;
+      float: left;
+      margin-right: 12px;
+      margin-top: -5px;
     }
 
     .robot-message {
-      font-size: 14px;
-      line-height: 1.5;
-      flex: 1;
+      font-size: 15px;
+      color: #333;
+      line-height: 1.6;
+      font-family: 'Krasar';
+      overflow: hidden;
     }
 
     #admin-input {
-      width: 100%;
-      margin-top: 10px;
+      display: none;
+      clear: both;
+      margin-top: 12px;
     }
 
     #admin-input textarea {
@@ -245,6 +248,7 @@
   </style>
 </head>
 <body oncontextmenu="return false;">
+
   <!-- Header -->
   <div class="header">
     <img class="logo" src="LogoAC2.PNG" alt="Logo" />
@@ -285,21 +289,17 @@
         <div class="label">ត្រួតពិនិត្យឥណទាន</div>
       </div>
     </div>
-  </div>
 
-  <!-- Robot Assistant Box -->
-<div class="robot-box" style="background: #fff8e1; border: 1px solid #ffe082; padding: 16px; border-radius: 12px; margin: 24px auto 0; max-width: 380px; box-shadow: 0 2px 6px rgba(0,0,0,0.2); position: relative; overflow: hidden;">
-  <div style="display: flex; align-items: flex-start;">
-    <img src="icons/robot.svg" alt="Robot" style="width: 54px; flex-shrink: 0; margin-right: 12px;" />
-    <div class="robot-message" id="robotMessage" style="font-size: 15px; color: #333; line-height: 1.6; font-family: 'Krasar'; flex: 1;">
-      កំពុងផ្ទុកសារ...
+    <!-- Robot Box -->
+    <div class="robot-box">
+      <img src="icons/robot.svg" alt="Robot">
+      <div class="robot-message" id="robotMessage">កំពុងផ្ទុកសារ...</div>
+      <div id="admin-input">
+        <textarea id="newMessage" placeholder="សរសេរសារថ្មី..."></textarea>
+        <button onclick="postRobotMessage()">បញ្ចូន</button>
+      </div>
     </div>
   </div>
-  <div id="admin-input" style="display: none; margin-top: 12px;">
-    <textarea id="newMessage" placeholder="សរសេរសារថ្មី..." style="width: 100%; font-family: 'Krasar'; padding: 6px; border-radius: 6px; border: 1px solid #ccc;"></textarea>
-    <button onclick="postRobotMessage()" style="margin-top: 6px; padding: 6px 12px; background: #0d2d5c; color: white; border: none; border-radius: 6px; cursor: pointer; font-family: 'Krasar';">បញ្ចូន</button>
-  </div>
-</div>
 
   <!-- Footer -->
   <div class="bottom-bar">
@@ -318,7 +318,6 @@
   </div>
 
   <script>
-    
     const clickSound = new Audio("sound/click.wav");
     clickSound.preload = "auto";
     document.body.addEventListener("click", () => {
@@ -332,7 +331,6 @@
       item.addEventListener("click", function (e) {
         e.preventDefault();
         if (navigator.vibrate) navigator.vibrate(50);
-
         const ripple = document.createElement("span");
         ripple.className = "ripple";
         const rect = this.getBoundingClientRect();
@@ -342,7 +340,6 @@
         ripple.style.top = (e.clientY - rect.top - size / 2) + "px";
         this.appendChild(ripple);
         setTimeout(() => ripple.remove(), 600);
-
         const newSound = clickSound.cloneNode();
         newSound.play().then(() => {
           setTimeout(() => {
@@ -356,7 +353,6 @@
       });
     });
 
-    // Auto logout
     const AUTO_LOGOUT_MINUTES = 1;
     let logoutTimer;
     function resetLogoutTimer() {
@@ -372,22 +368,19 @@
     });
     window.addEventListener('load', resetLogoutTimer);
 
-    // Robot message
-    const userPosition = sessionStorage.getItem("userPosition") || "user";
     async function loadRobotMessage(userPosition) {
-  try {
-    const res = await fetch("https://secure-backend-tzj9.onrender.com/api/robot-message");
-    const data = await res.json();
-    document.getElementById("robotMessage").textContent = data.message || "មិនទាន់មានសារ។";
-
-    if (userPosition === "admin") {
-      document.getElementById("admin-input").style.display = "block";
-      document.getElementById("newMessage").value = data.message;
+      try {
+        const res = await fetch("https://secure-backend-tzj9.onrender.com/api/robot-message");
+        const data = await res.json();
+        document.getElementById("robotMessage").textContent = data.message || "មិនទាន់មានសារ។";
+        if (userPosition === "admin") {
+          document.getElementById("admin-input").style.display = "block";
+          document.getElementById("newMessage").value = data.message;
+        }
+      } catch {
+        document.getElementById("robotMessage").textContent = "មិនអាចទាញសារបានទេ។";
+      }
     }
-  } catch {
-    document.getElementById("robotMessage").textContent = "មិនអាចទាញសារបានទេ។";
-  }
-}
 
     async function postRobotMessage() {
       const msg = document.getElementById("newMessage").value.trim();
@@ -398,24 +391,20 @@
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ message: msg })
         });
-        loadRobotMessage();
+        loadRobotMessage("admin");
       } catch {
-        alert("Failed to post message.");
+        alert("បញ្ចូនសារមិនបាន។");
       }
     }
 
-     document.addEventListener("DOMContentLoaded", () => {
-  const name = sessionStorage.getItem("fullname") || "អ្នកប្រើ";
-  const imgPath = sessionStorage.getItem("image") || "profile.jpg";
-  const userPosition = sessionStorage.getItem("userPosition") || "user";
-
-  console.log("User position is:", userPosition); // Debug
-
-  document.getElementById("welcome").textContent = "សួស្តី, " + name;
-  document.getElementById("profile-photo").src = "https://secure-backend-tzj9.onrender.com/" + imgPath;
-
-  loadRobotMessage(userPosition); // This is required for admin input to appear
-});
+    document.addEventListener("DOMContentLoaded", () => {
+      const name = sessionStorage.getItem("fullname") || "អ្នកប្រើ";
+      const imgPath = sessionStorage.getItem("image") || "profile.jpg";
+      const userPosition = sessionStorage.getItem("userPosition") || "user";
+      document.getElementById("welcome").textContent = "សួស្តី, " + name;
+      document.getElementById("profile-photo").src = "https://secure-backend-tzj9.onrender.com/" + imgPath;
+      loadRobotMessage(userPosition);
+    });
   </script>
 </body>
 </html>
