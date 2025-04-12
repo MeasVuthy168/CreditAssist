@@ -380,19 +380,20 @@
 
     // Robot message
     const userPosition = sessionStorage.getItem("userPosition") || "user";
-    async function loadRobotMessage() {
-      try {
-        const res = await fetch("https://secure-backend-tzj9.onrender.com/api/robot-message");
-        const data = await res.json();
-        document.getElementById("robotMessage").textContent = data.message || "No message yet.";
-        if (userPosition === "admin") {
-          document.getElementById("admin-input").style.display = "block";
-          document.getElementById("newMessage").value = data.message;
-        }
-      } catch {
-        document.getElementById("robotMessage").textContent = "Unable to load message.";
-      }
+    async function loadRobotMessage(userPosition) {
+  try {
+    const res = await fetch("https://secure-backend-tzj9.onrender.com/api/robot-message");
+    const data = await res.json();
+    document.getElementById("robotMessage").textContent = data.message || "មិនទាន់មានសារ។";
+
+    if (userPosition === "admin") {
+      document.getElementById("admin-input").style.display = "block";
+      document.getElementById("newMessage").value = data.message;
     }
+  } catch {
+    document.getElementById("robotMessage").textContent = "មិនអាចទាញសារបានទេ។";
+  }
+}
 
     async function postRobotMessage() {
       const msg = document.getElementById("newMessage").value.trim();
@@ -409,7 +410,18 @@
       }
     }
 
-    document.addEventListener("DOMContentLoaded", loadRobotMessage);
+     document.addEventListener("DOMContentLoaded", () => {
+  const name = sessionStorage.getItem("fullname") || "អ្នកប្រើ";
+  const imgPath = sessionStorage.getItem("image") || "profile.jpg";
+  const userPosition = sessionStorage.getItem("userPosition") || "user";
+
+  console.log("User position is:", userPosition); // Debug
+
+  document.getElementById("welcome").textContent = "សួស្តី, " + name;
+  document.getElementById("profile-photo").src = "https://secure-backend-tzj9.onrender.com/" + imgPath;
+
+  loadRobotMessage(userPosition); // Pass user role
+});
   </script>
 </body>
 </html>
