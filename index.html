@@ -194,35 +194,61 @@
       font-size: 18px;
       margin-bottom: 1px;
     }
-
+    
     .robot-box {
-  po.robot-box {
   position: fixed;
-  bottom: 56px; /* Adjust based on your footer */
+  bottom: 60px;
   left: 16px;
   right: 16px;
+  background-color: transparent;
+  border: 2px solid #d4af37;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   padding: 12px 16px;
-  border-radius: 16px;
-  background-color: transparent;
-  border: 2px solid #d4af37; /* Golden border */
-  color: white;
-  font-family: 'Krasar', sans-serif;
   z-index: 999;
+  font-family: 'Krasar', sans-serif;
+  color: white;
+
+  /* Pulse Shadow Animation */
+  animation: robotPulse 2s infinite;
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
+}
+
+@keyframes robotPulse {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 18px rgba(212, 175, 55, 0.8);
+  }
 }
 
 .robot-box img {
-  height: 60px;
-  width: auto;
-  margin-right: 16px;
+  width: 50px;
+  height: 50px;
+  margin-right: 12px;
 }
 
 .robot-message {
   flex: 1;
-  font-size: 18px;
+  font-size: 16px;
+  line-height: 1.4;
 }
 
+.mic-btn {
+  position: absolute;
+  bottom: -22px;
+  right: 24px;
+  background-color: #0d2d5c;
+  border: none;
+  color: white;
+  font-size: 20px;
+  border-radius: 50%;
+  width: 46px;
+  height: 46px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
     #admin-input {
       display: none;
       clear: both;
@@ -300,6 +326,7 @@
         <textarea id="newMessage" placeholder="សរសេរសារថ្មី..."></textarea>
         <button onclick="postRobotMessage()">បញ្ចូន</button>
       </div>
+      <button class="mic-btn">🎤</button>
     </div>
   </div>
 
