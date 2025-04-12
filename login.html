@@ -1,81 +1,53 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="km">
 <head>
   <meta charset="UTF-8" />
-  <title>Login</title>
+  <title>ចូលប្រើកម្មវិធី</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="manifest" href="https://measvuthy168.github.io/CreditAssist/manifest.json">
-  <link rel="apple-touch-icon" href="https://measvuthy168.github.io/CreditAssist/icons/icon-192.png">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="theme-color" content="#0d2d5c">
-
-  <!-- Preload -->
-  <link rel="preload" href="https://measvuthy168.github.io/CreditAssist/Krasar-Regular.ttf" as="font" type="font/ttf" crossorigin>
-  <link rel="preload" as="image" href="LogoAC.png">
+  <meta name="theme-color" content="#0d2d5c" />
 
   <style>
     @font-face {
       font-family: 'Krasar';
-      src: url('https://measvuthy168.github.io/CreditAssist/Krasar-Regular.ttf') format('truetype');
+      src: url('Krasar-Regular.ttf') format('truetype');
     }
 
     body {
-      background-color: #0d2d5c;
-      color: white;
-      font-family: 'Krasar', Arial, sans-serif;
       margin: 0;
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    #splash-screen {
-      position: fixed;
-      inset: 0;
+      font-family: 'Krasar', Arial, sans-serif;
       background-color: #0d2d5c;
       display: flex;
-      flex-direction: column;
-      align-items: center;
       justify-content: center;
-      z-index: 1000;
-    }
-
-    #splash-screen img {
-      height: 70px;
-      margin-bottom: 8px;
-    }
-
-    #splash-screen h1 {
-      font-size: 24px;
-      color: #ffd700;
-      margin: 5px 0;
-    }
-
-    #splash-screen p,
-    #splash-screen span {
-      font-size: 15px;
-      margin: 2px 0;
+      align-items: center;
+      height: 100vh;
     }
 
     .login-box {
-      background-color: #2c3545;
-      padding: 32px 24px;
-      border-radius: 12px;
-      box-shadow: 0 0 15px rgba(51, 153, 255, 0.3);
+      background-color: white;
+      border-radius: 16px;
+      padding: 24px;
       width: 90%;
-      max-width: 320px;
+      max-width: 400px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+      color: #1a1a1a;
       text-align: center;
-      display: none;
     }
 
     .login-logo {
+      width: 60px;
       height: 60px;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
 
-    .login-box h2 {
-      font-size: 20px;
+    .login-title {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .login-version {
+      font-size: 14px;
+      color: #666;
       margin-bottom: 20px;
     }
 
@@ -86,93 +58,55 @@
       margin: 10px 0;
       border: none;
       border-radius: 6px;
-      background: #1f2733;
-      color: white;
+      background: #f0f0f0;
+      color: #333;
       font-family: 'Krasar', Arial, sans-serif;
     }
 
     input:focus {
       outline: none;
-      background: #27303f;
+      background: #e4e4e4;
     }
 
     .remember {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
-      font-size: 16px;
+      gap: 8px;
+      font-size: 15px;
       margin: 10px 0 20px;
     }
 
     button {
       width: 100%;
       padding: 12px;
-      background-color: #3399ff;
+      background-color: #0d2d5c;
       color: white;
       border: none;
       border-radius: 6px;
-      font-size: 17px;
+      font-size: 16px;
       font-family: 'Krasar', Arial, sans-serif;
       cursor: pointer;
     }
 
     button:hover {
-      background-color: #1a8cff;
+      background-color: #09306d;
     }
 
     .error {
-      color: #ff6666;
-      margin-top: 12px;
-      font-size: 15px;
+      color: #d22;
+      font-size: 14px;
       min-height: 20px;
-    }
-
-    #login-loading {
-      position: fixed;
-      inset: 0;
-      background-color: rgba(13, 45, 92, 0.95);
-      z-index: 9999;
-      display: none;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-    }
-
-    #login-loading .spinner {
-      width: 30px;
-      height: 30px;
-      border: 4px solid #ffffff40;
-      border-top: 4px solid #ffd700;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin-bottom: 12px;
-    }
-
-    #login-loading p {
-      font-size: 17px;
-      margin: 0;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
+      margin-top: 10px;
     }
   </style>
 </head>
 <body>
-
-  <!-- Splash -->
-  <div id="splash-screen">
-    <img src="LogoAC.png" alt="ACLEDA Logo" />
-    <h1>Credit Assist</h1>
-    <p>ACLEDA Svay Rieng Branch</p>
-    <span>Version 1.0.0</span>
-  </div>
-
-  <!-- Login Box -->
-  <div class="login-box" id="loginBox">
+  <div class="login-box">
     <img src="LogoAC.png" alt="ACLEDA Logo" class="login-logo" />
-    <h2>ចូលប្រើកម្មវិធីជំនួយឥណទាន</h2>
+    <div class="login-title">Credit Assist</div>
+    <div class="login-version">Version 1.0.0</div>
+
     <input type="text" id="username" placeholder="Username" />
     <input type="password" id="password" placeholder="Password" />
 
@@ -181,30 +115,19 @@
       <label for="rememberMe">Remember Me</label>
     </div>
 
-    <button id="loginBtn" onclick="login()">Login</button>
+    <button onclick="login()">ចូលប្រើកម្មវិធី</button>
     <p class="error" id="error-msg"></p>
-  </div>
-
-  <!-- Post-login loading -->
-  <div id="login-loading">
-    <div class="spinner"></div>
-    <p>កំពុងចូលប្រើកម្មវិធី...</p>
   </div>
 
   <script>
     window.onload = () => {
-      setTimeout(() => {
-        document.getElementById("splash-screen").style.display = "none";
-        document.getElementById("loginBox").style.display = "block";
-
-        const saved = localStorage.getItem("rememberedUser");
-        if (saved) {
-          const creds = JSON.parse(saved);
-          document.getElementById("username").value = creds.username;
-          document.getElementById("password").value = creds.password;
-          document.getElementById("rememberMe").checked = true;
-        }
-      }, 1200);
+      const saved = localStorage.getItem("rememberedUser");
+      if (saved) {
+        const creds = JSON.parse(saved);
+        document.getElementById("username").value = creds.username;
+        document.getElementById("password").value = creds.password;
+        document.getElementById("rememberMe").checked = true;
+      }
     };
 
     async function login() {
@@ -212,10 +135,6 @@
       const password = document.getElementById("password").value.trim();
       const rememberMe = document.getElementById("rememberMe").checked;
       const errorMsg = document.getElementById("error-msg");
-      const loginBtn = document.getElementById("loginBtn");
-
-      loginBtn.disabled = true;
-      errorMsg.textContent = "";
 
       try {
         const res = await fetch("https://secure-backend-tzj9.onrender.com/api/login", {
@@ -239,19 +158,14 @@
             localStorage.removeItem("rememberedUser");
           }
 
-          document.getElementById("login-loading").style.display = "flex";
-          setTimeout(() => {
-            window.location.href = "index.html";
-          }, 1000);
+          window.location.href = "index.html";
         } else {
           errorMsg.textContent = data.message || "Invalid username or password.";
-          loginBtn.disabled = false;
         }
 
       } catch (e) {
         errorMsg.textContent = "Cannot connect to server.";
         console.error(e);
-        loginBtn.disabled = false;
       }
     }
   </script>
