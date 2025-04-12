@@ -3,477 +3,215 @@
 <html lang="km">
 <head>
   <meta charset="UTF-8" />
-  <title>ជំនួយការឥណទាន</title>
+  <title>ចូលប្រើកម្មវិធី</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#0d2d5c" />
-  <meta name="apple-mobile-web-app-capable" content="yes">
+
   <style>
     @font-face {
       font-family: 'Krasar';
       src: url('Krasar-Regular.ttf') format('truetype');
     }
 
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: 'Krasar', Arial, sans-serif;
-      background-color: #002c5f;
-      color: white;
       margin: 0;
-      padding: 0 0 70px;
-    }
-
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      font-family: 'Krasar', Arial, sans-serif;
       background-color: #0d2d5c;
-      padding: 10px 16px;
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 1000;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-    }
-
-    .header img.logo {
-      height: 50px;
-    }
-
-    .profile {
       display: flex;
-      flex-direction: column;
+      justify-content: center;
       align-items: center;
-      gap: 4px;
-      text-decoration: none;
+      height: 100vh;
     }
 
-    .profile-wrapper {
-      position: relative;
-      width: 64px;
-      height: 64px;
-    }
-
-    .spinner-arc {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      background: conic-gradient(#ffd700 0% 25%, transparent 25% 100%);
-      animation: spin 1.8s linear infinite;
-      z-index: 1;
-    }
-
-    .profile-wrapper img {
-      width: calc(100% - 2px);
-      height: calc(100% - 2px);
-      border-radius: 50%;
-      object-fit: cover;
+    .login-box {
       background-color: white;
-      z-index: 2;
-      margin: 1px;
-      position: relative;
+      border-radius: 16px;
+      padding: 24px;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+      color: #1a1a1a;
+      text-align: center;
+    }
+
+    .login-logo {
+      width: 60px;
+      height: 60px;
+      margin-bottom: 10px;
+    }
+
+    .login-title {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .login-version {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 20px;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 6px;
+      background: #f0f0f0;
+      color: #333;
+      font-family: 'Krasar', Arial, sans-serif;
+      font-size: 15px;
+    }
+
+    input:focus {
+      outline: none;
+      background: #e4e4e4;
+    }
+
+    .remember {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 15px;
+      margin: 10px 0 20px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #0d2d5c;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-family: 'Krasar', Arial, sans-serif;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #09306d;
+    }
+
+    .error {
+      color: #d22;
+      font-size: 14px;
+      min-height: 20px;
+      margin-top: 10px;
+    }
+
+    /* Spinner Overlay */
+    #login-loading {
+      position: fixed;
+      inset: 0;
+      background: rgba(13, 45, 92, 0.7);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .spinner {
+      width: 32px;
+      height: 32px;
+      border: 4px solid #ffffff33;
+      border-top: 4px solid #ffd700;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
     }
 
     @keyframes spin {
       to { transform: rotate(360deg); }
     }
-
-    .welcome {
-      font-size: 13px;
-      color: #ffd700;
-      text-align: center;
-      line-height: 1.2;
-      white-space: nowrap;
-    }
-
-    .content {
-      padding: 135px 20px 20px;
-    }
-
-    .menu-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr); /* 3 columns */
-  gap: 16px;
-  justify-items: center;
-  align-items: stretch;
-}
-
-    .menu-item {
-      background: white;
-      border-radius: 16px;
-      padding: 10px 6px;
-      width: 100%;
-      max-width: 90px;
-      aspect-ratio: 1/1;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-      color: #002c5f;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-      user-select: none;
-      transition: all 0.3s ease;
-    }
-
-    .menu-item img {
-      width: 36px;
-      height: 36px;
-      margin-bottom: 6px;
-      animation: bounce 0.4s ease;
-      pointer-events: none;
-    }
-
-    .menu-item:hover {
-      background: #f0f8ff;
-      box-shadow: 0 0 12px rgba(255, 215, 0, 0.6);
-      border: 1.5px solid #ffd700;
-    }
-
-    .menu-item:hover img {
-      transform: scale(1.15);
-    }
-
-    .menu-item .label {
-      font-size: 14px;
-    }
-
-    @keyframes bounce {
-      0% { transform: scale(0.8); opacity: 0; }
-      60% { transform: scale(1.1); opacity: 1; }
-      100% { transform: scale(1); }
-    }
-
-    .ripple {
-      position: absolute;
-      border-radius: 50%;
-      background: rgba(0, 44, 95, 0.3);
-      transform: scale(0);
-      animation: ripple-animation 0.6s ease-out;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    @keyframes ripple-animation {
-      to {
-        transform: scale(4);
-        opacity: 0;
-      }
-    }
-
-    .bottom-bar {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 56px;
-      background: white;
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      box-shadow: 0 -1px 4px rgba(0,0,0,0.1);
-      z-index: 1000;
-    }
-
-    .bottom-btn {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      font-size: 11px;
-      color: #0d2d5c;
-      border: none;
-      background: none;
-      padding: 2px;
-    }
-
-    .bottom-btn .icon {
-      font-size: 18px;
-      margin-bottom: 1px;
-    }
-    .robot-box {
-  position: fixed;
-  bottom: 76px;
-  left: 16px;
-  right: 16px;
-  background-color: transparent;
-  border: 2px solid #d4af37;
-  border-radius: 12px;
-  display: flex;
-  flex-direction: column; /* now vertical layout */
-  padding: 10px 16px 60px; /* bottom space for button */
-  z-index: 999;
-  font-family: 'Krasar', sans-serif;
-  color: white;
-  min-height: 100px;
-  animation: robotPulse 2s infinite;
-  box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
-  overflow: hidden;
-}
-
-.robot-box img {
-  width: 60px;
-  height: 60px;
-  margin-right: 12px;
-  flex-shrink: 0;
-}
-
-.robot-message {
-  display: flex;
-  align-items: flex-start;
-  font-size: 16px;
-  line-height: 1.6;
-  margin-bottom: 8px;
-  white-space: normal;
-  word-break: break-word;
-  padding-left: 10px; /* align with robot icon */
-  min-height: 50px;
-}
-
-#admin-input {
-  width: 100%;
-  margin-top: auto;
-  display: flex;
-  align-items: center; /* vertical center */
-  gap: 10px;
-}
-
-#admin-input textarea {
-  width: 100%;
-  font-family: 'Krasar';
-  padding: 6px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  resize: none;
-  box-sizing: border-box;
-  font-size: 14px;
-}
-
-#admin-input button {
-  position: absolute;
-  bottom: 6px;
-  right: 6px;
-  padding: 6px 12px;
-  background: #0d2d5c;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-family: 'Krasar';
-  font-size: 14px;
-}
-
-.mic-btn {
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
-  width: 50px;
-  height: 50px;
-  background-color: #0d2d5c;
-  border: none;
-  border-radius: 50%;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-  overflow: hidden;
-}
-
-.mic-btn img {
-  width: 24px;
-  height: 24px;
-  object-fit: contain;
-  filter: invert(100%);
-  display: block;
-  padding-left: 12px
-}
-.mic-btn:hover {
-  background-color: #174080; /* slightly lighter blue */
-  box-shadow: 0 0 12px rgba(255, 215, 0, 0.6); /* golden glow */
-  transform: scale(1.05); /* subtle zoom */
-  transition: all 0.3s ease;
-}
-
-.mic-btn:active {
-  transform: scale(0.95); /* click press effect */
-}
   </style>
 </head>
-<body oncontextmenu="return false;">
-
-  <!-- Header -->
-  <div class="header">
-    <img class="logo" src="LogoAC2.PNG" alt="Logo" />
-    <a href="Setting/userinfo.html" class="profile">
-      <div class="profile-wrapper">
-        <div class="spinner-arc"></div>
-        <img id="profile-photo" src="profile.jpg" alt="User" />
-      </div>
-      <div class="welcome" id="welcome">សួស្តី</div>
-    </a>
+<body>
+  <!-- Spinner Overlay -->
+  <div id="login-loading">
+    <div class="spinner"></div>
   </div>
 
-  <!-- Content -->
-  <div class="content">
-    <div class="menu-grid">
-  <div class="menu-item" data-href="SVG_CRM/index.html">
-    <img src="icons/search.PNG" alt="Search">
-    <div class="label">ស្វែងរកអតិថិជន</div>
-  </div>
-  <div class="menu-item" data-href="RetiredCalculator/index.html">
-    <img src="icons/retirement.PNG" alt="Retirement">
-    <div class="label">ចំនួនខែចូលនិវត្តន៍</div>
-  </div>
-  <div class="menu-item" data-href="Loan-Calculator/index.html">
-    <img src="icons/loan.PNG" alt="Loan">
-    <div class="label">គណនាឥណទាន</div>
-  </div>
-  <div class="menu-item" data-href="Average-Debit-Turnover/index.html">
-    <img src="icons/turnover.PNG" alt="Turnover">
-    <div class="label">អត្រាប្រចាំឆ្នាំ</div>
-  </div>
-  <div class="menu-item" data-href="">
-    <img src="icons/report.PNG" alt="Report">
-    <div class="label">របាយការណ៍ប្រចាំថ្ងៃ</div>
-  </div>
-  <div class="menu-item" data-href="">
-    <img src="icons/check.PNG" alt="Check">
-    <div class="label">ត្រួតពិនិត្យឥណទាន</div>
-  </div>
-  <div class="menu-item" data-href="">
-    <img src="icons/overdue.PNG" alt="Overdue">
-    <div class="label">ឥណទានយឺតយ៉ាវ</div>
-  </div>
-</div>
-    
-  </div>
-    <!-- Robot Box -->
-    <div class="robot-box">
-  <div style="display: flex; align-items: flex-start;">
-    <img src="icons/Robot.svg" alt="Robot">
-    <div class="robot-message" id="robotMessage">កំពុងផ្ទុកសារ...</div>
+  <!-- Login Box -->
+  <div class="login-box" id="loginBox">
+    <img src="LogoAC.png" alt="ACLEDA Logo" class="login-logo" />
+    <div class="login-title">Credit Assist</div>
+    <div class="login-version">Version 1.0.0</div>
+
+    <input type="text" id="username" placeholder="Username" />
+    <input type="password" id="password" placeholder="Password" />
+
+    <div class="remember">
+      <input type="checkbox" id="rememberMe" />
+      <label for="rememberMe">Remember Me</label>
+    </div>
+
+    <button onclick="login()">ចូលប្រើកម្មវិធី</button>
+    <p class="error" id="error-msg"></p>
   </div>
 
-  <div id="admin-input" style="display: none;">
-    <textarea id="newMessage" placeholder="សរសេរសារថ្មី..."></textarea>
-    <button onclick="postRobotMessage()">បញ្ចូន</button>
-  </div>
-
-  <button class="mic-btn" onclick="alert('Voice assistant coming soon!')">
-  <img src="icons/mic.svg" class="mic-icon" alt="Mic" />
-</button>
-      
-</div> 
-
-  <!-- Footer -->
-  <div class="bottom-bar">
-    <button class="bottom-btn active" onclick="window.location.href='index.html'">
-      <div class="icon">🏠</div>
-      <div>Home</div>
-    </button>
-    <button class="bottom-btn" onclick="window.location.href='Setting/index.html'">
-      <div class="icon">⚙️</div>
-      <div>Setting</div>
-    </button>
-    <button class="bottom-btn" onclick="alert('Coming soon!')">
-      <div class="icon">🔔</div>
-      <div>Notification</div>
-    </button>
-  </div>
-
+  <!-- Script -->
   <script>
-    const clickSound = new Audio("sound/click.wav");
-    clickSound.preload = "auto";
-    document.body.addEventListener("click", () => {
-      clickSound.play().catch(() => {});
-      clickSound.pause();
-      clickSound.currentTime = 0;
-    }, { once: true });
-
-    document.querySelectorAll(".menu-item").forEach(item => {
-      const href = item.getAttribute("data-href");
-      item.addEventListener("click", function (e) {
-        e.preventDefault();
-        if (navigator.vibrate) navigator.vibrate(50);
-        const ripple = document.createElement("span");
-        ripple.className = "ripple";
-        const rect = this.getBoundingClientRect();
-        const size = Math.max(rect.width, rect.height);
-        ripple.style.width = ripple.style.height = size + "px";
-        ripple.style.left = (e.clientX - rect.left - size / 2) + "px";
-        ripple.style.top = (e.clientY - rect.top - size / 2) + "px";
-        this.appendChild(ripple);
-        setTimeout(() => ripple.remove(), 600);
-        const newSound = clickSound.cloneNode();
-        newSound.play().then(() => {
-          setTimeout(() => {
-            if (href) window.location.href = href;
-            else alert("Coming soon!");
-          }, 180);
-        }).catch(() => {
-          if (href) window.location.href = href;
-          else alert("Coming soon!");
-        });
-      });
-    });
-
-    const AUTO_LOGOUT_MINUTES = 1;
-    let logoutTimer;
-    function resetLogoutTimer() {
-      clearTimeout(logoutTimer);
-      logoutTimer = setTimeout(() => {
-        sessionStorage.clear();
-        alert("You have been logged out due to 1 minute of inactivity.");
-        window.location.href = "login.html";
-      }, AUTO_LOGOUT_MINUTES * 60 * 1000);
-    }
-    ['click', 'mousemove', 'keydown', 'scroll', 'touchstart'].forEach(evt => {
-      document.addEventListener(evt, resetLogoutTimer);
-    });
-    window.addEventListener('load', resetLogoutTimer);
-
-    async function loadRobotMessage(userPosition) {
-      try {
-        const res = await fetch("https://secure-backend-tzj9.onrender.com/api/robot-message");
-        const data = await res.json();
-        document.getElementById("robotMessage").textContent = data.message || "មិនទាន់មានសារ។";
-        if (userPosition === "admin") {
-          document.getElementById("admin-input").style.display = "block";
-          document.getElementById("newMessage").value = data.message;
-        }
-      } catch {
-        document.getElementById("robotMessage").textContent = "មិនអាចទាញសារបានទេ។";
+    window.onload = () => {
+      const saved = localStorage.getItem("rememberedUser");
+      if (saved) {
+        const creds = JSON.parse(saved);
+        document.getElementById("username").value = creds.username;
+        document.getElementById("password").value = creds.password;
+        document.getElementById("rememberMe").checked = true;
       }
-    }
+    };
 
-    async function postRobotMessage() {
-      const msg = document.getElementById("newMessage").value.trim();
-      if (!msg) return;
+    async function login() {
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const rememberMe = document.getElementById("rememberMe").checked;
+      const errorMsg = document.getElementById("error-msg");
+      const loading = document.getElementById("login-loading");
+
+      errorMsg.textContent = "";
+      loading.style.display = "flex";
+
       try {
-        await fetch("https://secure-backend-tzj9.onrender.com/api/robot-message", {
+        const res = await fetch("https://secure-backend-tzj9.onrender.com/api/login", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message: msg })
+          body: JSON.stringify({ username, password })
         });
-        loadRobotMessage("admin");
-      } catch {
-        alert("បញ្ចូនសារមិនបាន។");
+
+        const data = await res.json();
+
+        if (res.ok && data.success) {
+          sessionStorage.setItem("loggedInUser", data.username);
+          sessionStorage.setItem("userPosition", data.position);
+          sessionStorage.setItem("fullname", data.fullname);
+          sessionStorage.setItem("image", data.image);
+          sessionStorage.setItem("phone", data.phone);
+
+          if (rememberMe) {
+            localStorage.setItem("rememberedUser", JSON.stringify({ username, password }));
+          } else {
+            localStorage.removeItem("rememberedUser");
+          }
+
+          setTimeout(() => {
+            window.location.href = "index.html";
+          }, 500); // very fast
+        } else {
+          errorMsg.textContent = data.message || "Invalid username or password.";
+          loading.style.display = "none";
+        }
+      } catch (e) {
+        errorMsg.textContent = "Cannot connect to server.";
+        loading.style.display = "none";
+        console.error(e);
       }
     }
-
-    document.addEventListener("DOMContentLoaded", () => {
-      const name = sessionStorage.getItem("fullname") || "អ្នកប្រើ";
-      const imgPath = sessionStorage.getItem("image") || "profile.jpg";
-      const userPosition = sessionStorage.getItem("userPosition") || "user";
-      document.getElementById("welcome").textContent = "សួស្តី, " + name;
-      document.getElementById("profile-photo").src = "https://secure-backend-tzj9.onrender.com/" + imgPath;
-      loadRobotMessage(userPosition);
-    });
   </script>
 </body>
 </html>
