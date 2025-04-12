@@ -1,0 +1,33 @@
+ <!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Sound Test</title>
+</head>
+<body style="background:#f0f0f0; display:flex; justify-content:center; align-items:center; height:100vh; font-family:sans-serif;">
+
+  <button onclick="playAndGo('https://www.google.com')" style="padding:20px 30px; font-size:20px;">Go to Google with Sound</button>
+
+  <script>
+    const clickSound = new Audio("sound/click.wav");
+    clickSound.preload = "auto";
+
+    // Unlock sound on first touch
+    document.body.addEventListener("click", () => {
+      clickSound.play().catch(() => {});
+      clickSound.pause();
+      clickSound.currentTime = 0;
+    }, { once: true });
+
+    function playAndGo(url) {
+      clickSound.currentTime = 0;
+      clickSound.play().then(() => {
+        setTimeout(() => window.location.href = url, 200);
+      }).catch(() => {
+        window.location.href = url;
+      });
+    }
+  </script>
+
+</body>
+</html>
