@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="km">
 <head>
@@ -119,6 +120,7 @@
       position: relative;
       overflow: hidden;
       user-select: none;
+      -webkit-user-select: none;
       transition: all 0.3s ease;
     }
 
@@ -134,6 +136,9 @@
       margin-bottom: 6px;
       transition: transform 0.3s ease;
       animation: bounce 0.4s ease;
+      pointer-events: none;
+      user-select: none;
+      -webkit-user-drag: none;
     }
 
     .menu-item:hover img {
@@ -204,7 +209,7 @@
     }
   </style>
 </head>
-<body>
+<body oncontextmenu="return false;">
   <!-- Header -->
   <div class="header">
     <img class="logo" src="LogoAC2.PNG" alt="Logo" />
@@ -221,27 +226,27 @@
   <div class="content">
     <div class="menu-grid">
       <div class="menu-item" data-href="SVG_CRM/index.html">
-        <img src="icons/search.PNG" alt="Search">
+        <img src="icons/search.PNG" alt="Search" draggable="false" oncontextmenu="return false;">
         <div class="label">ស្វែងរកអតិថិជន</div>
       </div>
       <div class="menu-item" data-href="RetiredCalculator/index.html">
-        <img src="icons/retirement.PNG" alt="Retirement">
+        <img src="icons/retirement.PNG" alt="Retirement" draggable="false" oncontextmenu="return false;">
         <div class="label">ចំនួនខែចូលនិវត្តន៍</div>
       </div>
       <div class="menu-item" data-href="Loan-Calculator/index.html">
-        <img src="icons/loan.PNG" alt="Loan">
+        <img src="icons/loan.PNG" alt="Loan" draggable="false" oncontextmenu="return false;">
         <div class="label">គណនាឥណទាន</div>
       </div>
       <div class="menu-item" data-href="Average-Debit-Turnover/index.html">
-        <img src="icons/turnover.PNG" alt="Turnover">
+        <img src="icons/turnover.PNG" alt="Turnover" draggable="false" oncontextmenu="return false;">
         <div class="label">អត្រាប្រចាំឆ្នាំ</div>
       </div>
       <div class="menu-item" data-href="">
-        <img src="icons/report.PNG" alt="Report">
+        <img src="icons/report.PNG" alt="Report" draggable="false" oncontextmenu="return false;">
         <div class="label">របាយការណ៍ប្រចាំថ្ងៃ</div>
       </div>
       <div class="menu-item" data-href="">
-        <img src="icons/check.PNG" alt="Check">
+        <img src="icons/check.PNG" alt="Check" draggable="false" oncontextmenu="return false;">
         <div class="label">ត្រួតពិនិត្យឥណទាន</div>
       </div>
     </div>
@@ -265,7 +270,7 @@
 
   <!-- Script -->
   <script>
-    // Load profile info
+    // Load user profile
     document.addEventListener("DOMContentLoaded", () => {
       const name = sessionStorage.getItem("fullname") || "អ្នកប្រើ";
       const imgPath = sessionStorage.getItem("image") || "profile.jpg";
@@ -273,27 +278,23 @@
       document.getElementById("profile-photo").src = "https://secure-backend-tzj9.onrender.com/" + imgPath;
     });
 
-    // Preload click sound
+    // Preload and unlock sound
     const clickSound = new Audio("sound/click.wav");
     clickSound.preload = "auto";
-
-    // Unlock sound on first interaction
     document.body.addEventListener("click", () => {
       clickSound.play().catch(() => {});
       clickSound.pause();
       clickSound.currentTime = 0;
     }, { once: true });
 
-    // Menu item click
+    // Menu click behavior
     document.querySelectorAll(".menu-item").forEach(item => {
       const href = item.getAttribute("data-href");
       item.addEventListener("click", function (e) {
         e.preventDefault();
 
-        // Vibrate
         if (navigator.vibrate) navigator.vibrate(50);
 
-        // Ripple
         const ripple = document.createElement("span");
         ripple.className = "ripple";
         const rect = this.getBoundingClientRect();
@@ -304,13 +305,12 @@
         this.appendChild(ripple);
         setTimeout(() => ripple.remove(), 600);
 
-        // Sound
         const newSound = clickSound.cloneNode();
         newSound.play().then(() => {
           setTimeout(() => {
             if (href) window.location.href = href;
             else alert("Coming soon!");
-          }, 200);
+          }, 180);
         }).catch(() => {
           if (href) window.location.href = href;
           else alert("Coming soon!");
@@ -318,10 +318,9 @@
       });
     });
 
-    // Auto logout after 1 minute
+    // Auto logout
     const AUTO_LOGOUT_MINUTES = 1;
     let logoutTimer;
-
     function resetLogoutTimer() {
       clearTimeout(logoutTimer);
       logoutTimer = setTimeout(() => {
@@ -334,7 +333,6 @@
     ['click', 'mousemove', 'keydown', 'scroll', 'touchstart'].forEach(evt => {
       document.addEventListener(evt, resetLogoutTimer);
     });
-
     window.addEventListener('load', resetLogoutTimer);
   </script>
 </body>
