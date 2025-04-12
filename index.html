@@ -197,7 +197,7 @@
     
     .robot-box {
   position: fixed;
-  bottom: 60px;
+  bottom: 76px;
   left: 16px;
   right: 16px;
   background-color: transparent;
@@ -213,6 +213,7 @@
   /* Pulse Shadow Animation */
   animation: robotPulse 2s infinite;
   box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
+  overflow: hidden; /* ensures text stays in box */
 }
 
 @keyframes robotPulse {
@@ -249,29 +250,39 @@
   height: 46px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
+    
     #admin-input {
-      display: none;
-      clear: both;
-      margin-top: 12px;
+       position: fixed;
+  bottom: 148px; /* above robot-box */
+  left: 16px;
+  right: 16px;
+  background-color: transparent;
+  border: 2px solid #d4af37;
+  border-radius: 12px;
+  padding: 12px;
+  z-index: 999;
+  font-family: 'Krasar';
+  color: white;
     }
 
     #admin-input textarea {
-      width: 100%;
-      font-family: 'Krasar';
-      padding: 6px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-    }
+       width: 100%;
+       font-family: 'Krasar';
+       padding: 6px;
+       border-radius: 6px;
+       border: 1px solid #ccc;
+       resize: none;
+}
 
     #admin-input button {
-      margin-top: 6px;
-      padding: 6px 12px;
-      background: #0d2d5c;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-family: 'Krasar';
+       margin-top: 6px;
+       padding: 6px 12px;
+       background: #0d2d5c;
+       color: white;
+       border: none;
+       border-radius: 6px;
+       cursor: pointer;
+       font-family: 'Krasar';
     }
   </style>
 </head>
