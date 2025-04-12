@@ -27,12 +27,12 @@
       align-items: center;
       background-color: #0d2d5c;
       padding: 10px 16px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
       position: fixed;
       top: 0;
       left: 0;
       right: 0;
       z-index: 1000;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
     }
 
     .header img.logo {
@@ -63,7 +63,6 @@
       background: conic-gradient(#ffd700 0% 25%, transparent 25% 100%);
       animation: spin 1.8s linear infinite;
       z-index: 1;
-      pointer-events: none;
     }
 
     .profile-wrapper img {
@@ -72,14 +71,13 @@
       border-radius: 50%;
       object-fit: cover;
       background-color: white;
-      position: relative;
       z-index: 2;
       margin: 1px;
+      position: relative;
     }
 
     @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
+      to { transform: rotate(360deg); }
     }
 
     .welcome {
@@ -107,10 +105,9 @@
       padding: 10px 6px;
       width: 100%;
       max-width: 90px;
-      aspect-ratio: 1 / 1;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+      aspect-ratio: 1/1;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
       color: #002c5f;
-      font-family: 'Krasar', Arial, sans-serif;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -120,25 +117,21 @@
       position: relative;
       overflow: hidden;
       user-select: none;
-      -webkit-user-select: none;
       transition: all 0.3s ease;
-    }
-
-    .menu-item:hover {
-      background-color: #f0f8ff;
-      box-shadow: 0 0 12px rgba(255, 215, 0, 0.6);
-      border: 1.5px solid #ffd700;
     }
 
     .menu-item img {
       width: 36px;
       height: 36px;
       margin-bottom: 6px;
-      transition: transform 0.3s ease;
       animation: bounce 0.4s ease;
       pointer-events: none;
-      user-select: none;
-      -webkit-user-drag: none;
+    }
+
+    .menu-item:hover {
+      background: #f0f8ff;
+      box-shadow: 0 0 12px rgba(255, 215, 0, 0.6);
+      border: 1.5px solid #ffd700;
     }
 
     .menu-item:hover img {
@@ -147,12 +140,11 @@
 
     .menu-item .label {
       font-size: 14px;
-      line-height: 1.3;
     }
 
     @keyframes bounce {
-      0%   { transform: scale(0.8); opacity: 0; }
-      60%  { transform: scale(1.1); opacity: 1; }
+      0% { transform: scale(0.8); opacity: 0; }
+      60% { transform: scale(1.1); opacity: 1; }
       100% { transform: scale(1); }
     }
 
@@ -178,34 +170,29 @@
       bottom: 0;
       left: 0;
       width: 100%;
-      background: #fff;
+      height: 56px;
+      background: white;
       display: flex;
       justify-content: space-around;
       align-items: center;
       box-shadow: 0 -1px 4px rgba(0,0,0,0.1);
       z-index: 1000;
-      height: 56px;
-      padding: 0;
     }
 
     .bottom-btn {
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
       font-size: 11px;
-      line-height: 1.1;
       color: #0d2d5c;
-      background: none;
       border: none;
+      background: none;
       padding: 2px;
-      font-family: 'Krasar', Arial, sans-serif;
     }
 
     .bottom-btn .icon {
       font-size: 18px;
       margin-bottom: 1px;
-      line-height: 1;
     }
 
     .robot-box {
@@ -216,19 +203,27 @@
       box-shadow: 0 2px 6px rgba(0,0,0,0.2);
       color: #002c5f;
       max-width: 360px;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
     }
-    .robot-box img {
+
+    .robot-box svg {
       width: 40px;
-      float: left;
-      margin-right: 12px;
+      flex-shrink: 0;
     }
+
     .robot-message {
       font-size: 14px;
       line-height: 1.5;
+      flex: 1;
     }
+
     #admin-input {
+      width: 100%;
       margin-top: 10px;
     }
+
     #admin-input textarea {
       width: 100%;
       font-family: 'Krasar';
@@ -236,6 +231,7 @@
       border-radius: 6px;
       border: 1px solid #ccc;
     }
+
     #admin-input button {
       margin-top: 6px;
       padding: 6px 12px;
@@ -265,33 +261,45 @@
   <div class="content">
     <div class="menu-grid">
       <div class="menu-item" data-href="SVG_CRM/index.html">
-        <img src="icons/search.PNG" alt="Search" draggable="false" oncontextmenu="return false;">
+        <img src="icons/search.PNG" alt="Search">
         <div class="label">ស្វែងរកអតិថិជន</div>
       </div>
       <div class="menu-item" data-href="RetiredCalculator/index.html">
-        <img src="icons/retirement.PNG" alt="Retirement" draggable="false" oncontextmenu="return false;">
+        <img src="icons/retirement.PNG" alt="Retirement">
         <div class="label">ចំនួនខែចូលនិវត្តន៍</div>
       </div>
       <div class="menu-item" data-href="Loan-Calculator/index.html">
-        <img src="icons/loan.PNG" alt="Loan" draggable="false" oncontextmenu="return false;">
+        <img src="icons/loan.PNG" alt="Loan">
         <div class="label">គណនាឥណទាន</div>
       </div>
       <div class="menu-item" data-href="Average-Debit-Turnover/index.html">
-        <img src="icons/turnover.PNG" alt="Turnover" draggable="false" oncontextmenu="return false;">
+        <img src="icons/turnover.PNG" alt="Turnover">
         <div class="label">អត្រាប្រចាំឆ្នាំ</div>
       </div>
       <div class="menu-item" data-href="">
-        <img src="icons/report.PNG" alt="Report" draggable="false" oncontextmenu="return false;">
+        <img src="icons/report.PNG" alt="Report">
         <div class="label">របាយការណ៍ប្រចាំថ្ងៃ</div>
       </div>
       <div class="menu-item" data-href="">
-        <img src="icons/check.PNG" alt="Check" draggable="false" oncontextmenu="return false;">
+        <img src="icons/check.PNG" alt="Check">
         <div class="label">ត្រួតពិនិត្យឥណទាន</div>
       </div>
     </div>
   </div>
 
-  <!-- Bottom Bar -->
+  <!-- Robot Box -->
+  <div class="robot-box">
+    <img src="icons/robot.svg" alt="Robot">
+    <div style="flex: 1">
+      <div class="robot-message" id="robotMessage">Loading...</div>
+      <div id="admin-input" style="display: none;">
+        <textarea id="newMessage" placeholder="Write a message..."></textarea>
+        <button onclick="postRobotMessage()">Post</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
   <div class="bottom-bar">
     <button class="bottom-btn active" onclick="window.location.href='index.html'">
       <div class="icon">🏠</div>
@@ -307,19 +315,7 @@
     </button>
   </div>
 
-  <!-- Robot Assistant Box -->
-<div class="robot-box">
-  <img src="icons/robot.svg" alt="Robot">
-  <div class="robot-message" id="robotMessage">Loading...</div>
-  <div id="admin-input" style="display: none;">
-    <textarea id="newMessage" placeholder="Write a message..."></textarea>
-    <button onclick="postRobotMessage()">Post</button>
-  </div>
-</div>
-
-  <!-- Script -->
   <script>
-    // Load user profile
     document.addEventListener("DOMContentLoaded", () => {
       const name = sessionStorage.getItem("fullname") || "អ្នកប្រើ";
       const imgPath = sessionStorage.getItem("image") || "profile.jpg";
@@ -327,7 +323,6 @@
       document.getElementById("profile-photo").src = "https://secure-backend-tzj9.onrender.com/" + imgPath;
     });
 
-    // Preload and unlock sound
     const clickSound = new Audio("sound/click.wav");
     clickSound.preload = "auto";
     document.body.addEventListener("click", () => {
@@ -336,12 +331,10 @@
       clickSound.currentTime = 0;
     }, { once: true });
 
-    // Menu click behavior
     document.querySelectorAll(".menu-item").forEach(item => {
       const href = item.getAttribute("data-href");
       item.addEventListener("click", function (e) {
         e.preventDefault();
-
         if (navigator.vibrate) navigator.vibrate(50);
 
         const ripple = document.createElement("span");
@@ -378,45 +371,43 @@
         window.location.href = "login.html";
       }, AUTO_LOGOUT_MINUTES * 60 * 1000);
     }
-
     ['click', 'mousemove', 'keydown', 'scroll', 'touchstart'].forEach(evt => {
       document.addEventListener(evt, resetLogoutTimer);
     });
     window.addEventListener('load', resetLogoutTimer);
 
-    // robot message
+    // Robot message
     const userPosition = sessionStorage.getItem("userPosition") || "user";
     async function loadRobotMessage() {
-    try {
-      const res = await fetch("https://secure-backend-tzj9.onrender.com/api/robot-message");
-      const data = await res.json();
-      document.getElementById("robotMessage").textContent = data.message || "No message yet.";
-
-      if (userPosition === "admin") {
-        document.getElementById("admin-input").style.display = "block";
-        document.getElementById("newMessage").value = data.message;
+      try {
+        const res = await fetch("https://secure-backend-tzj9.onrender.com/api/robot-message");
+        const data = await res.json();
+        document.getElementById("robotMessage").textContent = data.message || "No message yet.";
+        if (userPosition === "admin") {
+          document.getElementById("admin-input").style.display = "block";
+          document.getElementById("newMessage").value = data.message;
+        }
+      } catch {
+        document.getElementById("robotMessage").textContent = "Unable to load message.";
       }
-    } catch (e) {
-      document.getElementById("robotMessage").textContent = "Unable to load message.";
     }
-  }
 
-  async function postRobotMessage() {
-    const msg = document.getElementById("newMessage").value.trim();
-    if (!msg) return;
-    try {
-      await fetch("https://secure-backend-tzj9.onrender.com/api/robot-message", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: msg })
-      });
-      loadRobotMessage();
-    } catch (e) {
-      alert("Failed to post message.");
+    async function postRobotMessage() {
+      const msg = document.getElementById("newMessage").value.trim();
+      if (!msg) return;
+      try {
+        await fetch("https://secure-backend-tzj9.onrender.com/api/robot-message", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: msg })
+        });
+        loadRobotMessage();
+      } catch {
+        alert("Failed to post message.");
+      }
     }
-  }
 
-  document.addEventListener("DOMContentLoaded", loadRobotMessage);
+    document.addEventListener("DOMContentLoaded", loadRobotMessage);
   </script>
 </body>
 </html>
