@@ -273,21 +273,21 @@
   height: 50px;
   background-color: #0d2d5c;
   border: none;
-  border-radius: 100%;
+  border-radius: 50%;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0;
-  overflow: hidden; /* force clip */
+  overflow: hidden;
 }
 
-.mic-icon {
-  width: 18px;   /* visually balanced */
-  height: 18px;
-  /*object-fit: contain;
-  display :block;*/
-  
+.mic-btn img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  filter: invert(100%);
+  display: block;
 }
   </style>
 </head>
@@ -352,7 +352,7 @@
   </div>
 
   <button class="mic-btn">
-  <img src="icons/mic.png" class="mic-icon" alt="Mic" />
+  <img src="icons/mic.png" alt="Mic" />
 </button>
       
 </div> 
