@@ -10,6 +10,10 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="theme-color" content="#0d2d5c">
 
+  <!-- Preload font and logo -->
+  <link rel="preload" href="https://measvuthy168.github.io/CreditAssist/Krasar-Regular.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="preload" as="image" href="LogoAC.png">
+
   <style>
     @font-face {
       font-family: 'Krasar';
@@ -43,7 +47,7 @@
       text-align: center;
       z-index: 9999;
       opacity: 0;
-      animation: fadeIn 0.4s ease forwards, fadeOut 1s ease 1.6s forwards;
+      animation: fadeIn 0.3s ease forwards, fadeOut 0.6s ease 1s forwards;
     }
 
     .splash-logo {
@@ -141,7 +145,7 @@
       opacity: 0;
       transform: translateY(20px);
       animation: slideFadeIn 0.6s ease-out forwards;
-      animation-delay: 1.8s;
+      animation-delay: 1.2s;
     }
 
     .login-logo {
@@ -253,7 +257,7 @@
           document.getElementById("password").value = creds.password;
           document.getElementById("rememberMe").checked = true;
         }
-      }, 1700);
+      }, 1200); // Faster transition
     };
 
     async function login() {
