@@ -207,6 +207,45 @@
       margin-bottom: 1px;
       line-height: 1;
     }
+
+    .robot-box {
+      background: white;
+      margin: 24px auto 0;
+      padding: 14px;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      color: #002c5f;
+      max-width: 360px;
+    }
+    .robot-box img {
+      width: 40px;
+      float: left;
+      margin-right: 12px;
+    }
+    .robot-message {
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    #admin-input {
+      margin-top: 10px;
+    }
+    #admin-input textarea {
+      width: 100%;
+      font-family: 'Krasar';
+      padding: 6px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    #admin-input button {
+      margin-top: 6px;
+      padding: 6px 12px;
+      background: #0d2d5c;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: 'Krasar';
+    }
   </style>
 </head>
 <body oncontextmenu="return false;">
@@ -267,6 +306,16 @@
       <div>Notification</div>
     </button>
   </div>
+
+  <!-- Robot Assistant Box -->
+<div class="robot-box">
+  <img src="icons/robot.png" alt="Robot">
+  <div class="robot-message" id="robotMessage">Loading...</div>
+  <div id="admin-input" style="display: none;">
+    <textarea id="newMessage" placeholder="Write a message..."></textarea>
+    <button onclick="postRobotMessage()">Post</button>
+  </div>
+</div>
 
   <!-- Script -->
   <script>
@@ -334,6 +383,40 @@
       document.addEventListener(evt, resetLogoutTimer);
     });
     window.addEventListener('load', resetLogoutTimer);
+
+    // robot message
+    const userPosition = sessionStorage.getItem("userPosition") || "user";
+    async function loadRobotMessage() {
+    try {
+      const res = await fetch("https://secure-backend-tzj9.onrender.com/api/robot-message");
+      const data = await res.json();
+      document.getElementById("robotMessage").textContent = data.message || "No message yet.";
+
+      if (userPosition === "admin") {
+        document.getElementById("admin-input").style.display = "block";
+        document.getElementById("newMessage").value = data.message;
+      }
+    } catch (e) {
+      document.getElementById("robotMessage").textContent = "Unable to load message.";
+    }
+  }
+
+  async function postRobotMessage() {
+    const msg = document.getElementById("newMessage").value.trim();
+    if (!msg) return;
+    try {
+      await fetch("https://secure-backend-tzj9.onrender.com/api/robot-message", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: msg })
+      });
+      loadRobotMessage();
+    } catch (e) {
+      alert("Failed to post message.");
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", loadRobotMessage);
   </script>
 </body>
 </html>
