@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="km">
 <head>
@@ -10,6 +11,10 @@
     @font-face {
       font-family: 'Krasar';
       src: url('Krasar-Regular.ttf') format('truetype');
+    }
+
+    * {
+      box-sizing: border-box;
     }
 
     body {
@@ -61,6 +66,7 @@
       background: #f0f0f0;
       color: #333;
       font-family: 'Krasar', Arial, sans-serif;
+      font-size: 15px;
     }
 
     input:focus {
@@ -99,10 +105,40 @@
       min-height: 20px;
       margin-top: 10px;
     }
+
+    /* Spinner Overlay */
+    #login-loading {
+      position: fixed;
+      inset: 0;
+      background: rgba(13, 45, 92, 0.7);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .spinner {
+      width: 32px;
+      height: 32px;
+      border: 4px solid #ffffff33;
+      border-top: 4px solid #ffd700;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
   </style>
 </head>
 <body>
-  <div class="login-box">
+  <!-- Spinner Overlay -->
+  <div id="login-loading">
+    <div class="spinner"></div>
+  </div>
+
+  <!-- Login Box -->
+  <div class="login-box" id="loginBox">
     <img src="LogoAC.png" alt="ACLEDA Logo" class="login-logo" />
     <div class="login-title">Credit Assist</div>
     <div class="login-version">Version 1.0.0</div>
@@ -119,6 +155,7 @@
     <p class="error" id="error-msg"></p>
   </div>
 
+  <!-- Script -->
   <script>
     window.onload = () => {
       const saved = localStorage.getItem("rememberedUser");
@@ -135,6 +172,10 @@
       const password = document.getElementById("password").value.trim();
       const rememberMe = document.getElementById("rememberMe").checked;
       const errorMsg = document.getElementById("error-msg");
+      const loading = document.getElementById("login-loading");
+
+      errorMsg.textContent = "";
+      loading.style.display = "flex";
 
       try {
         const res = await fetch("https://secure-backend-tzj9.onrender.com/api/login", {
@@ -158,13 +199,16 @@
             localStorage.removeItem("rememberedUser");
           }
 
-          window.location.href = "index.html";
+          setTimeout(() => {
+            window.location.href = "index.html";
+          }, 500); // very fast
         } else {
           errorMsg.textContent = data.message || "Invalid username or password.";
+          loading.style.display = "none";
         }
-
       } catch (e) {
         errorMsg.textContent = "Cannot connect to server.";
+        loading.style.display = "none";
         console.error(e);
       }
     }
