@@ -196,15 +196,19 @@
     }
 
     .robot-box {
-      background: #fff8e1;
-      border: 1px solid #ffe082;
-      padding: 16px;
-      border-radius: 12px;
-      margin: 24px auto 0;
-      max-width: 380px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-      position: relative;
-    }
+  position: fixed;
+  bottom: 56px; /* height of your footer */
+  left: 16px;
+  right: 16px;
+  padding: 12px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  backdrop-filter: blur(8px); /* optional for glass effect */
+  background-color: transparent;
+  z-index: 999;
+  font-family: 'Krasar', sans-serif;
+}
 
     .robot-box img {
       width: 54px;
