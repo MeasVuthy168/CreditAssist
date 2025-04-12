@@ -318,13 +318,7 @@
   </div>
 
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const name = sessionStorage.getItem("fullname") || "អ្នកប្រើ";
-      const imgPath = sessionStorage.getItem("image") || "profile.jpg";
-      document.getElementById("welcome").textContent = "សួស្តី, " + name;
-      document.getElementById("profile-photo").src = "https://secure-backend-tzj9.onrender.com/" + imgPath;
-    });
-
+    
     const clickSound = new Audio("sound/click.wav");
     clickSound.preload = "auto";
     document.body.addEventListener("click", () => {
@@ -420,7 +414,7 @@
   document.getElementById("welcome").textContent = "សួស្តី, " + name;
   document.getElementById("profile-photo").src = "https://secure-backend-tzj9.onrender.com/" + imgPath;
 
-  loadRobotMessage(userPosition); // Pass user role
+  loadRobotMessage(userPosition); // This is required for admin input to appear
 });
   </script>
 </body>
