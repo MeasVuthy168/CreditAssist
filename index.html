@@ -291,6 +291,32 @@
   display: block;
   padding-left: 12px
 }
+  /* Prevent selection on UI elements */
+.menu-item,
+.menu-item *,
+.bottom-btn,
+.bottom-btn *,
+.header,
+.header *,
+.robot-box,
+.robot-box * {
+  user-select: none;
+}
+#admin-input textarea {
+  user-select: text;
+}
+    /* Disable image dragging */
+img {
+  pointer-events: none;
+  -webkit-user-drag: none;
+  user-drag: none;
+}
+    // Prevent right-click on all images
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll("img").forEach(img => {
+    img.addEventListener("contextmenu", e => e.preventDefault());
+  });
+});
   </style>
 </head>
 <body oncontextmenu="return false;">
