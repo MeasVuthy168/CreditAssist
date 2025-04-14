@@ -6,8 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#0d2d5c" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <link rel="manifest" href="https://measvuthy168.github.io/CreditAssist/manifest.json" />
-  <link rel="apple-touch-icon" href="https://measvuthy168.github.io/CreditAssist/icons/icon-192.png" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
 
   <style>
     @font-face {
@@ -15,9 +15,7 @@
       src: url('Krasar-Regular.ttf') format('truetype');
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -58,8 +56,7 @@
       margin-bottom: 20px;
     }
 
-    input[type="text"],
-    input[type="password"] {
+    input[type="text"], input[type="password"] {
       width: 100%;
       padding: 10px;
       margin: 10px 0;
@@ -108,7 +105,6 @@
       margin-top: 10px;
     }
 
-    /* Spinner Overlay */
     #login-loading {
       position: fixed;
       inset: 0;
@@ -134,30 +130,22 @@
   </style>
 </head>
 <body>
-  <!-- Spinner Overlay -->
-  <div id="login-loading">
-    <div class="spinner"></div>
-  </div>
+  <div id="login-loading"><div class="spinner"></div></div>
 
-  <!-- Login Box -->
-  <div class="login-box" id="loginBox">
-    <img src="LogoAC.png" alt="ACLEDA Logo" class="login-logo" />
+  <div class="login-box">
+    <img src="LogoAC.png" class="login-logo" />
     <div class="login-title">Credit Assist</div>
     <div class="login-version">Version 1.0.0</div>
-
     <input type="text" id="username" placeholder="Username" />
     <input type="password" id="password" placeholder="Password" />
-
     <div class="remember">
       <input type="checkbox" id="rememberMe" />
       <label for="rememberMe">Remember Me</label>
     </div>
-
     <button onclick="login()">ចូលប្រើកម្មវិធី</button>
     <p class="error" id="error-msg"></p>
   </div>
 
-  <!-- Script: Login Logic -->
   <script>
     window.onload = () => {
       const saved = localStorage.getItem("rememberedUser");
@@ -216,7 +204,6 @@
     }
   </script>
 
-  <!-- Script: PWA Install Prompt in Khmer -->
   <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('service-worker.js')
@@ -227,9 +214,8 @@
     let deferredPrompt;
 
     window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
       if (localStorage.getItem('a2hsPromptShown')) return;
-
+      e.preventDefault();
       deferredPrompt = e;
 
       const btn = document.createElement('button');
@@ -267,12 +253,6 @@
         });
       });
     });
-
-    setTimeout(() => {
-      if (!deferredPrompt) {
-        console.log("ℹ️ A2HS prompt not available yet. May not meet criteria.");
-      }
-    }, 5000);
   </script>
 </body>
 </html>
