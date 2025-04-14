@@ -15,9 +15,7 @@
       src: url('Krasar-Regular.ttf') format('truetype');
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -58,8 +56,7 @@
       margin-bottom: 20px;
     }
 
-    input[type="text"],
-    input[type="password"] {
+    input[type="text"], input[type="password"] {
       width: 100%;
       padding: 10px;
       margin: 10px 0;
@@ -108,7 +105,6 @@
       margin-top: 10px;
     }
 
-    /* Spinner Overlay */
     #login-loading {
       position: fixed;
       inset: 0;
@@ -134,12 +130,12 @@
   </style>
 </head>
 <body>
-  <!-- Spinner Overlay -->
+  <!-- Spinner -->
   <div id="login-loading">
     <div class="spinner"></div>
   </div>
 
-  <!-- Login Box -->
+  <!-- Login Form -->
   <div class="login-box" id="loginBox">
     <img src="LogoAC.png" alt="ACLEDA Logo" class="login-logo" />
     <div class="login-title">Credit Assist</div>
@@ -157,7 +153,7 @@
     <p class="error" id="error-msg"></p>
   </div>
 
-  <!-- Script: Login Logic -->
+  <!-- Login Script -->
   <script>
     window.onload = () => {
       const saved = localStorage.getItem("rememberedUser");
@@ -216,12 +212,12 @@
     }
   </script>
 
-  <!-- Script: PWA Install Prompt -->
+  <!-- PWA Install Prompt (one-time) -->
   <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('service-worker.js')
         .then(reg => console.log('Service Worker registered:', reg))
-        .catch(err => console.error('Service Worker registration failed:', err));
+        .catch(err => console.error('SW failed:', err));
     }
 
     let deferredPrompt;
