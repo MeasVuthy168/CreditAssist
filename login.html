@@ -216,22 +216,24 @@
     }
   </script>
 
-  <!-- Script: PWA Install Prompt -->
+  <!-- Script: PWA Install Prompt in Khmer -->
   <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('service-worker.js')
-        .then(reg => console.log('Service Worker registered:', reg))
-        .catch(err => console.error('Service Worker registration failed:', err));
+        .then(reg => console.log('✅ Service Worker registered:', reg.scope))
+        .catch(err => console.error('❌ Service Worker failed:', err));
     }
 
     let deferredPrompt;
+
     window.addEventListener('beforeinstallprompt', (e) => {
-      if (localStorage.getItem('a2hsPromptShown')) return;
       e.preventDefault();
+      if (localStorage.getItem('a2hsPromptShown')) return;
+
       deferredPrompt = e;
 
       const btn = document.createElement('button');
-      btn.textContent = 'Install Credit Assist App';
+      btn.textContent = 'បន្ថែមទៅកាន់អេក្រង់ដើម';
       Object.assign(btn.style, {
         position: 'fixed',
         bottom: '20px',
@@ -248,6 +250,7 @@
         cursor: 'pointer',
         boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
       });
+
       document.body.appendChild(btn);
 
       btn.addEventListener('click', () => {
@@ -255,15 +258,21 @@
         deferredPrompt.prompt();
         deferredPrompt.userChoice.then(choice => {
           if (choice.outcome === 'accepted') {
-            console.log('A2HS accepted');
+            console.log('✅ A2HS accepted');
           } else {
-            console.log('A2HS dismissed');
+            console.log('❌ A2HS dismissed');
           }
-          deferredPrompt = null;
           localStorage.setItem('a2hsPromptShown', 'true');
+          deferredPrompt = null;
         });
       });
     });
+
+    setTimeout(() => {
+      if (!deferredPrompt) {
+        console.log("ℹ️ A2HS prompt not available yet. May not meet criteria.");
+      }
+    }, 5000);
   </script>
 </body>
 </html>
