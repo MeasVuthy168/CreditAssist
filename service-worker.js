@@ -1,4 +1,3 @@
-// service-worker.js
 const cacheName = 'credit-assist-cache-v1';
 const assets = [
   './',
