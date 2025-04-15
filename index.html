@@ -247,6 +247,15 @@
       word-break: break-word;
       color: #ffd700;
     }
+    .robot-float {
+      animation: floatBot 2.8s ease-in-out infinite;
+    }
+    
+    @keyframes floatBot {
+      0%   { transform: translateY(0); }
+      50%  { transform: translateY(-10px); }
+      100% { transform: translateY(0); }
+    }
 
     #admin-input {
       margin-top: 10px;
@@ -347,7 +356,7 @@
          <!-- Robot Box -->
       <div class="robot-box">
         <div style="display: flex; align-items: center;">
-          <img src="icons/Robot.svg" alt="Robot">
+          <img class="robot-float" src="icons/Robot.svg" alt="Robot">
           <div class="robot-message" id="robotMessage">...</div>
         </div>
 
