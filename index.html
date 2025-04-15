@@ -382,7 +382,7 @@
       logoutTimer = setTimeout(() => {
         sessionStorage.removeItem("loggedInUser");
         alert("Session expired due to inactivity. Please log in again.");
-        window.location.href = "../login.html";
+        window.location.href = "login.html";
       }, AUTO_LOGOUT_MINUTES * 60 * 1000);
     }
     window.onload = resetLogoutTimer;
