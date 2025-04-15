@@ -215,7 +215,7 @@
     }
 
     .robot-box {
-      position: relative
+      position: relative;
       margin-top: 20px;
       background-color: rgba(0, 0, 0, 0.1);
       border: 2px solid #d4af37;
@@ -298,11 +298,11 @@
       object-fit: contain;
       filter: invert(100%);
     }
-    .mic-float {
+        .mic-float {
       position: absolute;
-      right: 28px;
-      bottom: 115px; /* Adjust based on screen */
-      z-index: 1001;
+      right: 18px;
+      bottom: 12px;
+      z-index: 2;
     }
 
     img {
@@ -341,20 +341,25 @@
       </div>
     </div>
 
-    <!-- Robot Box -->
-    <div class="robot-box">
-      <div style="display: flex; align-items: flex-start;">
-        <img src="icons/Robot.svg" alt="Robot">
-        <div class="robot-message" id="robotMessage">កំពុងផ្ទុកសារ...</div>
+         <!-- Robot Box -->
+      <div class="robot-box">
+        <div style="display: flex; align-items: flex-start;">
+          <img src="icons/Robot.svg" alt="Robot">
+          <div class="robot-message" id="robotMessage">កំពុងផ្ទុកសារ...</div>
+        </div>
+      
+        <!-- Admin input section (for admin only) -->
+        <div id="admin-input" style="display: none;">
+          <textarea id="newMessage" placeholder="សរសេរសារថ្មី..."></textarea>
+          <button onclick="postRobotMessage()">បញ្ចូន</button>
+        </div>
+      
+        <!-- ✅ Mic button always visible and floats inside bottom-right -->
+        <button class="mic-btn mic-float">
+          <img src="icons/mic.svg" alt="Mic" />
+        </button>
       </div>
-      <div id="admin-input" style="display: none;">
-        <textarea id="newMessage" placeholder="សរសេរសារថ្មី..."></textarea>
-        <button onclick="postRobotMessage()">បញ្ចូន</button>
-      <!-- Floating Mic Button -->
-    <button class="mic-btn mic-float">
-      <img src="icons/mic.svg" alt="Mic" />
-    </button>  
-  </div>
+
       
     
       
