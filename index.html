@@ -391,40 +391,36 @@ document.addEventListener("DOMContentLoaded", () => {
   </div>
 
   <script>
-    const clickSound = new Audio("sound/click.wav");
-    clickSound.preload = "auto";
-    document.body.addEventListener("click", () => {
-      clickSound.play().catch(() => {});
-      clickSound.pause();
-      clickSound.currentTime = 0;
-    }, { once: true });
+   // const clickSound = new Audio("sound/click.wav");
+    //clickSound.preload = "auto";
+    //document.body.addEventListener("click", () => {
+      //clickSound.play().catch(() => {});
+      //clickSound.pause();
+      //clickSound.currentTime = 0;
+    //}, { once: true });
 
     document.querySelectorAll(".menu-item").forEach(item => {
-      const href = item.getAttribute("data-href");
-      item.addEventListener("click", function (e) {
-        e.preventDefault();
-        if (navigator.vibrate) navigator.vibrate(50);
-        const ripple = document.createElement("span");
-        ripple.className = "ripple";
-        const rect = this.getBoundingClientRect();
-        const size = Math.max(rect.width, rect.height);
-        ripple.style.width = ripple.style.height = size + "px";
-        ripple.style.left = (e.clientX - rect.left - size / 2) + "px";
-        ripple.style.top = (e.clientY - rect.top - size / 2) + "px";
-        this.appendChild(ripple);
-        setTimeout(() => ripple.remove(), 600);
-        const newSound = clickSound.cloneNode();
-        newSound.play().then(() => {
-          setTimeout(() => {
-            if (href) window.location.href = href;
-            else alert("Coming soon!");
-          }, 180);
-        }).catch(() => {
-          if (href) window.location.href = href;
-          else alert("Coming soon!");
-        });
-      });
-    });
+  const href = item.getAttribute("data-href");
+  item.addEventListener("click", function (e) {
+    e.preventDefault();
+    if (navigator.vibrate) navigator.vibrate(50);
+
+    // Ripple effect
+    const ripple = document.createElement("span");
+    ripple.className = "ripple";
+    const rect = this.getBoundingClientRect();
+    const size = Math.max(rect.width, rect.height);
+    ripple.style.width = ripple.style.height = size + "px";
+    ripple.style.left = (e.clientX - rect.left - size / 2) + "px";
+    ripple.style.top = (e.clientY - rect.top - size / 2) + "px";
+    this.appendChild(ripple);
+    setTimeout(() => ripple.remove(), 600);
+
+    // Navigate instantly
+    if (href) window.location.href = href;
+    else alert("Coming soon!");
+  });
+});
 
     //Auto Logout
     const AUTO_LOGOUT_MINUTES = 1;
