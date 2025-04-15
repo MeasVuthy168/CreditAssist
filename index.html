@@ -7,6 +7,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#0d2d5c" />
   <meta name="apple-mobile-web-app-capable" content="yes">
+  
+  <script>
+  if (!sessionStorage.getItem("loggedInUser")) {
+    window.location.href = "login.html";
+  }
+</script>
+  
   <style>
     @font-face {
       font-family: 'Krasar';
