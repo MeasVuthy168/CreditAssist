@@ -298,6 +298,12 @@
       object-fit: contain;
       filter: invert(100%);
     }
+    .mic-float {
+      position: absolute;
+      right: 28px;
+      bottom: 115px; /* Adjust based on screen */
+      z-index: 1001;
+    }
 
     img {
       pointer-events: none;
@@ -344,13 +350,14 @@
       <div id="admin-input" style="display: none;">
         <textarea id="newMessage" placeholder="សរសេរសារថ្មី..."></textarea>
         <button onclick="postRobotMessage()">បញ្ចូន</button>
-        
-        <!-- 👇 Keep this button here -->
-     <button class="mic-btn">
-        <img src="icons/mic.svg" alt="Mic" />
-    </button>
+      <!-- Floating Mic Button -->
+    <button class="mic-btn mic-float">
+      <img src="icons/mic.svg" alt="Mic" />
+    </button>  
   </div>
-
+      
+    
+      
   <!-- Footer -->
   <div class="bottom-bar">
     <button class="bottom-btn active" onclick="window.location.href='index.html'"><div class="icon">🏠</div><div>Home</div></button>
