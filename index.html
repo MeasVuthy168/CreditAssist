@@ -215,13 +215,14 @@
     }
 
     .robot-box {
+      position: relative
       margin-top: 20px;
       background-color: rgba(0, 0, 0, 0.1);
       border: 2px solid #d4af37;
       border-radius: 12px;
       display: flex;
       flex-direction: column;
-      padding: 10px 16px 60px;
+      padding: 10px 16px 70px; /* ⬅️ Increased bottom padding to 70px */
       font-family: 'Krasar', sans-serif;
       color: white;
       min-height: 60px;
@@ -282,7 +283,7 @@
       width: 50px;
       height: 50px;
       background-color: #0d2d5c;
-      border: none;
+      border: 2px solid white; /* Optional for better contrast */
       border-radius: 50%;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
       display: flex;
