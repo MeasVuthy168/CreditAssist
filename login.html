@@ -147,6 +147,15 @@
   </div>
 
   <script>
+  // Check if user is logged in
+  const loggedInUser = sessionStorage.getItem("loggedInUser");
+  if (!loggedInUser) {
+    // Redirect to login if not authenticated
+    window.location.href = "../login.html";
+  }
+    
+</script>
+  <script>
     window.onload = () => {
       const saved = localStorage.getItem("rememberedUser");
       if (saved) {
