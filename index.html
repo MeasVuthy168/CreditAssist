@@ -247,6 +247,18 @@
       word-break: break-word;
       color: #ffd700;
     }
+        .flicker {
+      animation: flicker 2s infinite;
+    }
+    
+    @keyframes flicker {
+      0%, 100% { color: #ffd700; }
+      20% { color: #ffffff; }
+      40% { color: #ffda6b; }
+      60% { color: #ffd700; }
+      80% { color: #ffe87e; }
+    }
+
     .robot-float {
       animation: floatBot 2.8s ease-in-out infinite;
     }
@@ -357,7 +369,7 @@
       <div class="robot-box">
         <div style="display: flex; align-items: center;">
           <img class="robot-float" src="icons/Robot.svg" alt="Robot">
-          <div class="robot-message" id="robotMessage">...</div>
+          <div class="robot-message flicker" id="robotMessage">កំពុងផ្ទុកសារ...</div>
         </div>
 
       
