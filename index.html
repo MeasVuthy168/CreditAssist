@@ -387,12 +387,17 @@
 
       
     
-      
-  <!-- Footer -->
+      <!-- Footer -->
   <div class="bottom-bar">
-    <button class="bottom-btn active" onclick="window.location.href='index.html'"><div class="icon">🏠</div><div>Home</div></button>
-    <button class="bottom-btn" onclick="window.location.href='Setting/index.html'"><div class="icon">⚙️</div><div>Setting</div></button>
-    <button class="bottom-btn" onclick="alert('Coming soon!')"><div class="icon">🔔</div><div>Notification</div></button>
+    <button class="bottom-btn active" onclick="window.location.href='index.html'">
+      <div class="icon">🏠</div><div>Home</div>
+    </button>
+    <button class="bottom-btn" onclick="window.location.href='Setting/index.html'">
+      <div class="icon">⚙️</div><div>Setting</div>
+    </button>
+    <button class="bottom-btn" onclick="alert('Coming soon!')">
+      <div class="icon">🔔</div><div>Notification</div>
+    </button>
   </div>
 
   <script>
@@ -444,27 +449,29 @@
       }
     }
 
-  async function postRobotMessage() {
-    const msg = document.getElementById("newMessage").value.trim();
-    if (!msg) return;
+    async function postRobotMessage() {
+      const msg = document.getElementById("newMessage").value.trim();
+      if (!msg) return;
 
-    try {
-      const res = await fetch("https://secure-backend-tzj9.onrender.com/api/robot-message", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: msg })
-      });
+      try {
+        const res = await fetch("https://secure-backend-tzj9.onrender.com/api/robot-message", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: msg })
+        });
 
-      if (res.ok) {
-        alert("សារ​ត្រូវបាន​ផ្ញើ និង Sync ទៅ GitHub។");
-        loadRobotMessage("admin");
-      } else {
-        alert("សារត្រូវបានផ្ញើ ប៉ុន្តែ Sync GitHub បរាជ័យ។");
+        if (res.ok) {
+          alert("សារ​ត្រូវបាន​ផ្ញើ និង Sync ទៅ GitHub។");
+          loadRobotMessage("admin");
+        } else {
+          alert("សារត្រូវបានផ្ញើ ប៉ុន្តែ Sync GitHub បរាជ័យ។");
+        }
+      } catch (err) {
+        alert("បញ្ចូនសារមិនបានទេ! មានបញ្ហា៖ " + err.message);
       }
-    } catch (err) {
-      alert("បញ្ចូនសារមិនបានទេ! មានបញ្ហា៖ " + err.message);
     }
 
+    // ✅ Properly placed DOM ready code
     document.addEventListener("DOMContentLoaded", () => {
       const name = sessionStorage.getItem("fullname") || "អ្នកប្រើ";
       const imgPath = sessionStorage.getItem("image") || "profile.jpg";
