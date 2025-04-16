@@ -444,19 +444,25 @@
       }
     }
 
-    async function postRobotMessage() {
-      const msg = document.getElementById("newMessage").value.trim();
-      if (!msg) return;
-      try {
-        await fetch("https://secure-backend-tzj9.onrender.com/api/robot-message", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message: msg })
-        });
+  async function postRobotMessage() {
+    const msg = document.getElementById("newMessage").value.trim();
+    if (!msg) return;
+
+    try {
+      const res = await fetch("https://secure-backend-tzj9.onrender.com/api/robot-message", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: msg })
+      });
+
+      if (res.ok) {
+        alert("សារ​ត្រូវបាន​ផ្ញើ និង Sync ទៅ GitHub។");
         loadRobotMessage("admin");
-      } catch {
-        alert("បញ្ចូនសារមិនបាន។");
+      } else {
+        alert("សារត្រូវបានផ្ញើ ប៉ុន្តែ Sync GitHub បរាជ័យ។");
       }
+    } catch (err) {
+      alert("បញ្ចូនសារមិនបានទេ! មានបញ្ហា៖ " + err.message);
     }
 
     document.addEventListener("DOMContentLoaded", () => {
