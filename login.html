@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>ចូលប្រើកម្មវិធី</title>
-  <!--<meta name="viewport" content="width=device-width, initial-scale=1.0" />-->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
   <meta name="theme-color" content="#0d2d5c" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <link rel="manifest" href="manifest.json" />
@@ -17,10 +16,11 @@
     }
 
     * { box-sizing: border-box; }
-    
+
     html, body {
-     touch-action: manipulation;
+      touch-action: manipulation;
     }
+
     body {
       margin: 0;
       font-family: 'Krasar', Arial, sans-serif;
@@ -149,20 +149,7 @@
     <button onclick="login()">ចូលប្រើកម្មវិធី</button>
     <p class="error" id="error-msg"></p>
   </div>
-  
-<script>
-  document.addEventListener('touchstart', function preventZoom(e) {
-    if (e.touches.length > 1) {
-      e.preventDefault();
-    }
-  }, { passive: false });
 
-  document.addEventListener('gesturestart', function (e) {
-    e.preventDefault();
-  });
-</script>
-  
-</script>
   <script>
     window.onload = () => {
       const saved = localStorage.getItem("rememberedUser");
@@ -269,6 +256,19 @@
           deferredPrompt = null;
         });
       });
+    });
+  </script>
+
+  <!-- ✅ Prevent Zooming on Mobile Browsers -->
+  <script>
+    document.addEventListener('touchstart', function (e) {
+      if (e.touches.length > 1) {
+        e.preventDefault();
+      }
+    }, { passive: false });
+
+    document.addEventListener('gesturestart', function (e) {
+      e.preventDefault();
     });
   </script>
 </body>
