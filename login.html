@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>ចូលប្រើកម្មវិធី</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="theme-color" content="#0d2d5c" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <link rel="manifest" href="manifest.json" />
@@ -18,10 +18,9 @@
     * { box-sizing: border-box; }
 
     html, body {
-      touch-action: manipulation;
-    }
-
-    body {
+      touch-action: none;
+      -ms-touch-action: none;
+      overscroll-behavior: none;
       margin: 0;
       font-family: 'Krasar', Arial, sans-serif;
       background-color: #0d2d5c;
@@ -132,7 +131,19 @@
       to { transform: rotate(360deg); }
     }
   </style>
+
+  <script>
+    // Strong zoom prevention for iOS + Android
+    document.addEventListener('touchstart', function (e) {
+      if (e.touches.length > 1) e.preventDefault();
+    }, { passive: false });
+
+    document.addEventListener('gesturestart', function (e) {
+      e.preventDefault();
+    });
+  </script>
 </head>
+
 <body>
   <div id="login-loading"><div class="spinner"></div></div>
 
@@ -256,19 +267,6 @@
           deferredPrompt = null;
         });
       });
-    });
-  </script>
-
-  <!-- ✅ Prevent Zooming on Mobile Browsers -->
-  <script>
-    document.addEventListener('touchstart', function (e) {
-      if (e.touches.length > 1) {
-        e.preventDefault();
-      }
-    }, { passive: false });
-
-    document.addEventListener('gesturestart', function (e) {
-      e.preventDefault();
     });
   </script>
 </body>
