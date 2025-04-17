@@ -18,39 +18,38 @@
     * { box-sizing: border-box; }
 
     html, body {
-      touch-action: none;
-      -ms-touch-action: none;
-      overscroll-behavior: none;
       margin: 0;
+      padding: 0;
       font-family: 'Krasar', Arial, sans-serif;
-      background-color: #0d2d5c;
+      background-color: #002c5f;
+      height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
+      touch-action: manipulation;
     }
 
     .login-box {
       background-color: white;
-      border-radius: 16px;
-      padding: 24px;
-      width: 90%;
+      border-radius: 20px;
+      padding: 30px 24px 20px;
+      width: 92%;
       max-width: 400px;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
-      color: #1a1a1a;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.35);
+      color: #0d2d5c;
       text-align: center;
     }
 
     .login-logo {
-      width: 60px;
-      height: 60px;
-      margin-bottom: 10px;
+      width: 64px;
+      height: 64px;
+      margin-bottom: 14px;
     }
 
     .login-title {
-      font-size: 18px;
+      font-size: 20px;
       font-weight: bold;
-      margin-bottom: 5px;
+      margin-bottom: 6px;
     }
 
     .login-version {
@@ -64,11 +63,11 @@
       padding: 10px;
       margin: 10px 0;
       border: none;
-      border-radius: 6px;
+      border-radius: 8px;
       background: #f0f0f0;
       color: #333;
       font-family: 'Krasar', Arial, sans-serif;
-      font-size: 17px;
+      font-size: 15px;
     }
 
     input:focus {
@@ -82,7 +81,7 @@
       justify-content: center;
       gap: 8px;
       font-size: 15px;
-      margin: 10px 0 20px;
+      margin: 14px 0 18px;
     }
 
     button {
@@ -91,7 +90,7 @@
       background-color: #0d2d5c;
       color: white;
       border: none;
-      border-radius: 6px;
+      border-radius: 10px;
       font-size: 16px;
       font-family: 'Krasar', Arial, sans-serif;
       cursor: pointer;
@@ -131,19 +130,7 @@
       to { transform: rotate(360deg); }
     }
   </style>
-
-  <script>
-    // Strong zoom prevention for iOS + Android
-    document.addEventListener('touchstart', function (e) {
-      if (e.touches.length > 1) e.preventDefault();
-    }, { passive: false });
-
-    document.addEventListener('gesturestart', function (e) {
-      e.preventDefault();
-    });
-  </script>
 </head>
-
 <body>
   <div id="login-loading"><div class="spinner"></div></div>
 
@@ -217,57 +204,6 @@
         console.error(e);
       }
     }
-  </script>
-
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('service-worker.js')
-        .then(reg => console.log('✅ Service Worker registered:', reg.scope))
-        .catch(err => console.error('❌ Service Worker failed:', err));
-    }
-
-    let deferredPrompt;
-
-    window.addEventListener('beforeinstallprompt', (e) => {
-      if (localStorage.getItem('a2hsPromptShown')) return;
-      e.preventDefault();
-      deferredPrompt = e;
-
-      const btn = document.createElement('button');
-      btn.textContent = 'បន្ថែមទៅកាន់អេក្រង់ដើម';
-      Object.assign(btn.style, {
-        position: 'fixed',
-        bottom: '20px',
-        left: '50%',
-        transform: 'translateX(-50%)',
-        background: '#ffd700',
-        color: '#0d2d5c',
-        border: 'none',
-        padding: '10px 20px',
-        borderRadius: '8px',
-        fontSize: '16px',
-        fontFamily: 'Krasar, Arial, sans-serif',
-        zIndex: '9999',
-        cursor: 'pointer',
-        boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
-      });
-
-      document.body.appendChild(btn);
-
-      btn.addEventListener('click', () => {
-        btn.remove();
-        deferredPrompt.prompt();
-        deferredPrompt.userChoice.then(choice => {
-          if (choice.outcome === 'accepted') {
-            console.log('✅ A2HS accepted');
-          } else {
-            console.log('❌ A2HS dismissed');
-          }
-          localStorage.setItem('a2hsPromptShown', 'true');
-          deferredPrompt = null;
-        });
-      });
-    });
   </script>
 </body>
 </html>
