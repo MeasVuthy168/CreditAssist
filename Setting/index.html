@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="km">
 <head>
@@ -283,7 +284,7 @@
     </button>
   </div>
 
-  <!-- Modal -->
+  <!-- Custom Modal -->
   <div id="logoutModal" class="modal">
     <div class="modal-content">
       <p>តើអ្នកប្រាកដចង់ចាកចេញពីប្រព័ន្ធមែនទេ?</p>
@@ -294,19 +295,22 @@
     </div>
   </div>
 
-  <!-- Sound -->
+  <!-- Sound Element -->
   <audio id="logout-audio" src="logout-sound.mp3" preload="auto"></audio>
 
   <script>
     function logout() {
-      sessionStorage.clear();
-      window.location.href = "../login.html";
+      const audio = document.getElementById("logout-audio");
+      if (audio) audio.play();
+
+      setTimeout(() => {
+        sessionStorage.clear();
+        window.location.href = "../login.html";
+      }, 800);
     }
 
     function confirmLogout() {
       document.getElementById("logoutModal").classList.add("show");
-      const audio = document.getElementById("logout-audio");
-      if (audio) audio.play();
     }
 
     function closeModal() {
