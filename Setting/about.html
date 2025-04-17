@@ -2,14 +2,19 @@
 <html lang="km">
 <head>
   <meta charset="UTF-8" />
-  <title>អំពីកម្មវិធី</title>
+  <title>ចូលប្រើកម្មវិធី</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="theme-color" content="#0d2d5c" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+
   <style>
     @font-face {
       font-family: 'Krasar';
-      src: url('../Krasar-Regular.ttf') format('truetype');
+      src: url('Krasar-Regular.ttf') format('truetype');
     }
+
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -21,7 +26,7 @@
       height: 100vh;
     }
 
-    .about-box {
+    .login-box {
       background-color: white;
       border-radius: 16px;
       padding: 24px;
@@ -31,85 +36,229 @@
       color: #1a1a1a;
     }
 
-    .about-header {
+    .login-header {
       display: flex;
       align-items: center;
       gap: 10px;
       margin-bottom: 10px;
     }
 
-    .about-header img {
+    .login-header img {
       width: 60px;
       height: 60px;
     }
 
-    .about-title {
+    .login-title {
       font-size: 18px;
       font-weight: bold;
     }
 
-    .about-version {
+    .login-version {
       font-size: 14px;
       color: #666;
       margin-bottom: 20px;
     }
 
-    .section-title {
-      font-weight: bold;
-      margin-top: 15px;
-      margin-bottom: 5px;
-    }
-
-    .section-text {
-      font-size: 14px;
-      color: #333;
-      line-height: 1.5;
-    }
-
-    .btn-close {
-      margin-top: 20px;
+    input[type="text"], input[type="password"] {
       width: 100%;
-      padding: 12px;
-      font-size: 16px;
+      padding: 10px;
+      margin: 10px 0;
       border: none;
       border-radius: 6px;
+      background: #f0f0f0;
+      color: #333;
+      font-size: 15px;
+    }
+
+    input:focus {
+      outline: none;
+      background: #e4e4e4;
+    }
+
+    .remember {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 15px;
+      margin: 10px 0 20px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
       background-color: #0d2d5c;
       color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
       font-family: 'Krasar', Arial, sans-serif;
       cursor: pointer;
     }
 
-    .btn-close:hover {
+    button:hover {
       background-color: #09306d;
+    }
+
+    .error {
+      color: #d22;
+      font-size: 14px;
+      min-height: 20px;
+      margin-top: 10px;
+    }
+
+    #login-loading {
+      position: fixed;
+      inset: 0;
+      background: rgba(13, 45, 92, 0.7);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .spinner {
+      width: 32px;
+      height: 32px;
+      border: 4px solid #ffffff33;
+      border-top: 4px solid #ffd700;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
     }
   </style>
 </head>
 <body>
-  <div class="about-box">
-    <div class="about-header">
-      <img src="../LogoAC.png" alt="App Logo" />
+  <div id="login-loading"><div class="spinner"></div></div>
+
+  <div class="login-box">
+    <div class="login-header">
+      <img src="LogoAC.png" class="login-logo" />
       <div>
-        <div class="about-title">Credit Assist</div>
-        <div class="about-version">Version 1.0.0</div>
+        <div class="login-title">Credit Assist</div>
+        <div class="login-version">Version 1.0.0</div>
       </div>
     </div>
 
-    <div class="section-title">About</div>
-    <div class="section-text">
-      ACLEDA Office is a Comprehensive Office Automation Application running on Smart Phone enabling ACLEDA's staff to access from anytime anywhere.
+    <input type="text" id="username" placeholder="Username" />
+    <input type="password" id="password" placeholder="Password" />
+    <div class="remember">
+      <input type="checkbox" id="rememberMe" />
+      <label for="rememberMe">Remember Me</label>
     </div>
-
-    <div class="section-title">Terms of Service</div>
-    <div class="section-text">
-      ACLEDA Office might use your information such as ID, Name & Branch Code to identify who is the sender and receiver mail or other request.
-    </div>
-
-    <div class="section-title">Version History</div>
-    <div class="section-text">
-      The latest version was released on 10 April 2025. Please update to enjoy the new features and improvements.
-    </div>
-
-    <button class="btn-close" onclick="window.history.back()">បិទ</button>
+    <button onclick="login()">ចូលប្រើកម្មវិធី</button>
+    <p class="error" id="error-msg"></p>
   </div>
+
+  <script>
+    window.onload = () => {
+      const saved = localStorage.getItem("rememberedUser");
+      if (saved) {
+        const creds = JSON.parse(saved);
+        document.getElementById("username").value = creds.username;
+        document.getElementById("password").value = creds.password;
+        document.getElementById("rememberMe").checked = true;
+      }
+    };
+
+    async function login() {
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const rememberMe = document.getElementById("rememberMe").checked;
+      const errorMsg = document.getElementById("error-msg");
+      const loading = document.getElementById("login-loading");
+
+      errorMsg.textContent = "";
+      loading.style.display = "flex";
+
+      try {
+        const res = await fetch("https://secure-backend-tzj9.onrender.com/api/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, password })
+        });
+
+        const data = await res.json();
+
+        if (res.ok && data.success) {
+          sessionStorage.setItem("loggedInUser", data.username);
+          sessionStorage.setItem("userPosition", data.position);
+          sessionStorage.setItem("fullname", data.fullname);
+          sessionStorage.setItem("image", data.image);
+          sessionStorage.setItem("phone", data.phone);
+
+          if (rememberMe) {
+            localStorage.setItem("rememberedUser", JSON.stringify({ username, password }));
+          } else {
+            localStorage.removeItem("rememberedUser");
+          }
+
+          setTimeout(() => {
+            window.location.href = "index.html";
+          }, 500);
+        } else {
+          errorMsg.textContent = data.message || "Invalid username or password.";
+          loading.style.display = "none";
+        }
+      } catch (e) {
+        errorMsg.textContent = "Cannot connect to server.";
+        loading.style.display = "none";
+        console.error(e);
+      }
+    }
+  </script>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js')
+        .then(reg => console.log('✅ Service Worker registered:', reg.scope))
+        .catch(err => console.error('❌ Service Worker failed:', err));
+    }
+
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      if (localStorage.getItem('a2hsPromptShown')) return;
+      e.preventDefault();
+      deferredPrompt = e;
+
+      const btn = document.createElement('button');
+      btn.textContent = 'បន្ថែមទៅកាន់អេក្រង់ដើម';
+      Object.assign(btn.style, {
+        position: 'fixed',
+        bottom: '20px',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        background: '#ffd700',
+        color: '#0d2d5c',
+        border: 'none',
+        padding: '10px 20px',
+        borderRadius: '8px',
+        fontSize: '16px',
+        fontFamily: 'Krasar, Arial, sans-serif',
+        zIndex: '9999',
+        cursor: 'pointer',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
+      });
+
+      document.body.appendChild(btn);
+
+      btn.addEventListener('click', () => {
+        btn.remove();
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then(choice => {
+          if (choice.outcome === 'accepted') {
+            console.log('✅ A2HS accepted');
+          } else {
+            console.log('❌ A2HS dismissed');
+          }
+          localStorage.setItem('a2hsPromptShown', 'true');
+          deferredPrompt = null;
+        });
+      });
+    });
+  </script>
 </body>
 </html>
