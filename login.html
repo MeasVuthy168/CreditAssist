@@ -149,7 +149,18 @@
     <button onclick="login()">ចូលប្រើកម្មវិធី</button>
     <p class="error" id="error-msg"></p>
   </div>
+  
+<script>
+  document.addEventListener('touchstart', function preventZoom(e) {
+    if (e.touches.length > 1) {
+      e.preventDefault();
+    }
+  }, { passive: false });
 
+  document.addEventListener('gesturestart', function (e) {
+    e.preventDefault();
+  });
+</script>
   
 </script>
   <script>
