@@ -69,8 +69,7 @@
     .info .name {
       font-weight: bold;
       font-size: 18px;
-      color: goldenrod
-      
+      color: goldenrod;
     }
 
     .info .position {
@@ -153,7 +152,6 @@
       line-height: 1;
     }
 
-    /* Modal styles */
     .modal {
       display: none;
       position: fixed;
@@ -254,12 +252,12 @@
     </div>
 
     <div class="setting-item" onclick="window.location.href='about.html'">
-  <span>
-    <img class="icon" src="info.png" alt="Info" />
-    អំពី​កម្មវិធី
-  </span>
-  <span>›</span>
-</div>
+      <span>
+        <img class="icon" src="info.png" alt="Info" />
+        អំពី​កម្មវិធី
+      </span>
+      <span>›</span>
+    </div>
 
     <div class="setting-item signout" onclick="confirmLogout()">
       <span>
@@ -285,7 +283,7 @@
     </button>
   </div>
 
-  <!-- Custom Modal -->
+  <!-- Modal -->
   <div id="logoutModal" class="modal">
     <div class="modal-content">
       <p>តើអ្នកប្រាកដចង់ចាកចេញពីប្រព័ន្ធមែនទេ?</p>
@@ -296,6 +294,9 @@
     </div>
   </div>
 
+  <!-- Sound -->
+  <audio id="logout-audio" src="logout-sound.mp3" preload="auto"></audio>
+
   <script>
     function logout() {
       sessionStorage.clear();
@@ -303,11 +304,9 @@
     }
 
     function confirmLogout() {
-      const modal = document.getElementById("logoutModal");
-      modal.classList.add("show");
-
-      const audio = new Audio("logout-sound.mp3");
-      audio.play();
+      document.getElementById("logoutModal").classList.add("show");
+      const audio = document.getElementById("logout-audio");
+      if (audio) audio.play();
     }
 
     function closeModal() {
