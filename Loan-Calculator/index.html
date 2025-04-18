@@ -83,7 +83,7 @@
 .form-group select {
   width: 60%;
   padding: 10px;
-  height: 22px;
+  height: 48px; /* Increased to match input height */
   border-radius: 6px;
   border: 1px solid #444;
   background: #223146;
@@ -94,12 +94,12 @@
   -moz-appearance: none;
 }
     .form-group select {
-  background-image: url('data:image/svg+xml;utf8,<svg fill="white" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+  background-image: url(...);
   background-repeat: no-repeat;
   background-position: right 10px center;
   background-size: 20px;
   padding-right: 36px;
-  height: 22px; 
+  /* ❌ remove this: height: 22px; */
 }
 
     .calculate-btn {
