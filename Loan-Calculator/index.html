@@ -5,13 +5,18 @@
   <title>កម្មវិធី​គណនាឥណទាន</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="theme-color" content="#0d2d5c" />
+
+  <!-- PDF + Excel dependencies -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+
   <script>
     if (!sessionStorage.getItem("loggedInUser")) {
       window.location.href = "login.html";
     }
   </script>
+
   <style>
     @font-face {
       font-family: 'Krasar';
@@ -113,10 +118,6 @@
       margin-top: 10px;
     }
 
-    .calculate-btn:hover {
-      background-color: #1a8cff;
-    }
-
     .export-buttons {
       margin-top: 20px;
       display: flex;
@@ -136,7 +137,7 @@
     }
 
     .table-scroll table {
-      min-width: 700px; /* Ensures table overflows on smaller screens */
+      min-width: 700px;
     }
 
     table {
@@ -298,27 +299,23 @@
       let balance = loanVal;
       let totalPrincipal = 0, totalInterest = 0, totalPayment = 0;
 
-      let html = `<div class="pdf-wrapper">
-        <div style="text-align:center; font-size:22px; font-weight:bold; margin-bottom:15px;">តារាងកាលវិភាគសងប្រាក់</div>
-        <table>
-          <tr><th>ទំហំឥណទាន</th><td>${loanVal.toFixed(2)}</td></tr>
-          <tr><th>ប្រាក់សំណងខួប</th><td>${payVal.toFixed(2)}</td></tr>
-          <tr><th>រយៈពេលខ្ចី (ខែ)</th><td>${months}</td></tr>
-          <tr><th>អត្រា​ការ​ប្រាក់​ប្រចាំឆ្នាំ</th><td>${interestRate}%</td></tr>
-          <tr><th>របៀបសងប្រាក់</th><td>${method === "Annuity" ? "បង់ថេរ" : "បង់ថយ"}</td></tr>
-        </table>
-        <div class="table-scroll">
-          <table>
-            <thead>
-              <tr>
-                <th style="width: 10%;">ល.រ</th>
-                <th style="width: 20%;">ប្រាក់ដើម</th>
-                <th style="width: 20%;">ការប្រាក់</th>
-                <th style="width: 25%;">សរុបបង់</th>
-                <th style="width: 25%;">សមតុល្យ</th>
-              </tr>
-            </thead>
-            <tbody>`;
+      let html = `<div class="pdf-wrapper"><div style="text-align:center; font-size:22px; font-weight:bold; margin-bottom:15px;">តារាងកាលវិភាគសងប្រាក់</div>`;
+      html += `<table><tr><th>ទំហំឥណទាន</th><td>${loanVal.toFixed(2)}</td></tr>
+        <tr><th>ប្រាក់សំណងខួប</th><td>${payVal.toFixed(2)}</td></tr>
+        <tr><th>រយៈពេលខ្ចី (ខែ)</th><td>${months}</td></tr>
+        <tr><th>អត្រា​ការ​ប្រាក់​ប្រចាំឆ្នាំ</th><td>${interestRate}%</td></tr>
+        <tr><th>របៀបសងប្រាក់</th><td>${method === "Annuity" ? "បង់ថេរ" : "បង់ថយ"}</td></tr></table>`;
+
+      html += `<div class="table-scroll"><table>
+        <thead>
+          <tr>
+            <th>ល.រ</th>
+            <th>ប្រាក់ដើម</th>
+            <th>ការប្រាក់</th>
+            <th>សរុបបង់</th>
+            <th>សមតុល្យ</th>
+          </tr>
+        </thead><tbody>`;
 
       for (let i = 1; i <= months; i++) {
         const interest = balance * rate;
@@ -351,35 +348,36 @@
       document.getElementById("exportSection").innerHTML = html;
     }
 
-    function exportToPDF() {
-  const element = document.getElementById("exportSection");
-  if (!element || element.innerHTML.trim() === "") {
-    alert("សូមគណនាមុននឹងនាំចេញ។");
-    return;
-  }
+    async function exportToPDF() {
+      const { jsPDF } = window.jspdf;
+      const element = document.getElementById("exportSection");
+      if (!element || element.innerHTML.trim() === "") {
+        alert("សូមគណនាមុននឹងនាំចេញ។");
+        return;
+      }
 
-  const opt = {
-    margin: [0.5, 0.5],
-    filename: "តារាងកាលវិភាគសងប្រាក់.pdf",
-    html2canvas: {
-      scale: 2,
-      useCORS: true,
-      backgroundColor: "#fff"
-    },
-    jsPDF: {
-      unit: 'in',
-      format: 'a4',
-      orientation: 'portrait'
-    },
-    pagebreak: {
-      mode: ['avoid-all', 'css', 'legacy']
+      const doc = new jsPDF('p', 'pt', 'a4');
+      const tables = element.querySelectorAll("table");
+      let finalY = 40;
+
+      tables.forEach((table, i) => {
+        doc.autoTable({
+          html: table,
+          startY: finalY,
+          styles: {
+            fontSize: 10,
+            halign: 'center'
+          },
+          headStyles: {
+            fillColor: [13, 45, 92],
+            textColor: 255
+          },
+        });
+        finalY = doc.lastAutoTable.finalY + 20;
+      });
+
+      doc.save("តារាងកាលវិភាគសងប្រាក់.pdf");
     }
-  };
-
-  html2pdf().set(opt).from(element).toPdf().get('pdf').then(function (pdf) {
-    pdf.autoPrint(); // optional: auto-trigger print dialog
-  }).save();
-}
 
     function exportToExcel() {
       const exportSection = document.getElementById("exportSection");
