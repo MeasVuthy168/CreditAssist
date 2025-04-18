@@ -7,13 +7,11 @@
   <meta name="theme-color" content="#0d2d5c" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-
   <script>
-  if (!sessionStorage.getItem("loggedInUser")) {
-    window.location.href = "login.html";
-  }
-</script>
-  
+    if (!sessionStorage.getItem("loggedInUser")) {
+      window.location.href = "login.html";
+    }
+  </script>
   <style>
     @font-face {
       font-family: 'Krasar';
@@ -67,42 +65,43 @@
     }
 
     .form-group {
-  display: flex;
-  align-items: center;
-  margin-bottom: 14px;
-}
+      display: flex;
+      align-items: center;
+      margin-bottom: 14px;
+    }
 
-.form-group label {
-  width: 40%;
-  margin: 0;
-  padding-right: 10px;
-  font-size: 16px;
-}
+    .form-group label {
+      width: 40%;
+      margin: 0;
+      padding-right: 10px;
+      font-size: 16px;
+    }
 
-.form-group input,
-.form-group select {
-  width: 60%;
-  height: 48px;
-  padding: 0 10px;
-  line-height: 48px; /* Match height */
-  border-radius: 6px;
-  border: 1px solid #444;
-  background: #223146;
-  color: white;
-  font-size: 16px;
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  box-sizing: border-box;
-}
+    .form-group input,
     .form-group select {
-  padding-left: 10px;
-  padding-right: 36px; /* for dropdown arrow */
-  background-image: url('data:image/svg+xml;utf8,<svg fill="white" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
-  background-repeat: no-repeat;
-  background-position: right 10px center;
-  background-size: 20px;
-}
+      width: 60%;
+      height: 48px;
+      padding: 0 10px;
+      line-height: 48px;
+      border-radius: 6px;
+      border: 1px solid #444;
+      background: #223146;
+      color: white;
+      font-size: 16px;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      box-sizing: border-box;
+    }
+
+    .form-group select {
+      padding-left: 10px;
+      padding-right: 36px;
+      background-image: url('data:image/svg+xml;utf8,<svg fill="white" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      background-size: 20px;
+    }
 
     .calculate-btn {
       width: 100%;
@@ -133,28 +132,29 @@
       cursor: pointer;
     }
 
-    table {
-  table-layout: fixed; /* important for wrapping */
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-  font-size: 14px;
-  background-color: #1e2e3e;
-  border-radius: 10px;
-  word-wrap: break-word;
-    }
     .table-scroll {
-  overflow-x: auto;
-  width: 100%;
-}
+      overflow-x: auto;
+      width: 100%;
+    }
 
-th, td {
-  border: 1px solid #444;
-  padding: 8px;
-  text-align: center;
-  word-break: break-word; /* force long words to wrap */
-  white-space: normal;    /* allow line breaks */
-}
+    table {
+      table-layout: fixed;
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      font-size: 14px;
+      background-color: #1e2e3e;
+      border-radius: 10px;
+      word-wrap: break-word;
+    }
+
+    th, td {
+      border: 1px solid #444;
+      padding: 8px;
+      text-align: center;
+      word-break: break-word;
+      white-space: normal;
+    }
 
     th {
       background-color: #3d4a5a;
@@ -166,39 +166,39 @@ th, td {
     }
 
     .bottom-bar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background: #fff;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  height: 56px;
-  box-shadow: 0 -1px 4px rgba(0,0,0,0.1);
-  z-index: 1000;
-}
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: #fff;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      height: 56px;
+      box-shadow: 0 -1px 4px rgba(0,0,0,0.1);
+      z-index: 1000;
+    }
 
-.bottom-btn {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: none;
-  border: none;
-  font-family: 'Krasar', Arial, sans-serif;
-  color: #0d2d5c;
-  font-size: 11px;
-  line-height: 1.2;
-  padding: 2px;
-  cursor: pointer;
-}
+    .bottom-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: none;
+      border: none;
+      font-family: 'Krasar', Arial, sans-serif;
+      color: #0d2d5c;
+      font-size: 11px;
+      line-height: 1.2;
+      padding: 2px;
+      cursor: pointer;
+    }
 
-.bottom-btn .icon {
-  font-size: 18px;
-  line-height: 1;
-  margin-bottom: 1px;
-}
+    .bottom-btn .icon {
+      font-size: 18px;
+      line-height: 1;
+      margin-bottom: 1px;
+    }
 
     .pdf-wrapper {
       font-size: 18px;
@@ -213,14 +213,11 @@ th, td {
   </style>
 </head>
 <body>
-
-  <!-- Header -->
   <div class="header">
     <button class="back" onclick="window.location.href='../index.html'">←</button>
     <div class="title">កម្មវិធី​គណនាឥណទាន</div>
   </div>
 
-  <!-- Main Content -->
   <div class="container">
     <div class="form-group"><label>ទំហំឥណទាន:</label><input id="loanAmount" type="number" /></div>
     <div class="form-group"><label>ប្រាក់សំណងខួប:</label><input id="periodicRepayment" type="number" /></div>
@@ -254,7 +251,6 @@ th, td {
     <div id="exportSection"></div>
   </div>
 
-  <!-- Footer -->
   <div class="bottom-bar">
     <button class="bottom-btn" onclick="window.location.href='../index.html'">
       <div class="icon">🏠</div>
@@ -270,7 +266,6 @@ th, td {
     </button>
   </div>
 
-  <!-- Logic -->
   <script>
     function calculateLoan() {
       const loan = parseFloat(document.getElementById("loanAmount").value);
@@ -301,25 +296,28 @@ th, td {
 
       let balance = loanVal;
       let totalPrincipal = 0, totalInterest = 0, totalPayment = 0;
-      let html = `<div class="pdf-wrapper"><div style="text-align:center; font-size:22px; font-weight:bold; margin-bottom:15px;">តារាងកាលវិភាគសងប្រាក់</div>`;
-      html += `<table><tr><th>ទំហំឥណទាន</th><td>${loanVal.toFixed(2)}</td></tr>
-        <tr><th>ប្រាក់សំណងខួប</th><td>${payVal.toFixed(2)}</td></tr>
-        <tr><th>រយៈពេលខ្ចី (ខែ)</th><td>${months}</td></tr>
-        <tr><th>អត្រា​ការ​ប្រាក់​ប្រចាំឆ្នាំ</th><td>${interestRate}%</td></tr>
-        <tr><th>របៀបសងប្រាក់</th><td>${method === "Annuity" ? "បង់ថេរ" : "បង់ថយ"}</td></tr></table>`;
-      html += `<table>
-  html += `<div class="table-scroll"><table>
-  <thead>
-    <tr>
-      <th style="width: 10%;">ល.រ</th>
-      <th style="width: 20%;">ប្រាក់ដើម</th>
-      <th style="width: 20%;">ការប្រាក់</th>
-      <th style="width: 25%;">សរុបបង់</th>
-      <th style="width: 25%;">សមតុល្យ</th>
-    </tr>
-  </thead>
-  <tbody>`;
-  html += `</tbody></table></div>`;
+
+      let html = `<div class="pdf-wrapper">
+        <div style="text-align:center; font-size:22px; font-weight:bold; margin-bottom:15px;">តារាងកាលវិភាគសងប្រាក់</div>
+        <table>
+          <tr><th>ទំហំឥណទាន</th><td>${loanVal.toFixed(2)}</td></tr>
+          <tr><th>ប្រាក់សំណងខួប</th><td>${payVal.toFixed(2)}</td></tr>
+          <tr><th>រយៈពេលខ្ចី (ខែ)</th><td>${months}</td></tr>
+          <tr><th>អត្រា​ការ​ប្រាក់​ប្រចាំឆ្នាំ</th><td>${interestRate}%</td></tr>
+          <tr><th>របៀបសងប្រាក់</th><td>${method === "Annuity" ? "បង់ថេរ" : "បង់ថយ"}</td></tr>
+        </table>
+        <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 10%;">ល.រ</th>
+              <th style="width: 20%;">ប្រាក់ដើម</th>
+              <th style="width: 20%;">ការប្រាក់</th>
+              <th style="width: 25%;">សរុបបង់</th>
+              <th style="width: 25%;">សមតុល្យ</th>
+            </tr>
+          </thead>
+          <tbody>`;
 
       for (let i = 1; i <= months; i++) {
         const interest = balance * rate;
@@ -347,7 +345,7 @@ th, td {
         <td>${totalInterest.toFixed(2)}</td>
         <td>${totalPayment.toFixed(2)}</td>
         <td>-</td>
-      </tr></tbody></table></div>`;
+      </tr></tbody></table></div></div>`;
 
       document.getElementById("exportSection").innerHTML = html;
     }
