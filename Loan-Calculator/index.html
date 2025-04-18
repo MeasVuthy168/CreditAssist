@@ -75,16 +75,28 @@
       margin-bottom: 5px;
     }
 
-    .form-group input,
+ .form-group input,
+.form-group select {
+  width: calc(100% - 20px);
+  margin: 0 10px;
+  padding: 10px;
+  height: 48px; /* Ensure same height */
+  border-radius: 6px;
+  border: 1px solid #444;
+  background: #223146;
+  color: white;
+  font-size: 16px;
+  appearance: none; /* Removes default iOS styling */
+  -webkit-appearance: none; /* Fix for Safari */
+  -moz-appearance: none;
+}
     .form-group select {
-      width: calc(100% - 20px);
-      padding: 10px;
-      border-radius: 6px;
-      border: 1px solid #444;
-      background: #223146;
-      color: white;
-      font-size: 16px;
-    }
+  background-image: url('data:image/svg+xml;utf8,<svg fill="white" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 20px;
+  padding-right: 36px; /* space for the arrow */
+}
 
     .calculate-btn {
       width: 100%;
