@@ -25,7 +25,6 @@
       margin: 0;
       padding: 0 0 70px;
       box-sizing: border-box;
-      overflow-x: hidden;
     }
 
     .header {
@@ -95,7 +94,6 @@
     }
 
     .form-group select {
-      padding-left: 10px;
       padding-right: 36px;
       background-image: url('data:image/svg+xml;utf8,<svg fill="white" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
       background-repeat: no-repeat;
@@ -137,6 +135,10 @@
       width: 100%;
     }
 
+    .table-scroll table {
+      min-width: 700px; /* Ensures table overflows on smaller screens */
+    }
+
     table {
       table-layout: fixed;
       width: 100%;
@@ -145,7 +147,6 @@
       font-size: 14px;
       background-color: #1e2e3e;
       border-radius: 10px;
-      word-wrap: break-word;
     }
 
     th, td {
@@ -307,17 +308,17 @@
           <tr><th>របៀបសងប្រាក់</th><td>${method === "Annuity" ? "បង់ថេរ" : "បង់ថយ"}</td></tr>
         </table>
         <div class="table-scroll">
-        <table>
-          <thead>
-            <tr>
-              <th style="width: 10%;">ល.រ</th>
-              <th style="width: 20%;">ប្រាក់ដើម</th>
-              <th style="width: 20%;">ការប្រាក់</th>
-              <th style="width: 25%;">សរុបបង់</th>
-              <th style="width: 25%;">សមតុល្យ</th>
-            </tr>
-          </thead>
-          <tbody>`;
+          <table>
+            <thead>
+              <tr>
+                <th style="width: 10%;">ល.រ</th>
+                <th style="width: 20%;">ប្រាក់ដើម</th>
+                <th style="width: 20%;">ការប្រាក់</th>
+                <th style="width: 25%;">សរុបបង់</th>
+                <th style="width: 25%;">សមតុល្យ</th>
+              </tr>
+            </thead>
+            <tbody>`;
 
       for (let i = 1; i <= months; i++) {
         const interest = balance * rate;
