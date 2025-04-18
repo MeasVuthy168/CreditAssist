@@ -237,52 +237,52 @@
     }
 
     async function exportToPDF() {
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF('p', 'pt', 'a4');
-      const exportSection = document.getElementById("exportSection");
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF('p', 'pt', 'a4');
+  const exportSection = document.getElementById("exportSection");
 
-      if (!exportSection || exportSection.innerHTML.trim() === "") {
-        alert("សូមគណនាមុននឹងនាំចេញ។");
-        return;
-      }
+  if (!exportSection || exportSection.innerHTML.trim() === "") {
+    alert("សូមគណនាមុននឹងនាំចេញ។");
+    return;
+  }
 
-      const tables = exportSection.querySelectorAll("table");
-      const translatedTables = [];
+  // Clone section and replace Khmer labels in both <th> and <td>
+  const translatedSection = exportSection.cloneNode(true);
+  translatedSection.querySelectorAll("th, td").forEach(cell => {
+    cell.textContent = cell.textContent
+      .replace("ល.រ", "No")
+      .replace("ប្រាក់ដើម", "Principal")
+      .replace("ការប្រាក់", "Interest")
+      .replace("សរុបបង់", "Total Payment")
+      .replace("សមតុល្យ", "Balance")
+      .replace("ទំហំឥណទាន", "Loan Amount")
+      .replace("ប្រាក់សំណងខួប", "Periodic Repayment")
+      .replace("រយៈពេលខ្ចី (ខែ)", "Loan Term (months)")
+      .replace("អត្រា​ការ​ប្រាក់​ប្រចាំឆ្នាំ", "Annual Interest Rate")
+      .replace("របៀបសងប្រាក់", "Payment Method")
+      .replace("បង់ថេរ", "Equal Payment")
+      .replace("បង់ថយ", "Declining Balance")
+      .replace("សរុប", "Total");
+  });
 
-      tables.forEach((table) => {
-        const clone = table.cloneNode(true);
-        clone.querySelectorAll("th").forEach(th => {
-          th.textContent = th.textContent
-            .replace("ល.រ", "No")
-            .replace("ប្រាក់ដើម", "Principal")
-            .replace("ការប្រាក់", "Interest")
-            .replace("សរុបបង់", "Total Payment")
-            .replace("សមតុល្យ", "Balance")
-            .replace("ទំហំឥណទាន", "Loan Amount")
-            .replace("ប្រាក់សំណងខួប", "Periodic Repayment")
-            .replace("រយៈពេលខ្ចី (ខែ)", "Loan Term (months)")
-            .replace("អត្រា​ការ​ប្រាក់​ប្រចាំឆ្នាំ", "Annual Interest Rate")
-            .replace("របៀបសងប្រាក់", "Payment Method")
-            .replace("បង់ថេរ", "Equal Payment")
-            .replace("បង់ថយ", "Declining Balance")
-            .replace("សរុប", "Total");
-        });
-        translatedTables.push(clone);
-      });
+  // Replace the Khmer title at the top
+  const titleDiv = translatedSection.querySelector("div");
+  if (titleDiv) titleDiv.textContent = "Repayment Schedule";
 
-      let finalY = 40;
-      translatedTables.forEach(table => {
-        doc.autoTable({
-          html: table,
-          startY: finalY,
-          styles: { fontSize: 10, halign: 'center' },
-          headStyles: { fillColor: [13, 45, 92], textColor: 255 },
-        });
-        finalY = doc.lastAutoTable.finalY + 20;
-      });
+  const tables = translatedSection.querySelectorAll("table");
+  let finalY = 40;
+  tables.forEach(table => {
+    doc.autoTable({
+      html: table,
+      startY: finalY,
+      styles: { fontSize: 10, halign: 'center' },
+      headStyles: { fillColor: [13, 45, 92], textColor: 255 },
+    });
+    finalY = doc.lastAutoTable.finalY + 20;
+  });
 
-      doc.save("Repayment_Schedule.pdf");
-    }
+  doc.save("Repayment_Schedule.pdf");
+}
 
     function exportToExcel() {
       const exportSection = document.getElementById("exportSection");
