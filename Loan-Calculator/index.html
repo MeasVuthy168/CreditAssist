@@ -6,12 +6,6 @@
   <title>កម្មវិធី​គណនាឥណទាន</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="theme-color" content="#0d2d5c" />
-
-  <script>
-  if (!sessionStorage.getItem("loggedInUser")) {
-    window.location.href = "login.html";
-  }
-</script>
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -309,9 +303,9 @@
         .replace("ប្រាក់សំណងខួប", "Periodic Repayment")
         .replace("រយៈពេលខ្ចី (ខែ)", "Loan Term (months)")
         .replace("អត្រា​ការ​ប្រាក់​ប្រចាំឆ្នាំ", "Annual Interest Rate")
-        .replace("របៀបសងប្រាក់", "Payment Method")
-        .replace("បង់ថេរ", "Equal Payment")
-        .replace("បង់ថយ", "Declining Balance")
+        .replace("របៀបសងប្រាក់", "Repayment Method")
+        .replace("បង់ថេរ", "Annuity")
+        .replace("បង់ថយ", "Linear")
         .replace("សរុប", "Total");
     });
 
