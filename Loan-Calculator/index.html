@@ -142,6 +142,10 @@
   background-color: #1e2e3e;
   border-radius: 10px;
   word-wrap: break-word;
+    }
+    .table-scroll {
+  overflow-x: auto;
+  width: 100%;
 }
 
 th, td {
@@ -304,6 +308,7 @@ th, td {
         <tr><th>អត្រា​ការ​ប្រាក់​ប្រចាំឆ្នាំ</th><td>${interestRate}%</td></tr>
         <tr><th>របៀបសងប្រាក់</th><td>${method === "Annuity" ? "បង់ថេរ" : "បង់ថយ"}</td></tr></table>`;
       html += `<table>
+  html += `<div class="table-scroll"><table>
   <thead>
     <tr>
       <th style="width: 10%;">ល.រ</th>
@@ -314,6 +319,7 @@ th, td {
     </tr>
   </thead>
   <tbody>`;
+  html += `</tbody></table></div>`;
 
       for (let i = 1; i <= months; i++) {
         const interest = balance * rate;
