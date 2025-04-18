@@ -352,20 +352,34 @@
     }
 
     function exportToPDF() {
-      const element = document.getElementById("exportSection");
-      if (!element || element.innerHTML.trim() === "") {
-        alert("សូមគណនាមុននឹងនាំចេញ។");
-        return;
-      }
+  const element = document.getElementById("exportSection");
+  if (!element || element.innerHTML.trim() === "") {
+    alert("សូមគណនាមុននឹងនាំចេញ។");
+    return;
+  }
 
-      html2pdf().set({
-        margin: 1.2,
-        filename: "តារាងកាលវិភាគសងប្រាក់.pdf",
-        image: { type: 'jpeg', quality: 1 },
-        html2canvas: { scale: 3, scrollY: 0, useCORS: true },
-        jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
-      }).from(element).save();
+  const opt = {
+    margin: [0.5, 0.5],
+    filename: "តារាងកាលវិភាគសងប្រាក់.pdf",
+    html2canvas: {
+      scale: 2,
+      useCORS: true,
+      backgroundColor: "#fff"
+    },
+    jsPDF: {
+      unit: 'in',
+      format: 'a4',
+      orientation: 'portrait'
+    },
+    pagebreak: {
+      mode: ['avoid-all', 'css', 'legacy']
     }
+  };
+
+  html2pdf().set(opt).from(element).toPdf().get('pdf').then(function (pdf) {
+    pdf.autoPrint(); // optional: auto-trigger print dialog
+  }).save();
+}
 
     function exportToExcel() {
       const exportSection = document.getElementById("exportSection");
