@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="km">
 <head>
@@ -6,23 +7,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="theme-color" content="#0d2d5c" />
 
-  <!-- PDF + Excel dependencies -->
+  <!-- Dependencies -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
 
-  <script>
-    if (!sessionStorage.getItem("loggedInUser")) {
-      window.location.href = "login.html";
-    }
-  </script>
-
   <style>
-    @font-face {
-      font-family: 'Krasar';
-      src: url('../Krasar-Regular.ttf') format('truetype');
-    }
-
     body {
       font-family: 'Krasar', Arial, sans-serif;
       background-color: #1c2331;
@@ -86,15 +76,12 @@
       width: 60%;
       height: 48px;
       padding: 0 10px;
-      line-height: 48px;
       border-radius: 6px;
       border: 1px solid #444;
       background: #223146;
       color: white;
       font-size: 16px;
       appearance: none;
-      -webkit-appearance: none;
-      -moz-appearance: none;
       box-sizing: border-box;
     }
 
@@ -115,7 +102,6 @@
       color: white;
       border-radius: 6px;
       cursor: pointer;
-      margin-top: 10px;
     }
 
     .export-buttons {
@@ -125,19 +111,9 @@
       gap: 20px;
     }
 
-    .export-buttons button {
-      background: none;
-      border: none;
-      cursor: pointer;
-    }
-
     .table-scroll {
       overflow-x: auto;
       width: 100%;
-    }
-
-    .table-scroll table {
-      min-width: 700px;
     }
 
     table {
@@ -155,62 +131,11 @@
       padding: 8px;
       text-align: center;
       word-break: break-word;
-      white-space: normal;
-    }
-
-    th {
-      background-color: #3d4a5a;
     }
 
     .total-row {
       font-weight: bold;
       background-color: #0b5ed7;
-    }
-
-    .bottom-bar {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      background: #fff;
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      height: 56px;
-      box-shadow: 0 -1px 4px rgba(0,0,0,0.1);
-      z-index: 1000;
-    }
-
-    .bottom-btn {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      background: none;
-      border: none;
-      font-family: 'Krasar', Arial, sans-serif;
-      color: #0d2d5c;
-      font-size: 11px;
-      line-height: 1.2;
-      padding: 2px;
-      cursor: pointer;
-    }
-
-    .bottom-btn .icon {
-      font-size: 18px;
-      line-height: 1;
-      margin-bottom: 1px;
-    }
-
-    .pdf-wrapper {
-      font-size: 18px;
-      line-height: 1.6;
-    }
-
-    @media print {
-      .header, .bottom-bar {
-        display: none !important;
-      }
     }
   </style>
 </head>
@@ -245,27 +170,9 @@
       <button onclick="exportToPDF()" title="Export to PDF">
         <img src="https://img.icons8.com/color/48/pdf.png" alt="PDF" width="32" height="32" />
       </button>
-      <button onclick="exportToExcel()" title="Export to Excel">
-        <img src="https://img.icons8.com/color/48/ms-excel.png" alt="Excel" width="32" height="32" />
-      </button>
     </div>
 
     <div id="exportSection"></div>
-  </div>
-
-  <div class="bottom-bar">
-    <button class="bottom-btn" onclick="window.location.href='../index.html'">
-      <div class="icon">🏠</div>
-      <div>Home</div>
-    </button>
-    <button class="bottom-btn" onclick="window.location.href='../Setting/index.html'">
-      <div class="icon">⚙️</div>
-      <div>Setting</div>
-    </button>
-    <button class="bottom-btn">
-      <div class="icon">🔔</div>
-      <div>Notification</div>
-    </button>
   </div>
 
   <script>
@@ -299,21 +206,22 @@
       let balance = loanVal;
       let totalPrincipal = 0, totalInterest = 0, totalPayment = 0;
 
-      let html = `<div class="pdf-wrapper"><div style="text-align:center; font-size:22px; font-weight:bold; margin-bottom:15px;">តារាងកាលវិភាគសងប្រាក់</div>`;
-      html += `<table><tr><th>ទំហំឥណទាន</th><td>${loanVal.toFixed(2)}</td></tr>
-        <tr><th>ប្រាក់សំណងខួប</th><td>${payVal.toFixed(2)}</td></tr>
-        <tr><th>រយៈពេលខ្ចី (ខែ)</th><td>${months}</td></tr>
-        <tr><th>អត្រា​ការ​ប្រាក់​ប្រចាំឆ្នាំ</th><td>${interestRate}%</td></tr>
-        <tr><th>របៀបសងប្រាក់</th><td>${method === "Annuity" ? "បង់ថេរ" : "បង់ថយ"}</td></tr></table>`;
+      let html = `<table>
+        <tr><th>Loan Amount</th><td>${loanVal.toFixed(2)}</td></tr>
+        <tr><th>Installment</th><td>${payVal.toFixed(2)}</td></tr>
+        <tr><th>Term (Months)</th><td>${months}</td></tr>
+        <tr><th>Interest Rate</th><td>${interestRate}%</td></tr>
+        <tr><th>Method</th><td>${method === "Annuity" ? "Fixed" : "Declining"}</td></tr>
+      </table>`;
 
       html += `<div class="table-scroll"><table>
         <thead>
           <tr>
-            <th>ល.រ</th>
-            <th>ប្រាក់ដើម</th>
-            <th>ការប្រាក់</th>
-            <th>សរុបបង់</th>
-            <th>សមតុល្យ</th>
+            <th>No</th>
+            <th>Principal</th>
+            <th>Interest</th>
+            <th>Total</th>
+            <th>Balance</th>
           </tr>
         </thead><tbody>`;
 
@@ -338,68 +246,38 @@
       }
 
       html += `<tr class="total-row">
-        <td>សរុប</td>
+        <td>Total</td>
         <td>${totalPrincipal.toFixed(2)}</td>
         <td>${totalInterest.toFixed(2)}</td>
         <td>${totalPayment.toFixed(2)}</td>
         <td>-</td>
-      </tr></tbody></table></div></div>`;
+      </tr></tbody></table></div>`;
 
       document.getElementById("exportSection").innerHTML = html;
     }
 
     async function exportToPDF() {
       const { jsPDF } = window.jspdf;
-      const element = document.getElementById("exportSection");
-      if (!element || element.innerHTML.trim() === "") {
-        alert("សូមគណនាមុននឹងនាំចេញ។");
-        return;
-      }
-
       const doc = new jsPDF('p', 'pt', 'a4');
-      const tables = element.querySelectorAll("table");
-      let finalY = 40;
-
-      tables.forEach((table, i) => {
-        doc.autoTable({
-          html: table,
-          startY: finalY,
-          styles: {
-            fontSize: 10,
-            halign: 'center'
-          },
-          headStyles: {
-            fillColor: [13, 45, 92],
-            textColor: 255
-          },
-        });
-        finalY = doc.lastAutoTable.finalY + 20;
-      });
-
-      doc.save("តារាងកាលវិភាគសងប្រាក់.pdf");
-    }
-
-    function exportToExcel() {
       const exportSection = document.getElementById("exportSection");
       if (!exportSection || exportSection.innerHTML.trim() === "") {
-        alert("សូមគណនាមុននឹងនាំចេញ។");
+        alert("Please calculate before exporting.");
         return;
       }
 
       const tables = exportSection.querySelectorAll("table");
-      const wb = XLSX.utils.book_new();
-      let allData = [];
-
-      tables.forEach((table, index) => {
-        const sheet = XLSX.utils.table_to_sheet(table);
-        const data = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-        if (index > 0) allData.push([""]);
-        allData = allData.concat(data);
+      let y = 40;
+      tables.forEach((table, i) => {
+        doc.autoTable({
+          html: table,
+          startY: y,
+          styles: { fontSize: 10, halign: 'center' },
+          headStyles: { fillColor: [13, 45, 92], textColor: 255 }
+        });
+        y = doc.lastAutoTable.finalY + 20;
       });
 
-      const ws = XLSX.utils.aoa_to_sheet(allData);
-      XLSX.utils.book_append_sheet(wb, ws, "តារាងកាលវិភាគសងប្រាក់");
-      XLSX.writeFile(wb, "តារាងកាលវិភាគសងប្រាក់.xlsx");
+      doc.save("Loan_Schedule.pdf");
     }
   </script>
 </body>
