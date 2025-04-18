@@ -67,26 +67,30 @@
     }
 
     .form-group {
-      margin-bottom: 14px;
-    }
+  display: flex;
+  align-items: center;
+  margin-bottom: 14px;
+}
 
-    .form-group label {
-      display: block;
-      margin-bottom: 5px;
-    }
+.form-group label {
+  width: 40%;
+  margin: 0;
+  padding-right: 10px;
+  font-size: 16px;
+}
 
- .form-group input,
+.form-group input,
 .form-group select {
-  width: calc(100% - 20px);
-  margin: 0 10px;
+  width: 60%;
   padding: 10px;
+  height: 48px;
   border-radius: 6px;
   border: 1px solid #444;
   background: #223146;
   color: white;
   font-size: 16px;
-  appearance: none; /* Removes default iOS styling */
-  -webkit-appearance: none; /* Fix for Safari */
+  appearance: none;
+  -webkit-appearance: none;
   -moz-appearance: none;
 }
     .form-group select {
@@ -94,7 +98,7 @@
   background-repeat: no-repeat;
   background-position: right 10px center;
   background-size: 20px;
-  padding-right: 36px; /* space for the arrow */
+  padding-right: 36px;
 }
 
     .calculate-btn {
