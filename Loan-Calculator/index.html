@@ -189,22 +189,6 @@
   </div>
 
   <script>
-  // Auto logout after 1 minute of inactivity
-  if (sessionStorage.getItem("loggedInUser")) {
-    let logoutTimer;
-    function resetInactivityTimer() {
-      clearTimeout(logoutTimer);
-      logoutTimer = setTimeout(() => {
-        alert("You have been logged out due to inactivity.");
-        sessionStorage.clear();
-        window.location.href = "login.html";
-      }, 60000); // 1 minute
-    }
-    ["mousemove", "keydown", "touchstart", "scroll"].forEach(event =>
-      document.addEventListener(event, resetInactivityTimer)
-    );
-    window.onload = resetInactivityTimer;
-  }
 
   // Helper: format number like 1,000,000.00
   function format(num) {
