@@ -1,13 +1,24 @@
-<!DOCTYPE html><html lang="km">
+
+<!DOCTYPE html>
+<html lang="km">
 <head>
   <meta charset="UTF-8" />
   <title>កម្មវិធី​គណនាឥណទាន</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <meta name="theme-color" content="#0d2d5c" />  <!-- PDF + Excel dependencies -->  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>  <script>
+  <meta name="theme-color" content="#0d2d5c" />
+
+  <!-- Dependencies -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+
+  <script>
     if (!sessionStorage.getItem("loggedInUser")) {
       window.location.href = "login.html";
     }
-  </script>  <style>
+  </script>
+
+  <style>
     @font-face {
       font-family: 'Krasar';
       src: url('../Krasar-Regular.ttf') format('truetype');
@@ -18,7 +29,29 @@
       color: white;
       margin: 0;
       padding: 0 0 70px;
-      box-sizing: border-box;
+    }
+    .header {
+      background-color: #0d2d5c;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    .header .back {
+      font-size: 22px;
+      color: white;
+      background: none;
+      border: none;
+      margin-right: 12px;
+      cursor: pointer;
+    }
+    .header .title {
+      font-size: 17px;
+      font-weight: bold;
+      color: white;
     }
     .container {
       max-width: 700px;
@@ -34,9 +67,7 @@
     }
     .form-group label {
       width: 40%;
-      margin: 0;
       padding-right: 10px;
-      font-size: 16px;
     }
     .form-group input,
     .form-group select {
@@ -48,14 +79,10 @@
       background: #223146;
       color: white;
       font-size: 16px;
-      appearance: none;
-      -webkit-appearance: none;
-      -moz-appearance: none;
       box-sizing: border-box;
     }
     .form-group select {
-      padding-right: 36px;
-      background-image: url('data:image/svg+xml;utf8,<svg fill="white" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+      background-image: url('data:image/svg+xml;utf8,<svg fill=\"white\" height=\"24\" viewBox=\"0 0 24 24\" width=\"24\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M7 10l5 5 5-5z\"/></svg>');
       background-repeat: no-repeat;
       background-position: right 10px center;
       background-size: 20px;
@@ -71,38 +98,25 @@
       margin-top: 10px;
     }
     .export-buttons {
+      margin-top: 20px;
       display: flex;
       justify-content: center;
       gap: 20px;
-      margin-top: 20px;
-    }
-    .export-buttons button {
-      background: none;
-      border: none;
-      cursor: pointer;
     }
     .table-scroll {
       overflow-x: auto;
-      width: 100%;
-    }
-    .table-scroll table {
-      min-width: 700px;
     }
     table {
-      table-layout: fixed;
       width: 100%;
       border-collapse: collapse;
       margin-top: 20px;
       font-size: 14px;
       background-color: #1e2e3e;
-      border-radius: 10px;
     }
     th, td {
       border: 1px solid #444;
       padding: 8px;
       text-align: center;
-      word-break: break-word;
-      white-space: normal;
     }
     th {
       background-color: #3d4a5a;
@@ -111,18 +125,40 @@
       font-weight: bold;
       background-color: #0b5ed7;
     }
-    .pdf-wrapper {
-      font-size: 18px;
-      line-height: 1.6;
+    .bottom-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: #fff;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      height: 56px;
+      z-index: 1000;
     }
-  </style></head>
+    .bottom-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-size: 11px;
+      color: #0d2d5c;
+    }
+  </style>
+</head>
 <body>
+  <div class="header">
+    <button class="back" onclick="window.location.href='../index.html'">←</button>
+    <div class="title">កម្មវិធី​គណនាឥណទាន</div>
+  </div>
+
   <div class="container">
     <div class="form-group"><label>ទំហំឥណទាន:</label><input id="loanAmount" type="number" /></div>
     <div class="form-group"><label>ប្រាក់សំណងខួប:</label><input id="periodicRepayment" type="number" /></div>
     <div class="form-group"><label>រយៈពេលខ្ចី (ខែ):</label><input id="term" type="number" /></div>
     <div class="form-group"><label>អត្រា​ការ​ប្រាក់​ប្រចាំឆ្នាំ (%):</label><input id="interestRate" type="number" /></div>
-    <div class="form-group"><label>របៀបសងប្រាក់:</label>
+    <div class="form-group">
+      <label>របៀបសងប្រាក់:</label>
       <select id="paymentMethod">
         <option value="Linear">បង់ថយ</option>
         <option value="Annuity">បង់ថេរ</option>
@@ -130,10 +166,12 @@
     </div>
     <button class="calculate-btn" onclick="calculateLoan()">គណនា</button>
     <div class="export-buttons">
-      <button onclick="exportToPDF()">Export PDF</button>
+      <button onclick="exportToPDF()"><img src="https://img.icons8.com/color/48/pdf.png" alt="PDF" width="32" /></button>
+      <button onclick="exportToExcel()"><img src="https://img.icons8.com/color/48/ms-excel.png" alt="Excel" width="32" /></button>
     </div>
     <div id="exportSection"></div>
-  </div>  <script>
+  </div>
+  <script>
     function calculateLoan() {
       const loan = parseFloat(document.getElementById("loanAmount").value);
       const repayment = parseFloat(document.getElementById("periodicRepayment").value);
@@ -143,30 +181,36 @@
       const rate = (interestRate / 100) / 12;
 
       let loanVal = loan, payVal = repayment, months = term;
-      if ([loan, repayment, term].filter(isNaN).length !== 1) {
+      const missing = [isNaN(loan), isNaN(repayment), isNaN(term)].filter(Boolean).length;
+      if (missing !== 1) {
         alert("សូមទុកប្រអប់មួយ ដើម្បីគណនា។");
         return;
       }
 
-      if (isNaN(loanVal)) loanVal = payVal * (1 - Math.pow(1 + rate, -months)) / rate;
-      if (isNaN(payVal)) payVal = loanVal * rate / (1 - Math.pow(1 + rate, -months));
-      if (isNaN(months)) months = Math.ceil(Math.log(payVal / (payVal - loanVal * rate)) / Math.log(1 + rate));
+      if (isNaN(loanVal)) {
+        loanVal = method === "Annuity"
+          ? payVal * (1 - Math.pow(1 + rate, -months)) / rate
+          : payVal / ((1 / months) + rate);
+      } else if (isNaN(payVal)) {
+        payVal = method === "Annuity"
+          ? (loanVal * rate) / (1 - Math.pow(1 + rate, -months))
+          : (loanVal / months) + (loanVal * rate);
+      } else if (isNaN(months)) {
+        months = Math.ceil(Math.log(payVal / (payVal - loanVal * rate)) / Math.log(1 + rate));
+      }
 
-      let balance = loanVal, totalPrincipal = 0, totalInterest = 0, totalPayment = 0;
-      let html = `<div class="pdf-wrapper">
-        <div style="text-align:center; font-size:22px; font-weight:bold;">Repayment Schedule</div>
-        <table>
-          <tr><th>Loan Amount</th><td>${loanVal.toFixed(2)}</td></tr>
-          <tr><th>Periodic Repayment</th><td>${payVal.toFixed(2)}</td></tr>
-          <tr><th>Loan Term (months)</th><td>${months}</td></tr>
-          <tr><th>Annual Interest Rate</th><td>${interestRate}%</td></tr>
-          <tr><th>Payment Method</th><td>${method === "Annuity" ? "Equal Payment" : "Declining Balance"}</td></tr>
-        </table>
-        <div class="table-scroll">
-          <table>
-            <thead>
-              <tr><th>No</th><th>Principal</th><th>Interest</th><th>Total Payment</th><th>Balance</th></tr>
-            </thead><tbody>`;
+      let balance = loanVal;
+      let totalPrincipal = 0, totalInterest = 0, totalPayment = 0;
+      let html = `<div class="pdf-wrapper"><div style="text-align:center; font-size:22px; font-weight:bold; margin-bottom:15px;">តារាងកាលវិភាគសងប្រាក់</div>`;
+      html += `<table><tr><th>ទំហំឥណទាន</th><td>${loanVal.toFixed(2)}</td></tr>
+        <tr><th>ប្រាក់សំណងខួប</th><td>${payVal.toFixed(2)}</td></tr>
+        <tr><th>រយៈពេលខ្ចី (ខែ)</th><td>${months}</td></tr>
+        <tr><th>អត្រា​ការ​ប្រាក់​ប្រចាំឆ្នាំ</th><td>${interestRate}%</td></tr>
+        <tr><th>របៀបសងប្រាក់</th><td>${method === "Annuity" ? "បង់ថេរ" : "បង់ថយ"}</td></tr></table>`;
+
+      html += `<div class="table-scroll"><table><thead><tr>
+        <th>ល.រ</th><th>ប្រាក់ដើម</th><th>ការប្រាក់</th><th>សរុបបង់</th><th>សមតុល្យ</th>
+        </tr></thead><tbody>`;
 
       for (let i = 1; i <= months; i++) {
         const interest = balance * rate;
@@ -177,11 +221,16 @@
         totalPrincipal += principal;
         totalInterest += interest;
         totalPayment += payment;
+
         html += `<tr><td>${i}</td><td>${principal.toFixed(2)}</td><td>${interest.toFixed(2)}</td><td>${payment.toFixed(2)}</td><td>${balance.toFixed(2)}</td></tr>`;
       }
 
       html += `<tr class="total-row">
-        <td>Total</td><td>${totalPrincipal.toFixed(2)}</td><td>${totalInterest.toFixed(2)}</td><td>${totalPayment.toFixed(2)}</td><td>-</td>
+        <td>សរុប</td>
+        <td>${totalPrincipal.toFixed(2)}</td>
+        <td>${totalInterest.toFixed(2)}</td>
+        <td>${totalPayment.toFixed(2)}</td>
+        <td>-</td>
       </tr></tbody></table></div></div>`;
 
       document.getElementById("exportSection").innerHTML = html;
@@ -191,28 +240,72 @@
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF('p', 'pt', 'a4');
       const exportSection = document.getElementById("exportSection");
+
       if (!exportSection || exportSection.innerHTML.trim() === "") {
         alert("សូមគណនាមុននឹងនាំចេញ។");
         return;
       }
+
       const tables = exportSection.querySelectorAll("table");
+      const translatedTables = [];
+
+      tables.forEach((table) => {
+        const clone = table.cloneNode(true);
+        clone.querySelectorAll("th").forEach(th => {
+          th.textContent = th.textContent
+            .replace("ល.រ", "No")
+            .replace("ប្រាក់ដើម", "Principal")
+            .replace("ការប្រាក់", "Interest")
+            .replace("សរុបបង់", "Total Payment")
+            .replace("សមតុល្យ", "Balance")
+            .replace("ទំហំឥណទាន", "Loan Amount")
+            .replace("ប្រាក់សំណងខួប", "Periodic Repayment")
+            .replace("រយៈពេលខ្ចី (ខែ)", "Loan Term (months)")
+            .replace("អត្រា​ការ​ប្រាក់​ប្រចាំឆ្នាំ", "Annual Interest Rate")
+            .replace("របៀបសងប្រាក់", "Payment Method")
+            .replace("បង់ថេរ", "Equal Payment")
+            .replace("បង់ថយ", "Declining Balance")
+            .replace("សរុប", "Total");
+        });
+        translatedTables.push(clone);
+      });
+
       let finalY = 40;
-      tables.forEach(table => {
+      translatedTables.forEach(table => {
         doc.autoTable({
           html: table,
           startY: finalY,
-          styles: {
-            fontSize: 10,
-            halign: 'center'
-          },
-          headStyles: {
-            fillColor: [13, 45, 92],
-            textColor: 255
-          },
+          styles: { fontSize: 10, halign: 'center' },
+          headStyles: { fillColor: [13, 45, 92], textColor: 255 },
         });
         finalY = doc.lastAutoTable.finalY + 20;
       });
+
       doc.save("Repayment_Schedule.pdf");
     }
-  </script></body>
+
+    function exportToExcel() {
+      const exportSection = document.getElementById("exportSection");
+      if (!exportSection || exportSection.innerHTML.trim() === "") {
+        alert("សូមគណនាមុននឹងនាំចេញ។");
+        return;
+      }
+
+      const tables = exportSection.querySelectorAll("table");
+      const wb = XLSX.utils.book_new();
+      let allData = [];
+
+      tables.forEach((table, index) => {
+        const sheet = XLSX.utils.table_to_sheet(table);
+        const data = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+        if (index > 0) allData.push([""]);
+        allData = allData.concat(data);
+      });
+
+      const ws = XLSX.utils.aoa_to_sheet(allData);
+      XLSX.utils.book_append_sheet(wb, ws, "Repayment Schedule");
+      XLSX.writeFile(wb, "Repayment_Schedule.xlsx");
+    }
+  </script>
+</body>
 </html>
