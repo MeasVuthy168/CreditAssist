@@ -413,7 +413,8 @@
   100% { box-shadow: 0 0 0 0 rgba(13, 45, 92, 0); }
 }
 
-.voice-mic-btn.listening {
+.voice-mic-btn.listening,
+.mic-btn.listening {
   animation: micGlow 1.2s infinite;
   background-color: #ffd700 !important;
 }
@@ -577,7 +578,8 @@
     });
   </script>
 
-  <script>
+<!-- ✅ Place this in your <script> section before </body> -->
+<script>
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   let recognition;
 
@@ -590,11 +592,13 @@
     recognition.onresult = (event) => {
       const transcript = event.results[0][0].transcript.trim().toLowerCase();
       console.log("Recognized:", transcript);
+
       let found = false;
 
       document.querySelectorAll('.menu-item').forEach(item => {
-        const label = item.textContent.trim().toLowerCase();
-        if (label.includes(transcript)) {
+        const label = item.querySelector('.label')?.textContent?.trim().toLowerCase() || '';
+        console.log("Comparing to:", label);
+        if (label.includes(transcript) || transcript.includes(label)) {
           found = true;
           item.click();
         }
@@ -607,6 +611,7 @@
 
     recognition.onerror = (event) => {
       console.error("Speech error:", event.error);
+      alert("បញ្ហាក្នុងការស្ដាប់សម្លេង: " + event.error);
     };
   }
 
@@ -623,6 +628,7 @@
 
       overlay.style.display = "flex";
       stopMicBtn.classList.add("listening");
+      micButton.classList.add("listening");
 
       try {
         recognition.start();
@@ -635,18 +641,21 @@
       if (recognition) recognition.stop();
       overlay.style.display = "none";
       stopMicBtn.classList.remove("listening");
+      micButton.classList.remove("listening");
     });
 
     micButton.addEventListener('pointercancel', () => {
       if (recognition) recognition.stop();
       overlay.style.display = "none";
       stopMicBtn.classList.remove("listening");
+      micButton.classList.remove("listening");
     });
 
     stopMicBtn.addEventListener("click", () => {
       if (recognition) recognition.stop();
       overlay.style.display = "none";
       stopMicBtn.classList.remove("listening");
+      micButton.classList.remove("listening");
     });
   }
 </script>
