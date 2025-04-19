@@ -577,7 +577,7 @@
         alert("បញ្ចូនសារមិនបានទេ! មានបញ្ហា៖ " + err.message);
       }
     }
-
+    
  // ✅ Properly placed DOM ready code
 document.addEventListener("DOMContentLoaded", () => {
   const name = sessionStorage.getItem("fullname") || "អ្នកប្រើ";
@@ -593,7 +593,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   loadRobotMessage(userPosition);
 });
-
+</script>
+    
 <!-- ✅ vioce assistant-->
 <script>
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
