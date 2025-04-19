@@ -118,40 +118,46 @@
       filter: brightness(0) saturate(100%) invert(19%) sepia(100%) saturate(6486%) hue-rotate(355deg) brightness(93%) contrast(104%);
     }
 
-    .bottom-bar {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      background: #fff;
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      box-shadow: 0 -1px 4px rgba(0,0,0,0.1);
-      z-index: 1000;
-      height: 56px;
-      padding: 0;
+   .footer {
+      text-align: center;
+      font-size: 14px;
+      color: #aaa;
+      margin-top: 40px;
     }
 
-    .bottom-btn {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      font-size: 11px;
-      line-height: 1.1;
-      color: #0d2d5c;
-      background: none;
-      border: none;
-      padding: 2px;
-      font-family: 'Krasar', Arial, sans-serif;
-    }
+.bottom-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 56px;
+  background: #0d2d5c;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+  z-index: 1000;
+}
 
-    .bottom-btn .icon {
-      font-size: 18px;
-      margin-bottom: 1px;
-      line-height: 1;
-    }
+.bottom-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 11px;
+  color: white;
+  border: none;
+  background: none;
+  padding: 2px;
+}
+
+.bottom-btn img {
+  margin-bottom: 2px;
+  pointer-events: none;
+}
+
+.bottom-btn.active {
+  filter: brightness(1.2) drop-shadow(0 0 3px #ffd700);
+}
 
     .modal {
       display: none;
@@ -268,21 +274,18 @@
     </div>
   </div>
 
-  <!-- Bottom Bar -->
-  <div class="bottom-bar">
-    <button class="bottom-btn" onclick="window.location.href='../index.html'">
-      <div class="icon">🏠</div>
-      <div>Home</div>
-    </button>
-    <button class="bottom-btn" onclick="window.location.href='../Setting/index.html'">
-      <div class="icon">⚙️</div>
-      <div>Setting</div>
-    </button>
-    <button class="bottom-btn" onclick="alert('Coming soon!')">
-      <div class="icon">🔔</div>
-      <div>Notification</div>
-    </button>
-  </div>
+  <!-- Footer -->
+<div class="bottom-bar">
+  <button class="bottom-btn active" onclick="window.location.href='../index.html'">
+    <img src="../icons/Home.png" width="24" height="24" /><div>Home</div>
+  </button>
+  <button class="bottom-btn" onclick="window.location.href='../Setting/index.html'">
+    <img src="../icons/Setting.png" width="24" height="24" /><div>Setting</div>
+  </button>
+  <button class="bottom-btn" onclick="alert('Coming soon!')">
+    <img src="../icons/Notification.png" width="24" height="24" /><div>Notification</div>
+  </button>
+</div>
 
   <!-- Custom Modal -->
   <div id="logoutModal" class="modal">
