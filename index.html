@@ -486,5 +486,64 @@
       loadRobotMessage(userPosition);
     });
   </script>
+
+    <script>
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  let recognition;
+
+  if (SpeechRecognition) {
+    recognition = new SpeechRecognition();
+    recognition.lang = 'km-KH';
+    recognition.continuous = false;
+    recognition.interimResults = false;
+
+    recognition.onresult = (event) => {
+      const transcript = event.results[0][0].transcript.trim().toLowerCase();
+      console.log("Recognized:", transcript);
+      let found = false;
+
+      document.querySelectorAll('.menu-item').forEach(item => {
+        const label = item.textContent.trim().toLowerCase();
+        if (label.includes(transcript)) {
+          found = true;
+          item.click();
+        }
+      });
+
+      if (!found) {
+        alert(`កម្មវិធី "${transcript}" មិនមានទេ!`);
+      }
+    };
+
+    recognition.onerror = (event) => {
+      console.error("Speech Recognition Error:", event.error);
+    };
+  }
+
+  const micButton = document.querySelector('.mic-btn');
+
+  if (micButton) {
+    micButton.addEventListener('pointerdown', () => {
+      if (!recognition) {
+        alert("Browser not supported for voice input.");
+        return;
+      }
+      alert("សូមចុចប៊ូតុងថតសម្លេង​ និងហៅឈ្មោះ​កម្មវិធី​ដែលលោកអ្នកចង់ប្រេីប្រាស់​ ។");
+      try {
+        recognition.start();
+      } catch (e) {
+        console.log("Recognition already started.");
+      }
+    });
+
+    micButton.addEventListener('pointerup', () => {
+      if (recognition) recognition.stop();
+    });
+
+    micButton.addEventListener('pointercancel', () => {
+      if (recognition) recognition.stop();
+    });
+  }
+</script>
 </body>
 </html>
