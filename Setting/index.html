@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="km">
 <head>
@@ -268,15 +269,8 @@
         ចាកចេញ
       </span>
     </div>
-    
-    <!-- vioce record to navigate  -->
   </div>
-<div style="text-align:center; margin: 20px;">
-  <button onclick="startVoice()" style="background:#0d2d5c; color:white; border:none; border-radius:50%; width:60px; height:60px; font-size:24px;">
-    🎤
-  </button>
-</div>
-  
+
   <!-- Footer -->
 <div class="bottom-bar">
   <button class="bottom-btn active" onclick="window.location.href='../index.html'">
@@ -334,46 +328,5 @@
       document.getElementById("profile-photo").src = "https://secure-backend-tzj9.onrender.com/" + image;
     });
   </script>
-
-  <script>
-  function startVoice() {
-    alert("សូមចុចប៊ូតុងថតសម្លេង​ និងហៅឈ្មោះ​កម្មវិធី​ដែលលោកអ្នកចង់ប្រេីប្រាស់​ ។");
-
-    if (!('webkitSpeechRecognition' in window)) {
-      alert("Browser does not support speech recognition.");
-      return;
-    }
-
-    const recognition = new webkitSpeechRecognition();
-    recognition.lang = 'km-KH'; // Khmer
-    recognition.interimResults = false;
-    recognition.maxAlternatives = 1;
-
-    recognition.start();
-
-    recognition.onresult = function(event) {
-      const speech = event.results[0][0].transcript.trim().toLowerCase();
-      console.log("Recognized:", speech);
-
-      if (speech.includes("ស្វែងរក") || speech.includes("search")) {
-        window.location.href = "../Search/index.html";
-      } else if (speech.includes("និវត្តន៍") || speech.includes("retire")) {
-        window.location.href = "../Retirement/index.html";
-      } else if (speech.includes("ឥណទាន") || speech.includes("loan")) {
-        window.location.href = "../Loan/index.html";
-      } else if (speech.includes("អត្រា") || speech.includes("turnover")) {
-        window.location.href = "../Turnover/index.html";
-      } else if (speech.includes("រាយការណ៍") || speech.includes("report")) {
-        window.location.href = "../DailyReport/index.html";
-      } else {
-        alert("មិនអាចស្គាល់ឈ្មោះកម្មវិធីបានទេ។ សូមសាកល្បងម្ដងទៀត។");
-      }
-    };
-
-    recognition.onerror = function(event) {
-      alert("បញ្ហាក្នុងការស្ដាប់សម្លេង: " + event.error);
-    };
-  }
-</script>
 </body>
 </html>
