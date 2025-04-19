@@ -339,9 +339,86 @@
       -webkit-user-drag: none;
       user-drag: none;
     }
+    .voice-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 2000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.voice-box {
+  background: white;
+  border-radius: 18px;
+  width: 90%;
+  max-width: 350px;
+  padding: 24px 20px;
+  text-align: center;
+  font-family: 'Krasar', sans-serif;
+  color: #0d2d5c;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+}
+
+.voice-greet {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+
+.voice-question {
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+.voice-mic-btn {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: #0d2d5c;
+  position: relative;
+  margin: 0 auto 14px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.voice-mic-circle {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background-color: #0d2d5c;
+}
+
+.voice-stop-icon {
+  position: absolute;
+  top: 22px;
+  left: 22px;
+  width: 20px;
+  height: 20px;
+  background-color: white;
+  border-radius: 4px;
+}
+
+.voice-tip {
+  font-size: 13px;
+  color: gray;
+}
+
+/* Mic glowing animation when recording */
+@keyframes micGlow {
+  0% { box-shadow: 0 0 0 0 rgba(13, 45, 92, 0.7); }
+  70% { box-shadow: 0 0 0 10px rgba(13, 45, 92, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(13, 45, 92, 0); }
+}
+
+.voice-mic-btn.listening {
+  animation: micGlow 1.2s infinite;
+  background-color: #ffd700 !important;
+}
   </style>
 </head>
-
 <body oncontextmenu="return false;">
   <!-- Header -->
   <div class="header">
@@ -354,7 +431,20 @@
       <div class="welcome" id="welcome">សួស្តី</div>
     </a>
   </div>
-
+  
+<!-- Voice Assistant Popup -->
+<div id="voiceOverlay" class="voice-overlay" style="display: none;">
+  <div class="voice-box">
+    <div class="voice-greet">សួស្តី លោក វុទ្ធី។</div>
+    <div class="voice-question">តើខ្ញុំអាចជួយអ្វីបាន?</div>
+    <button id="stopMic" class="voice-mic-btn">
+      <div class="voice-mic-circle"></div>
+      <div class="voice-stop-icon"></div>
+    </button>
+    <div class="voice-tip">សាកល្បងនិយាយ <strong>"ស្វែងរកអតិថិជន"</strong></div>
+  </div>
+</div>
+  
   <!-- Main Box -->
   <div class="main-box">
     <!-- Content -->
@@ -487,7 +577,7 @@
     });
   </script>
 
-    <script>
+  <script>
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   let recognition;
 
@@ -516,32 +606,47 @@
     };
 
     recognition.onerror = (event) => {
-      console.error("Speech Recognition Error:", event.error);
+      console.error("Speech error:", event.error);
     };
   }
 
   const micButton = document.querySelector('.mic-btn');
+  const overlay = document.getElementById("voiceOverlay");
+  const stopMicBtn = document.getElementById("stopMic");
 
   if (micButton) {
     micButton.addEventListener('pointerdown', () => {
       if (!recognition) {
-        alert("Browser not supported for voice input.");
+        alert("កម្មវិធីនេះមិនគាំទ្រការថតសម្លេងទេ។");
         return;
       }
-      alert("សូមចុចប៊ូតុងថតសម្លេង​ និងហៅឈ្មោះ​កម្មវិធី​ដែលលោកអ្នកចង់ប្រេីប្រាស់​ ។");
+
+      overlay.style.display = "flex";
+      stopMicBtn.classList.add("listening");
+
       try {
         recognition.start();
       } catch (e) {
-        console.log("Recognition already started.");
+        console.log("Already recording");
       }
     });
 
     micButton.addEventListener('pointerup', () => {
       if (recognition) recognition.stop();
+      overlay.style.display = "none";
+      stopMicBtn.classList.remove("listening");
     });
 
     micButton.addEventListener('pointercancel', () => {
       if (recognition) recognition.stop();
+      overlay.style.display = "none";
+      stopMicBtn.classList.remove("listening");
+    });
+
+    stopMicBtn.addEventListener("click", () => {
+      if (recognition) recognition.stop();
+      overlay.style.display = "none";
+      stopMicBtn.classList.remove("listening");
     });
   }
 </script>
