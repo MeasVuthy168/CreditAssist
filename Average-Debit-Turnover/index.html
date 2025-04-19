@@ -142,15 +142,7 @@
 
     .not-found { background-color: #fff3cd !important; }
     .oldest { background-color: #f2f2f2; }
-    .newest { background-color: #e1f5e6; font-weight: .footer {
-      text-align: center;
-      font-size: 14px;
-      color: #aaa;
-      margin-top: 40px;
-    }
-           
-
-.bottom-bar {
+    .newest { background-color: #e1f5e6; font-weight: .bottom-bar {
   position: fixed;
   bottom: 0;
   left: 0;
@@ -182,6 +174,12 @@
 
 .bottom-btn.active {
   filter: brightness(1.2) drop-shadow(0 0 3px #ffd700);
+}
+.footer-text {
+  font-size: 13px;
+  color: #ffd700;
+  font-family: 'Krasar', Arial, sans-serif;
+  white-space: nowrap;
 }
 
     @media print {
@@ -252,16 +250,20 @@
     </table>
   </div>
 
-  <!-- Footer -->
+  <!-- Bottom Bar -->
+  <!-- Bottom Bar -->
 <div class="bottom-bar">
-  <button class="bottom-btn active" onclick="window.location.href='../index.html'">
-    <img src="../icons/Home.png" width="24" height="24" /><div>Home</div>
+  <button class="bottom-btn" onclick="window.location.href='../index.html'">
+    <div class="icon">🏠</div>
+    <div>Home</div>
   </button>
   <button class="bottom-btn" onclick="window.location.href='../Setting/index.html'">
-    <img src="../icons/Setting.png" width="24" height="24" /><div>Setting</div>
+    <div class="icon">⚙️</div>
+    <div>Setting</div>
   </button>
   <button class="bottom-btn" onclick="alert('Coming soon!')">
-    <img src="../icons/Notification.png" width="24" height="24" /><div>Notification</div>
+    <div class="icon">🔔</div>
+    <div>Notification</div>
   </button>
 </div>
   
