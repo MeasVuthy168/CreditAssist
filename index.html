@@ -140,14 +140,15 @@
       user-select: none;
       transition: all 0.3s ease;
     }
-
-    .menu-item img {
-      width: 36px;
-      height: 36px;
-      margin-bottom: 6px;
-      animation: bounce 0.4s ease;
-      pointer-events: none;
-    }
+.menu-item img {
+  width: 36px;
+  height: 36px;
+  margin-bottom: 6px;
+  animation: bounce 0.4s ease;
+  pointer-events: none;
+  filter: sepia(1) saturate(5) hue-rotate(20deg) brightness(1.1);
+}
+  
 
     .menu-item:hover {
       background: #f0f8ff;
