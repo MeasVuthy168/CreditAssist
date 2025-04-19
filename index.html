@@ -578,16 +578,19 @@
       }
     }
 
-    // ✅ DOM contentload
+ // ✅ Properly placed DOM ready code
 document.addEventListener("DOMContentLoaded", () => {
   const name = sessionStorage.getItem("fullname") || "អ្នកប្រើ";
-  const cleanName = name.replace(/.*?/g, '').trim(); // remove (Admin) if present
-  document.getElementById("welcome").textContent = "សួស្តី, " + cleanName;
-  document.getElementById("voiceGreeting").textContent = "សួស្តី លោក " + cleanName + "។";
-
   const imgPath = sessionStorage.getItem("image") || "profile.jpg";
   const userPosition = sessionStorage.getItem("userPosition") || "user";
+
+  document.getElementById("welcome").textContent = "សួស្តី, " + name;
   document.getElementById("profile-photo").src = "https://secure-backend-tzj9.onrender.com/" + imgPath;
+
+  // Only update voice assistant greeting (do not clean name)
+  const greetEl = document.getElementById("voiceGreeting");
+  if (greetEl) greetEl.textContent = "សួស្តី " + name;
+
   loadRobotMessage(userPosition);
 });
 
