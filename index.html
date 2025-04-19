@@ -358,7 +358,7 @@
   text-align: center;
   font-family: 'Krasar', sans-serif;
   color: #0d2d5c;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
 }
 
 .voice-greet {
@@ -372,41 +372,49 @@
   margin-bottom: 20px;
 }
 
-.voice-mic-btn {
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  background: #0d2d5c;
-  position: relative;
-  margin: 0 auto 14px;
-  border: none;
-  cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+.voice-tip {
+  font-size: 13px;
+  color: gray;
 }
 
-.voice-mic-circle {
-  width: 64px;
-  height: 64px;
+/* Mic button layout */
+.voice-mic-btn {
+  border: none;
+  background: none;
+  padding: 0;
+  margin: 0 auto 14px;
+  cursor: pointer;
+  position: relative;
+}
+
+.mic-ring {
+  width: 72px;
+  height: 72px;
+  background-color: #ffd700;
   border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mic-core {
+  width: 52px;
+  height: 52px;
   background-color: #0d2d5c;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .voice-stop-icon {
-  position: absolute;
-  top: 22px;
-  left: 22px;
   width: 20px;
   height: 20px;
   background-color: white;
   border-radius: 4px;
 }
 
-.voice-tip {
-  font-size: 13px;
-  color: gray;
-}
-
-/* Mic glowing animation when recording */
+/* Mic glow animation (optional reuse for listening) */
 @keyframes micGlow {
   0% { box-shadow: 0 0 0 0 rgba(13, 45, 92, 0.7); }
   70% { box-shadow: 0 0 0 10px rgba(13, 45, 92, 0); }
@@ -416,7 +424,6 @@
 .voice-mic-btn.listening,
 .mic-btn.listening {
   animation: micGlow 1.2s infinite;
-  background-color: #ffd700 !important;
 }
   </style>
 </head>
@@ -436,16 +443,20 @@
 <!-- Voice Assistant Popup -->
 <div id="voiceOverlay" class="voice-overlay" style="display: none;">
   <div class="voice-box">
-    <div class="voice-greet">សួស្តី លោក វុទ្ធី។</div>
+    <div class="voice-greet" id="voiceGreeting">សួស្តី  ...</div>
     <div class="voice-question">តើខ្ញុំអាចជួយអ្វីបាន?</div>
+
     <button id="stopMic" class="voice-mic-btn">
-      <div class="voice-mic-circle"></div>
-      <div class="voice-stop-icon"></div>
+      <div class="mic-ring">
+        <div class="mic-core">
+          <div class="voice-stop-icon"></div>
+        </div>
+      </div>
     </button>
-    <div class="voice-tip">សាកល្បងនិយាយ <strong>"ស្វែងរកអតិថិជន"</strong></div>
+
+    <div class="voice-tip">សាកល្បងនិយាយ <strong>"ស្វែងរក"</strong></div>
   </div>
 </div>
-  
   <!-- Main Box -->
   <div class="main-box">
     <!-- Content -->
@@ -567,18 +578,20 @@
       }
     }
 
-    // ✅ Properly placed DOM ready code
-    document.addEventListener("DOMContentLoaded", () => {
-      const name = sessionStorage.getItem("fullname") || "អ្នកប្រើ";
-      const imgPath = sessionStorage.getItem("image") || "profile.jpg";
-      const userPosition = sessionStorage.getItem("userPosition") || "user";
-      document.getElementById("welcome").textContent = "សួស្តី, " + name;
-      document.getElementById("profile-photo").src = "https://secure-backend-tzj9.onrender.com/" + imgPath;
-      loadRobotMessage(userPosition);
-    });
-  </script>
+    // ✅ DOM contentload
+document.addEventListener("DOMContentLoaded", () => {
+  const name = sessionStorage.getItem("fullname") || "អ្នកប្រើ";
+  const cleanName = name.replace(/.*?/g, '').trim(); // remove (Admin) if present
+  document.getElementById("welcome").textContent = "សួស្តី, " + cleanName;
+  document.getElementById("voiceGreeting").textContent = "សួស្តី លោក " + cleanName + "។";
 
-<!-- ✅ Place this in your <script> section before </body> -->
+  const imgPath = sessionStorage.getItem("image") || "profile.jpg";
+  const userPosition = sessionStorage.getItem("userPosition") || "user";
+  document.getElementById("profile-photo").src = "https://secure-backend-tzj9.onrender.com/" + imgPath;
+  loadRobotMessage(userPosition);
+});
+
+<!-- ✅ vioce assistant-->
 <script>
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   let recognition;
