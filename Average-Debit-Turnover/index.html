@@ -442,15 +442,18 @@
 
   // Create metadata section
   const metadata = document.createElement("div");
-  metadata.style.textAlign = "center";
-  metadata.style.fontWeight = "bold";
-  metadata.style.marginBottom = "10px";
-  metadata.innerHTML = `
-    <div>Prepared Date: ${preparedDate}</div>
-    <div>CIF: ${cif}</div>
-    <div>Customer Name: ${customerName}</div>
-    <hr style="margin:10px 0;">
-  `;
+metadata.style.textAlign = "center";
+metadata.style.fontWeight = "bold";
+metadata.style.marginBottom = "10px";
+metadata.innerHTML = `
+  <h2 style="margin: 0 0 10px; font-size: 16px; color: #0d2d5c;">
+    Yearly Average of Debit Turnover
+  </h2>
+  <div>Prepared Date: ${preparedDate}</div>
+  <div>CIF: ${cif}</div>
+  <div>Customer Name: ${customerName}</div>
+  <hr style="margin:10px 0;">
+`;
 
   // Clone only the part we want in the PDF
   const tableSection = document.querySelector(".table-container").cloneNode(true);
