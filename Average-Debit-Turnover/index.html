@@ -395,8 +395,34 @@
     }
 
     function printPage() {
-      window.print();
+  const preparedDate = document.getElementById("prepared-date").value;
+  const cif = document.getElementById("input-cif").value.trim();
+  const customerName = document.getElementById("customer-name-label").textContent;
+
+  // Create temporary print header
+  const printInfo = document.createElement("div");
+  printInfo.id = "print-info";
+  printInfo.style.textAlign = "center";
+  printInfo.style.marginBottom = "10px";
+  printInfo.innerHTML = `
+    <div><strong>Prepared Date:</strong> ${preparedDate || '-'}</div>
+    <div><strong>CIF:</strong> ${cif || '-'}</div>
+    <div><strong>Customer Name:</strong> ${customerName || '-'}</div>
+    <hr style="margin: 10px 0;">
+  `;
+
+  document.body.insertBefore(printInfo, document.querySelector(".table-container"));
+
+  // Trigger print
+  window.print();
+
+  // Clean up after printing
+  setTimeout(() => {
+    if (document.getElementById("print-info")) {
+      document.getElementById("print-info").remove();
     }
+  }, 1000);
+}
 
     // Auto Logout
     const AUTO_LOGOUT_MINUTES = 1;
