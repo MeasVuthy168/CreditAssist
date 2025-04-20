@@ -600,87 +600,11 @@ document.addEventListener("DOMContentLoaded", () => {
     
 <!-- ✅ vioce assistant-->
 <script>
-  // iOS fallback detection
   const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
   let speechSupported = true;
 
   try {
-    const testSpeech = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-  } catch (e) {
-    speechSupported = false;
-  }
-
-  if (isIOS && !speechSupported) {
-    alert("សូមអភ័យទោស! កម្មវិធីស្ដាប់សម្លេងមិនគាំទ្រលើ iPhone Safari នៅពេលនេះទេ។ សូមប្រើ Chrome នៅលើ Android។");
-  }
-
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  let recognition;
-
-  if (SpeechRecognition) {
-    recognition = new SpeechRecognition();
-    recognition.lang = 'km-KH';
-    recognition.continuous = false;
-    recognition.interimResults = false;
-
-    recognition.onresult = (event) => {
-      const transcript = event.results[0][0].transcript.trim().toLowerCase();
-      console.log("Recognized:", transcript);
-
-      let found = false;
-
-      document.querySelectorAll('.menu-item').forEach(item => {
-        const labelText = item.querySelector('.label')?.textContent?.toLowerCase() || '';
-        const labelWords = labelText.split(/[\s,]+/);
-        const transcriptWords = transcript.split(/[\s,]+/);
-
-        const match = transcriptWords.some(word =>
-          labelWords.some(labelWord =>
-            labelWord.includes(word) || word.includes(labelWord)
-          )
-        );
-
-        if (match) {
-          found = true;
-          item.click();
-        }
-      });
-
-      if (!found) {
-        alert(`កម្មវិធី "${transcript}" មិនមានទេ!`);
-      }
-    };
-
-    recognition.onerror = (event) => {
-      console.error("Speech error:", event.error);
-      // No alert needed, fallback already handled above
-    };
-  }
-
-  const micButton = document.querySelector('.mic-btn');
-  const overlay = document.getElementById("voiceOverlay");
-  const stopMicBtn = document.getElementById("stopMic");
-
-  if (micButton) {
-    micButton.addEventListener('pointerdown', () => {
-      if (!recognition) {
-        alert("កម្មវិធីនេះមិនគាំទ្រការថតសម្លេងទេ។");
-        return;
-      }
-
-      overlay.style.display = "flex";
-      stopMicBtn.classList.add("listening");
-      micButton.classList.add("listening");
-      document.querySelector('.mic-ring')?.classList.add('blinking');
-
-      try {
-<script>
-  // iOS fallback
-  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-  let speechSupported = true;
-
-  try {
-    const testSpeech = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    new (window.SpeechRecognition || window.webkitSpeechRecognition)();
   } catch (e) {
     speechSupported = false;
   }
@@ -737,136 +661,30 @@ document.addEventListener("DOMContentLoaded", () => {
 
     recognition.onerror = (event) => {
       console.error("Speech error:", event.error);
-      if (event.error !== "not-allowed" && event.error !== "service-not-allowed") {
-        alert("បញ្ហាក្នុងការស្ដាប់សម្លេង: " + event.error);
-      }
-    };
-  }
-
-  const micButton = document.querySelector('.mic-btn');
-  const overlay = document.getElementById("voiceOverlay");
-  const stopMicBtn = document.getElementById("stopMic");
-
-  if (micButton) {
-    micButton.addEventListener('pointerdown', () => {
-      if (!recognition) {
-        alert("កម្មវិធីនេះមិនគាំទ្រការថតសម្លេងទេ។");
-        return;
-      }
-
-      overlay.style.display = "flex";
-      stopMicBtn.classList.add("listening");
-      micButton.classList.add("listening");
-      document.querySelector('.mic-ring')?.classList.add('blinking');
-
-      try {
-        recognition.start();
-      } catch (e) {
-        console.log("Already recording");
-<!-- ✅ Voice Assistant -->
-<script>
-  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-  let speechSupported = true;
-
-  try {
-    new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-  } catch (e) {
-    speechSupported = false;
-  }
-
-  if (isIOS && !speechSupported) {
-    alert("សូមអភ័យទោស! កម្មវិធីស្ដាប់សម្លេងមិនគាំទ្រលើ iPhone Safari នៅពេលនេះទេ។ សូមប្រើ Chrome នៅលើ Android។");
-  }
-
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  let recognition;
-
-  if (SpeechRecognition) {
-    recognition = new SpeechRecognition();
-    recognition.lang = 'km-KH';
-    recognition.continuous = false;
-    recognition.interimResults = true; // show live subtitle
-
-    recognition.onstart = () => {
-      document.getElementById("liveSubtitle").textContent = "កំពុងស្តាប់...";
     };
 
-    recognition.onresult = (event) => {
-      let interim = "";
-      let finalTranscript = "";
-      for (let i = 0; i < event.results.length; i++) {
-        const res = event.results[i];
-        if (res.isFinal) {
-          finalTranscript += res[0].transcript;
-        } else {
-          interim += res[0].transcript;
-        }
-      }
+    const micButton = document.querySelector('.mic-btn');
+    const overlay = document.getElementById("voiceOverlay");
+    const stopMicBtn = document.getElementById("stopMic");
 
-      document.getElementById("liveSubtitle").textContent = finalTranscript || interim;
-
-      if (finalTranscript) {
-        const normalized = finalTranscript.toLowerCase();
-        let found = false;
-
-        document.querySelectorAll('.menu-item').forEach(item => {
-          const label = item.querySelector('.label')?.textContent?.toLowerCase() || '';
-          const labelWords = label.split(/[\s,]+/);
-          const transcriptWords = normalized.split(/[\s,]+/);
-
-          const match = transcriptWords.some(word =>
-            labelWords.some(labelWord =>
-              labelWord.includes(word) || word.includes(labelWord)
-            )
-          );
-
-          if (match) {
-            found = true;
-            item.click();
-          }
-        });
-
-        if (!found) {
-          alert(`កម្មវិធី "${finalTranscript}" មិនមានទេ!`);
-        }
-      }
-    };
-
-    recognition.onend = () => {
-      document.getElementById("liveSubtitle").textContent = "";
-    };
-
-    recognition.onerror = (event) => {
-      console.error("Speech error:", event.error);
-    };
-  }
-
-  const micButton = document.querySelector('.mic-btn');
-  const overlay = document.getElementById("voiceOverlay");
-  const stopMicBtn = document.getElementById("stopMic");
-
-  function stopRecognition() {
-    if (recognition) recognition.stop();
-    overlay.style.display = "none";
-    stopMicBtn.classList.remove("listening");
-    micButton.classList.remove("listening");
-    document.querySelector('.mic-ring')?.classList.remove('blinking');
-  }
-
-  if (micButton) {
     micButton.addEventListener('pointerdown', () => {
       if (!recognition) return;
       overlay.style.display = "flex";
       stopMicBtn.classList.add("listening");
       micButton.classList.add("listening");
-      document.querySelector('.mic-ring')?.classList.add("blinking");
-
-      try { recognition.start(); } catch {}
+      recognition.start();
     });
 
-    micButton.addEventListener('pointerup', stopRecognition);
-    micButton.addEventListener('pointercancel', stopRecognition);
-    stopMicBtn.addEventListener("click", stopRecognition);
+    const stopListening = () => {
+      recognition.stop();
+      overlay.style.display = "none";
+      stopMicBtn.classList.remove("listening");
+      micButton.classList.remove("listening");
+    };
+
+    micButton.addEventListener('pointerup', stopListening);
+    micButton.addEventListener('pointercancel', stopListening);
+    stopMicBtn.addEventListener("click", stopListening);
   }
 </script>
 </body>
