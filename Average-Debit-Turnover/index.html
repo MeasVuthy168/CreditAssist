@@ -246,8 +246,7 @@
 
   <!-- Export Buttons -->
   <div class="actions">
-   <button onclick="printPage()" style="padding:10px 20px; font-weight:bold;">Test Print</button>
-    <!--<img src="https://img.icons8.com/color/48/pdf.png" title="Print" onclick="printPage()" />-->
+    <img src="https://img.icons8.com/color/48/pdf.png" title="Print" onclick="printPage()" />
     <img src="https://img.icons8.com/color/48/ms-excel.png" title="Export to Excel" onclick="exportToExcel()" />
   </div>
 
@@ -298,6 +297,7 @@
   
   <!-- Scripts -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <script>
     let combinedData = [];
     let monthList = [];
@@ -435,24 +435,42 @@
   XLSX.writeFile(wb, "Turnover_Average.xlsx");
 }
 
-  function printPage() {
-  try {
-    console.log("Triggering print...");
-    const preparedDate = document.getElementById("prepared-date").value || '-';
-    const cif = document.getElementById("input-cif").value.trim() || '-';
-    const customerName = document.getElementById("customer-name-label").textContent || '-';
+ function printPage() {
+  const preparedDate = document.getElementById("prepared-date").value || '-';
+  const cif = document.getElementById("input-cif").value.trim() || '-';
+  const customerName = document.getElementById("customer-name-label").textContent || '-';
 
-    document.getElementById("ph-date").textContent = `Prepared Date: ${preparedDate}`;
-    document.getElementById("ph-cif").textContent = `CIF: ${cif}`;
-    document.getElementById("ph-name").textContent = `Customer Name: ${customerName}`;
+  // Create metadata section
+  const metadata = document.createElement("div");
+  metadata.style.textAlign = "center";
+  metadata.style.fontWeight = "bold";
+  metadata.style.marginBottom = "10px";
+  metadata.innerHTML = `
+    <div>Prepared Date: ${preparedDate}</div>
+    <div>CIF: ${cif}</div>
+    <div>Customer Name: ${customerName}</div>
+    <hr style="margin:10px 0;">
+  `;
 
-    setTimeout(() => {
-      window.print();
-    }, 300);
-  } catch (err) {
-    alert("Printing failed: " + err.message);
-  }
+  // Clone only the part we want in the PDF
+  const tableSection = document.querySelector(".table-container").cloneNode(true);
+  const wrapper = document.createElement("div");
+  wrapper.style.fontFamily = "'Krasar', Arial, sans-serif";
+  wrapper.style.fontSize = "12px";
+  wrapper.style.padding = "20px";
+  wrapper.style.backgroundColor = "white";
+  wrapper.appendChild(metadata);
+  wrapper.appendChild(tableSection);
+
+  // Generate PDF
+  html2pdf().from(wrapper).set({
+    filename: "Turnover_Report.pdf",
+    margin: 0.5,
+    html2canvas: { scale: 2 },
+    jsPDF: { unit: "in", format: "a4", orientation: "portrait" }
+  }).save();
 }
+    
     // Auto Logout
     const AUTO_LOGOUT_MINUTES = 1;
     let logoutTimer;
