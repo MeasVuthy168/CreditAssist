@@ -219,9 +219,8 @@
 
   <!-- Export Buttons -->
   <div class="actions">
-    <img src="https://img.icons8.com/color/48/print.png" title="Print" onclick="printPage()" />
+    <img src="https://img.icons8.com/color/48/pdf.png" title="Print" onclick="printPage()" />
     <img src="https://img.icons8.com/color/48/ms-excel.png" title="Export to Excel" onclick="exportToExcel()" />
-    <img src="https://img.icons8.com/color/48/pdf.png" title="Export to PDF" onclick="exportToPDF()" />
   </div>
 
   <!-- Table -->
@@ -264,7 +263,6 @@
   
   <!-- Scripts -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <script>
     let combinedData = [];
     let monthList = [];
@@ -372,29 +370,7 @@
       XLSX.writeFile(wb, "Turnover_Average.xlsx");
     }
 
-    function exportToPDF() {
-      const topbar = document.querySelector(".header");
-      const actionSection = document.querySelector(".actions");
-      const bottombar = document.querySelector(".bottom-bar");
-
-      topbar.style.display = "none";
-      actionSection.style.display = "none";
-      bottombar.style.display = "none";
-
-      html2pdf().from(document.body).set({
-        margin: 0.5,
-        filename: 'Turnover_Average.pdf',
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2 },
-        jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
-      }).save().then(() => {
-        topbar.style.display = "flex";
-        actionSection.style.display = "block";
-        bottombar.style.display = "flex";
-      });
-    }
-
-    function printPage() {
+  function printPage() {
   const preparedDate = document.getElementById("prepared-date").value;
   const cif = document.getElementById("input-cif").value.trim();
   const customerName = document.getElementById("customer-name-label").textContent;
