@@ -596,9 +596,17 @@ document.addEventListener("DOMContentLoaded", () => {
     
 <!-- ✅ vioce assistant-->
 <script>
-  // ✅ Fallback for iOS Safari
+  // iOS fallback: test true support, not just presence
   const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-  if (isIOS && !window.webkitSpeechRecognition) {
+  let speechSupported = true;
+
+  try {
+    const testSpeech = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+  } catch (e) {
+    speechSupported = false;
+  }
+
+  if (isIOS && !speechSupported) {
     alert("សូមអភ័យទោស! កម្មវិធីស្ដាប់សម្លេងមិនគាំទ្រលើ iPhone Safari នៅពេលនេះទេ។ សូមប្រើ Chrome នៅលើ Android។");
   }
 
@@ -618,8 +626,17 @@ document.addEventListener("DOMContentLoaded", () => {
       let found = false;
 
       document.querySelectorAll('.menu-item').forEach(item => {
-        const label = item.querySelector('.label')?.textContent?.trim().toLowerCase() || '';
-        if (label.includes(transcript) || transcript.includes(label)) {
+        const labelText = item.querySelector('.label')?.textContent?.toLowerCase() || '';
+        const labelWords = labelText.split(/[\s,]+/);
+        const transcriptWords = transcript.split(/[\s,]+/);
+
+        const match = transcriptWords.some(word =>
+          labelWords.some(labelWord =>
+            labelWord.includes(word) || word.includes(labelWord)
+          )
+        );
+
+        if (match) {
           found = true;
           item.click();
         }
@@ -650,6 +667,7 @@ document.addEventListener("DOMContentLoaded", () => {
         alert("កម្មវិធីនេះមិនគាំទ្រការថតសម្លេងទេ។");
         return;
       }
+
       overlay.style.display = "flex";
       stopMicBtn.classList.add("listening");
       micButton.classList.add("listening");
