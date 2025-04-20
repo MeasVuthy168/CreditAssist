@@ -435,19 +435,22 @@
 }
 
   function printPage() {
-  const preparedDate = document.getElementById("prepared-date").value || '-';
-  const cif = document.getElementById("input-cif").value.trim() || '-';
-  const customerName = document.getElementById("customer-name-label").textContent || '-';
+  try {
+    console.log("Triggering print...");
+    const preparedDate = document.getElementById("prepared-date").value || '-';
+    const cif = document.getElementById("input-cif").value.trim() || '-';
+    const customerName = document.getElementById("customer-name-label").textContent || '-';
 
-  // Fill metadata into visible print section
-  document.getElementById("ph-date").textContent = `Prepared Date: ${preparedDate}`;
-  document.getElementById("ph-cif").textContent = `CIF: ${cif}`;
-  document.getElementById("ph-name").textContent = `Customer Name: ${customerName}`;
+    document.getElementById("ph-date").textContent = `Prepared Date: ${preparedDate}`;
+    document.getElementById("ph-cif").textContent = `CIF: ${cif}`;
+    document.getElementById("ph-name").textContent = `Customer Name: ${customerName}`;
 
-  // Give time for DOM to update
-  setTimeout(() => {
-    window.print();
-  }, 300);
+    setTimeout(() => {
+      window.print();
+    }, 300);
+  } catch (err) {
+    alert("Printing failed: " + err.message);
+  }
 }
     // Auto Logout
     const AUTO_LOGOUT_MINUTES = 1;
