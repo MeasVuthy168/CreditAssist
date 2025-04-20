@@ -626,10 +626,13 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     recognition.onerror = (event) => {
-      console.error("Speech error:", event.error);
-      alert("បញ្ហាក្នុងការស្ដាប់សម្លេង: " + event.error);
-    };
+  console.error("Speech error:", event.error);
+  if (event.error === "not-allowed" || event.error === "service-not-allowed") {
+    alert("សូមអនុញ្ញាតឲ្យកម្មវិធីប្រើ microphone នៅក្នុង Setting → Safari → Microphone → Allow.");
+  } else {
+    alert("បញ្ហាក្នុងការស្ដាប់សម្លេង: " + event.error);
   }
+};
 
   const micButton = document.querySelector('.mic-btn');
   const overlay = document.getElementById("voiceOverlay");
