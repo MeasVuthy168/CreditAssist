@@ -58,44 +58,36 @@
     }
 
     .form-section {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
 
-    .half {
-      flex: 1 1 calc(50% - 10px);
-      min-width: 220px;
-    }
+.form-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 
-    .full {
-      flex: 1 1 100%;
-    }
+.form-row label {
+  width: 40%;
+  font-size: 14px;
+}
 
-    label {
-      font-size: 14px;
-      display: block;
-      margin-bottom: 4px;
-    }
+.form-row input,
+.form-row .readonly-label {
+  width: 58%;
+  font-size: 14px;
+  padding: 6px 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
 
-    input {
-      padding: 6px 8px;
-      width: 100%;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      font-size: 14px;
-    }
-
-    .readonly-label {
-      padding: 6px 8px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      background-color: #f0f0f0;
-      font-size: 14px;
-      font-weight: bold;
-      display: block;
-    }
+.form-row .readonly-label {
+  background-color: #f0f0f0;
+  font-weight: bold;
+}
 
     .actions {
       text-align: center;
@@ -202,20 +194,20 @@
   </h2>
 
   <!-- Input Form -->
-  <div class="form-section">
-    <div class="half">
-      <label for="prepared-date">Prepared Date</label>
-      <input type="date" id="prepared-date" />
-    </div>
-    <div class="half">
-      <label for="input-cif">Input CIF</label>
-      <input type="text" id="input-cif" />
-    </div>
-    <div class="full">
-      <label for="customer-name">Customer Name</label>
-      <span class="readonly-label" id="customer-name-label">-</span>
-    </div>
+<div class="form-section">
+  <div class="form-row">
+    <label for="prepared-date">Prepared Date</label>
+    <input type="date" id="prepared-date" />
   </div>
+  <div class="form-row">
+    <label for="input-cif">Input CIF</label>
+    <input type="text" id="input-cif" />
+  </div>
+  <div class="form-row">
+    <label for="customer-name">Customer Name</label>
+    <span class="readonly-label" id="customer-name-label">-</span>
+  </div>
+</div>
 
   <!-- Export Buttons -->
   <div class="actions">
