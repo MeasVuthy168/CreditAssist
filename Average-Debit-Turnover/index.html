@@ -419,24 +419,32 @@
   printInfo.id = "print-info";
   printInfo.style.textAlign = "center";
   printInfo.style.marginBottom = "10px";
+  printInfo.style.padding = "10px";
+  printInfo.style.fontWeight = "bold";
   printInfo.innerHTML = `
-    <div><strong>Prepared Date:</strong> ${preparedDate || '-'}</div>
-    <div><strong>CIF:</strong> ${cif || '-'}</div>
-    <div><strong>Customer Name:</strong> ${customerName || '-'}</div>
+    <div>Prepared Date: ${preparedDate || '-'}</div>
+    <div>CIF: ${cif || '-'}</div>
+    <div>Customer Name: ${customerName || '-'}</div>
     <hr style="margin: 10px 0;">
   `;
 
-  document.body.insertBefore(printInfo, document.querySelector(".table-container"));
+  // Insert before table
+  const container = document.querySelector(".table-container");
+  document.body.insertBefore(printInfo, container);
 
-  // Trigger print
-  window.print();
+  // Wait for layout to apply, then print
+  requestAnimationFrame(() => {
+    setTimeout(() => {
+      window.print();
 
-  // Clean up after printing
-  setTimeout(() => {
-    if (document.getElementById("print-info")) {
-      document.getElementById("print-info").remove();
-    }
-  }, 1000);
+      // Clean up after print
+      setTimeout(() => {
+        if (document.getElementById("print-info")) {
+          document.getElementById("print-info").remove();
+        }
+      }, 100);
+    }, 200); // Delay helps on Android Chrome
+  });
 }
 
     // Auto Logout
