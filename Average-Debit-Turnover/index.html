@@ -369,23 +369,35 @@
 
   const table = document.getElementById("turnover-table");
   const wb = XLSX.utils.book_new();
+  const ws_data = [];
 
-  // Convert HTML table to sheet
-  const ws = XLSX.utils.table_to_sheet(table);
+  // Add title and metadata
+  ws_data.push(["Average Debit Turnover"]);
+  ws_data.push([`Prepared Date: ${preparedDate}`]);
+  ws_data.push([`CIF: ${cif}`]);
+  ws_data.push([`Customer Name: ${customerName}`]);
+  ws_data.push([]); // empty row before table
 
-  // Add custom header rows
-  XLSX.utils.sheet_add_aoa(ws, [
-    ["Average Debit Turnover"],
-    [`Prepared Date: ${preparedDate}`],
-    [`CIF: ${cif}`],
-    [`Customer Name: ${customerName}`],
-    [] // Empty row before table
-  ], { origin: "A1" });
+  // Add table headers
+  const headers = [];
+  table.querySelectorAll("thead th").forEach(th => headers.push(th.innerText.trim()));
+  ws_data.push(headers);
 
-  // Append sheet to workbook
+  // Add table body rows
+  table.querySelectorAll("tbody tr").forEach(row => {
+    const rowData = [];
+    row.querySelectorAll("td").forEach(td => rowData.push(td.innerText.trim()));
+    ws_data.push(rowData);
+  });
+
+  // Add footer (average row)
+  const footerRow = [];
+  table.querySelectorAll("tfoot td").forEach(td => footerRow.push(td.innerText.trim()));
+  ws_data.push(footerRow);
+
+  // Create worksheet and export
+  const ws = XLSX.utils.aoa_to_sheet(ws_data);
   XLSX.utils.book_append_sheet(wb, ws, "Turnover");
-
-  // Export file
   XLSX.writeFile(wb, "Turnover_Average.xlsx");
 }
 
