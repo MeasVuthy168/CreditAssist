@@ -363,12 +363,60 @@
     });
 
     function exportToExcel() {
-      const table = document.getElementById("turnover-table");
-      const wb = XLSX.utils.book_new();
-      const ws = XLSX.utils.table_to_sheet(table);
-      XLSX.utils.book_append_sheet(wb, ws, "Turnover");
-      XLSX.writeFile(wb, "Turnover_Average.xlsx");
+  const preparedDate = document.getElementById("prepared-date").value || '-';
+  const cif = document.getElementById("input-cif").value.trim() || '-';
+  const customerName = document.getElementById("customer-name-label").textContent || '-';
+
+  const table = document.getElementById("turnover-table");
+  const wb = XLSX.utils.book_new();
+
+  // Custom header rows
+  const titleRow = [["Average Debit Turnover"]];
+  const infoRow1 = [`Prepared Date: ${preparedDate}`];
+  const infoRow2 = [`CIF: ${cif}`];
+  const infoRow3 = [`Customer Name: ${customerName}`];
+
+  // Convert table to sheet
+  const dataSheet = XLSX.utils.table_to_sheet(table, { origin: -1 });
+
+  // Insert custom rows before the table
+  XLSX.utils.sheet_add_aoa(dataSheet, titleRow, { origin: "A1" });
+  XLSX.utils.sheet_add_aoa(dataSheet, infoRow1, { origin: "A2" });
+  XLSX.utils.sheet_add_aoa(dataSheet, infoRow2, { origin: "A3" });
+  XLSX.utils.sheet_add_aoa(dataSheet, infoRow3, { origin: "A4" });
+
+  // Apply basic borders and font
+  const range = XLSX.utils.decode_range(dataSheet['!ref']);
+  for (let R = range.s.r; R <= range.e.r; ++R) {
+    for (let C = range.s.c; C <= range.e.c; ++C) {
+      const cell_address = { c: C, r: R };
+      const cell_ref = XLSX.utils.encode_cell(cell_address);
+      if (!dataSheet[cell_ref]) continue;
+      dataSheet[cell_ref].s = {
+        font: { name: 'Krasar' },
+        border: {
+          top: { style: "thin", color: { auto: 1 } },
+          bottom: { style: "thin", color: { auto: 1 } },
+          left: { style: "thin", color: { auto: 1 } },
+          right: { style: "thin", color: { auto: 1 } }
+        },
+        alignment: { vertical: "center", horizontal: "center" }
+      };
     }
+  }
+
+  // Sheet styling requires writing with cell styles enabled
+  const wbOpts = {
+    bookType: "xlsx",
+    type: "binary",
+    cellStyles: true
+  };
+
+  XLSX.utils.book_append_sheet(wb, dataSheet, "Turnover");
+
+  // Trigger download
+  XLSX.writeFile(wb, "Turnover_Average.xlsx", wbOpts);
+}
 
   function printPage() {
   const preparedDate = document.getElementById("prepared-date").value;
