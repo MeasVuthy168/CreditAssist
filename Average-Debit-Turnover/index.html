@@ -198,16 +198,19 @@
   padding: 0;
 }
 
+@media screen {
+  #print-header {
+    display: none;
+  }
+}
+
 @media print {
   .header, .bottom-bar, .actions, .form-section {
     display: none !important;
   }
-  
-  #print-metadata {
-    visibility: visible !important;
-    height: auto !important;
-    margin-bottom: 10px !important;
-    padding: 10px !important;
+
+  #print-header {
+    display: block !important;
   }
 }
   </style>
@@ -247,12 +250,11 @@
     <img src="https://img.icons8.com/color/48/ms-excel.png" title="Export to Excel" onclick="exportToExcel()" />
   </div>
 
-  <!-- Print Metadata (hidden but rendered) -->
-<div id="print-metadata" style="visibility:hidden; text-align:center; margin-bottom:10px; padding:10px; font-weight:bold; background:white; color:black;">
-  <div id="print-date">Prepared Date:</div>
-  <div id="print-cif">CIF:</div>
-  <div id="print-name">Customer Name:</div>
-  <hr style="margin:10px 0;">
+ <!-- Print Header Always Visible But Empty -->
+<div id="print-header" style="font-weight:bold; text-align:center; background:white; color:black; padding:10px 0; border-bottom: 1px solid #ccc;">
+  <div id="ph-date">Prepared Date:</div>
+  <div id="ph-cif">CIF:</div>
+  <div id="ph-name">Customer Name:</div>
 </div>
   
   <!-- Table -->
@@ -437,15 +439,15 @@
   const cif = document.getElementById("input-cif").value.trim() || '-';
   const customerName = document.getElementById("customer-name-label").textContent || '-';
 
-  // Fill values
-  document.getElementById("print-date").textContent = `Prepared Date: ${preparedDate}`;
-  document.getElementById("print-cif").textContent = `CIF: ${cif}`;
-  document.getElementById("print-name").textContent = `Customer Name: ${customerName}`;
+  // Fill metadata into visible print section
+  document.getElementById("ph-date").textContent = `Prepared Date: ${preparedDate}`;
+  document.getElementById("ph-cif").textContent = `CIF: ${cif}`;
+  document.getElementById("ph-name").textContent = `Customer Name: ${customerName}`;
 
-  // Trigger print after short delay to ensure DOM is ready
+  // Give time for DOM to update
   setTimeout(() => {
     window.print();
-  }, 200);
+  }, 300);
 }
     // Auto Logout
     const AUTO_LOGOUT_MINUTES = 1;
