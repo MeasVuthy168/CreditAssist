@@ -598,23 +598,19 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 </script>
     
-<!-- ✅ vioce assistant-->
+<!-- ✅ Voice Assistant -->
 <script>
   const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  let recognition, speechSupported = true;
+  const speechSupported = !!SpeechRecognition;
+  let recognition;
 
-  try {
-    recognition = new SpeechRecognition();
-  } catch (e) {
-    speechSupported = false;
-  }
-
-  if (isIOS && !speechSupported) {
+  if (!speechSupported && isIOS) {
     alert("សូមអភ័យទោស! កម្មវិធីស្ដាប់សម្លេងមិនគាំទ្រលើ iPhone/Safari នៅពេលនេះទេ។ សូមប្រើ Chrome នៅលើ Android។");
   }
 
-  if (speechSupported && recognition) {
+  if (speechSupported) {
+    recognition = new SpeechRecognition();
     recognition.lang = 'km-KH';
     recognition.continuous = false;
     recognition.interimResults = true;
@@ -670,47 +666,37 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     };
 
-    const micButton = document.querySelector('.mic-btn');
-    const overlay = document.getElementById("voiceOverlay");
-    const stopMicBtn = document.getElementById("stopMic");
+    window.addEventListener('DOMContentLoaded', () => {
+      const micButton = document.querySelector('.mic-btn');
+      const overlay = document.getElementById("voiceOverlay");
+      const stopMicBtn = document.getElementById("stopMic");
 
-    if (micButton) {
-      micButton.addEventListener('pointerdown', () => {
-        overlay.style.display = "flex";
-        stopMicBtn.classList.add("listening");
-        micButton.classList.add("listening");
-        document.querySelector('.mic-ring')?.classList.add('blinking');
-        try {
-          recognition.start();
-        } catch (e) {
-          console.log("Already recording");
-        }
-      });
+      if (micButton) {
+        micButton.addEventListener('pointerdown', () => {
+          overlay.style.display = "flex";
+          stopMicBtn.classList.add("listening");
+          micButton.classList.add("listening");
+          document.querySelector('.mic-ring')?.classList.add('blinking');
+          try {
+            recognition.start();
+          } catch (e) {
+            console.log("Already recording");
+          }
+        });
 
-      micButton.addEventListener('pointerup', () => {
-        recognition.stop();
-        overlay.style.display = "none";
-        stopMicBtn.classList.remove("listening");
-        micButton.classList.remove("listening");
-        document.querySelector('.mic-ring')?.classList.remove('blinking');
-      });
+        const stopListening = () => {
+          recognition.stop();
+          overlay.style.display = "none";
+          stopMicBtn.classList.remove("listening");
+          micButton.classList.remove("listening");
+          document.querySelector('.mic-ring')?.classList.remove('blinking');
+        };
 
-      micButton.addEventListener('pointercancel', () => {
-        recognition.stop();
-        overlay.style.display = "none";
-        stopMicBtn.classList.remove("listening");
-        micButton.classList.remove("listening");
-        document.querySelector('.mic-ring')?.classList.remove('blinking');
-      });
-
-      stopMicBtn.addEventListener("click", () => {
-        recognition.stop();
-        overlay.style.display = "none";
-        stopMicBtn.classList.remove("listening");
-        micButton.classList.remove("listening");
-        document.querySelector('.mic-ring')?.classList.remove('blinking');
-      });
-    }
+        micButton.addEventListener('pointerup', stopListening);
+        micButton.addEventListener('pointercancel', stopListening);
+        stopMicBtn.addEventListener("click", stopListening);
+      }
+    });
   }
 </script>
 </body>
