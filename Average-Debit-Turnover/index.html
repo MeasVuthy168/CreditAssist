@@ -371,31 +371,30 @@
   const wb = XLSX.utils.book_new();
   const ws_data = [];
 
-  // Add title and metadata
+  // Row 1 to 4
   ws_data.push(["Average Debit Turnover"]);
   ws_data.push([`Prepared Date: ${preparedDate}`]);
   ws_data.push([`CIF: ${cif}`]);
   ws_data.push([`Customer Name: ${customerName}`]);
-  ws_data.push([]); // empty row before table
 
-  // Add table headers
+  // Row 5: table headers
   const headers = [];
   table.querySelectorAll("thead th").forEach(th => headers.push(th.innerText.trim()));
   ws_data.push(headers);
 
-  // Add table body rows
+  // Table body
   table.querySelectorAll("tbody tr").forEach(row => {
     const rowData = [];
     row.querySelectorAll("td").forEach(td => rowData.push(td.innerText.trim()));
     ws_data.push(rowData);
   });
 
-  // Add footer (average row)
+  // Footer (average)
   const footerRow = [];
   table.querySelectorAll("tfoot td").forEach(td => footerRow.push(td.innerText.trim()));
   ws_data.push(footerRow);
 
-  // Create worksheet and export
+  // Create sheet and export
   const ws = XLSX.utils.aoa_to_sheet(ws_data);
   XLSX.utils.book_append_sheet(wb, ws, "Turnover");
   XLSX.writeFile(wb, "Turnover_Average.xlsx");
