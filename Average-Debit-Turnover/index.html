@@ -190,13 +190,24 @@
   white-space: nowrap;
 }
 
- @media print {
+ #print-metadata {
+  visibility: hidden;
+  height: 0;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+}
+
+@media print {
   .header, .bottom-bar, .actions, .form-section {
     display: none !important;
   }
-
+  
   #print-metadata {
     visibility: visible !important;
+    height: auto !important;
+    margin-bottom: 10px !important;
+    padding: 10px !important;
   }
 }
   </style>
