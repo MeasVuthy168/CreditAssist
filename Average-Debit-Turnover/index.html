@@ -194,8 +194,9 @@
   .header, .bottom-bar, .actions, .form-section {
     display: none !important;
   }
+
   #print-metadata {
-    display: block !important;
+    visibility: visible !important;
   }
 }
   </style>
@@ -235,6 +236,14 @@
     <img src="https://img.icons8.com/color/48/ms-excel.png" title="Export to Excel" onclick="exportToExcel()" />
   </div>
 
+  <!-- Print Metadata (hidden but rendered) -->
+<div id="print-metadata" style="visibility:hidden; text-align:center; margin-bottom:10px; padding:10px; font-weight:bold; background:white; color:black;">
+  <div id="print-date">Prepared Date:</div>
+  <div id="print-cif">CIF:</div>
+  <div id="print-name">Customer Name:</div>
+  <hr style="margin:10px 0;">
+</div>
+  
   <!-- Table -->
   <div class="table-container">
     <table id="turnover-table">
@@ -417,21 +426,15 @@
   const cif = document.getElementById("input-cif").value.trim() || '-';
   const customerName = document.getElementById("customer-name-label").textContent || '-';
 
-  // Fill values into static block
+  // Fill values
   document.getElementById("print-date").textContent = `Prepared Date: ${preparedDate}`;
   document.getElementById("print-cif").textContent = `CIF: ${cif}`;
   document.getElementById("print-name").textContent = `Customer Name: ${customerName}`;
-  document.getElementById("print-metadata").style.display = "block";
 
-  // Trigger print with short delay (for Android rendering)
+  // Trigger print after short delay to ensure DOM is ready
   setTimeout(() => {
     window.print();
-
-    // Clean up after print
-    setTimeout(() => {
-      document.getElementById("print-metadata").style.display = "none";
-    }, 500);
-  }, 300);
+  }, 200);
 }
     // Auto Logout
     const AUTO_LOGOUT_MINUTES = 1;
