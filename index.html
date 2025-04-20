@@ -596,7 +596,7 @@ document.addEventListener("DOMContentLoaded", () => {
     
 <!-- ✅ vioce assistant-->
 <script>
-  // iOS fallback: test true support, not just presence
+  // iOS fallback detection
   const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
   let speechSupported = true;
 
@@ -647,13 +647,11 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     };
 
-  recognition.onerror = (event) => {
-  console.error("Speech error:", event.error);
-  // Optional: only show alert for other errors
-  if (event.error !== "not-allowed" && event.error !== "service-not-allowed") {
-    alert("បញ្ហាក្នុងការស្ដាប់សម្លេង: " + event.error);
+    recognition.onerror = (event) => {
+      console.error("Speech error:", event.error);
+      // No alert needed, fallback already handled above
+    };
   }
-};
 
   const micButton = document.querySelector('.mic-btn');
   const overlay = document.getElementById("voiceOverlay");
