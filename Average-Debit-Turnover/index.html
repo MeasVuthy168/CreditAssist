@@ -190,11 +190,14 @@
   white-space: nowrap;
 }
 
-    @media print {
-      .header, .bottom-bar, .actions, .form-section {
-        display: none !important;
-      }
-    }
+ @media print {
+  .header, .bottom-bar, .actions, .form-section {
+    display: none !important;
+  }
+  #print-metadata {
+    display: block !important;
+  }
+}
   </style>
 </head>
 <body>
@@ -410,43 +413,26 @@
 }
 
   function printPage() {
-  const preparedDate = document.getElementById("prepared-date").value;
-  const cif = document.getElementById("input-cif").value.trim();
-  const customerName = document.getElementById("customer-name-label").textContent;
+  const preparedDate = document.getElementById("prepared-date").value || '-';
+  const cif = document.getElementById("input-cif").value.trim() || '-';
+  const customerName = document.getElementById("customer-name-label").textContent || '-';
 
-  // Create temporary print header
-  const printInfo = document.createElement("div");
-  printInfo.id = "print-info";
-  printInfo.style.textAlign = "center";
-  printInfo.style.marginBottom = "10px";
-  printInfo.style.padding = "10px";
-  printInfo.style.fontWeight = "bold";
-  printInfo.innerHTML = `
-    <div>Prepared Date: ${preparedDate || '-'}</div>
-    <div>CIF: ${cif || '-'}</div>
-    <div>Customer Name: ${customerName || '-'}</div>
-    <hr style="margin: 10px 0;">
-  `;
+  // Fill values into static block
+  document.getElementById("print-date").textContent = `Prepared Date: ${preparedDate}`;
+  document.getElementById("print-cif").textContent = `CIF: ${cif}`;
+  document.getElementById("print-name").textContent = `Customer Name: ${customerName}`;
+  document.getElementById("print-metadata").style.display = "block";
 
-  // Insert before table
-  const container = document.querySelector(".table-container");
-  document.body.insertBefore(printInfo, container);
+  // Trigger print with short delay (for Android rendering)
+  setTimeout(() => {
+    window.print();
 
-  // Wait for layout to apply, then print
-  requestAnimationFrame(() => {
+    // Clean up after print
     setTimeout(() => {
-      window.print();
-
-      // Clean up after print
-      setTimeout(() => {
-        if (document.getElementById("print-info")) {
-          document.getElementById("print-info").remove();
-        }
-      }, 100);
-    }, 200); // Delay helps on Android Chrome
-  });
+      document.getElementById("print-metadata").style.display = "none";
+    }, 500);
+  }, 300);
 }
-
     // Auto Logout
     const AUTO_LOGOUT_MINUTES = 1;
     let logoutTimer;
