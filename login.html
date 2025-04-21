@@ -193,7 +193,12 @@
           }
 
           setTimeout(() => {
-            window.location.href = "index.html";
+            // Redirect based on position
+            if (data.position === "admin") {
+              window.location.href = "admin-upload.html";
+            } else {
+              window.location.href = "index.html";
+            }
           }, 500);
         } else {
           errorMsg.textContent = data.message || "Invalid username or password.";
