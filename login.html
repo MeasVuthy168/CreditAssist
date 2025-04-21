@@ -193,15 +193,16 @@
           }
 
          setTimeout(() => {
-            const position = data.position.trim().toLowerCase();
-            console.log("Logged-in user position:", position); // Debug log
-          
-            if (position === "admin") {
-              window.location.href = "adminupload.html";
-            } else {
-              window.location.href = "index.html";
-            }
-          }, 500);
+  const position = data.position.trim().toLowerCase();
+  console.log("Redirecting for position:", position); // Optional debug
+
+  if (position === "admin") {
+    window.location.href = "adminupload.html";
+  } else {
+    window.location.href = "index.html";
+  }
+}, 500);
+
         } else {
           errorMsg.textContent = data.message || "Invalid username or password.";
           loading.style.display = "none";
