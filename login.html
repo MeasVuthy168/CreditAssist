@@ -194,12 +194,12 @@
 
          setTimeout(() => {
   const position = data.position.trim().toLowerCase();
-  console.log("Redirecting for position:", position); // Optional debug
+  const base = location.href.substring(0, location.href.lastIndexOf("/") + 1);
 
   if (position === "admin") {
-    window.location.href = "adminupload.html";
+    window.location.href = base + "adminupload.html";
   } else {
-    window.location.href = "index.html";
+    window.location.href = base + "index.html";
   }
 }, 500);
 
