@@ -44,6 +44,15 @@
     }
   </style>
 </head>
+  <script>
+  const user = sessionStorage.getItem("loggedInUser");
+  const position = (sessionStorage.getItem("userPosition") || "").trim().toLowerCase();
+
+  if (!user || position !== "admin") {
+    alert("Unauthorized access. Admins only.");
+    window.location.href = "login.html";
+  }
+</script>
 <body>
   <h2>📥 Admin Mode: Upload Excel Data</h2>
   <div class="upload-box">
