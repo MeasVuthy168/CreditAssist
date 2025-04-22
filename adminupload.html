@@ -45,10 +45,23 @@
   </style>
 </head>
   <script>
-  const user = sessionStorage.getItem("loggedInUser");
-  const position = (sessionStorage.getItem("userPosition") || "").trim().toLowerCase();
+  // Try to read from sessionStorage first, fallback to remembered user
+  let position = sessionStorage.getItem("userPosition");
 
-  if (!user || position !== "admin") {
+  // Fallback: if sessionStorage is empty (likely Chrome PWA mode)
+  if (!position) {
+    const remembered = localStorage.getItem("rememberedUser");
+    if (remembered) {
+      const userData = JSON.parse(remembered);
+      position = userData.position || ""; // You must store position here at login
+    }
+  }
+
+  // Normalize position
+  position = (position || "").trim().toLowerCase();
+
+  // Check
+  if (position !== "admin") {
     alert("Unauthorized access. Admins only.");
     window.location.href = "login.html";
   }
