@@ -1,94 +1,72 @@
-<!DOCTYPE html><html lang="km">
+
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <title>Admin Data Upload</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
   <meta name="theme-color" content="#0d2d5c" />
   <style>
-    @font-face {
-      font-family: 'Krasar';
-      src: url('../Krasar-Regular.ttf') format('truetype');
-    }
     body {
       margin: 0;
       font-family: 'Krasar', Arial, sans-serif;
-      background: #002c5f;
-      color: white;
-      padding-bottom: 80px;
+      background: #f1f1f1;
+      padding: 20px;
     }
     .header {
       background-color: #0d2d5c;
-      padding: 12px;
-      text-align: center;
+      color: white;
       font-size: 18px;
       font-weight: bold;
-      color: #ffd700;
+      padding: 16px;
+      text-align: center;
       position: relative;
+      border-radius: 0 0 12px 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
     }
     .close-btn {
       position: absolute;
-      right: 12px;
       top: 12px;
+      right: 16px;
       background: transparent;
       border: none;
       color: white;
-      font-size: 20px;
+      font-size: 24px;
+      font-weight: bold;
       cursor: pointer;
     }
     .upload-box {
       background: white;
-      color: #002c5f;
       padding: 20px;
-      border-radius: 16px;
-      max-width: 440px;
+      border-radius: 12px;
+      max-width: 500px;
       margin: 20px auto;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
     label {
       font-weight: bold;
       display: block;
       margin-top: 16px;
+      margin-bottom: 6px;
+      color: #0d2d5c;
     }
     input[type="file"] {
       width: 100%;
-      margin-top: 4px;
+      margin-bottom: 15px;
     }
-    .file-preview {
-      font-size: 13px;
-      margin-bottom: 10px;
-    }
-    .progress-bar {
+    button.upload-btn {
       width: 100%;
-      background: #ccc;
-      height: 12px;
-      border-radius: 10px;
-      overflow: hidden;
-      margin-bottom: 10px;
-    }
-    .progress-fill {
-      height: 100%;
-      background: #0d2d5c;
-      width: 0%;
-      transition: width 0.3s ease;
-    }
-    button {
-      width: 100%;
+      padding: 12px;
       margin-top: 10px;
-      padding: 10px;
       background-color: #0d2d5c;
       color: white;
       border: none;
-      border-radius: 8px;
+      border-radius: 6px;
       font-size: 16px;
       cursor: pointer;
-      font-family: 'Krasar';
     }
-    .upload-log {
-      margin-top: 20px;
-      font-size: 14px;
-      background: #fff;
-      color: #002c5f;
-      border-radius: 10px;
-      padding: 10px;
+    button.upload-btn:hover {
+      background-color: #09306d;
     }
   </style>
 </head>
@@ -97,84 +75,44 @@
     Admin Mode: Upload Excel Data
     <button class="close-btn" onclick="closeAdmin()">&times;</button>
   </div>
+
   <div class="upload-box">
     <label>Upload User Data (.xlsx)</label>
-    <input type="file" id="userFile" accept=".xlsx" onchange="showFileInfo('userFile', 'userPreview')" />
-    <div class="file-preview" id="userPreview">No file chosen</div>
-    <div class="progress-bar"><div class="progress-fill" id="progressUser"></div></div>
-    <button onclick="uploadSingleFile('user')">Upload User File</button><label>Upload Customer Data (.xlsx)</label>
-<input type="file" id="customerFile" accept=".xlsx" onchange="showFileInfo('customerFile', 'customerPreview')" />
-<div class="file-preview" id="customerPreview">No file chosen</div>
-<div class="progress-bar"><div class="progress-fill" id="progressCustomer"></div></div>
-<button onclick="uploadSingleFile('customer')">Upload Customer File</button>
+    <input type="file" id="userFile" accept=".xlsx" />
 
-<label>Upload Turnover Data (.xlsx)</label>
-<input type="file" id="turnoverFile" accept=".xlsx" onchange="showFileInfo('turnoverFile', 'turnoverPreview')" />
-<div class="file-preview" id="turnoverPreview">No file chosen</div>
-<div class="progress-bar"><div class="progress-fill" id="progressTurnover"></div></div>
-<button onclick="uploadSingleFile('turnover')">Upload Turnover File</button>
+    <label>Upload Customer Data (.xlsx)</label>
+    <input type="file" id="customerFile" accept=".xlsx" />
 
-<div class="upload-log" id="uploadLog">Upload log will appear here.</div>
+    <label>Upload Turnover Data (.xlsx)</label>
+    <input type="file" id="turnoverFile" accept=".xlsx" />
 
-  </div>  <script>
+    <button class="upload-btn" onclick="uploadFiles()">📤 Upload to MongoDB</button>
+  </div>
+
+  <script>
+    // ✅ Close button: go back to home page
     function closeAdmin() {
-      window.location.href = '../index.html';
+      window.location.href = "index.html";
     }
 
-    function showFileInfo(inputId, previewId) {
-      const file = document.getElementById(inputId).files[0];
-      const preview = document.getElementById(previewId);
-      if (file) {
-        const sizeKB = (file.size / 1024).toFixed(2);
-        preview.textContent = `${file.name} (${file.type || 'N/A'}, ${sizeKB} KB)`;
-      } else {
-        preview.textContent = "No file chosen";
-      }
-    }
-
-    function uploadSingleFile(type) {
-      const fileInput = document.getElementById(type + 'File');
-      const file = fileInput.files[0];
-      const progressFill = document.getElementById('progress' + capitalize(type));
-      const log = document.getElementById('uploadLog');
-
-      if (!file) {
-        alert("Please select a file to upload.");
-        return;
-      }
+    async function uploadFiles() {
+      const userFile = document.getElementById('userFile').files[0];
+      const customerFile = document.getElementById('customerFile').files[0];
+      const turnoverFile = document.getElementById('turnoverFile').files[0];
 
       const formData = new FormData();
-      formData.append(type, file);
+      if (userFile) formData.append("user", userFile);
+      if (customerFile) formData.append("customer", customerFile);
+      if (turnoverFile) formData.append("turnover", turnoverFile);
 
-      const xhr = new XMLHttpRequest();
-      xhr.open("POST", "https://your-backend-url.com/api/admin/upload", true);
+      const res = await fetch("https://your-backend-url.com/api/admin/upload", {
+        method: "POST",
+        body: formData
+      });
 
-      xhr.upload.onprogress = function(e) {
-        if (e.lengthComputable) {
-          const percent = (e.loaded / e.total) * 100;
-          progressFill.style.width = percent.toFixed(0) + "%";
-        }
-      };
-
-      xhr.onload = function() {
-        if (xhr.status === 200) {
-          log.innerHTML += `✔️ ${file.name} uploaded successfully.<br>`;
-        } else {
-          log.innerHTML += `❌ Failed to upload ${file.name}.<br>`;
-        }
-        progressFill.style.width = "0%";
-      };
-
-      xhr.onerror = function() {
-        log.innerHTML += `❌ Error uploading ${file.name}.<br>`;
-        progressFill.style.width = "0%";
-      };
-
-      xhr.send(formData);
+      const result = await res.json();
+      alert(result.message || "Upload completed.");
     }
-
-    function capitalize(str) {
-      return str.charAt(0).toUpperCase() + str.slice(1);
-    }
-  </script></body>
+  </script>
+</body>
 </html>
