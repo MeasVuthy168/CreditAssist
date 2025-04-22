@@ -194,7 +194,7 @@
 
          setTimeout(() => {
   const position = data.position.trim().toLowerCase();
-  console.log("Redirecting for position:", position); // Optional debug
+  console.log("User position:", position);
 
   if (position === "admin") {
     window.location.href = "adminupload.html";
@@ -202,7 +202,6 @@
     window.location.href = "index.html";
   }
 }, 500);
-
         } else {
           errorMsg.textContent = data.message || "Invalid username or password.";
           loading.style.display = "none";
