@@ -1,155 +1,89 @@
 
-<!DOCTYPE html>
-<html lang="km">
+<!DOCTYPE html><html lang="km">
 <head>
   <meta charset="UTF-8" />
   <title>Admin Data Upload</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
   <meta name="theme-color" content="#0d2d5c" />
   <style>
-    body {
-      margin: 0;
-      font-family: 'Krasar', Arial, sans-serif;
-      background: #f1f1f1;
-      padding: 0;
-    }
-
+    body { margin: 0; font-family: 'Krasar', Arial, sans-serif; background: #f1f1f1; padding: 0; }
     .header {
-      background-color: #0d2d5c;
-      color: white;
-      font-size: 18px;
-      font-weight: bold;
-      padding: 16px;
-      text-align: center;
-      position: relative;
-      border-radius: 0 0 12px 12px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      background-color: #0d2d5c; color: white; font-size: 18px; font-weight: bold; padding: 16px;
+      text-align: center; position: relative; border-radius: 0 0 12px 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.2);
     }
-
     .close-btn {
-      position: absolute;
-      top: 10px;
-      right: 16px;
-      background: transparent;
-      border: none;
-      color: white;
-      font-size: 24px;
-      font-weight: bold;
-      cursor: pointer;
+      position: absolute; top: 10px; right: 16px; background: transparent; border: none;
+      color: white; font-size: 24px; font-weight: bold; cursor: pointer;
     }
-
     .upload-box {
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      max-width: 500px;
-      margin: 20px auto;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      background: white; padding: 20px; border-radius: 12px; max-width: 500px;
+      margin: 20px auto; box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
-
-    label {
-      font-weight: bold;
-      display: block;
-      margin-top: 16px;
-      margin-bottom: 6px;
-      color: #0d2d5c;
-    }
-
-    input[type="file"] {
-      width: 100%;
-    }
-
-    .file-info {
-      font-size: 14px;
-      margin-bottom: 8px;
-      color: #333;
-    }
-
-    .progress-container {
-      height: 10px;
-      background: #ddd;
-      border-radius: 5px;
-      margin: 8px 0 16px;
-    }
-
+    label { font-weight: bold; display: block; margin-top: 16px; margin-bottom: 6px; color: #0d2d5c; }
+    input[type="file"] { width: 100%; }
+    .file-info { font-size: 14px; margin-bottom: 8px; color: #333; }
+    .progress-container { position: relative; height: 18px; background: #ddd; border-radius: 5px; margin: 8px 0 16px; }
     .progress-bar {
-      height: 100%;
-      width: 0;
-      background: #0d2d5c;
-      border-radius: 5px;
-      transition: width 0.4s ease;
+      height: 100%; width: 0; background: #0d2d5c; border-radius: 5px; transition: width 0.4s ease;
     }
-
-    .upload-btn {
-      width: 100%;
-      padding: 12px;
-      margin-top: 10px;
-      background-color: #0d2d5c;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      font-size: 16px;
-      cursor: pointer;
+    .progress-label {
+      position: absolute; width: 100%; text-align: center; font-size: 12px; top: 0; color: white;
     }
-
-    .upload-btn:hover {
-      background-color: #09306d;
+    .upload-btn, .cancel-btn {
+      width: 100%; padding: 12px; margin-top: 10px; background-color: #0d2d5c;
+      color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer;
     }
-
+    .upload-btn:hover { background-color: #09306d; }
+    .cancel-btn { background-color: #999; margin-top: 4px; }
     .log-box {
-      max-width: 500px;
-      margin: 20px auto;
-      background: white;
-      border-radius: 12px;
-      padding: 16px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      font-size: 14px;
-      color: #333;
-      white-space: pre-line;
+      max-width: 500px; margin: 20px auto; background: white; border-radius: 12px;
+      padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); font-size: 14px; color: #333; height: 200px; overflow-y: auto;
     }
-
     .log-box h4 {
-      margin: 0 0 10px;
-      color: #0d2d5c;
+      margin: 0 0 10px; color: #0d2d5c; display: flex; justify-content: space-between; align-items: center;
     }
-
-    .log-entry {
-      padding: 4px 0;
-      border-bottom: 1px solid #eee;
-    }
+    .log-entry { padding: 4px 0; border-bottom: 1px solid #eee; }
+    .clear-btn { background: #eee; border: none; padding: 4px 8px; font-size: 12px; cursor: pointer; border-radius: 6px; }
   </style>
 </head>
 <body>
   <div class="header">
     Admin Mode: Upload Excel Data
     <button class="close-btn" onclick="window.location.href='index.html'">&times;</button>
-  </div>
-
-  <div class="upload-box">
+  </div>  <div class="upload-box">
     <label>Upload User Data (.xlsx)</label>
     <input type="file" id="userFile" accept=".xlsx" onchange="showPreview('userFile', 'userPreview')" />
     <div class="file-info" id="userPreview"></div>
-    <div class="progress-container"><div class="progress-bar" id="userProgress"></div></div>
+    <div class="progress-container">
+      <div class="progress-bar" id="userProgress"></div>
+      <div class="progress-label" id="userLabel"></div>
+    </div>
+    <button class="cancel-btn" onclick="cancelUpload('user')">Cancel Upload</button><label>Upload Customer Data (.xlsx)</label>
+<input type="file" id="customerFile" accept=".xlsx" onchange="showPreview('customerFile', 'customerPreview')" />
+<div class="file-info" id="customerPreview"></div>
+<div class="progress-container">
+  <div class="progress-bar" id="customerProgress"></div>
+  <div class="progress-label" id="customerLabel"></div>
+</div>
+<button class="cancel-btn" onclick="cancelUpload('customer')">Cancel Upload</button>
 
-    <label>Upload Customer Data (.xlsx)</label>
-    <input type="file" id="customerFile" accept=".xlsx" onchange="showPreview('customerFile', 'customerPreview')" />
-    <div class="file-info" id="customerPreview"></div>
-    <div class="progress-container"><div class="progress-bar" id="customerProgress"></div></div>
+<label>Upload Turnover Data (.xlsx)</label>
+<input type="file" id="turnoverFile" accept=".xlsx" onchange="showPreview('turnoverFile', 'turnoverPreview')" />
+<div class="file-info" id="turnoverPreview"></div>
+<div class="progress-container">
+  <div class="progress-bar" id="turnoverProgress"></div>
+  <div class="progress-label" id="turnoverLabel"></div>
+</div>
+<button class="cancel-btn" onclick="cancelUpload('turnover')">Cancel Upload</button>
 
-    <label>Upload Turnover Data (.xlsx)</label>
-    <input type="file" id="turnoverFile" accept=".xlsx" onchange="showPreview('turnoverFile', 'turnoverPreview')" />
-    <div class="file-info" id="turnoverPreview"></div>
-    <div class="progress-container"><div class="progress-bar" id="turnoverProgress"></div></div>
+<button class="upload-btn" onclick="uploadFiles()">📤 Upload to MongoDB</button>
 
-    <button class="upload-btn" onclick="uploadFiles()">📤 Upload to MongoDB</button>
-  </div>
-
-  <div class="log-box">
-    <h4>Upload History</h4>
+  </div>  <div class="log-box" id="logBox">
+    <h4>Upload History <button class="clear-btn" onclick="clearLogs()">Clear</button></h4>
     <div id="uploadLog"></div>
-  </div>
+  </div>  <script>
+    const xhrMap = {};
 
-  <script>
     function showPreview(fileInputId, previewId) {
       const file = document.getElementById(fileInputId).files[0];
       const preview = document.getElementById(previewId);
@@ -162,11 +96,63 @@
 
     function logUpload(text) {
       const log = document.getElementById('uploadLog');
-      const line = document.createElement('div');
-      line.className = 'log-entry';
-      line.textContent = text;
-      log.appendChild(line);
-      log.scrollTop = log.scrollHeight;
+      const entry = document.createElement('div');
+      entry.className = 'log-entry';
+      entry.textContent = text;
+      log.appendChild(entry);
+      document.getElementById("logBox").scrollTop = log.scrollHeight;
+    }
+
+    function clearLogs() {
+      document.getElementById('uploadLog').innerHTML = '';
+    }
+
+    function cancelUpload(label) {
+      if (xhrMap[label]) {
+        xhrMap[label].abort();
+        logUpload(`[${new Date().toLocaleTimeString()}] ⚠️ Upload cancelled for ${label}`);
+      }
+    }
+
+    async function uploadSingleFile(file, label, progressBarId, labelId) {
+      const progressBar = document.getElementById(progressBarId);
+      const progressLabel = document.getElementById(labelId);
+      const formData = new FormData();
+      formData.append(label, file);
+
+      return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhrMap[label] = xhr;
+        xhr.open("POST", "https://secure-backend-tzj9.onrender.com/api/admin/upload");
+
+        xhr.upload.onprogress = (event) => {
+          if (event.lengthComputable) {
+            const percent = (event.loaded / event.total) * 100;
+            progressBar.style.width = `${percent}%`;
+            progressLabel.textContent = `${Math.round(percent)}% uploading...`;
+          }
+        };
+
+        xhr.onload = () => {
+          if (xhr.status === 200) {
+            progressLabel.textContent = '✅ Complete';
+            logUpload(`[${new Date().toLocaleTimeString()}] ✅ ${label} uploaded`);
+            resolve();
+          } else {
+            progressLabel.textContent = '❌ Error';
+            logUpload(`[${new Date().toLocaleTimeString()}] ❌ ${label} failed`);
+            reject();
+          }
+        };
+
+        xhr.onerror = () => {
+          progressLabel.textContent = '❌ Error';
+          logUpload(`[${new Date().toLocaleTimeString()}] ❌ Network error for ${label}`);
+          reject();
+        };
+
+        xhr.send(formData);
+      });
     }
 
     async function uploadFiles() {
@@ -174,33 +160,14 @@
       const customer = document.getElementById('customerFile').files[0];
       const turnover = document.getElementById('turnoverFile').files[0];
 
-      const formData = new FormData();
-      if (user) formData.append("user", user);
-      if (customer) formData.append("customer", customer);
-      if (turnover) formData.append("turnover", turnover);
-
-      const res = await fetch("https://secure-backend-tzj9.onrender.com/api/admin/upload", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!res.body) {
-        alert("No response body from server");
-        return;
-      }
-
-      const reader = res.body.getReader();
-      const decoder = new TextDecoder("utf-8");
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        const chunk = decoder.decode(value);
-        chunk.split("\n").forEach(line => {
-          if (line.trim()) logUpload(line);
-        });
+      try {
+        if (user) await uploadSingleFile(user, "user", "userProgress", "userLabel");
+        if (customer) await uploadSingleFile(customer, "customer", "customerProgress", "customerLabel");
+        if (turnover) await uploadSingleFile(turnover, "turnover", "turnoverProgress", "turnoverLabel");
+        alert("✅ All files uploaded successfully.");
+      } catch {
+        alert("❌ One or more uploads failed.");
       }
     }
-  </script>
-</body>
+  </script></body>
 </html>
