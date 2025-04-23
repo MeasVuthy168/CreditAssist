@@ -5,13 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>ស្វែងរកអតិថិជន</title>
   <meta name="theme-color" content="#0d2d5c" />
-
-  <script>
-  if (!sessionStorage.getItem("loggedInUser")) {
-    window.location.href = "login.html";
-  }
-</script>
-  
   <style>
     @font-face {
       font-family: 'Krasar';
@@ -76,7 +69,6 @@
       border: none;
       background-color: #fff;
       color: #333;
-      box-sizing: border-box;
     }
 
     .search-wrapper .search-icon {
@@ -111,8 +103,6 @@
       border-collapse: collapse;
       font-size: 14px;
       color: white;
-      table-layout: auto;
-      word-wrap: break-word;
     }
 
     th, td {
@@ -133,42 +123,36 @@
       background-color: #2c3545;
     }
 
-  .footer {
-      text-align: center;
-      font-size: 14px;
-      color: #aaa;
-      margin-top: 40px;
+    .bottom-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 56px;
+      background: #0d2d5c;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+      z-index: 1000;
     }
 
-.bottom-bar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 56px;
-  background: #0d2d5c;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-  z-index: 1000;
-}
+    .bottom-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-size: 11px;
+      color: white;
+      border: none;
+      background: none;
+      padding: 2px;
+    }
 
-.bottom-btn {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-size: 11px;
-  color: white;
-  border: none;
-  background: none;
-  padding: 2px;
-}
+    .bottom-btn img {
+      margin-bottom: 2px;
+      pointer-events: none;
+    }
 
-.bottom-btn img {
-  margin-bottom: 2px;
-  pointer-events: none;
-}
     #loadingOverlay {
       position: fixed;
       top: 0;
@@ -226,10 +210,60 @@
       }
     }
   </style>
+</head>
+<body>
+  <div class="header-bar">
+    <button class="back-icon" onclick="window.location.href='../index.html'">←</button>
+    <div class="header-title">ស្វែងរកអតិថិជន</div>
+  </div>
+
+  <div class="search-container">
+    <div class="search-wrapper">
+      <input type="text" id="searchBox" placeholder="Search by CIF, Name, or Phone" />
+      <button id="searchButton" class="search-icon">🔍</button>
+    </div>
+  </div>
+
+  <span id="resultLabel">លទ្ធផលស្វែងរក៖ 0</span>
+
+  <div class="table-container">
+    <table id="results">
+      <thead style="display: none;">
+        <tr>
+          <th>CIF</th>
+          <th>ឈ្មោះ</th>
+          <th>អាសយដ្ឋាន</th>
+          <th>លេខទូរស័ព្ទ</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <div class="bottom-bar">
+    <button class="bottom-btn active" onclick="window.location.href='../index.html'">
+      <img src="../icons/Home.png" width="24" height="24" /><div>Home</div>
+    </button>
+    <button class="bottom-btn" onclick="window.location.href='../Setting/index.html'">
+      <img src="../icons/Setting.png" width="24" height="24" /><div>Setting</div>
+    </button>
+    <button class="bottom-btn" onclick="alert('Coming soon!')">
+      <img src="../icons/Notification.png" width="24" height="24" /><div>Notification</div>
+    </button>
+  </div>
+
+  <div id="loadingOverlay">
+    <div class="loading-backdrop"></div>
+    <div class="loading-box">
+      <div class="spinner"></div>
+      <p>Please wait...</p>
+    </div>
+  </div>
 
   <script>
-    const user = sessionStorage.getItem("loggedInUser");
-    if (!user) window.location.href = "../login.html";
+    if (!sessionStorage.getItem("loggedInUser")) {
+      window.location.href = "../login.html";
+    }
 
     const AUTO_LOGOUT_MINUTES = 1;
     let logoutTimer;
@@ -246,150 +280,70 @@
     document.onmousemove = resetLogoutTimer;
     document.onkeydown = resetLogoutTimer;
     document.onclick = resetLogoutTimer;
+
+    document.addEventListener("DOMContentLoaded", () => {
+      let data = [];
+
+      async function fetchData() {
+        try {
+          const res = await fetch("https://secure-backend-tzj9.onrender.com/api/customers");
+          const json = await res.json();
+          data = Array.isArray(json) ? json : [];
+        } catch (err) {
+          alert("មិនអាចផ្ទុកទិន្នន័យបានទេ");
+          console.error(err);
+        }
+      }
+
+      function displayResults(results) {
+        const resultsTable = document.querySelector("#results tbody");
+        const tableHead = document.querySelector("#results thead");
+        const resultLabel = document.getElementById("resultLabel");
+
+        resultLabel.textContent = `លទ្ធផលស្វែងរក៖ ${results.length}`;
+        tableHead.style.display = results.length > 0 ? "table-header-group" : "none";
+
+        resultsTable.innerHTML = results.length > 0
+          ? results.map(item => `
+              <tr>
+                <td>${item.CIF || ""}</td>
+                <td>${item.Name || ""}</td>
+                <td>${item.Address || ""}</td>
+                <td>${item.Phone_Number || ""}</td>
+              </tr>`).join("")
+          : "<tr><td colspan='4'>រកមិនឃើញលទ្ធផលទេ</td></tr>";
+      }
+
+      function performSearch() {
+        const query = document.getElementById("searchBox").value.trim().toLowerCase();
+        if (query === "") {
+          alert("សូមបញ្ចូលលេខ​ CIF ឬឈ្មោះ​ ឬលេខទូរសព្ទ​ ឬ​អាស័យដ្ឋាន​");
+          return;
+        }
+
+        if (!data || data.length === 0) {
+          alert("ទិន្នន័យមិនទាន់មានទេ។");
+          return;
+        }
+
+        document.getElementById("loadingOverlay").style.display = "block";
+
+        setTimeout(() => {
+          const results = data.filter(item =>
+            String(item.CIF || "").toLowerCase().includes(query) ||
+            String(item.Name || "").toLowerCase().includes(query) ||
+            String(item.Address || "").toLowerCase().includes(query) ||
+            String(item.Phone_Number || "").includes(query)
+          );
+
+          displayResults(results);
+          document.getElementById("loadingOverlay").style.display = "none";
+        }, 600);
+      }
+
+      document.getElementById("searchButton").addEventListener("click", performSearch);
+      fetchData();
+    });
   </script>
-</head>
-<body>
-
-  <!-- Header -->
-  <div class="header-bar">
-    <button class="back-icon" onclick="window.location.href='../index.html'">←</button>
-    <div class="header-title">ស្វែងរកអតិថិជន</div>
-  </div>
-
-  <!-- Search -->
-  <div class="search-container">
-    <div class="search-wrapper">
-      <input type="text" id="searchBox" placeholder="Search by CIF, Name, or Phone" />
-      <button id="searchButton" class="search-icon">🔍</button>
-    </div>
-  </div>
-
-  <span id="resultLabel">លទ្ធផលស្វែងរក៖ 0</span>
-
-  <!-- Table -->
-  <div class="table-container">
-    <table id="results">
-      <thead style="display: none;">
-        <tr>
-          <th>CIF</th>
-          <th>ឈ្មោះ</th>
-          <th>អាសយដ្ឋាន</th>
-          <th>លេខទូរស័ព្ទ</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </div>
-
-  <!-- Footer -->
-<div class="bottom-bar">
-  <button class="bottom-btn active" onclick="window.location.href='../index.html'">
-    <img src="../icons/Home.png" width="24" height="24" /><div>Home</div>
-  </button>
-  <button class="bottom-btn" onclick="window.location.href='../Setting/index.html'">
-    <img src="../icons/Setting.png" width="24" height="24" /><div>Setting</div>
-  </button>
-  <button class="bottom-btn" onclick="alert('Coming soon!')">
-    <img src="../icons/Notification.png" width="24" height="24" /><div>Notification</div>
-  </button>
-</div>
-
-  <!-- Loading Overlay -->
-  <div id="loadingOverlay">
-    <div class="loading-backdrop"></div>
-    <div class="loading-box">
-      <div class="spinner"></div>
-      <p>Please wait...</p>
-    </div>
-  </div>
-
-  <script>
-  
-document.addEventListener("DOMContentLoaded", () => {
-  let data = [];
-
-  async function fetchData() {
-    try {
-      const res = await fetch("https://secure-backend-tzj9.onrender.com/api/customers");
-      const json = await res.json();
-      data = Array.isArray(json) ? json : [];
-    } catch (err) {
-      alert("មិនអាចផ្ទុកទិន្នន័យបានទេ");
-      console.error(err);
-    }
-  }
-
-  function displayResults(results) {
-    const resultsTable = document.querySelector("#results tbody");
-    const tableHead = document.querySelector("#results thead");
-    const resultLabel = document.getElementById("resultLabel");
-
-    resultLabel.textContent = `លទ្ធផលស្វែងរក៖ ${results.length}`;
-    tableHead.style.display = results.length > 0 ? "table-header-group" : "none";
-
-    resultsTable.innerHTML = results.length > 0
-      ? results.map(item => `
-          <tr>
-            <td>${item.CIF || ""}</td>
-            <td>${item.Name || ""}</td>
-            <td>${item.Address || ""}</td>
-            <td>${item.Phone_Number || ""}</td>
-          </tr>`).join("")
-      : "<tr><td colspan='4'>រកមិនឃើញលទ្ធផលទេ</td></tr>";
-  }
-
-  function performSearch() {
-    const query = document.getElementById("searchBox").value.trim().toLowerCase();
-    if (query === "") {
-      alert("សូមបញ្ចូលលេខ​ CIF ឬឈ្មោះ​ ឬលេខទូរសព្ទ​ ឬ​អាស័យដ្ឋាន​");
-      return;
-    }
-
-    if (!data || data.length === 0) {
-      alert("ទិន្នន័យមិនទាន់មានទេ។");
-      return;
-    }
-
-    document.getElementById("loadingOverlay").style.display = "block";
-
-    setTimeout(() => {
-      const results = data.filter(item =>
-        String(item.CIF || "").toLowerCase().includes(query) ||
-        String(item.Name || "").toLowerCase().includes(query) ||
-        String(item.Address || "").toLowerCase().includes(query) ||
-        String(item.Phone_Number || "").includes(query)
-      );
-
-      displayResults(results);
-      document.getElementById("loadingOverlay").style.display = "none";
-    }, 600);
-  }
-
-  document.getElementById("searchButton").addEventListener("click", performSearch);
-  fetchData();
-});
-    function displayResults(results) {
-      const resultsTable = document.querySelector("#results tbody");
-      const tableHead = document.querySelector("#results thead");
-      const resultLabel = document.getElementById("resultLabel");
-
-      resultLabel.textContent = `លទ្ធផលស្វែងរក៖ ${results.length}`;
-      tableHead.style.display = results.length > 0 ? "table-header-group" : "none";
-
-      resultsTable.innerHTML = results.length > 0
-        ? results.map(item => `
-            <tr>
-              <td>${item.CIF || ""}</td>
-              <td>${item.Name || ""}</td>
-              <td>${item.Address || ""}</td>
-              <td>${item.Phone_Number || ""}</td>
-            </tr>`).join("")
-        : "<tr><td colspan='4'>រកមិនឃើញលទ្ធផលទេ</td></tr>";
-    }
-
-    document.getElementById("searchButton").addEventListener("click", performSearch);
-    fetchData();
-  });
-</script>
 </body>
 </html>
