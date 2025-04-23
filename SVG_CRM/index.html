@@ -333,17 +333,16 @@
       document.getElementById("loadingOverlay").style.display = "block";
 
       setTimeout(() => {
-        const results = data.filter(item =>
-          String(item.CIF || "").includes(query) ||
-          (item.Name || "").toLowerCase().includes(query) ||
-          (item.Address || "").toLowerCase().includes(query) ||
-          (item.Phone_Number || "").includes(query)
-        );
+  const results = data.filter(item =>
+    String(item.CIF || "").toLowerCase().includes(query) ||
+    String(item.Name || "").toLowerCase().includes(query) ||
+    String(item.Address || "").toLowerCase().includes(query) ||
+    String(item.Phone_Number || "").includes(query)
+  );
 
-        displayResults(results);
-        document.getElementById("loadingOverlay").style.display = "none";
-      }, 600);
-    }
+  displayResults(results);
+  document.getElementById("loadingOverlay").style.display = "none";
+}, 600);
 
     function displayResults(results) {
       const resultsTable = document.querySelector("#results tbody");
