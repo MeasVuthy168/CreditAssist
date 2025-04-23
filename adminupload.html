@@ -10,124 +10,96 @@
       margin: 0;
       font-family: 'Krasar', Arial, sans-serif;
       background: #f1f1f1;
-      padding: 0;
-    }.header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  background-color: #0d2d5c;
-  color: white;
-  font-size: 18px;
-  font-weight: bold;
-  padding: 16px;
-  text-align: center;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-  z-index: 1000;
-}
-
-.close-btn {
-  position: absolute;
-  top: 10px;
-  right: 16px;
-  background: transparent;
-  border: none;
-  color: white;
-  font-size: 24px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.upload-box {
-  background: white;
-  padding: 20px;
-  border-radius: 12px;
-  max-width: 500px;
-  margin: 100px auto 20px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-}
-
-label {
-  font-weight: bold;
-  display: block;
-  margin-top: 16px;
-  margin-bottom: 6px;
-  color: #0d2d5c;
-}
-
-input[type="file"] {
-  width: 100%;
-}
-
-.file-info {
-  font-size: 14px;
-  margin-bottom: 4px;
-  color: #333;
-}
-
-.progress-container {
-  height: 16px;
-  background: #ddd;
-  border-radius: 6px;
-  margin: 4px 0 10px;
-  position: relative;
-}
-
-.progress-bar {
-  height: 100%;
-  width: 0;
-  background: #0d2d5c;
-  border-radius: 6px;
-  text-align: center;
-  color: white;
-  font-size: 12px;
-  line-height: 16px;
-}
-
-.upload-btn, .cancel-btn {
-  width: 48%;
-  padding: 12px;
-  background-color: #0d2d5c;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 16px;
-  cursor: pointer;
-}
-
-.cancel-btn {
-  background: #888;
-}
-
-.log-box {
-  max-width: 500px;
-  margin: 20px auto;
-  background: white;
-  border-radius: 12px;
-  padding: 16px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  font-size: 14px;
-  color: #333;
-  max-height: 180px;
-  overflow-y: auto;
-}
-
-.log-box h4 {
-  margin: 0 0 10px;
-  color: #0d2d5c;
-}
-
-.log-entry {
-  padding: 6px 0;
-  border-bottom: 1px solid #eee;
-}
-
-.btn-group {
-  display: flex;
-  gap: 4%;
-  justify-content: space-between;
-}
-
+      padding-top: 60px;
+    }
+    .header {
+      background-color: #0d2d5c;
+      color: white;
+      font-size: 18px;
+      font-weight: bold;
+      padding: 16px;
+      text-align: center;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      z-index: 999;
+    }
+    .close-btn {
+      position: absolute;
+      top: 12px;
+      right: 16px;
+      background: transparent;
+      border: none;
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+    }
+    .upload-box {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      max-width: 500px;
+      margin: 0 auto 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    label {
+      font-weight: bold;
+      margin-top: 16px;
+      display: block;
+      color: #0d2d5c;
+    }
+    input[type="file"] {
+      width: 100%;
+    }
+    .file-info {
+      font-size: 14px;
+      margin-bottom: 8px;
+      color: #333;
+    }
+    .progress-container {
+      height: 10px;
+      background: #ddd;
+      border-radius: 5px;
+      margin: 4px 0 16px;
+    }
+    .progress-bar {
+      height: 100%;
+      width: 0;
+      background: #0d2d5c;
+      border-radius: 5px;
+      transition: width 0.3s ease;
+    }
+    .upload-btn {
+      width: 100%;
+      padding: 12px;
+      background-color: #0d2d5c;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .upload-btn:hover {
+      background-color: #09306d;
+    }
+    .log-box {
+      max-width: 500px;
+      margin: 20px auto;
+      background: white;
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      font-size: 14px;
+      color: #333;
+      height: 200px;
+      overflow-y: auto;
+    }
+    .log-entry {
+      padding: 6px 0;
+      border-bottom: 1px solid #eee;
+    }
   </style>
 </head>
 <body>
@@ -138,60 +110,71 @@ input[type="file"] {
     <label>Upload User Data (.xlsx)</label>
     <input type="file" id="userFile" accept=".xlsx" onchange="showPreview('userFile', 'userPreview')" />
     <div class="file-info" id="userPreview"></div>
-    <div class="progress-container"><div class="progress-bar" id="userProgress">0%</div></div><label>Upload Customer Data (.xlsx)</label>
+    <div class="progress-container"><div class="progress-bar" id="userProgress"></div></div><label>Upload Customer Data (.xlsx)</label>
 <input type="file" id="customerFile" accept=".xlsx" onchange="showPreview('customerFile', 'customerPreview')" />
 <div class="file-info" id="customerPreview"></div>
-<div class="progress-container"><div class="progress-bar" id="customerProgress">0%</div></div>
+<div class="progress-container"><div class="progress-bar" id="customerProgress"></div></div>
 
 <label>Upload Turnover Data (.xlsx)</label>
 <input type="file" id="turnoverFile" accept=".xlsx" onchange="showPreview('turnoverFile', 'turnoverPreview')" />
 <div class="file-info" id="turnoverPreview"></div>
-<div class="progress-container"><div class="progress-bar" id="turnoverProgress">0%</div></div>
+<div class="progress-container"><div class="progress-bar" id="turnoverProgress"></div></div>
 
-<div class="btn-group">
-  <button class="upload-btn" onclick="uploadFiles()">📤 Upload</button>
-  <button class="cancel-btn" onclick="window.location.reload()">❌ Cancel</button>
-</div>
+<button class="upload-btn" onclick="uploadFiles()">📤 Upload to MongoDB</button>
 
-  </div>  <div class="log-box" id="uploadLogBox">
-    <h4>Upload History</h4>
-    <div id="uploadLog"></div>
-  </div>  <script>
-    const uploadLog = document.getElementById('uploadLog');
-    function showPreview(inputId, previewId) {
-      const file = document.getElementById(inputId).files[0];
-      document.getElementById(previewId).textContent = file ? `${file.name} (${(file.size / 1024).toFixed(1)} KB)` : '';
+  </div>  <div class="log-box" id="uploadLog"></div>  <script>
+    function showPreview(fileInputId, previewId) {
+      const file = document.getElementById(fileInputId).files[0];
+      const preview = document.getElementById(previewId);
+      if (file && file.name.endsWith(".xlsx")) {
+        preview.textContent = `${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
+      } else {
+        preview.textContent = 'Invalid file type. Must be .xlsx';
+        document.getElementById(fileInputId).value = '';
+      }
     }
 
-    function log(message) {
+    function logMessage(msg) {
+      const log = document.getElementById('uploadLog');
       const entry = document.createElement('div');
       entry.className = 'log-entry';
-      entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
-      uploadLog.appendChild(entry);
-      uploadLog.scrollTop = uploadLog.scrollHeight;
+      entry.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+      log.appendChild(entry);
+      log.scrollTop = log.scrollHeight;
     }
 
-    async function uploadSingle(file, label, progressId) {
+    async function uploadSingleFile(file, label, progressBarId) {
+      const progressBar = document.getElementById(progressBarId);
+      const formData = new FormData();
+      formData.append(label, file);
+
       return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
-        const formData = new FormData();
-        formData.append(label, file);
-        xhr.open('POST', `https://secure-backend-tzj9.onrender.com/api/admin/upload`);
+        xhr.open("POST", `https://secure-backend-tzj9.onrender.com/api/admin/upload`);
 
-        xhr.upload.onprogress = (e) => {
-          if (e.lengthComputable) {
-            const percent = Math.round((e.loaded / e.total) * 100);
-            const bar = document.getElementById(progressId);
-            bar.style.width = `${percent}%`;
-            bar.textContent = `${percent}%`;
+        xhr.upload.onprogress = (event) => {
+          if (event.lengthComputable) {
+            const percent = (event.loaded / event.total) * 100;
+            progressBar.style.width = `${percent.toFixed(0)}%`;
           }
         };
 
         xhr.onload = () => {
-          log(`${label} uploaded: ${file.name}`);
-          resolve();
+          if (xhr.status === 200) {
+            progressBar.style.width = `100%`;
+            logMessage(`${label} upload complete.`);
+            resolve();
+          } else {
+            logMessage(`❌ Failed to upload ${label}`);
+            reject();
+          }
         };
-        xhr.onerror = () => reject(`❌ Failed to upload ${label}`);
+
+        xhr.onerror = () => {
+          logMessage(`❌ Network error during ${label} upload`);
+          reject();
+        };
+
         xhr.send(formData);
       });
     }
@@ -201,20 +184,27 @@ input[type="file"] {
       const customer = document.getElementById('customerFile').files[0];
       const turnover = document.getElementById('turnoverFile').files[0];
 
-      try {
-        if (user) await uploadSingle(user, 'user', 'userProgress');
-        if (customer) await uploadSingle(customer, 'customer', 'customerProgress');
-        if (turnover) await uploadSingle(turnover, 'turnover', 'turnoverProgress');
+      if (!user && !customer && !turnover) {
+        alert("Please choose at least one file to upload.");
+        return;
+      }
 
-        alert('✅ Upload complete!');
-        ['userFile', 'customerFile', 'turnoverFile'].forEach(id => document.getElementById(id).value = "");
-        ['userPreview', 'customerPreview', 'turnoverPreview'].forEach(id => document.getElementById(id).textContent = "");
+      try {
+        if (user) await uploadSingleFile(user, "user", "userProgress");
+        if (customer) await uploadSingleFile(customer, "customer", "customerProgress");
+        if (turnover) await uploadSingleFile(turnover, "turnover", "turnoverProgress");
+        alert("✅ All available files uploaded successfully.");
+
+        // Reset after upload
+        document.getElementById('userFile').value = "";
+        document.getElementById('customerFile').value = "";
+        document.getElementById('turnoverFile').value = "";
+        document.getElementById('userPreview').textContent = "";
+        document.getElementById('customerPreview').textContent = "";
+        document.getElementById('turnoverPreview').textContent = "";
       } catch (err) {
-        alert(err);
-        log(err);
+        alert("Some files failed to upload.");
       }
     }
-
-    // Optional: Poll backend for upload progress (future scope)
   </script></body>
 </html>
