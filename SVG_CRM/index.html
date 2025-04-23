@@ -304,46 +304,70 @@
   </div>
 
   <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    let data = [];
+  
+document.addEventListener("DOMContentLoaded", () => {
+  let data = [];
 
-    async function fetchData() {
-      try {
-        const res = await fetch("https://secure-backend-tzj9.onrender.com/api/customers");
-        const json = await res.json();
-        data = Array.isArray(json) ? json : [];
-      } catch (err) {
-        alert("មិនអាចផ្ទុកទិន្នន័យបានទេ");
-        console.error(err);
-      }
+  async function fetchData() {
+    try {
+      const res = await fetch("https://secure-backend-tzj9.onrender.com/api/customers");
+      const json = await res.json();
+      data = Array.isArray(json) ? json : [];
+    } catch (err) {
+      alert("មិនអាចផ្ទុកទិន្នន័យបានទេ");
+      console.error(err);
+    }
+  }
+
+  function displayResults(results) {
+    const resultsTable = document.querySelector("#results tbody");
+    const tableHead = document.querySelector("#results thead");
+    const resultLabel = document.getElementById("resultLabel");
+
+    resultLabel.textContent = `លទ្ធផលស្វែងរក៖ ${results.length}`;
+    tableHead.style.display = results.length > 0 ? "table-header-group" : "none";
+
+    resultsTable.innerHTML = results.length > 0
+      ? results.map(item => `
+          <tr>
+            <td>${item.CIF || ""}</td>
+            <td>${item.Name || ""}</td>
+            <td>${item.Address || ""}</td>
+            <td>${item.Phone_Number || ""}</td>
+          </tr>`).join("")
+      : "<tr><td colspan='4'>រកមិនឃើញលទ្ធផលទេ</td></tr>";
+  }
+
+  function performSearch() {
+    const query = document.getElementById("searchBox").value.trim().toLowerCase();
+    if (query === "") {
+      alert("សូមបញ្ចូលលេខ​ CIF ឬឈ្មោះ​ ឬលេខទូរសព្ទ​ ឬ​អាស័យដ្ឋាន​");
+      return;
     }
 
-    function performSearch() {
-      const query = document.getElementById("searchBox").value.trim().toLowerCase();
-      if (query === "") {
-        alert("សូមបញ្ចូលលេខ​ CIF ឬឈ្មោះ​ ឬលេខទូរសព្ទ​ ឬ​អាស័យដ្ឋាន​");
-        return;
-      }
+    if (!data || data.length === 0) {
+      alert("ទិន្នន័យមិនទាន់មានទេ។");
+      return;
+    }
 
-      if (!data || data.length === 0) {
-        alert("ទិន្នន័យមិនទាន់មានទេ។");
-        return;
-      }
+    document.getElementById("loadingOverlay").style.display = "block";
 
-      document.getElementById("loadingOverlay").style.display = "block";
+    setTimeout(() => {
+      const results = data.filter(item =>
+        String(item.CIF || "").toLowerCase().includes(query) ||
+        String(item.Name || "").toLowerCase().includes(query) ||
+        String(item.Address || "").toLowerCase().includes(query) ||
+        String(item.Phone_Number || "").includes(query)
+      );
 
-      setTimeout(() => {
-  const results = data.filter(item =>
-    String(item.CIF || "").toLowerCase().includes(query) ||
-    String(item.Name || "").toLowerCase().includes(query) ||
-    String(item.Address || "").toLowerCase().includes(query) ||
-    String(item.Phone_Number || "").includes(query)
-  );
+      displayResults(results);
+      document.getElementById("loadingOverlay").style.display = "none";
+    }, 600);
+  }
 
-  displayResults(results);
-  document.getElementById("loadingOverlay").style.display = "none";
-}, 600);
-
+  document.getElementById("searchButton").addEventListener("click", performSearch);
+  fetchData();
+});
     function displayResults(results) {
       const resultsTable = document.querySelector("#results tbody");
       const tableHead = document.querySelector("#results thead");
