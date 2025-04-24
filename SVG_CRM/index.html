@@ -155,6 +155,8 @@
         <tr>
           <th>CIF</th>
           <th>ឈ្មោះ</th>
+          <th>អាសយដ្ឋាន</th>
+          <th>លេខទូរស័ព្ទ</th>
         </tr>
       </thead>
       <tbody></tbody>
@@ -212,8 +214,10 @@
               <tr>
                 <td>${item.CIF || ''}</td>
                 <td>${item.Name || ''}</td>
+                <td>${item.Address || ''}</td>
+                <td>${item.Phone_Number || ''}</td>
               </tr>`).join("")
-          : "<tr><td colspan='2'>រកមិនឃើញលទ្ធផលទេ</td></tr>";
+          : "<tr><td colspan='4'>រកមិនឃើញលទ្ធផលទេ</td></tr>";
       }
 
       document.getElementById("searchButton").addEventListener("click", performSearch);
