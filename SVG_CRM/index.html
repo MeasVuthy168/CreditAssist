@@ -5,260 +5,153 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>ស្វែងរកអតិថិជន</title>
   <meta name="theme-color" content="#0d2d5c" />
-
-  <script>
-    if (!sessionStorage.getItem("loggedInUser")) {
-      window.location.href = "../login.html";
-    }
-  </script>
-
   <style>
     @font-face {
       font-family: 'Krasar';
       src: url('../Krasar-Regular.ttf') format('truetype');
     }
-
     body {
       font-family: 'Krasar', Arial, sans-serif;
       background-color: #1c2331;
       color: white;
       margin: 0;
       padding-bottom: 70px;
-      box-sizing: border-box;
       overflow-x: hidden;
     }
-
     .header-bar {
+      background-color: #0d2d5c;
       display: flex;
       align-items: center;
-      background-color: #0d2d5c;
       padding: 12px 16px;
       position: fixed;
-      top: 0;
-      left: 0;
       width: 100%;
+      top: 0;
       z-index: 1000;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
     }
-
     .back-icon {
       font-size: 22px;
-      background: none;
       border: none;
       color: white;
-      cursor: pointer;
+      background: none;
       margin-right: 10px;
+      cursor: pointer;
     }
-
     .header-title {
       font-size: 16px;
-      color: white;
     }
-
     .search-container {
       display: flex;
       justify-content: center;
       margin-top: 80px;
       padding: 0 16px;
     }
-
     .search-wrapper {
       position: relative;
       width: 100%;
       max-width: 300px;
     }
-
     .search-wrapper input {
       width: 100%;
       padding: 10px 40px 10px 15px;
-      font-size: 16px;
       border-radius: 25px;
       border: none;
+      font-size: 16px;
       background-color: #fff;
       color: #333;
-      box-sizing: border-box;
     }
-
-    .search-wrapper .search-icon {
+    .search-icon {
       position: absolute;
       right: 12px;
       top: 50%;
       transform: translateY(-50%);
-      background: none;
       border: none;
+      background: none;
+      cursor: pointer;
       font-size: 18px;
       color: #666;
-      cursor: pointer;
     }
-
     #resultLabel {
-      display: block;
-      margin-top: 12px;
-      font-weight: bold;
-      color: #ccc;
       text-align: center;
+      margin-top: 12px;
+      color: #ccc;
     }
-
-    .table-container {
-      width: 100%;
-      overflow-x: auto;
-      padding: 0 10px;
-      box-sizing: border-box;
-    }
-
     table {
       width: 100%;
       border-collapse: collapse;
       font-size: 14px;
       color: white;
-      table-layout: auto;
-      word-wrap: break-word;
     }
-
     th, td {
       border: 1px solid #444;
       padding: 12px;
       text-align: left;
     }
-
     th {
       background-color: #3d4a5a;
     }
-
     tr:nth-child(even) {
       background-color: #1f2733;
     }
-
     tr:nth-child(odd) {
       background-color: #2c3545;
     }
-
     .bottom-bar {
       position: fixed;
       bottom: 0;
-      left: 0;
       width: 100%;
       height: 56px;
       background: #0d2d5c;
       display: flex;
       justify-content: space-around;
       align-items: center;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-      z-index: 1000;
     }
-
     .bottom-btn {
+      color: white;
+      font-size: 11px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      font-size: 11px;
-      color: white;
-      border: none;
       background: none;
-      padding: 2px;
+      border: none;
     }
-
     .bottom-btn img {
       margin-bottom: 2px;
-      pointer-events: none;
     }
-
     #loadingOverlay {
       position: fixed;
-      top: 0;
-      left: 0;
       width: 100%;
       height: 100%;
+      top: 0; left: 0;
+      background-color: rgba(0,0,0,0.5);
       z-index: 9999;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: black;
+      font-size: 18px;
       display: none;
     }
-
-    .loading-backdrop {
-      position: absolute;
-      background-color: rgba(0,0,0,0.5);
-      width: 100%;
-      height: 100%;
-    }
-
-    .loading-box {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: #fff;
-      padding: 20px 30px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-      text-align: center;
-      color: #000;
-      font-size: 16px;
-    }
-
-    .spinner {
-      width: 28px;
-      height: 28px;
-      margin: 0 auto 10px;
-      border: 3px solid #4fc3f7;
-      border-top: 3px solid transparent;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
     @media print {
       .header-bar, .bottom-bar, #loadingOverlay {
         display: none !important;
       }
     }
-
-    @media (max-width: 500px) {
-      table, th, td {
-        font-size: 13px;
-      }
-    }
   </style>
-
-  <script>
-    const AUTO_LOGOUT_MINUTES = 1;
-    let logoutTimer;
-
-    function resetLogoutTimer() {
-      clearTimeout(logoutTimer);
-      logoutTimer = setTimeout(() => {
-        sessionStorage.removeItem("loggedInUser");
-        alert("Session expired due to inactivity. Please log in again.");
-        window.location.href = "../login.html";
-      }, AUTO_LOGOUT_MINUTES * 60 * 1000);
-    }
-
-    window.onload = resetLogoutTimer;
-    document.onmousemove = resetLogoutTimer;
-    document.onkeydown = resetLogoutTimer;
-    document.onclick = resetLogoutTimer;
-  </script>
 </head>
 <body>
-
-  <!-- Header -->
   <div class="header-bar">
     <button class="back-icon" onclick="window.location.href='../index.html'">←</button>
     <div class="header-title">ស្វែងរកអតិថិជន</div>
   </div>
 
-  <!-- Search -->
   <div class="search-container">
     <div class="search-wrapper">
       <input type="text" id="searchBox" placeholder="Search by CIF, Name, or Phone" />
-      <button id="searchButton" class="search-icon">🔍</button>
+      <button class="search-icon" id="searchButton">🔍</button>
     </div>
   </div>
 
   <span id="resultLabel">លទ្ធផលស្វែងរក៖ 0</span>
-
-  <!-- Table -->
   <div class="table-container">
     <table id="results">
       <thead style="display: none;">
@@ -273,9 +166,8 @@
     </table>
   </div>
 
-  <!-- Footer -->
   <div class="bottom-bar">
-    <button class="bottom-btn active" onclick="window.location.href='../index.html'">
+    <button class="bottom-btn" onclick="window.location.href='../index.html'">
       <img src="../icons/Home.png" width="24" height="24" /><div>Home</div>
     </button>
     <button class="bottom-btn" onclick="window.location.href='../Setting/index.html'">
@@ -286,55 +178,30 @@
     </button>
   </div>
 
-  <!-- Loading Overlay -->
-  <div id="loadingOverlay">
-    <div class="loading-backdrop"></div>
-    <div class="loading-box">
-      <div class="spinner"></div>
-      <p>Please wait...</p>
-    </div>
-  </div>
+  <div id="loadingOverlay">Loading data, please wait...</div>
 
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-      let data = [];
-
-      async function fetchData() {
-        try {
-          const res = await fetch("https://secure-backend-tzj9.onrender.com/api/customers");
-          const json = await res.json();
-          data = Array.isArray(json) ? json : [];
-        } catch (err) {
-          alert("មិនអាចផ្ទុកទិន្នន័យបានទេ");
-          console.error(err);
-        }
-      }
-
       function performSearch() {
-        const query = document.getElementById("searchBox").value.trim().toLowerCase();
+        const query = document.getElementById("searchBox").value.trim();
         if (query === "") {
           alert("សូមបញ្ចូលលេខ​ CIF ឬឈ្មោះ​ ឬលេខទូរសព្ទ​ ឬ​អាស័យដ្ឋាន​");
           return;
         }
 
-        if (!data || data.length === 0) {
-          alert("ទិន្នន័យមិនទាន់មានទេ។");
-          return;
-        }
+        document.getElementById("loadingOverlay").style.display = "flex";
 
-        document.getElementById("loadingOverlay").style.display = "block";
-
-        setTimeout(() => {
-          const results = data.filter(item =>
-            item.CIF.toLowerCase().includes(query) ||
-            item.Name.toLowerCase().includes(query) ||
-            item.Address.toLowerCase().includes(query) ||
-            item.Phone_Number.includes(query)
-          );
-
-          displayResults(results);
-          document.getElementById("loadingOverlay").style.display = "none";
-        }, 600);
+        fetch(`https://secure-backend-tzj9.onrender.com/api/customers/search?q=${encodeURIComponent(query)}`)
+          .then(res => res.json())
+          .then(results => {
+            displayResults(results);
+            document.getElementById("loadingOverlay").style.display = "none";
+          })
+          .catch(err => {
+            alert("Search failed");
+            console.error("Search error:", err);
+            document.getElementById("loadingOverlay").style.display = "none";
+          });
       }
 
       function displayResults(results) {
@@ -348,16 +215,15 @@
         resultsTable.innerHTML = results.length > 0
           ? results.map(item => `
               <tr>
-                <td>${item.CIF}</td>
-                <td>${item.Name}</td>
-                <td>${item.Address}</td>
-                <td>${item.Phone_Number}</td>
+                <td>${item.CIF || ''}</td>
+                <td>${item.Name || ''}</td>
+                <td>${item.Address || ''}</td>
+                <td>${item.Phone_Number || ''}</td>
               </tr>`).join("")
           : "<tr><td colspan='4'>រកមិនឃើញលទ្ធផលទេ</td></tr>";
       }
 
       document.getElementById("searchButton").addEventListener("click", performSearch);
-      fetchData();
     });
   </script>
 </body>
