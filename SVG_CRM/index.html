@@ -16,6 +16,7 @@
       color: white;
       margin: 0;
       padding-bottom: 70px;
+      overflow-x: hidden;
     }
     .header-bar {
       background-color: #0d2d5c;
@@ -29,11 +30,11 @@
     }
     .back-icon {
       font-size: 22px;
+      border: none;
       color: white;
       background: none;
-      border: none;
-      cursor: pointer;
       margin-right: 10px;
+      cursor: pointer;
     }
     .header-title {
       font-size: 16px;
@@ -46,8 +47,8 @@
     }
     .search-wrapper {
       position: relative;
-      max-width: 300px;
       width: 100%;
+      max-width: 300px;
     }
     .search-wrapper input {
       width: 100%;
@@ -63,20 +64,16 @@
       right: 12px;
       top: 50%;
       transform: translateY(-50%);
-      font-size: 18px;
-      background: none;
       border: none;
-      color: #666;
+      background: none;
       cursor: pointer;
+      font-size: 18px;
+      color: #666;
     }
     #resultLabel {
       text-align: center;
       margin-top: 12px;
       color: #ccc;
-    }
-    .table-container {
-      padding: 10px;
-      overflow-x: auto;
     }
     table {
       width: 100%;
@@ -133,6 +130,11 @@
       color: black;
       font-size: 18px;
     }
+    @media print {
+      .header-bar, .bottom-bar, #loadingOverlay {
+        display: none !important;
+      }
+    }
   </style>
 </head>
 <body>
@@ -175,7 +177,7 @@
     </button>
   </div>
 
-  <div id="loadingOverlay">កំពុងស្វែងរកទិន្នន័យ...</div>
+  <div id="loadingOverlay">Loading data, please wait...</div>
 
   <script>
     document.addEventListener("DOMContentLoaded", () => {
@@ -214,8 +216,8 @@
               <tr>
                 <td>${item.CIF || ''}</td>
                 <td>${item.Name || ''}</td>
-                <td>${item.Address || ''}</td>
-                <td>${item.Phone_Number || ''}</td>
+                <td>${item.address || ''}</td>
+                <td>${item.phone_number || ''}</td>
               </tr>`).join("")
           : "<tr><td colspan='4'>រកមិនឃើញលទ្ធផលទេ</td></tr>";
       }
