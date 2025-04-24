@@ -124,11 +124,12 @@
       top: 0; left: 0;
       background-color: rgba(0,0,0,0.5);
       z-index: 9999;
-      display: none;
+      display: flex;
       justify-content: center;
       align-items: center;
       color: black;
       font-size: 18px;
+      display: none;
     }
     @media print {
       .header-bar, .bottom-bar, #loadingOverlay {
@@ -216,8 +217,8 @@
               <tr>
                 <td>${item.CIF || ''}</td>
                 <td>${item.Name || ''}</td>
-                <td>${item.address || ''}</td>
-                <td>${item.phone_number || ''}</td>
+                <td>${item.Address || ''}</td>
+                <td>${item.Phone_Number || ''}</td>
               </tr>`).join("")
           : "<tr><td colspan='4'>រកមិនឃើញលទ្ធផលទេ</td></tr>";
       }
