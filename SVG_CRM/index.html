@@ -5,18 +5,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>ស្វែងរកអតិថិជន</title>
   <meta name="theme-color" content="#0d2d5c" />
+
+  <script>
+  if (!sessionStorage.getItem("loggedInUser")) {
+    window.location.href = "login.html";
+  }
+</script>
+  
   <style>
     @font-face {
       font-family: 'Krasar';
       src: url('../Krasar-Regular.ttf') format('truetype');
     }
+
     body {
       font-family: 'Krasar', Arial, sans-serif;
       background-color: #1c2331;
       color: white;
       margin: 0;
       padding-bottom: 70px;
+      box-sizing: border-box;
+      overflow-x: hidden;
     }
+
     .header-bar {
       display: flex;
       align-items: center;
@@ -29,6 +40,7 @@
       z-index: 1000;
       box-shadow: 0 2px 4px rgba(0,0,0,0.2);
     }
+
     .back-icon {
       font-size: 22px;
       background: none;
@@ -37,20 +49,25 @@
       cursor: pointer;
       margin-right: 10px;
     }
+
     .header-title {
       font-size: 16px;
+      color: white;
     }
+
     .search-container {
       display: flex;
       justify-content: center;
       margin-top: 80px;
       padding: 0 16px;
     }
+
     .search-wrapper {
       position: relative;
       width: 100%;
       max-width: 300px;
     }
+
     .search-wrapper input {
       width: 100%;
       padding: 10px 40px 10px 15px;
@@ -59,7 +76,9 @@
       border: none;
       background-color: #fff;
       color: #333;
+      box-sizing: border-box;
     }
+
     .search-wrapper .search-icon {
       position: absolute;
       right: 12px;
@@ -71,6 +90,7 @@
       color: #666;
       cursor: pointer;
     }
+
     #resultLabel {
       display: block;
       margin-top: 12px;
@@ -78,70 +98,165 @@
       color: #ccc;
       text-align: center;
     }
+
     .table-container {
       width: 100%;
       overflow-x: auto;
       padding: 0 10px;
+      box-sizing: border-box;
     }
+
     table {
       width: 100%;
       border-collapse: collapse;
       font-size: 14px;
       color: white;
+      table-layout: auto;
+      word-wrap: break-word;
     }
+
     th, td {
       border: 1px solid #444;
       padding: 12px;
       text-align: left;
     }
+
     th {
       background-color: #3d4a5a;
     }
+
     tr:nth-child(even) {
       background-color: #1f2733;
     }
+
     tr:nth-child(odd) {
       background-color: #2c3545;
     }
-    .bottom-bar {
+
+  .footer {
+      text-align: center;
+      font-size: 14px;
+      color: #aaa;
+      margin-top: 40px;
+    }
+
+.bottom-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 56px;
+  background: #0d2d5c;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+  z-index: 1000;
+}
+
+.bottom-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 11px;
+  color: white;
+  border: none;
+  background: none;
+  padding: 2px;
+}
+
+.bottom-btn img {
+  margin-bottom: 2px;
+  pointer-events: none;
+}
+    #loadingOverlay {
       position: fixed;
-      bottom: 0;
+      top: 0;
       left: 0;
       width: 100%;
-      height: 56px;
-      background: #0d2d5c;
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+      height: 100%;
+      z-index: 9999;
+      display: none;
     }
-    .bottom-btn {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      font-size: 11px;
-      color: white;
-      border: none;
-      background: none;
-      padding: 2px;
+
+    .loading-backdrop {
+      position: absolute;
+      background-color: rgba(0,0,0,0.5);
+      width: 100%;
+      height: 100%;
     }
-    .bottom-btn img {
-      margin-bottom: 2px;
+
+    .loading-box {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #fff;
+      padding: 20px 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      text-align: center;
+      color: #000;
+      font-size: 16px;
+    }
+
+    .spinner {
+      width: 28px;
+      height: 28px;
+      margin: 0 auto 10px;
+      border: 3px solid #4fc3f7;
+      border-top: 3px solid transparent;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @media print {
+      .header-bar, .bottom-bar, #loadingOverlay {
+        display: none !important;
+      }
+    }
+
+    @media (max-width: 500px) {
+      table, th, td {
+        font-size: 13px;
+      }
     }
   </style>
+
+  <script>
+    const user = sessionStorage.getItem("loggedInUser");
+    if (!user) window.location.href = "../login.html";
+
+    const AUTO_LOGOUT_MINUTES = 1;
+    let logoutTimer;
+    function resetLogoutTimer() {
+      clearTimeout(logoutTimer);
+      logoutTimer = setTimeout(() => {
+        sessionStorage.removeItem("loggedInUser");
+        alert("Session expired due to inactivity. Please log in again.");
+        window.location.href = "../login.html";
+      }, AUTO_LOGOUT_MINUTES * 60 * 1000);
+    }
+
+    window.onload = resetLogoutTimer;
+    document.onmousemove = resetLogoutTimer;
+    document.onkeydown = resetLogoutTimer;
+    document.onclick = resetLogoutTimer;
+  </script>
 </head>
 <body>
-  <script>
-    if (!sessionStorage.getItem("loggedInUser")) {
-      window.location.href = "../login.html";
-    }
-  </script>
 
+  <!-- Header -->
   <div class="header-bar">
     <button class="back-icon" onclick="window.location.href='../index.html'">←</button>
     <div class="header-title">ស្វែងរកអតិថិជន</div>
   </div>
 
+  <!-- Search -->
   <div class="search-container">
     <div class="search-wrapper">
       <input type="text" id="searchBox" placeholder="Search by CIF, Name, or Phone" />
@@ -151,6 +266,7 @@
 
   <span id="resultLabel">លទ្ធផលស្វែងរក៖ 0</span>
 
+  <!-- Table -->
   <div class="table-container">
     <table id="results">
       <thead style="display: none;">
@@ -165,83 +281,92 @@
     </table>
   </div>
 
-  <div class="bottom-bar">
-    <button class="bottom-btn" onclick="window.location.href='../index.html'">
-      <img src="../icons/Home.png" width="24" height="24" /><div>Home</div>
-    </button>
-    <button class="bottom-btn" onclick="window.location.href='../Setting/index.html'">
-      <img src="../icons/Setting.png" width="24" height="24" /><div>Setting</div>
-    </button>
-    <button class="bottom-btn" onclick="alert('Coming soon!')">
-      <img src="../icons/Notification.png" width="24" height="24" /><div>Notification</div>
-    </button>
+  <!-- Footer -->
+<div class="bottom-bar">
+  <button class="bottom-btn active" onclick="window.location.href='../index.html'">
+    <img src="../icons/Home.png" width="24" height="24" /><div>Home</div>
+  </button>
+  <button class="bottom-btn" onclick="window.location.href='../Setting/index.html'">
+    <img src="../icons/Setting.png" width="24" height="24" /><div>Setting</div>
+  </button>
+  <button class="bottom-btn" onclick="alert('Coming soon!')">
+    <img src="../icons/Notification.png" width="24" height="24" /><div>Notification</div>
+  </button>
+</div>
+
+  <!-- Loading Overlay -->
+  <div id="loadingOverlay">
+    <div class="loading-backdrop"></div>
+    <div class="loading-box">
+      <div class="spinner"></div>
+      <p>Please wait...</p>
+    </div>
   </div>
 
   <script>
-    let data = [];
+    document.addEventListener("DOMContentLoaded", () => {
+      let data = [];
 
-    async function fetchData() {
-      try {
-        const res = await fetch("https://secure-backend-tzj9.onrender.com/api/customers");
-        const json = await res.json();
-        if (Array.isArray(json)) {
-          data = json;
-          console.log("✅ Data loaded:", data.length);
-        } else {
-          console.error("❌ Unexpected data format:", json);
+      async function fetchData() {
+        try {
+          const res = await fetch("https://secure-backend-tzj9.onrender.com/api/customers");
+          const json = await res.json();
+          data = Array.isArray(json) ? json : [];
+        } catch (err) {
+          alert("មិនអាចផ្ទុកទិន្នន័យបានទេ");
+          console.error(err);
         }
-      } catch (err) {
-        alert("មិនអាចផ្ទុកទិន្នន័យបានទេ");
-        console.error(err);
-      }
-    }
-
-    function displayResults(results) {
-      const resultsTable = document.querySelector("#results tbody");
-      const tableHead = document.querySelector("#results thead");
-      const resultLabel = document.getElementById("resultLabel");
-
-      resultLabel.textContent = `លទ្ធផលស្វែងរក៖ ${results.length}`;
-      tableHead.style.display = results.length > 0 ? "table-header-group" : "none";
-
-      resultsTable.innerHTML = results.length > 0
-        ? results.map(item => `
-            <tr>
-              <td>${item.CIF || ""}</td>
-              <td>${item.Name || ""}</td>
-              <td>${item.Address || ""}</td>
-              <td>${item.Phone_Number || ""}</td>
-            </tr>`).join("")
-        : "<tr><td colspan='4'>រកមិនឃើញលទ្ធផលទេ</td></tr>";
-    }
-
-    function performSearch() {
-      const query = document.getElementById("searchBox").value.trim().toLowerCase();
-
-      if (!query) {
-        alert("សូមបញ្ចូលលេខ​ CIF ឬឈ្មោះ​ ឬលេខទូរសព្ទ​");
-        return;
       }
 
-      if (!data.length) {
-        alert("ទិន្នន័យមិនទាន់មានទេ។");
-        return;
+      function performSearch() {
+        const query = document.getElementById("searchBox").value.trim().toLowerCase();
+        if (query === "") {
+          alert("សូមបញ្ចូលលេខ​ CIF ឬឈ្មោះ​ ឬលេខទូរសព្ទ​ ឬ​អាស័យដ្ឋាន​");
+          return;
+        }
+
+        if (!data || data.length === 0) {
+          alert("ទិន្នន័យមិនទាន់មានទេ។");
+          return;
+        }
+
+        document.getElementById("loadingOverlay").style.display = "block";
+
+        setTimeout(() => {
+          const results = data.filter(item =>
+            item.CIF.toLowerCase().includes(query) ||
+            item.Name.toLowerCase().includes(query) ||
+            item.Address.toLowerCase().includes(query) ||
+            item.Phone_Number.includes(query)
+          );
+
+          displayResults(results);
+          document.getElementById("loadingOverlay").style.display = "none";
+        }, 600);
       }
 
-      const results = data.filter(item =>
-        String(item.CIF || "").toLowerCase().includes(query) ||
-        String(item.Name || "").toLowerCase().includes(query) ||
-        String(item.Address || "").toLowerCase().includes(query) ||
-        String(item.Phone_Number || "").includes(query)
-      );
+      function displayResults(results) {
+        const resultsTable = document.querySelector("#results tbody");
+        const tableHead = document.querySelector("#results thead");
+        const resultLabel = document.getElementById("resultLabel");
 
-      displayResults(results);
-    }
+        resultLabel.textContent = `លទ្ធផលស្វែងរក៖ ${results.length}`;
+        tableHead.style.display = results.length > 0 ? "table-header-group" : "none";
 
-    document.getElementById("searchButton").addEventListener("click", performSearch);
+        resultsTable.innerHTML = results.length > 0
+          ? results.map(item => `
+              <tr>
+                <td>${item.CIF}</td>
+                <td>${item.Name}</td>
+                <td>${item.Address}</td>
+                <td>${item.Phone_Number}</td>
+              </tr>`).join("")
+          : "<tr><td colspan='4'>រកមិនឃើញលទ្ធផលទេ</td></tr>";
+      }
 
-    // Load data on page load
-    fetchData();
+      document.getElementById("searchButton").addEventListener("click", performSearch);
+      fetchData();
+    });
   </script>
 </body>
 </html>
