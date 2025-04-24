@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="km">
 <head>
@@ -29,7 +30,6 @@
       left: 0;
       width: 100%;
       z-index: 1000;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
     }
     .back-icon {
       font-size: 22px;
@@ -62,6 +62,7 @@
       border: none;
       background-color: #fff;
       color: #333;
+      box-sizing: border-box;
     }
     .search-wrapper .search-icon {
       position: absolute;
@@ -101,8 +102,12 @@
     th {
       background-color: #3d4a5a;
     }
-    tr:nth-child(even) { background-color: #1f2733; }
-    tr:nth-child(odd) { background-color: #2c3545; }
+    tr:nth-child(even) {
+      background-color: #1f2733;
+    }
+    tr:nth-child(odd) {
+      background-color: #2c3545;
+    }
     .bottom-bar {
       position: fixed;
       bottom: 0;
@@ -113,7 +118,6 @@
       display: flex;
       justify-content: space-around;
       align-items: center;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
       z-index: 1000;
     }
     .bottom-btn {
@@ -153,7 +157,6 @@
       background: #fff;
       padding: 20px 30px;
       border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
       text-align: center;
       color: #000;
       font-size: 16px;
@@ -167,12 +170,18 @@
       border-radius: 50%;
       animation: spin 1s linear infinite;
     }
-    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
     @media print {
-      .header-bar, .bottom-bar, #loadingOverlay { display: none !important; }
+      .header-bar, .bottom-bar, #loadingOverlay {
+        display: none !important;
+      }
     }
     @media (max-width: 500px) {
-      table, th, td { font-size: 13px; }
+      table, th, td {
+        font-size: 13px;
+      }
     }
   </style>
 </head>
@@ -226,28 +235,6 @@
   </div>
 
   <script>
-    const user = sessionStorage.getItem("loggedInUser");
-    if (!user) window.location.href = "../login.html";
-
-    const AUTO_LOGOUT_MINUTES = 1;
-    let logoutTimer;
-    function resetLogoutTimer() {
-      clearTimeout(logoutTimer);
-      logoutTimer = setTimeout(() => {
-        sessionStorage.removeItem("loggedInUser");
-        alert("Session expired due to inactivity. Please log in again.");
-        window.location.href = "../login.html";
-      }, AUTO_LOGOUT_MINUTES * 60 * 1000);
-    }
-
-    window.onload = () => {
-      resetLogoutTimer();
-      fetchData();
-    };
-    document.onmousemove = resetLogoutTimer;
-    document.onkeydown = resetLogoutTimer;
-    document.onclick = resetLogoutTimer;
-
     let customerData = [];
 
     async function fetchData() {
@@ -255,7 +242,7 @@
         const res = await fetch("https://secure-backend-tzj9.onrender.com/api/customers");
         const json = await res.json();
         customerData = Array.isArray(json) ? json : [];
-        console.log("✅ Loaded:", customerData.length, "records");
+        console.log("Fetched customer data:", customerData);  // Debug log
       } catch (err) {
         alert("មិនអាចផ្ទុកទិន្នន័យបានទេ");
         console.error(err);
@@ -264,12 +251,12 @@
 
     function performSearch() {
       const query = document.getElementById("searchBox").value.trim().toLowerCase();
-      if (!query) {
+      if (query === "") {
         alert("សូមបញ្ចូលលេខ​ CIF ឬឈ្មោះ​ ឬលេខទូរសព្ទ​ ឬ​អាស័យដ្ឋាន​");
         return;
       }
 
-      if (customerData.length === 0) {
+      if (!customerData || customerData.length === 0) {
         alert("ទិន្នន័យមិនទាន់មានទេ។");
         return;
       }
@@ -278,37 +265,38 @@
 
       setTimeout(() => {
         const results = customerData.filter(item =>
-          String(item.CIF || '').toLowerCase().includes(query) ||
-          String(item.Name || '').toLowerCase().includes(query) ||
-          String(item.Address || '').toLowerCase().includes(query) ||
-          String(item.Phone_Number || '').toLowerCase().includes(query)
+          String(item.CIF || "").toLowerCase().includes(query) ||
+          String(item.Name || "").toLowerCase().includes(query) ||
+          String(item.Address || "").toLowerCase().includes(query) ||
+          String(item.Phone_Number || "").includes(query)
         );
 
         displayResults(results);
         document.getElementById("loadingOverlay").style.display = "none";
-      }, 500);
+      }, 600);
     }
 
     function displayResults(results) {
-      const tbody = document.querySelector("#results tbody");
-      const thead = document.querySelector("#results thead");
+      const resultsTable = document.querySelector("#results tbody");
+      const tableHead = document.querySelector("#results thead");
       const resultLabel = document.getElementById("resultLabel");
 
       resultLabel.textContent = `លទ្ធផលស្វែងរក៖ ${results.length}`;
-      thead.style.display = results.length > 0 ? "table-header-group" : "none";
+      tableHead.style.display = results.length > 0 ? "table-header-group" : "none";
 
-      tbody.innerHTML = results.length > 0
+      resultsTable.innerHTML = results.length > 0
         ? results.map(item => `
             <tr>
-              <td>${item.CIF}</td>
-              <td>${item.Name}</td>
-              <td>${item.Address}</td>
-              <td>${item.Phone_Number}</td>
+              <td>${item.CIF || ""}</td>
+              <td>${item.Name || ""}</td>
+              <td>${item.Address || ""}</td>
+              <td>${item.Phone_Number || ""}</td>
             </tr>`).join("")
         : "<tr><td colspan='4'>រកមិនឃើញលទ្ធផលទេ</td></tr>";
     }
 
     document.addEventListener("DOMContentLoaded", () => {
+      fetchData();
       document.getElementById("searchButton").addEventListener("click", performSearch);
     });
   </script>
