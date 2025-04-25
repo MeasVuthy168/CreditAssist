@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="km">
+<!DOCTYPE html><html lang="km">
 <head>
   <meta charset="UTF-8" />
   <title>Admin Data Upload</title>
@@ -90,14 +89,21 @@
       padding: 20px 10px 20px;
       border-radius: 12px;
       max-width: 500px;
-      margin: 10px auto 10px
+      margin: 10px auto 10px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
-    label {
+    .upload-label {
       font-weight: bold;
       margin-top: 16px;
-      display: block;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       color: #0d2d5c;
+    }
+    .upload-label span.timestamp {
+      font-weight: normal;
+      font-size: 13px;
+      color: #666;
     }
     input[type="file"] {
       width: 100%;
@@ -153,51 +159,29 @@
     }
   </style>
 </head>
-<body>
-
-<div class="header">
+<body><div class="header">
   ADIMIN MODE
   <button class="close-btn" onclick="window.location.href='index.html'">&times;</button>
-</div>
-
-<!-- ✅ Admin Input Box -->
-<div class="admin-box" id="admin-input" style="display:none;">
+</div><!-- ✅ Admin Input Box --><div class="admin-box" id="admin-input" style="display:none;">
   <label class="admin-title">✍️ Post Robot Message</label>
   <textarea id="newMessage" placeholder="សរសេរសារថ្មី..." class="admin-textarea"></textarea>
   <button class="admin-btn" onclick="postRobotMessage()">📤 Upload to Backend</button>
-</div>
+</div><!-- ✅ Upload Box with Title --><div class="upload-box">
+  <div class="upload-box-title">📄 Upload Excel Files (.xlsx)</div><label class="upload-label">User Data <span class="timestamp" id="ts-user">–</span></label> <input type="file" id="userFile" accept=".xlsx" onchange="showPreview('userFile', 'userPreview')" />
 
-<!-- ✅ Upload Box with Title -->
-<div class="upload-box">
-  <div class="upload-box-title">📄 Upload Excel Files (.xlsx)</div>
-
-  
-<label>User Data</label>
-  <input type="file" id="userFile" accept=".xlsx" onchange="showPreview('userFile', 'userPreview')" />
   <div class="file-info" id="userPreview"></div>
-  <div class="progress-container"><div class="progress-bar" id="userProgress"></div></div>
+  <div class="progress-container"><div class="progress-bar" id="userProgress"></div></div><label class="upload-label">Customer Data <span class="timestamp" id="ts-customer">–</span></label> <input type="file" id="customerFile" accept=".xlsx" onchange="showPreview('customerFile', 'customerPreview')" />
 
-  <label>Customer Data</label>
-  <input type="file" id="customerFile" accept=".xlsx" onchange="showPreview('customerFile', 'customerPreview')" />
   <div class="file-info" id="customerPreview"></div>
-  <div class="progress-container"><div class="progress-bar" id="customerProgress"></div></div>
+  <div class="progress-container"><div class="progress-bar" id="customerProgress"></div></div><label class="upload-label">Turnover Data <span class="timestamp" id="ts-turnover">–</span></label> <input type="file" id="turnoverFile" accept=".xlsx" onchange="showPreview('turnoverFile', 'turnoverPreview')" />
 
-  <label>Turnover Data</label>
-  <input type="file" id="turnoverFile" accept=".xlsx" onchange="showPreview('turnoverFile', 'turnoverPreview')" />
   <div class="file-info" id="turnoverPreview"></div>
-  <div class="progress-container"><div class="progress-bar" id="turnoverProgress"></div></div>
+  <div class="progress-container"><div class="progress-bar" id="turnoverProgress"></div></div><button class="upload-btn" onclick="uploadFiles()">📤 Upload to MongoDB</button>
 
-  <button class="upload-btn" onclick="uploadFiles()">📤 Upload to MongoDB</button>
 </div>
 
-<!-- ✅ Upload Log -->
-<div class="log-box" id="uploadLog"></div>
 
-<!-- ✅ Loading Overlay -->
-<div id="overlay"><span>Uploading... Please wait</span></div>
-
-<!-- ✅ Scripts -->
-<script>
+  <script>
   function showPreview(fileInputId, previewId) {
     const file = document.getElementById(fileInputId).files[0];
     const preview = document.getElementById(previewId);
@@ -216,6 +200,12 @@
     entry.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
     log.appendChild(entry);
     log.scrollTop = log.scrollHeight;
+  }
+
+  function updateTimestamp(label, date) {
+    const tsId = label + 'Timestamp';
+    document.getElementById(tsId).textContent = new Date(date).toLocaleString();
+    localStorage.setItem(tsId, new Date(date).toISOString());
   }
 
   async function uploadSingleFile(file, label, progressBarId) {
@@ -237,6 +227,8 @@
       xhr.onload = () => {
         if (xhr.status === 200) {
           progressBar.style.width = `100%`;
+          const now = new Date();
+          updateTimestamp(label, now);
           logMessage(`✅ ${label} upload complete.`);
           resolve();
         } else {
@@ -323,8 +315,13 @@
   document.addEventListener("DOMContentLoaded", () => {
     const userPosition = sessionStorage.getItem("userPosition") || "user";
     loadRobotMessage(userPosition);
+
+    // Load saved timestamps from localStorage
+    ['user', 'customer', 'turnover'].forEach(label => {
+      const ts = localStorage.getItem(label + 'Timestamp');
+      if (ts) {
+        document.getElementById(label + 'Timestamp').textContent = new Date(ts).toLocaleString();
+      }
+    });
   });
 </script>
-
-</body>
-</html>
