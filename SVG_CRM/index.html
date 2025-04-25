@@ -42,8 +42,11 @@
     .search-container {
       display: flex;
       justify-content: center;
-      margin-top: 80px;
-      padding: 0 16px;
+      align-items: center;
+      height: 100vh;
+      padding-top: 40px;
+      flex-direction: column;
+      box-sizing: border-box;
     }
     .search-wrapper {
       position: relative;
@@ -71,9 +74,10 @@
       color: #666;
     }
     #resultLabel {
-      text-align: center;
+      margin-left: 20px;
       margin-top: 12px;
       color: #ccc;
+      align-self: flex-start;
     }
     table {
       width: 100%;
@@ -120,16 +124,17 @@
     #loadingOverlay {
       position: fixed;
       width: 100%;
-      height: 100%;
-      top: 0; left: 0;
-      background-color: rgba(0,0,0,0.5);
+      bottom: 0;
+      left: 0;
+      height: 50px;
+      background-color: rgba(0,0,0,0.7);
       z-index: 9999;
-      display: flex;
+      display: none;
       justify-content: center;
       align-items: center;
-      color: black;
-      font-size: 18px;
-      display: none;
+      color: white;
+      font-size: 15px;
+      padding: 10px;
     }
     @media print {
       .header-bar, .bottom-bar, #loadingOverlay {
@@ -149,9 +154,9 @@
       <input type="text" id="searchBox" placeholder="Search by CIF, Name, or Phone" />
       <button class="search-icon" id="searchButton">🔍</button>
     </div>
+    <span id="resultLabel">លទ្ធផលស្វែងរក៖ 0</span>
   </div>
 
-  <span id="resultLabel">លទ្ធផលស្វែងរក៖ 0</span>
   <div class="table-container">
     <table id="results">
       <thead style="display: none;">
@@ -178,7 +183,7 @@
     </button>
   </div>
 
-  <div id="loadingOverlay">Loading data, please wait...</div>
+  <div id="loadingOverlay">🔄 កំពុងស្វែងរក...</div>
 
   <script>
     document.addEventListener("DOMContentLoaded", () => {
