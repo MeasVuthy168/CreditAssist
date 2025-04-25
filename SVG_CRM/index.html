@@ -284,6 +284,23 @@
 
       document.getElementById("searchButton").addEventListener("click", performSearch);
     });
+    
+    // ✅ Auto logout setup
+  const AUTO_LOGOUT_MINUTES = 1;
+  let logoutTimer;
+  function resetLogoutTimer() {
+    clearTimeout(logoutTimer);
+    logoutTimer = setTimeout(() => {
+      sessionStorage.removeItem("loggedInUser");
+      alert("Session expired due to inactivity. Please log in again.");
+      window.location.href = "../login.html";
+    }, AUTO_LOGOUT_MINUTES * 60 * 1000);
+  }
+
+  window.onload = resetLogoutTimer;
+  document.onmousemove = resetLogoutTimer;
+  document.onkeydown = resetLogoutTimer;
+  document.onclick = resetLogoutTimer;
   </script>
 </body>
 </html>
