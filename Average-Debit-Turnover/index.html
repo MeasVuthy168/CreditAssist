@@ -5,13 +5,11 @@
   <title>អត្រាប្រចាំឆ្នាំ (Turnover)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="theme-color" content="#0d2d5c" />
-  
   <script>
-  if (!sessionStorage.getItem("loggedInUser")) {
-    window.location.href = "login.html";
-  }
-</script>
-  
+    if (!sessionStorage.getItem("loggedInUser")) {
+      window.location.href = "login.html";
+    }
+  </script>
   <style>
     @font-face {
       font-family: 'Krasar';
@@ -58,54 +56,51 @@
     }
 
     .form-section {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-bottom: 20px;
-}
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
 
-.form-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+    .form-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
-.form-row label {
-  width: 40%;
-  font-size: 14px;
-  flex: 0 0 40%;
-  color: white;
-}
+    .form-row label {
+      width: 40%;
+      font-size: 14px;
+      flex: 0 0 40%;
+      color: white;
+    }
 
-.form-row input,
-.form-row .readonly-label {
-  font-size: 14px;
-  padding: 6px 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  flex: 1;
-  width: 100%;
-  box-sizing: border-box;
-  font-weight: bold;
-}
+    .form-row input,
+    .form-row .readonly-label {
+      font-size: 14px;
+      padding: 6px 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      flex: 1;
+      width: 100%;
+      box-sizing: border-box;
+      font-weight: bold;
+    }
 
-.form-row .readonly-label {
-  background-color: #f0f0f0;
-}
     .form-row input {
-  height: 36px;
-  padding: 6px 8px;
-  font-size: 14px;
-  box-sizing: border-box;
-}
+      height: 36px;
+    }
+
+    .form-row .readonly-label {
+      background-color: #f0f0f0;
+    }
+
     input[type="date"] {
-  height: 36px;
-  padding: 6px 8px;
-  font-size: 14px;
-}
-.form-row {
-  align-items: center;
-}
+      height: 36px;
+      padding: 6px 8px;
+      font-size: 14px;
+    }
+
     .actions {
       text-align: center;
       margin-bottom: 20px;
@@ -152,71 +147,88 @@
     .not-found { background-color: #fff3cd !important; }
     .oldest { background-color: #f2f2f2; }
     .newest { background-color: #e1f5e6; font-weight: bold; }
-             
-  .bottom-bar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 56px;
-  background: #0d2d5c;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-  z-index: 1000;
-}
 
-.bottom-btn {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-size: 11px;
-  color: white;
-  border: none;
-  background: none;
-  padding: 2px;
-}
+    .bottom-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 56px;
+      background: #0d2d5c;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+      z-index: 1000;
+    }
 
-.bottom-btn img {
-  margin-bottom: 2px;
-  pointer-events: none;
-}
+    .bottom-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-size: 11px;
+      color: white;
+      border: none;
+      background: none;
+      padding: 2px;
+    }
 
-.footer-text {
-  font-size: 13px;
-  color: #ffd700;
-  font-family: 'Krasar', Arial, sans-serif;
-  white-space: nowrap;
-}
+    .bottom-btn img {
+      margin-bottom: 2px;
+      pointer-events: none;
+    }
 
- #print-metadata {
-  visibility: hidden;
-  height: 0;
-  overflow: hidden;
-  margin: 0;
-  padding: 0;
-}
+    .footer-text {
+      font-size: 13px;
+      color: #ffd700;
+      font-family: 'Krasar', Arial, sans-serif;
+      white-space: nowrap;
+    }
 
-@media screen {
-  #print-header {
-    display: none;
-  }
-}
+    #loadingSpinner {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      width: 32px;
+      height: 32px;
+      border: 4px solid #ffffff33;
+      border-top: 4px solid #ffd700;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      transform: translate(-50%, -50%);
+      z-index: 9999;
+      display: none;
+    }
 
-@media print {
-  .header, .bottom-bar, .actions, .form-section {
-    display: none !important;
-  }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
 
-  #print-header {
-    display: block !important;
-  }
-}
+    #print-metadata {
+      visibility: hidden;
+      height: 0;
+      overflow: hidden;
+      margin: 0;
+      padding: 0;
+    }
+
+    @media screen {
+      #print-header {
+        display: none;
+      }
+    }
+
+    @media print {
+      .header, .bottom-bar, .actions, .form-section {
+        display: none !important;
+      }
+      #print-header {
+        display: block !important;
+      }
+    }
   </style>
 </head>
 <body>
-  <!-- Header -->
   <div class="header">
     <button class="back" onclick="window.location.href='../index.html'">←</button>
     <div class="title">អត្រាប្រចាំឆ្នាំ (Turnover)</div>
@@ -228,36 +240,32 @@
     អត្រាជាមធ្យមប្រចាំឆ្នាំ (Turnover)
   </h2>
 
-  <!-- Input Form -->
-<div class="form-section">
-  <div class="form-row">
-    <label for="prepared-date">Prepared Date</label>
-    <input type="date" id="prepared-date" />
+  <div class="form-section">
+    <div class="form-row">
+      <label for="prepared-date">Prepared Date</label>
+      <input type="date" id="prepared-date" />
+    </div>
+    <div class="form-row">
+      <label for="input-cif">Input CIF</label>
+      <input type="text" id="input-cif" />
+    </div>
+    <div class="form-row">
+      <label for="customer-name">Customer Name</label>
+      <span class="readonly-label" id="customer-name-label">-</span>
+    </div>
   </div>
-  <div class="form-row">
-    <label for="input-cif">Input CIF</label>
-    <input type="text" id="input-cif" />
-  </div>
-  <div class="form-row">
-    <label for="customer-name">Customer Name</label>
-    <span class="readonly-label" id="customer-name-label">-</span>
-  </div>
-</div>
 
-  <!-- Export Buttons -->
   <div class="actions">
     <img src="https://img.icons8.com/color/48/pdf.png" title="Print" onclick="printPage()" />
     <img src="https://img.icons8.com/color/48/ms-excel.png" title="Export to Excel" onclick="exportToExcel()" />
   </div>
 
- <!-- Print Header Always Visible But Empty -->
-<div id="print-header" style="font-weight:bold; text-align:center; background:white; color:black; padding:10px 0; border-bottom: 1px solid #ccc;">
-  <div id="ph-date">Prepared Date:</div>
-  <div id="ph-cif">CIF:</div>
-  <div id="ph-name">Customer Name:</div>
-</div>
-  
-  <!-- Table -->
+  <div id="print-header" style="font-weight:bold; text-align:center; background:white; color:black; padding:10px 0; border-bottom: 1px solid #ccc;">
+    <div id="ph-date">Prepared Date:</div>
+    <div id="ph-cif">CIF:</div>
+    <div id="ph-name">Customer Name:</div>
+  </div>
+
   <div class="table-container">
     <table id="turnover-table">
       <thead>
@@ -282,214 +290,216 @@
     </table>
   </div>
 
-  <!-- Footer -->
-<div class="bottom-bar">
-  <button class="bottom-btn active" onclick="window.location.href='../index.html'">
-    <img src="../icons/Home.png" width="24" height="24" /><div>Home</div>
-  </button>
-  <button class="bottom-btn" onclick="window.location.href='../Setting/index.html'">
-    <img src="../icons/Setting.png" width="24" height="24" /><div>Setting</div>
-  </button>
-  <button class="bottom-btn" onclick="alert('Coming soon!')">
-    <img src="../icons/Notification.png" width="24" height="24" /><div>Notification</div>
-  </button>
-</div>
-  
-  <!-- Scripts -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-  <script>
-    let combinedData = [];
-    let monthList = [];
+  <div class="bottom-bar">
+    <button class="bottom-btn active" onclick="window.location.href='../index.html'">
+      <img src="../icons/Home.png" width="24" height="24" /><div>Home</div>
+    </button>
+    <button class="bottom-btn" onclick="window.location.href='../Setting/index.html'">
+      <img src="../icons/Setting.png" width="24" height="24" /><div>Setting</div>
+    </button>
+    <button class="bottom-btn" onclick="alert('Coming soon!')">
+      <img src="../icons/Notification.png" width="24" height="24" /><div>Notification</div>
+    </button>
+  </div>
 
-    function getLast12MonthEnds(baseDate) {
-      const months = [];
-      const date = new Date(baseDate);
-      date.setDate(1);
-      for (let i = 0; i < 12; i++) {
-        date.setMonth(date.getMonth() - 1);
-        const endOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0);
-        const dd = String(endOfMonth.getDate()).padStart(2, '0');
-        const mm = String(endOfMonth.getMonth() + 1).padStart(2, '0');
-        const yy = String(endOfMonth.getFullYear()).slice(-2);
-        months.push(`${dd}-${mm}-${yy}`);
-      }
-      return months;
+  <!-- ✅ Spinner -->
+  <div id="loadingSpinner"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script>
+  let combinedData = [];
+  let monthList = [];
+
+  function getLast12MonthEnds(baseDate) {
+    const months = [];
+    const date = new Date(baseDate);
+    date.setDate(1);
+    for (let i = 0; i < 12; i++) {
+      date.setMonth(date.getMonth() - 1);
+      const endOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+      const dd = String(endOfMonth.getDate()).padStart(2, '0');
+      const mm = String(endOfMonth.getMonth() + 1).padStart(2, '0');
+      const yy = String(endOfMonth.getFullYear()).slice(-2);
+      months.push(`${dd}-${mm}-${yy}`);
     }
+    return months;
+  }
 
-    function updateTableWithEmptyMonths(months) {
-      const tbody = document.getElementById('data-body');
-      tbody.innerHTML = '';
-      months.forEach(month => {
-        const row = document.createElement('tr');
-        row.innerHTML = `<td>${month}</td><td></td><td></td><td></td><td></td>`;
-        tbody.appendChild(row);
-      });
+  function updateTableWithEmptyMonths(months) {
+    const tbody = document.getElementById('data-body');
+    tbody.innerHTML = '';
+    months.forEach(month => {
+      const row = document.createElement('tr');
+      row.innerHTML = `<td>${month}</td><td></td><td></td><td></td><td></td>`;
+      tbody.appendChild(row);
+    });
+  }
+
+  async function loadAllData() {
+    try {
+      const res = await fetch("https://secure-backend-tzj9.onrender.com/api/turnover");
+      combinedData = await res.json();
+    } catch {
+      alert("បញ្ហាភ្ជាប់ម៉ាស៊ីនមេ");
     }
+  }
 
-    async function loadAllData() {
-      try {
-        const res = await fetch("https://secure-backend-tzj9.onrender.com/api/turnover");
-        combinedData = await res.json();
-      } catch {
-        alert("បញ្ហាភ្ជាប់ម៉ាស៊ីនមេ");
-      }
-    }
+  async function fetchAndFillData(cif) {
+    let totalAmtIn = 0, totalOd = 0, totalRate = 0, count = 0;
+    const tbody = document.getElementById('data-body');
+    const getDate = d => new Date(d.split('-').reverse().join('-'));
 
-    async function fetchAndFillData(cif) {
-      let totalAmtIn = 0, totalOd = 0, totalRate = 0, count = 0;
-      const tbody = document.getElementById('data-body');
+    const latestEff = combinedData.filter(d => d.CUSTOMER === cif && d.Effective_Date)
+      .map(d => getDate(d.Effective_Date)).sort((a,b) => b - a)[0];
 
-      const getDate = d => new Date(d.split('-').reverse().join('-'));
+    const oldestEff = combinedData.filter(d => d.CUSTOMER === cif && d.Effective_Date)
+      .map(d => getDate(d.Effective_Date)).sort((a,b) => a - b)[0];
 
-      const latestEff = combinedData.filter(d => d.CUSTOMER === cif && d.Effective_Date)
-        .map(d => getDate(d.Effective_Date)).sort((a,b) => b - a)[0];
+    [...tbody.rows].forEach(row => {
+      const month = row.cells[0].innerText;
+      const match = combinedData.find(d => d.CUSTOMER === cif && d.MONTH.includes(month.slice(3)));
 
-      const oldestEff = combinedData.filter(d => d.CUSTOMER === cif && d.Effective_Date)
-        .map(d => getDate(d.Effective_Date)).sort((a,b) => a - b)[0];
+      if (match) {
+        row.cells[1].innerText = parseFloat(match.AMT_IN).toLocaleString();
+        row.cells[2].innerText = parseFloat(match.CURRENT_OD).toLocaleString();
+        row.cells[3].innerText = match.TURNOVER_RATE + '%';
+        row.cells[4].innerText = match.Effective_Date;
 
-      [...tbody.rows].forEach(row => {
-        const month = row.cells[0].innerText;
-        const match = combinedData.find(d => d.CUSTOMER === cif && d.MONTH.includes(month.slice(3)));
+        totalAmtIn += parseFloat(match.AMT_IN);
+        totalOd += parseFloat(match.CURRENT_OD);
+        totalRate += parseFloat(match.TURNOVER_RATE);
+        count++;
 
-        if (match) {
-          row.cells[1].innerText = parseFloat(match.AMT_IN).toLocaleString();
-          row.cells[2].innerText = parseFloat(match.CURRENT_OD).toLocaleString();
-          row.cells[3].innerText = match.TURNOVER_RATE + '%';
-          row.cells[4].innerText = match.Effective_Date;
-
-          totalAmtIn += parseFloat(match.AMT_IN);
-          totalOd += parseFloat(match.CURRENT_OD);
-
-          if (match.Effective_Date === latestEff.toLocaleDateString('en-GB')) row.classList.add('newest');
-          if (match.Effective_Date === oldestEff.toLocaleDateString('en-GB')) row.classList.add('oldest');
-
-          totalRate += parseFloat(match.TURNOVER_RATE);
-          count++;
-        } else {
-          row.classList.add("not-found");
-          row.cells[1].innerText = row.cells[2].innerText = row.cells[3].innerText = row.cells[4].innerText = 'No Data';
-        }
-      });
-
-      document.getElementById('avg-amt-in').innerText = totalAmtIn.toLocaleString(undefined, { maximumFractionDigits: 2 });
-      document.getElementById('avg-current-od').innerText = totalOd.toLocaleString(undefined, { maximumFractionDigits: 2 });
-      document.getElementById('avg-turnover-rate').innerText = count ? (totalRate / count).toFixed(2) + '%' : '';
-    }
-
-    document.getElementById('prepared-date').addEventListener('change', async (e) => {
-      const selectedDate = e.target.value;
-      if (selectedDate) {
-        monthList = getLast12MonthEnds(selectedDate);
-        updateTableWithEmptyMonths(monthList);
-        document.getElementById('input-cif').value = '';
-        document.getElementById('customer-name-label').textContent = '-';
-        await loadAllData();
+        if (match.Effective_Date === latestEff.toLocaleDateString('en-GB')) row.classList.add('newest');
+        if (match.Effective_Date === oldestEff.toLocaleDateString('en-GB')) row.classList.add('oldest');
+      } else {
+        row.classList.add("not-found");
+        row.cells[1].innerText = row.cells[2].innerText = row.cells[3].innerText = row.cells[4].innerText = 'No Data';
       }
     });
 
-    document.getElementById('input-cif').addEventListener('change', async (e) => {
-      const cif = e.target.value.trim();
-      if (!cif) return;
+    document.getElementById('avg-amt-in').innerText = totalAmtIn.toLocaleString(undefined, { maximumFractionDigits: 2 });
+    document.getElementById('avg-current-od').innerText = totalOd.toLocaleString(undefined, { maximumFractionDigits: 2 });
+    document.getElementById('avg-turnover-rate').innerText = count ? (totalRate / count).toFixed(2) + '%' : '';
+  }
+
+  document.getElementById('prepared-date').addEventListener('change', async (e) => {
+    const selectedDate = e.target.value;
+    if (selectedDate) {
+      monthList = getLast12MonthEnds(selectedDate);
+      updateTableWithEmptyMonths(monthList);
+      document.getElementById('input-cif').value = '';
+      document.getElementById('customer-name-label').textContent = '-';
+      await loadAllData();
+    }
+  });
+
+  // ✅ Spinner while loading after entering CIF
+  document.getElementById('input-cif').addEventListener('change', async (e) => {
+    const cif = e.target.value.trim();
+    if (!cif) return;
+
+    const spinner = document.getElementById('loadingSpinner');
+    spinner.style.display = 'block';
+
+    try {
       if (!combinedData.length) await loadAllData();
       const found = combinedData.find(d => d.CUSTOMER === cif);
       document.getElementById('customer-name-label').textContent = found ? found["Name(Eng)"] : 'Not Found';
       await fetchAndFillData(cif);
-    });
-
-  function exportToExcel() {
-  const preparedDate = document.getElementById("prepared-date").value || '-';
-  const cif = document.getElementById("input-cif").value.trim() || '-';
-  const customerName = document.getElementById("customer-name-label").textContent || '-';
-
-  const table = document.getElementById("turnover-table");
-  const wb = XLSX.utils.book_new();
-  const ws_data = [];
-
-  // Row 1 to 4
-  ws_data.push(["Average Debit Turnover"]);
-  ws_data.push([`Prepared Date: ${preparedDate}`]);
-  ws_data.push([`CIF: ${cif}`]);
-  ws_data.push([`Customer Name: ${customerName}`]);
-
-  // Row 5: table headers
-  const headers = [];
-  table.querySelectorAll("thead th").forEach(th => headers.push(th.innerText.trim()));
-  ws_data.push(headers);
-
-  // Table body
-  table.querySelectorAll("tbody tr").forEach(row => {
-    const rowData = [];
-    row.querySelectorAll("td").forEach(td => rowData.push(td.innerText.trim()));
-    ws_data.push(rowData);
+    } catch (err) {
+      alert("Error loading data");
+      console.error(err);
+    } finally {
+      spinner.style.display = 'none';
+    }
   });
 
-  // Footer (average)
-  const footerRow = [];
-  table.querySelectorAll("tfoot td").forEach(td => footerRow.push(td.innerText.trim()));
-  ws_data.push(footerRow);
+  function exportToExcel() {
+    const preparedDate = document.getElementById("prepared-date").value || '-';
+    const cif = document.getElementById("input-cif").value.trim() || '-';
+    const customerName = document.getElementById("customer-name-label").textContent || '-';
 
-  // Create sheet and export
-  const ws = XLSX.utils.aoa_to_sheet(ws_data);
-  XLSX.utils.book_append_sheet(wb, ws, "Turnover");
-  XLSX.writeFile(wb, "Turnover_Average.xlsx");
-}
+    const table = document.getElementById("turnover-table");
+    const wb = XLSX.utils.book_new();
+    const ws_data = [];
 
- function printPage() {
-  const preparedDate = document.getElementById("prepared-date").value || '-';
-  const cif = document.getElementById("input-cif").value.trim() || '-';
-  const customerName = document.getElementById("customer-name-label").textContent || '-';
+    ws_data.push(["Average Debit Turnover"]);
+    ws_data.push([`Prepared Date: ${preparedDate}`]);
+    ws_data.push([`CIF: ${cif}`]);
+    ws_data.push([`Customer Name: ${customerName}`]);
 
-  // Create metadata section
-  const metadata = document.createElement("div");
-metadata.style.textAlign = "center";
-metadata.style.fontWeight = "bold";
-metadata.style.marginBottom = "10px";
-metadata.innerHTML = `
-  <h2 style="margin: 0 0 10px; font-size: 16px; color: #0d2d5c;">
-    Yearly Average of Debit Turnover
-  </h2>
-  <div>Prepared Date: ${preparedDate}</div>
-  <div>CIF: ${cif}</div>
-  <div>Customer Name: ${customerName}</div>
-  <hr style="margin:10px 0;">
-`;
+    const headers = [];
+    table.querySelectorAll("thead th").forEach(th => headers.push(th.innerText.trim()));
+    ws_data.push(headers);
 
-  // Clone only the part we want in the PDF
-  const tableSection = document.querySelector(".table-container").cloneNode(true);
-  const wrapper = document.createElement("div");
-  wrapper.style.fontFamily = "'Krasar', Arial, sans-serif";
-  wrapper.style.fontSize = "12px";
-  wrapper.style.padding = "20px";
-  wrapper.style.backgroundColor = "white";
-  wrapper.appendChild(metadata);
-  wrapper.appendChild(tableSection);
+    table.querySelectorAll("tbody tr").forEach(row => {
+      const rowData = [];
+      row.querySelectorAll("td").forEach(td => rowData.push(td.innerText.trim()));
+      ws_data.push(rowData);
+    });
 
-  // Generate PDF
-  html2pdf().from(wrapper).set({
-    filename: "Turnover_Report.pdf",
-    margin: 0.5,
-    html2canvas: { scale: 2 },
-    jsPDF: { unit: "in", format: "a4", orientation: "portrait" }
-  }).save();
-}
-    
-    // Auto Logout
-    const AUTO_LOGOUT_MINUTES = 1;
-    let logoutTimer;
-    function resetLogoutTimer() {
-      clearTimeout(logoutTimer);
-      logoutTimer = setTimeout(() => {
-        sessionStorage.removeItem("loggedInUser");
-        alert("Session expired due to inactivity. Please log in again.");
-        window.location.href = "../login.html";
-      }, AUTO_LOGOUT_MINUTES * 60 * 1000);
-    }
+    const footerRow = [];
+    table.querySelectorAll("tfoot td").forEach(td => footerRow.push(td.innerText.trim()));
+    ws_data.push(footerRow);
 
-    window.onload = resetLogoutTimer;
-    document.onmousemove = resetLogoutTimer;
-    document.onkeydown = resetLogoutTimer;
-    document.onclick = resetLogoutTimer;
-  </script>
+    const ws = XLSX.utils.aoa_to_sheet(ws_data);
+    XLSX.utils.book_append_sheet(wb, ws, "Turnover");
+    XLSX.writeFile(wb, "Turnover_Average.xlsx");
+  }
+
+  function printPage() {
+    const preparedDate = document.getElementById("prepared-date").value || '-';
+    const cif = document.getElementById("input-cif").value.trim() || '-';
+    const customerName = document.getElementById("customer-name-label").textContent || '-';
+
+    const metadata = document.createElement("div");
+    metadata.style.textAlign = "center";
+    metadata.style.fontWeight = "bold";
+    metadata.style.marginBottom = "10px";
+    metadata.innerHTML = `
+      <h2 style="margin: 0 0 10px; font-size: 16px; color: #0d2d5c;">
+        Yearly Average of Debit Turnover
+      </h2>
+      <div>Prepared Date: ${preparedDate}</div>
+      <div>CIF: ${cif}</div>
+      <div>Customer Name: ${customerName}</div>
+      <hr style="margin:10px 0;">
+    `;
+
+    const tableSection = document.querySelector(".table-container").cloneNode(true);
+    const wrapper = document.createElement("div");
+    wrapper.style.fontFamily = "'Krasar', Arial, sans-serif";
+    wrapper.style.fontSize = "12px";
+    wrapper.style.padding = "20px";
+    wrapper.style.backgroundColor = "white";
+    wrapper.appendChild(metadata);
+    wrapper.appendChild(tableSection);
+
+    html2pdf().from(wrapper).set({
+      filename: "Turnover_Report.pdf",
+      margin: 0.5,
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: "in", format: "a4", orientation: "portrait" }
+    }).save();
+  }
+
+  // Auto logout after inactivity
+  const AUTO_LOGOUT_MINUTES = 1;
+  let logoutTimer;
+  function resetLogoutTimer() {
+    clearTimeout(logoutTimer);
+    logoutTimer = setTimeout(() => {
+      sessionStorage.removeItem("loggedInUser");
+      alert("Session expired due to inactivity. Please log in again.");
+      window.location.href = "../login.html";
+    }, AUTO_LOGOUT_MINUTES * 60 * 1000);
+  }
+
+  window.onload = resetLogoutTimer;
+  document.onmousemove = resetLogoutTimer;
+  document.onkeydown = resetLogoutTimer;
+  document.onclick = resetLogoutTimer;
+</script>
 </body>
 </html>
