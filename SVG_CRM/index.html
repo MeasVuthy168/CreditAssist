@@ -44,20 +44,17 @@
       font-size: 16px;
     }
 
-    .container {
-      max-width: 700px;
-      margin: 80px auto 0;
+    .search-fixed-bar {
+      position: fixed;
+      top: 56px;
+      left: 0;
+      right: 0;
       background: #2c3545;
-      padding: 20px;
-      border-radius: 12px;
-      box-sizing: border-box;
-      width: 100%;
-    }
-
-    .search-container {
+      padding: 12px 0 8px;
+      z-index: 999;
       display: flex;
-      justify-content: center;
-      margin-bottom: 12px;
+      flex-direction: column;
+      align-items: center;
     }
 
     .search-wrapper {
@@ -89,9 +86,19 @@
     }
 
     #resultLabel {
-      margin: 0 0 10px 20px;
+      margin: 10px 0 0 0;
       color: #ccc;
       font-size: 15px;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: 160px auto 0;
+      background: #2c3545;
+      padding: 20px;
+      border-radius: 12px;
+      box-sizing: border-box;
+      width: 100%;
     }
 
     .table-container {
@@ -175,7 +182,7 @@
     }
 
     @media print {
-      .header-bar, .bottom-bar, #loadingOverlay {
+      .header-bar, .bottom-bar, #loadingOverlay, .search-fixed-bar {
         display: none !important;
       }
     }
@@ -187,16 +194,17 @@
     <div class="header-title">ស្វែងរកអតិថិជន</div>
   </div>
 
-  <div class="container">
-    <div class="search-container">
-      <div class="search-wrapper">
-        <input type="text" id="searchBox" placeholder="Search by CIF, Name, or Phone" />
-        <button class="search-icon" id="searchButton">🔍</button>
-      </div>
+  <!-- 🔍 Floating Search Bar + Result Label -->
+  <div class="search-fixed-bar">
+    <div class="search-wrapper">
+      <input type="text" id="searchBox" placeholder="Search by CIF, Name, or Phone" />
+      <button class="search-icon" id="searchButton">🔍</button>
     </div>
-
     <span id="resultLabel">លទ្ធផលស្វែងរក៖ 0</span>
+  </div>
 
+  <!-- 📄 Main Content -->
+  <div class="container">
     <div class="table-container">
       <table id="results">
         <thead style="display: none;">
@@ -212,6 +220,7 @@
     </div>
   </div>
 
+  <!-- 📱 Bottom Nav -->
   <div class="bottom-bar">
     <button class="bottom-btn" onclick="window.location.href='../index.html'">
       <img src="../icons/Home.png" width="24" height="24" /><div>Home</div>
@@ -224,10 +233,12 @@
     </button>
   </div>
 
+  <!-- 🔄 Loading Spinner -->
   <div id="loadingOverlay">
     <div class="spinner"></div>
   </div>
 
+  <!-- 🔍 Script -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       function performSearch() {
