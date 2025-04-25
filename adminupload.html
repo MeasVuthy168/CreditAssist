@@ -218,20 +218,33 @@
     log.scrollTop = log.scrollHeight;
   }
 
-  async function loadTimestamps() {
-    try {
-      const res = await fetch("https://secure-backend-tzj9.onrender.com/api/admin/upload-timestamps");
-      const data = await res.json();
-      ['user', 'customer', 'turnover'].forEach(label => {
-        const ts = data[label];
-        if (ts) {
-          document.getElementById('ts-' + label).textContent = new Date(ts).toLocaleString();
-        }
-      });
-    } catch (err) {
-      console.warn("❌ Failed to fetch upload timestamps");
+  async function updateTimestamp(label) {
+  try {
+    const res = await fetch("https://secure-backend-tzj9.onrender.com/api/admin/upload-timestamps");
+    const data = await res.json();
+    if (data[label]) {
+      const date = new Date(data[label]);
+      document.getElementById('ts-' + label).textContent = date.toLocaleString();
     }
+  } catch (err) {
+    console.warn("❌ Failed to load upload timestamp for " + label);
   }
+}
+
+async function loadTimestamps() {
+  try {
+    const res = await fetch("https://secure-backend-tzj9.onrender.com/api/admin/upload-timestamps");
+    const data = await res.json();
+    ['user', 'customer', 'turnover'].forEach(label => {
+      if (data[label]) {
+        const date = new Date(data[label]);
+        document.getElementById('ts-' + label).textContent = date.toLocaleString();
+      }
+    });
+  } catch (err) {
+    console.warn("❌ Failed to load timestamps");
+  }
+}
 
   async function uploadSingleFile(file, label, progressBarId) {
     const progressBar = document.getElementById(progressBarId);
