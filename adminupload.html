@@ -82,11 +82,13 @@
     .admin-btn:hover {
       background: #09306d;
     }
-    .separator {
-      width: 90%;
-      max-width: 500px;
-      margin: 10px auto;
-      border-top: 2px dashed #ffd700;
+    .upload-title {
+      text-align: center;
+      color: #0d2d5c;
+      font-size: 18px;
+      font-weight: bold;
+      margin: 20px auto 0;
+      padding-top: 10px;
     }
     .upload-box, .log-box {
       background: white;
@@ -170,11 +172,12 @@
   <button class="admin-btn" onclick="postRobotMessage()">🚀 បញ្ចូនសារ</button>
 </div>
 
-<!-- ✅ Golden Separator -->
-<div class="separator"></div>
+<!-- ✅ Upload Title -->
+<div class="upload-title">📁 Upload Excel Data</div>
 
-<!-- ✅ Start Upload Section -->
+<!-- ✅ Upload Section Start -->
 <div class="upload-box">
+
   <label>Upload User Data (.xlsx)</label>
   <input type="file" id="userFile" accept=".xlsx" onchange="showPreview('userFile', 'userPreview')" />
   <div class="file-info" id="userPreview"></div>
@@ -193,14 +196,12 @@
   <button class="upload-btn" onclick="uploadFiles()">📤 Upload to MongoDB</button>
 </div>
 
-
-  <!-- ✅ Upload Log -->
+<!-- ✅ Upload Log -->
 <div class="log-box" id="uploadLog"></div>
 
-<!-- ✅ Overlay Loading -->
+<!-- ✅ Overlay -->
 <div id="overlay"><span>Uploading... Please wait</span></div>
 
-<!-- ✅ Scripts -->
 <script>
   function showPreview(fileInputId, previewId) {
     const file = document.getElementById(fileInputId).files[0];
@@ -289,7 +290,6 @@
     document.getElementById("overlay").style.display = "none";
   }
 
-  // ✅ Admin Robot Message Logic
   async function loadRobotMessage(userPosition) {
     try {
       const res = await fetch("https://secure-backend-tzj9.onrender.com/api/robot-message");
