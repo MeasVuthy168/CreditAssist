@@ -514,14 +514,18 @@
         const res = await fetch("https://secure-backend-tzj9.onrender.com/api/robot-message");
         const data = await res.json();
         document.getElementById("robotMessage").textContent = data.message || "មិនទាន់មានសារ។";
-        if (userPosition === "admin") {
-          document.getElementById("admin-input").style.display = "block";
-          document.getElementById("newMessage").value = data.message;
-        }
+        
+        // This is now removed, since admin input no longer exists here
+        // if (userPosition === "admin") {
+        //   document.getElementById("admin-input").style.display = "block";
+        //   document.getElementById("newMessage").value = data.message;
+        // }
+    
       } catch {
         document.getElementById("robotMessage").textContent = "មិនអាចទាញសារបានទេ។";
       }
     }
+
 
     
  // ✅ Properly placed DOM ready code
