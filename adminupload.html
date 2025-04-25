@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="km">
+<!DOCTYPE html>
+<html lang="km">
 <head>
   <meta charset="UTF-8" />
   <title>Admin Data Upload</title>
@@ -37,10 +38,10 @@
     }
     .admin-box {
       background: white;
-      padding: 20px 10px 20px;
+      padding: 20px 10px;
       border-radius: 12px;
       max-width: 500px;
-      margin: 10px auto 10px;
+      margin: 10px auto;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
     .admin-title {
@@ -86,10 +87,10 @@
     }
     .upload-box, .log-box {
       background: white;
-      padding: 20px 10px 20px;
+      padding: 20px 10px;
       border-radius: 12px;
       max-width: 500px;
-      margin: 10px auto 10px;
+      margin: 10px auto;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
     .upload-label {
@@ -159,26 +160,41 @@
     }
   </style>
 </head>
-<body><div class="header">
-  ADIMIN MODE
+<body>
+<div class="header">
+  ADMIN MODE
   <button class="close-btn" onclick="window.location.href='index.html'">&times;</button>
-</div><!-- ✅ Admin Input Box --><div class="admin-box" id="admin-input" style="display:none;">
+</div>
+
+<div class="admin-box" id="admin-input" style="display:none;">
   <label class="admin-title">✍️ Post Robot Message</label>
   <textarea id="newMessage" placeholder="សរសេរសារថ្មី..." class="admin-textarea"></textarea>
   <button class="admin-btn" onclick="postRobotMessage()">📤 Upload to Backend</button>
-</div><!-- ✅ Upload Box with Title --><div class="upload-box">
-  <div class="upload-box-title">📄 Upload Excel Files (.xlsx)</div><label class="upload-label">User Data <span class="timestamp" id="ts-user">–</span></label> <input type="file" id="userFile" accept=".xlsx" onchange="showPreview('userFile', 'userPreview')" />
-
-  <div class="file-info" id="userPreview"></div>
-  <div class="progress-container"><div class="progress-bar" id="userProgress"></div></div><label class="upload-label">Customer Data <span class="timestamp" id="ts-customer">–</span></label> <input type="file" id="customerFile" accept=".xlsx" onchange="showPreview('customerFile', 'customerPreview')" />
-
-  <div class="file-info" id="customerPreview"></div>
-  <div class="progress-container"><div class="progress-bar" id="customerProgress"></div></div><label class="upload-label">Turnover Data <span class="timestamp" id="ts-turnover">–</span></label> <input type="file" id="turnoverFile" accept=".xlsx" onchange="showPreview('turnoverFile', 'turnoverPreview')" />
-
-  <div class="file-info" id="turnoverPreview"></div>
-  <div class="progress-container"><div class="progress-bar" id="turnoverProgress"></div></div><button class="upload-btn" onclick="uploadFiles()">📤 Upload to MongoDB</button>
-
 </div>
+
+<div class="upload-box">
+  <div class="upload-box-title">📄 Upload Excel Files (.xlsx)</div>
+
+  <label class="upload-label">User Data <span class="timestamp" id="ts-user">–</span></label>
+  <input type="file" id="userFile" accept=".xlsx" onchange="showPreview('userFile', 'userPreview')" />
+  <div class="file-info" id="userPreview"></div>
+  <div class="progress-container"><div class="progress-bar" id="userProgress"></div></div>
+
+  <label class="upload-label">Customer Data <span class="timestamp" id="ts-customer">–</span></label>
+  <input type="file" id="customerFile" accept=".xlsx" onchange="showPreview('customerFile', 'customerPreview')" />
+  <div class="file-info" id="customerPreview"></div>
+  <div class="progress-container"><div class="progress-bar" id="customerProgress"></div></div>
+
+  <label class="upload-label">Turnover Data <span class="timestamp" id="ts-turnover">–</span></label>
+  <input type="file" id="turnoverFile" accept=".xlsx" onchange="showPreview('turnoverFile', 'turnoverPreview')" />
+  <div class="file-info" id="turnoverPreview"></div>
+  <div class="progress-container"><div class="progress-bar" id="turnoverProgress"></div></div>
+
+  <button class="upload-btn" onclick="uploadFiles()">📤 Upload to MongoDB</button>
+</div>
+
+<div class="log-box" id="uploadLog"></div>
+<div id="overlay"><span>Uploading... Please wait</span></div>
 
 
   <script>
@@ -202,10 +218,21 @@
     log.scrollTop = log.scrollHeight;
   }
 
-  function updateTimestamp(label, date) {
-    const tsId = label + 'Timestamp';
-    document.getElementById(tsId).textContent = new Date(date).toLocaleString();
-    localStorage.setItem(tsId, new Date(date).toISOString());
+  function updateTimestampUI(label, isoDate) {
+    const el = document.getElementById("ts-" + label);
+    el.textContent = isoDate ? new Date(isoDate).toLocaleString() : "–";
+  }
+
+  async function loadUploadTimestamps() {
+    try {
+      const res = await fetch("https://secure-backend-tzj9.onrender.com/api/admin/upload-timestamps");
+      const data = await res.json();
+      ['user', 'customer', 'turnover'].forEach(label => {
+        updateTimestampUI(label, data[label]);
+      });
+    } catch (err) {
+      console.warn("❌ Failed to load timestamps");
+    }
   }
 
   async function uploadSingleFile(file, label, progressBarId) {
@@ -227,8 +254,7 @@
       xhr.onload = () => {
         if (xhr.status === 200) {
           progressBar.style.width = `100%`;
-          const now = new Date();
-          updateTimestamp(label, now);
+          updateTimestampUI(label, new Date().toISOString());
           logMessage(`✅ ${label} upload complete.`);
           resolve();
         } else {
@@ -270,6 +296,8 @@
         document.getElementById(id + 'File').value = "";
         document.getElementById(id + 'Preview').textContent = "";
       });
+
+      loadUploadTimestamps(); // Refresh UI
     } catch (err) {
       alert("❌ Some uploads failed. Check logs.");
     }
@@ -315,15 +343,8 @@
   document.addEventListener("DOMContentLoaded", () => {
     const userPosition = sessionStorage.getItem("userPosition") || "user";
     loadRobotMessage(userPosition);
-
-    // Load saved timestamps from localStorage
-    ['user', 'customer', 'turnover'].forEach(label => {
-      const ts = localStorage.getItem(label + 'Timestamp');
-      if (ts) {
-        document.getElementById(label + 'Timestamp').textContent = new Date(ts).toLocaleString();
-      }
-    });
+    loadUploadTimestamps();
   });
-   </script>
-  </body>
+</script>
+</body>
 </html>
