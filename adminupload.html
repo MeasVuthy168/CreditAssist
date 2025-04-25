@@ -218,16 +218,18 @@
     log.scrollTop = log.scrollHeight;
   }
 
-  async function updateTimestamp(label) {
+  async function loadTimestamps() {
     try {
-      const res = await fetch("https://secure-backend-tzj9.onrender.com/api/admin/upload-status");
+      const res = await fetch("https://secure-backend-tzj9.onrender.com/api/admin/upload-timestamps");
       const data = await res.json();
-      if (data[label]) {
-        const date = new Date(data[label]);
-        document.getElementById('ts-' + label).textContent = date.toLocaleString();
-      }
+      ['user', 'customer', 'turnover'].forEach(label => {
+        const ts = data[label];
+        if (ts) {
+          document.getElementById('ts-' + label).textContent = new Date(ts).toLocaleString();
+        }
+      });
     } catch (err) {
-      console.warn("❌ Failed to load upload timestamp for " + label);
+      console.warn("❌ Failed to fetch upload timestamps");
     }
   }
 
@@ -250,7 +252,6 @@
       xhr.onload = () => {
         if (xhr.status === 200) {
           progressBar.style.width = `100%`;
-          updateTimestamp(label);
           logMessage(`✅ ${label} upload complete.`);
           resolve();
         } else {
@@ -292,6 +293,8 @@
         document.getElementById(id + 'File').value = "";
         document.getElementById(id + 'Preview').textContent = "";
       });
+
+      await loadTimestamps(); // Auto refresh all timestamps
     } catch (err) {
       alert("❌ Some uploads failed. Check logs.");
     }
@@ -337,8 +340,7 @@
   document.addEventListener("DOMContentLoaded", () => {
     const userPosition = sessionStorage.getItem("userPosition") || "user";
     loadRobotMessage(userPosition);
-
-    ['user', 'customer', 'turnover'].forEach(updateTimestamp);
+    loadTimestamps(); // Auto load when page opens
   });
 </script>
 </body>
