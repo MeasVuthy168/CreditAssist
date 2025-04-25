@@ -274,39 +274,6 @@
       100% { transform: translateY(0); }
     }
 
-    /* ❌ Admin input section is now removed from index.html */
-/*
-#admin-input {
-  margin-top: 10px;
-  padding-left: 95px;
-  padding-right: 10px;
-  position: relative;
-}
-
-#admin-input textarea {
-  width: 100%;
-  font-family: 'Krasar';
-  padding: 6px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  resize: none;
-  font-size: 14px;
-}
-
-#admin-input button {
-  position: absolute;
-  padding: 6px 6px;
-  background: #cccccc;
-  color: #0d2d5c;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  cursor: pointer;
-  font-family: 'Krasar';
-  font-size: 14px;
-}
-*/
-
-
     .mic-btn {
       position: absolute;
       bottom: 10px;
@@ -486,12 +453,6 @@
         </div>
 
       
-        <!-- Admin input section (for admin only) 
-        <div id="admin-input" style="display: none;">
-          <textarea id="newMessage" placeholder="សរសេរសារថ្មី..."></textarea>
-          <button onclick="postRobotMessage()">បញ្ចូន</button>
-        </div> -->
-      
         <!-- ✅ Mic button always visible and floats inside bottom-right -->
         <button class="mic-btn mic-float">
           <img src="icons/mic.svg" alt="Mic" />
@@ -561,31 +522,6 @@
         document.getElementById("robotMessage").textContent = "មិនអាចទាញសារបានទេ។";
       }
     }
-
-    // postRobotMessage is no longer used in index.html, moved to adminupload.html
-/*
-async function postRobotMessage() {
-  const msg = document.getElementById("newMessage").value.trim();
-  if (!msg) return;
-
-  try {
-    const res = await fetch("https://secure-backend-tzj9.onrender.com/api/robot-message", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message: msg })
-    });
-
-    if (res.ok) {
-      alert("សារ​ត្រូវបាន​ផ្ញើ និង Sync ទៅ GitHub។");
-      loadRobotMessage("admin");
-    } else {
-      alert("សារត្រូវបានផ្ញើ ប៉ុន្តែ Sync GitHub បរាជ័យ។");
-    }
-  } catch (err) {
-    alert("បញ្ចូនសារមិនបានទេ! មានបញ្ហា៖ " + err.message);
-  }
-}
-*/
 
     
  // ✅ Properly placed DOM ready code
