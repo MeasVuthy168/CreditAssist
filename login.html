@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8" />
   <title>ចូលប្រើកម្មវិធី</title>
-  <!--<meta name="viewport" content="width=device-width, initial-scale=1.0" />-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="theme-color" content="#0d2d5c" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -15,9 +14,7 @@
       font-family: 'Krasar';
       src: url('Krasar-Regular.ttf') format('truetype');
     }
-
     * { box-sizing: border-box; }
-
     body {
       margin: 0;
       font-family: 'Krasar', Arial, sans-serif;
@@ -27,7 +24,6 @@
       align-items: center;
       height: 100vh;
     }
-
     .login-box {
       background-color: white;
       border-radius: 16px;
@@ -35,28 +31,24 @@
       width: 90%;
       max-width: 400px;
       box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
-      color: #1a1a1a;
       text-align: center;
     }
-
     .login-logo {
       width: 60px;
       height: 60px;
       margin-bottom: 10px;
     }
-
     .login-title {
       font-size: 18px;
       font-weight: bold;
       margin-bottom: 5px;
+      color: #0d2d5c;
     }
-
     .login-version {
       font-size: 14px;
       color: #666;
       margin-bottom: 20px;
     }
-
     input[type="text"], input[type="password"] {
       width: 100%;
       padding: 10px;
@@ -64,16 +56,10 @@
       border: none;
       border-radius: 6px;
       background: #f0f0f0;
-      color: #333;
       font-family: 'Krasar', Arial, sans-serif;
       font-size: 15px;
     }
-
-    input:focus {
-      outline: none;
-      background: #e4e4e4;
-    }
-
+    input:focus { outline: none; background: #e4e4e4; }
     .remember {
       display: flex;
       align-items: center;
@@ -82,7 +68,6 @@
       font-size: 15px;
       margin: 10px 0 20px;
     }
-
     button {
       width: 100%;
       padding: 12px;
@@ -94,18 +79,13 @@
       font-family: 'Krasar', Arial, sans-serif;
       cursor: pointer;
     }
-
-    button:hover {
-      background-color: #09306d;
-    }
-
+    button:hover { background-color: #09306d; }
     .error {
       color: #d22;
       font-size: 14px;
       min-height: 20px;
       margin-top: 10px;
     }
-
     #login-loading {
       position: fixed;
       inset: 0;
@@ -115,7 +95,6 @@
       align-items: center;
       justify-content: center;
     }
-
     .spinner {
       width: 32px;
       height: 32px;
@@ -124,17 +103,17 @@
       border-radius: 50%;
       animation: spin 0.6s linear infinite;
     }
-
     @keyframes spin {
       to { transform: rotate(360deg); }
     }
   </style>
 </head>
+
 <body>
   <div id="login-loading"><div class="spinner"></div></div>
 
   <div class="login-box">
-    <img src="LogoAC.png" class="login-logo" />
+    <img src="LogoAC.png" class="login-logo" alt="App Logo" />
     <div class="login-title">Credit Assist</div>
     <div class="login-version">Version 1.0.0</div>
     <input type="text" id="username" placeholder="Username" />
@@ -147,8 +126,6 @@
     <p class="error" id="error-msg"></p>
   </div>
 
-  
-</script>
   <script>
     window.onload = () => {
       const saved = localStorage.getItem("rememberedUser");
@@ -176,7 +153,6 @@
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ username, password })
         });
-
         const data = await res.json();
 
         if (res.ok && data.success) {
@@ -185,25 +161,24 @@
           sessionStorage.setItem("fullname", data.fullname);
           sessionStorage.setItem("image", data.image);
           sessionStorage.setItem("phone", data.phone);
-          sessionStorage.setItem("userFullname", data.fullname);  // ✅ for adminupload.html
-          
+          sessionStorage.setItem("userFullname", data.fullname);
+
           if (rememberMe) {
             localStorage.setItem("rememberedUser", JSON.stringify({ username, password }));
           } else {
             localStorage.removeItem("rememberedUser");
           }
 
-         setTimeout(() => {
-  const position = data.position.trim().toLowerCase();
-  const base = location.href.substring(0, location.href.lastIndexOf("/") + 1);
+          setTimeout(() => {
+            const position = data.position.trim().toLowerCase();
+            const base = location.href.substring(0, location.href.lastIndexOf("/") + 1);
 
-  if (position === "admin") {
-    window.location.href = base + "adminupload.html";
-  } else {
-    window.location.href = base + "index.html";
-  }
-}, 500);
-
+            if (position === "admin") {
+              window.location.href = base + "adminupload.html";
+            } else {
+              window.location.href = base + "index.html";
+            }
+          }, 300);
         } else {
           errorMsg.textContent = data.message || "Invalid username or password.";
           loading.style.display = "none";
@@ -214,9 +189,7 @@
         console.error(e);
       }
     }
-  </script>
 
-  <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('service-worker.js')
         .then(reg => console.log('✅ Service Worker registered:', reg.scope))
@@ -224,7 +197,6 @@
     }
 
     let deferredPrompt;
-
     window.addEventListener('beforeinstallprompt', (e) => {
       if (localStorage.getItem('a2hsPromptShown')) return;
       e.preventDefault();
