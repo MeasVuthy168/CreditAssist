@@ -218,14 +218,14 @@ async function loadTimestamps() {
     const data = await res.json();
 
     ['user', 'customer', 'turnover'].forEach(label => {
-      const date = data[label];
-      const fullname = data[`${label}Fullname`] || "–"; // <-- corrected here
-      const dateBox = document.getElementById('ts-' + label);
-      const nameBox = document.getElementById('by-' + label);
+  const date = data[label];
+  const fullname = data[`${label}_by`] || "–";
+  const dateBox = document.getElementById('ts-' + label);
+  const nameBox = document.getElementById('by-' + label);
 
-      if (dateBox) dateBox.textContent = date ? new Date(date).toLocaleString() : "–";
-      if (nameBox) nameBox.textContent = `Uploaded by: ${fullname}`;
-    });
+  if (dateBox) dateBox.textContent = date ? new Date(date).toLocaleString() : "–";
+  if (nameBox) nameBox.textContent = `Uploaded by: ${fullname}`;
+});
   } catch (err) {
     console.warn("❌ Failed to load timestamps:", err);
   }
