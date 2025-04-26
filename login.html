@@ -185,7 +185,8 @@
           sessionStorage.setItem("fullname", data.fullname);
           sessionStorage.setItem("image", data.image);
           sessionStorage.setItem("phone", data.phone);
-
+          sessionStorage.setItem("userFullname", data.fullname);  // ✅ for adminupload.html
+          
           if (rememberMe) {
             localStorage.setItem("rememberedUser", JSON.stringify({ username, password }));
           } else {
