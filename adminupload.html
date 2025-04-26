@@ -83,21 +83,21 @@
       color: #0d2d5c;
       margin-bottom: 10px;
     }
-    .upload-label {
-      font-weight: bold;
-      margin-top: 16px;
-      display: flex;
-      justify-content: space-between;
-      flex-direction: column;
-      align-items: flex-start;
-      color: #0d2d5c;
-    }
-    .uploader {
-      font-size: 12px;
-      font-style: italic;
+     .upload-label {
+    margin-top: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    color: #0d2d5c;
+    font-weight: bold;
+  }
+
+    .uploader, .timestamp {
+      font-size: 13px;
       color: #555;
       margin-bottom: 2px;
     }
+
     .upload-label span.timestamp {
       font-weight: normal;
       font-size: 13px;
@@ -163,8 +163,10 @@
 
   <label class="upload-label">
     <div class="uploader" id="by-user">Uploaded by: –</div>
-    User Data <span class="timestamp" id="ts-user">–</span>
+    <div class="timestamp" id="ts-user">–</div>
+    <div>User Data</div>
   </label>
+
   <input type="file" id="userFile" accept=".xlsx" onchange="showPreview('userFile', 'userPreview')" />
   <div class="file-info" id="userPreview"></div>
   <div class="progress-container"><div class="progress-bar" id="userProgress"></div></div>
