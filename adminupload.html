@@ -216,16 +216,17 @@ async function loadTimestamps() {
   try {
     const res = await fetch("https://secure-backend-tzj9.onrender.com/api/admin/upload-timestamps");
     const data = await res.json();
+    console.log("Fetched upload timestamps:", data); // ✅ Debug
 
     ['user', 'customer', 'turnover'].forEach(label => {
-  const date = data[label];
-  const fullname = data[`${label}_by`] || "–";
-  const dateBox = document.getElementById('ts-' + label);
-  const nameBox = document.getElementById('by-' + label);
+      const date = data[label];
+      const fullname = data[`${label}Fullname`] || "–";
+      const dateBox = document.getElementById('ts-' + label);
+      const nameBox = document.getElementById('by-' + label);
 
-  if (dateBox) dateBox.textContent = date ? new Date(date).toLocaleString() : "–";
-  if (nameBox) nameBox.textContent = `Uploaded by: ${fullname}`;
-});
+      if (dateBox) dateBox.textContent = date ? new Date(date).toLocaleString() : "–";
+      if (nameBox) nameBox.textContent = `Uploaded by: ${fullname}`;
+    });
   } catch (err) {
     console.warn("❌ Failed to load timestamps:", err);
   }
