@@ -234,13 +234,17 @@ async function loadTimestamps() {
 async function uploadSingleFile(file, label, progressBarId) {
   const progressBar = document.getElementById(progressBarId);
   const formData = new FormData();
+
+  const fullname = sessionStorage.getItem("fullname") || "Unknown";
+  console.log(`Uploading ${label} as:`, fullname); // ✅ Debug here
+
   formData.append(label, file);
-  formData.append("fullname", sessionStorage.getItem("fullname") || "Unknown");
+  formData.append("fullname", fullname);
 
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
     xhr.open("POST", "https://secure-backend-tzj9.onrender.com/api/admin/upload");
-
+    
     xhr.upload.onprogress = (event) => {
       if (event.lengthComputable) {
         const percent = (event.loaded / event.total) * 100;
@@ -267,7 +271,7 @@ async function uploadSingleFile(file, label, progressBarId) {
     xhr.send(formData);
   });
 }
-
+  
 async function uploadFiles() {
   const user = document.getElementById('userFile').files[0];
   const customer = document.getElementById('customerFile').files[0];
