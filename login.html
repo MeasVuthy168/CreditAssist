@@ -9,13 +9,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <link rel="manifest" href="manifest.json" />
   <link rel="apple-touch-icon" href="icons/icon-192.png" />
-  <script>
-    if (!sessionStorage.getItem("loggedInUser")) {
-      window.location.href = "login.html";
-    } else if ((sessionStorage.getItem("userPosition") || "").toLowerCase() !== "admin") {
-      window.location.href = "index.html";
-    }
-  </script
+
   <style>
     @font-face {
       font-family: 'Krasar';
@@ -201,7 +195,7 @@
 
          setTimeout(() => {
   const position = data.position.trim().toLowerCase();
-  const base = location.origin + "/";  // <-- fix here
+  const base = location.href.substring(0, location.href.lastIndexOf("/") + 1);
 
   if (position === "admin") {
     window.location.href = base + "adminupload.html";
