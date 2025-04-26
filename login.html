@@ -9,7 +9,13 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <link rel="manifest" href="manifest.json" />
   <link rel="apple-touch-icon" href="icons/icon-192.png" />
-
+  <script>
+    if (!sessionStorage.getItem("loggedInUser")) {
+      window.location.href = "login.html";
+    } else if ((sessionStorage.getItem("userPosition") || "").toLowerCase() !== "admin") {
+      window.location.href = "index.html";
+    }
+  </script
   <style>
     @font-face {
       font-family: 'Krasar';
