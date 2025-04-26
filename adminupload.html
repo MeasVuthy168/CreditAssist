@@ -219,7 +219,7 @@ async function loadTimestamps() {
 
     ['user', 'customer', 'turnover'].forEach(label => {
       const date = data[label];
-      const fullname = data[`${label}Fullname`] || data[`${label}_by`] || "–";
+      const fullname = data[`${label}Fullname`] || "–"; // <-- corrected here
       const dateBox = document.getElementById('ts-' + label);
       const nameBox = document.getElementById('by-' + label);
 
