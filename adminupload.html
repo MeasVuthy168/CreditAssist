@@ -242,7 +242,7 @@
 
       ['user', 'customer', 'turnover'].forEach(label => {
         const date = data[label];
-        const fullname = data[`${label}Fullname`] || "–";
+        const fullname = data[`${label}_by`] || "–";
         const dateBox = document.getElementById('ts-' + label);
         const nameBox = document.getElementById('by-' + label);
 
