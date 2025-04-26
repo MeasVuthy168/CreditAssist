@@ -83,25 +83,18 @@
       color: #0d2d5c;
       margin-bottom: 10px;
     }
-     .upload-label {
-    margin-top: 16px;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    color: #0d2d5c;
-    font-weight: bold;
-  }
-
+    .upload-label {
+      margin-top: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      color: #0d2d5c;
+      font-weight: bold;
+    }
     .uploader, .timestamp {
       font-size: 13px;
       color: #555;
       margin-bottom: 2px;
-    }
-
-    .upload-label span.timestamp {
-      font-weight: normal;
-      font-size: 13px;
-      color: #666;
     }
     input[type="file"] {
       width: 100%;
@@ -144,44 +137,44 @@
     }
   </style>
 </head>
+
 <body>
 <div class="header">
   ADMIN MODE
   <button class="close-btn" onclick="window.location.href='index.html'">&times;</button>
 </div>
 
-  <!-- Admin Robot Message Box -->
 <div class="admin-box" id="admin-input" style="display:none;">
   <label class="admin-title">✍️ Post Robot Message</label>
   <textarea id="newMessage" placeholder="សរសេរសារថ្មី..." class="admin-textarea"></textarea>
   <button class="admin-btn" onclick="postRobotMessage()">📤 Upload to Backend</button>
 </div>
 
-<!-- Upload Excel Files -->
 <div class="upload-box">
   <div class="upload-box-title">📄 Upload Excel Files (.xlsx)</div>
 
   <label class="upload-label">
+    <div>User Data</div>
     <div class="uploader" id="by-user">Uploaded by: –</div>
     <div class="timestamp" id="ts-user">–</div>
-    <div>User Data</div>
   </label>
-
   <input type="file" id="userFile" accept=".xlsx" onchange="showPreview('userFile', 'userPreview')" />
   <div class="file-info" id="userPreview"></div>
   <div class="progress-container"><div class="progress-bar" id="userProgress"></div></div>
 
   <label class="upload-label">
+    <div>Customer Data</div>
     <div class="uploader" id="by-customer">Uploaded by: –</div>
-    Customer Data <span class="timestamp" id="ts-customer">–</span>
+    <div class="timestamp" id="ts-customer">–</div>
   </label>
   <input type="file" id="customerFile" accept=".xlsx" onchange="showPreview('customerFile', 'customerPreview')" />
   <div class="file-info" id="customerPreview"></div>
   <div class="progress-container"><div class="progress-bar" id="customerProgress"></div></div>
 
   <label class="upload-label">
+    <div>Turnover Data</div>
     <div class="uploader" id="by-turnover">Uploaded by: –</div>
-    Turnover Data <span class="timestamp" id="ts-turnover">–</span>
+    <div class="timestamp" id="ts-turnover">–</div>
   </label>
   <input type="file" id="turnoverFile" accept=".xlsx" onchange="showPreview('turnoverFile', 'turnoverPreview')" />
   <div class="file-info" id="turnoverPreview"></div>
@@ -192,6 +185,7 @@
 
 <div class="log-box" id="uploadLog"></div>
 <div id="overlay"><span>Uploading... Please wait</span></div>
+
 
 <script>
 function showPreview(fileInputId, previewId) {
