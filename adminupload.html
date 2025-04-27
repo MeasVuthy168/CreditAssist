@@ -9,7 +9,7 @@
     body {
       margin: 0;
       font-family: 'Krasar', Arial, sans-serif;
-      background: #f1f1f1;
+      background: #1c2331;
       padding-top: 60px;
     }
     .header {
@@ -20,9 +20,7 @@
       padding: 16px;
       text-align: center;
       position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
+      top: 0; left: 0; right: 0;
       box-shadow: 0 2px 6px rgba(0,0,0,0.2);
       z-index: 999;
     }
@@ -36,7 +34,7 @@
       font-size: 24px;
       cursor: pointer;
     }
-    .admin-box {
+    .admin-box, .upload-box, .log-box {
       background: white;
       padding: 20px 10px;
       border-radius: 12px;
@@ -64,7 +62,7 @@
       box-sizing: border-box;
       background: #f1f1f1;
     }
-    .admin-btn {
+    .admin-btn, .upload-btn {
       margin-top: 12px;
       width: 100%;
       padding: 12px;
@@ -75,7 +73,7 @@
       font-size: 16px;
       cursor: pointer;
     }
-    .admin-btn:hover {
+    .admin-btn:hover, .upload-btn:hover {
       background: #09306d;
     }
     .upload-box-title {
@@ -85,26 +83,18 @@
       color: #0d2d5c;
       margin-bottom: 10px;
     }
-    .upload-box, .log-box {
-      background: white;
-      padding: 20px 10px;
-      border-radius: 12px;
-      max-width: 500px;
-      margin: 10px auto;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
     .upload-label {
-      font-weight: bold;
       margin-top: 16px;
       display: flex;
-      justify-content: space-between;
-      align-items: center;
+      flex-direction: column;
+      align-items: flex-start;
       color: #0d2d5c;
+      font-weight: bold;
     }
-    .upload-label span.timestamp {
-      font-weight: normal;
+    .uploader, .timestamp {
       font-size: 13px;
-      color: #666;
+      color: #555;
+      margin-bottom: 2px;
     }
     input[type="file"] {
       width: 100%;
@@ -127,19 +117,6 @@
       border-radius: 5px;
       transition: width 0.3s ease;
     }
-    .upload-btn {
-      width: 100%;
-      padding: 12px;
-      background-color: #0d2d5c;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-    .upload-btn:hover {
-      background-color: #09306d;
-    }
     #overlay {
       position: fixed;
       top: 0; left: 0;
@@ -160,6 +137,7 @@
     }
   </style>
 </head>
+
 <body>
 <div class="header">
   ADMIN MODE
@@ -168,181 +146,194 @@
 
 <div class="admin-box" id="admin-input" style="display:none;">
   <label class="admin-title">✍️ Post Robot Message</label>
-  <textarea id="newMessage" placeholder="សរសេរសារថ្មី..." class="admin-textarea"></textarea>
+  <textarea id="newMessage" placeholder="សូមសសេរសារថ្មី..." class="admin-textarea"></textarea>
   <button class="admin-btn" onclick="postRobotMessage()">📤 Upload to Backend</button>
 </div>
 
 <div class="upload-box">
   <div class="upload-box-title">📄 Upload Excel Files (.xlsx)</div>
-
-  <label class="upload-label">User Data <span class="timestamp" id="ts-user">–</span></label>
-  <input type="file" id="userFile" accept=".xlsx" onchange="showPreview('userFile', 'userPreview')" />
-  <div class="file-info" id="userPreview"></div>
-  <div class="progress-container"><div class="progress-bar" id="userProgress"></div></div>
-
-  <label class="upload-label">Customer Data <span class="timestamp" id="ts-customer">–</span></label>
-  <input type="file" id="customerFile" accept=".xlsx" onchange="showPreview('customerFile', 'customerPreview')" />
-  <div class="file-info" id="customerPreview"></div>
-  <div class="progress-container"><div class="progress-bar" id="customerProgress"></div></div>
-
-  <label class="upload-label">Turnover Data <span class="timestamp" id="ts-turnover">–</span></label>
-  <input type="file" id="turnoverFile" accept=".xlsx" onchange="showPreview('turnoverFile', 'turnoverPreview')" />
-  <div class="file-info" id="turnoverPreview"></div>
-  <div class="progress-container"><div class="progress-bar" id="turnoverProgress"></div></div>
-
-  <button class="upload-btn" onclick="uploadFiles()">📤 Upload to MongoDB</button>
-</div>
-
-<div class="log-box" id="uploadLog"></div>
-<div id="overlay"><span>Uploading... Please wait</span></div>
 <script>
-  function showPreview(fileInputId, previewId) {
-    const file = document.getElementById(fileInputId).files[0];
-    const preview = document.getElementById(previewId);
-    if (file && file.name.endsWith(".xlsx")) {
-      preview.textContent = `${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
-    } else {
-      preview.textContent = 'Invalid file type. Must be .xlsx';
-      document.getElementById(fileInputId).value = '';
-    }
+const token = sessionStorage.getItem("token");
+if (!token) {
+  alert("Session expired! Please login again.");
+  window.location.href = "login.html";
+}
+<script>
+  
+// 🔒 Verify Token on Page Load
+document.addEventListener("DOMContentLoaded", () => {
+  const token = sessionStorage.getItem("authToken");
+  const userPosition = sessionStorage.getItem("userPosition");
+
+  if (!token || (userPosition || '').toLowerCase() !== 'admin') {
+    alert("❌ Unauthorized access. Please login again.");
+    window.location.href = "login.html";
+    return;
   }
 
-  function logMessage(msg) {
-    const log = document.getElementById('uploadLog');
-    const entry = document.createElement('div');
-    entry.className = 'log-entry';
-    entry.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
-    log.appendChild(entry);
-    log.scrollTop = log.scrollHeight;
+  loadRobotMessage(userPosition);
+  loadTimestamps();
+});
+
+function showPreview(fileInputId, previewId) {
+  const file = document.getElementById(fileInputId).files[0];
+  const preview = document.getElementById(previewId);
+  if (file && file.name.endsWith(".xlsx")) {
+    preview.textContent = `${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
+  } else {
+    preview.textContent = 'Invalid file type. Must be .xlsx';
+    document.getElementById(fileInputId).value = '';
   }
+}
 
-  function updateTimestampUI(label, isoDate) {
-    const el = document.getElementById("ts-" + label);
-    el.textContent = isoDate ? new Date(isoDate).toLocaleString() : "–";
-  }
+function logMessage(msg) {
+  const log = document.getElementById('uploadLog');
+  const entry = document.createElement('div');
+  entry.className = 'log-entry';
+  entry.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+  log.appendChild(entry);
+  log.scrollTop = log.scrollHeight;
+}
 
-  async function loadUploadTimestamps() {
-    try {
-      const res = await fetch("https://secure-backend-tzj9.onrender.com/api/admin/upload-timestamps");
-      const data = await res.json();
-      ['user', 'customer', 'turnover'].forEach(label => {
-        updateTimestampUI(label, data[label]);
-      });
-    } catch (err) {
-      console.warn("❌ Failed to load timestamps");
-    }
-  }
-
-  async function uploadSingleFile(file, label, progressBarId) {
-    const progressBar = document.getElementById(progressBarId);
-    const formData = new FormData();
-    formData.append(label, file);
-
-    return new Promise((resolve, reject) => {
-      const xhr = new XMLHttpRequest();
-      xhr.open("POST", "https://secure-backend-tzj9.onrender.com/api/admin/upload");
-
-      xhr.upload.onprogress = (event) => {
-        if (event.lengthComputable) {
-          const percent = (event.loaded / event.total) * 100;
-          progressBar.style.width = `${percent.toFixed(0)}%`;
-        }
-      };
-
-      xhr.onload = () => {
-        if (xhr.status === 200) {
-          progressBar.style.width = `100%`;
-          updateTimestampUI(label, new Date().toISOString());
-          logMessage(`✅ ${label} upload complete.`);
-          resolve();
-        } else {
-          logMessage(`❌ Failed to upload ${label}`);
-          reject();
-        }
-      };
-
-      xhr.onerror = () => {
-        logMessage(`❌ Network error during ${label} upload`);
-        reject();
-      };
-
-      xhr.send(formData);
+async function loadTimestamps() {
+  try {
+    const token = sessionStorage.getItem("authToken");
+    const res = await fetch("https://secure-backend-tzj9.onrender.com/api/admin/upload-timestamps", {
+      headers: { Authorization: `Bearer ${token}` }
     });
+    const data = await res.json();
+    console.log("Fetched upload timestamps:", data);
+
+    ['user', 'customer', 'turnover'].forEach(label => {
+      const date = data[label];
+      const fullname = data[`${label}Fullname`] || "–";
+      const dateBox = document.getElementById('ts-' + label);
+      const nameBox = document.getElementById('by-' + label);
+
+      if (dateBox) dateBox.textContent = date ? new Date(date).toLocaleString() : "–";
+      if (nameBox) nameBox.textContent = `Uploaded by: ${fullname}`;
+    });
+  } catch (err) {
+    console.warn("❌ Failed to load timestamps:", err);
   }
+}
 
-  async function uploadFiles() {
-    const user = document.getElementById('userFile').files[0];
-    const customer = document.getElementById('customerFile').files[0];
-    const turnover = document.getElementById('turnoverFile').files[0];
+async function uploadSingleFile(file, label, progressBarId) {
+  const progressBar = document.getElementById(progressBarId);
+  const formData = new FormData();
 
-    if (!user && !customer && !turnover) {
-      alert("Please choose at least one file to upload.");
-      return;
-    }
+  const fullname = sessionStorage.getItem("fullname") || "Unknown";
+  console.log(`Uploading ${label} as:`, fullname);
 
-    document.getElementById("overlay").style.display = "flex";
+  formData.append(label, file);
+  formData.append("fullname", fullname);
 
-    try {
-      if (user) await uploadSingleFile(user, "user", "userProgress");
-      if (customer) await uploadSingleFile(customer, "customer", "customerProgress");
-      if (turnover) await uploadSingleFile(turnover, "turnover", "turnoverProgress");
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    const token = sessionStorage.getItem("authToken");
 
-      logMessage("✅ All uploads completed.");
-      alert("✅ All files uploaded successfully.");
+    xhr.open("POST", "https://secure-backend-tzj9.onrender.com/api/admin/upload");
+    xhr.setRequestHeader("Authorization", `Bearer ${token}`);
 
-      ['user', 'customer', 'turnover'].forEach(id => {
-        document.getElementById(id + 'File').value = "";
-        document.getElementById(id + 'Preview').textContent = "";
-      });
-
-      loadUploadTimestamps(); // Refresh UI
-    } catch (err) {
-      alert("❌ Some uploads failed. Check logs.");
-    }
-
-    document.getElementById("overlay").style.display = "none";
-  }
-
-  async function loadRobotMessage(userPosition) {
-    try {
-      const res = await fetch("https://secure-backend-tzj9.onrender.com/api/robot-message");
-      const data = await res.json();
-      if (userPosition === "admin") {
-        document.getElementById("admin-input").style.display = "block";
-        document.getElementById("newMessage").value = data.message;
+    xhr.upload.onprogress = (event) => {
+      if (event.lengthComputable) {
+        const percent = (event.loaded / event.total) * 100;
+        progressBar.style.width = `${percent.toFixed(0)}%`;
       }
-    } catch {
-      console.warn("❌ Failed to fetch robot message.");
-    }
-  }
+    };
 
-  async function postRobotMessage() {
-    const msg = document.getElementById("newMessage").value.trim();
-    if (!msg) return;
-
-    try {
-      const res = await fetch("https://secure-backend-tzj9.onrender.com/api/robot-message", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: msg })
-      });
-
-      if (res.ok) {
-        alert("✅ Message posted & synced.");
-        loadRobotMessage("admin");
+    xhr.onload = () => {
+      if (xhr.status === 200) {
+        progressBar.style.width = `100%`;
+        logMessage(`✅ ${label} upload complete.`);
+        resolve();
       } else {
-        alert("⚠️ Message saved, but GitHub sync failed.");
+        logMessage(`❌ Failed to upload ${label}`);
+        reject();
       }
-    } catch (err) {
-      alert("❌ Error: " + err.message);
-    }
+    };
+
+    xhr.onerror = () => {
+      logMessage(`❌ Network error during ${label} upload`);
+      reject();
+    };
+
+    xhr.send(formData);
+  });
+}
+
+async function uploadFiles() {
+  const user = document.getElementById('userFile').files[0];
+  const customer = document.getElementById('customerFile').files[0];
+  const turnover = document.getElementById('turnoverFile').files[0];
+
+  if (!user && !customer && !turnover) {
+    alert("Please choose at least one file to upload.");
+    return;
   }
 
-  document.addEventListener("DOMContentLoaded", () => {
-    const userPosition = sessionStorage.getItem("userPosition") || "user";
-    loadRobotMessage(userPosition);
-    loadUploadTimestamps();
-  });
+  document.getElementById("overlay").style.display = "flex";
+
+  try {
+    if (user) await uploadSingleFile(user, "user", "userProgress");
+    if (customer) await uploadSingleFile(customer, "customer", "customerProgress");
+    if (turnover) await uploadSingleFile(turnover, "turnover", "turnoverProgress");
+
+    logMessage("✅ All uploads completed.");
+    alert("✅ All files uploaded successfully.");
+
+    ['user', 'customer', 'turnover'].forEach(id => {
+      document.getElementById(id + 'File').value = "";
+      document.getElementById(id + 'Preview').textContent = "";
+    });
+
+    await loadTimestamps();
+  } catch (err) {
+    alert("❌ Some uploads failed. Check logs.");
+  }
+
+  document.getElementById("overlay").style.display = "none";
+}
+
+async function loadRobotMessage(userPosition) {
+  try {
+    const token = sessionStorage.getItem("authToken");
+    const res = await fetch("https://secure-backend-tzj9.onrender.com/api/robot-message", {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const data = await res.json();
+    if (userPosition === "admin") {
+      document.getElementById("admin-input").style.display = "block";
+      document.getElementById("newMessage").value = data.message;
+    }
+  } catch {
+    console.warn("❌ Failed to fetch robot message.");
+  }
+}
+
+async function postRobotMessage() {
+  const msg = document.getElementById("newMessage").value.trim();
+  if (!msg) return;
+
+  try {
+    const token = sessionStorage.getItem("authToken");
+    const res = await fetch("https://secure-backend-tzj9.onrender.com/api/robot-message", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({ message: msg })
+    });
+
+    if (res.ok) {
+      alert("✅ Message posted & synced.");
+      loadRobotMessage("admin");
+    } else {
+      alert("⚠️ Message saved, but GitHub sync failed.");
+    }
+  } catch (err) {
+    alert("❌ Error: " + err.message);
+  }
+}
 </script>
-</body>
-</html>
