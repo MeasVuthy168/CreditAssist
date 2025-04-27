@@ -27,6 +27,7 @@ document.onclick = resetLogoutTimer;
 document.addEventListener('DOMContentLoaded', () => {
   const name = sessionStorage.getItem('fullname') || 'អ្នកប្រើ';
   const imgPath = sessionStorage.getItem('image');
+  console.log('Image path from session:', imgPath);
 
   const profilePhoto = document.getElementById('profile-photo');
   const welcome = document.getElementById('welcome');
