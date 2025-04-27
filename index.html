@@ -9,11 +9,14 @@
   <meta name="theme-color" content="#0d2d5c" />
   <meta name="apple-mobile-web-app-capable" content="yes">
   
-  <script>
-    if (!sessionStorage.getItem("loggedInUser")) {
-      window.location.href = "login.html";
-    }
-  </script>
+ <script>
+const token = sessionStorage.getItem("token");
+if (!token) {
+  sessionStorage.clear();
+  alert("Session expired. Please login again.");
+  window.location.href = "login.html";
+}
+</script>
 
   <style>
     @font-face {
@@ -509,22 +512,18 @@
     document.onkeydown = resetLogoutTimer;
     document.onclick = resetLogoutTimer;
 
-    async function loadRobotMessage(userPosition) {
-      try {
-        const res = await fetch("https://secure-backend-tzj9.onrender.com/api/robot-message");
-        const data = await res.json();
-        document.getElementById("robotMessage").textContent = data.message || "មិនទាន់មានសារ។";
-        
-        // This is now removed, since admin input no longer exists here
-        // if (userPosition === "admin") {
-        //   document.getElementById("admin-input").style.display = "block";
-        //   document.getElementById("newMessage").value = data.message;
-        // }
-    
-      } catch {
-        document.getElementById("robotMessage").textContent = "មិនអាចទាញសារបានទេ។";
-      }
-    }
+   async function loadRobotMessage(userPosition) {
+  try {
+    const token = sessionStorage.getItem("token");
+    const res = await fetch("https://secure-backend-tzj9.onrender.com/api/robot-message", {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const data = await res.json();
+    document.getElementById("robotMessage").textContent = data.message || "មិនទាន់មានសារ។";
+  } catch {
+    document.getElementById("robotMessage").textContent = "មិនអាចទាញសារបានទេ។";
+  }
+}
 
 
     
