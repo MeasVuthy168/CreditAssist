@@ -488,10 +488,16 @@ function resetLogoutTimer() {
     window.location.href = "login.html";
   }, AUTO_LOGOUT_MINUTES * 60 * 1000);
 }
-window.onload = resetLogoutTimer;
-document.onmousemove = resetLogoutTimer;
-document.onkeydown = resetLogoutTimer;
-document.onclick = resetLogoutTimer;
+
+// Attach reset to more events
+function setupAutoLogoutEvents() {
+  ['mousemove', 'mousedown', 'keydown', 'touchstart', 'touchmove', 'scroll'].forEach(event => {
+    document.addEventListener(event, resetLogoutTimer, true);
+  });
+  resetLogoutTimer(); // Start countdown immediately
+}
+
+window.addEventListener('load', setupAutoLogoutEvents);
 
 // ✅ Load Profile Info and Robot Message
 document.addEventListener('DOMContentLoaded', () => {
