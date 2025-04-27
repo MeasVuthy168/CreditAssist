@@ -466,70 +466,104 @@
   </button>
 </div>
 
-<script src="auth.js"></script>
-<!-- ✅ Then voice assistant + menu ripple -->
 <script>
+// ✅ Check Token
+const token = sessionStorage.getItem('token');
+if (!token) {
+  alert("Session expired or unauthorized access.");
+  window.location.href = "login.html";
+}
+
+// ✅ Auto Logout Timer
+const AUTO_LOGOUT_MINUTES = 1;
+let logoutTimer;
+function resetLogoutTimer() {
+  clearTimeout(logoutTimer);
+  logoutTimer = setTimeout(() => {
+    sessionStorage.clear();
+    alert("Session expired due to inactivity. Please log in again.");
+    window.location.href = "login.html";
+  }, AUTO_LOGOUT_MINUTES * 60 * 1000);
+}
+window.onload = resetLogoutTimer;
+document.onmousemove = resetLogoutTimer;
+document.onkeydown = resetLogoutTimer;
+document.onclick = resetLogoutTimer;
+
+// ✅ Load Profile Info and Robot Message
 document.addEventListener('DOMContentLoaded', () => {
-  // Ripple effect for menu
-  document.querySelectorAll(".menu-item").forEach(item => {
-    const href = item.getAttribute("data-href");
-    item.addEventListener("click", function (e) {
-      e.preventDefault();
-      if (navigator.vibrate) navigator.vibrate(50);
+  const name = sessionStorage.getItem("fullname") || "អ្នកប្រើ";
+  const imgPath = sessionStorage.getItem("image") || "profile/non-image.jpg";
+  const profilePhoto = document.getElementById("profile-photo");
 
-      const ripple = document.createElement("span");
-      ripple.className = "ripple";
-      const rect = this.getBoundingClientRect();
-      const size = Math.max(rect.width, rect.height);
-      ripple.style.width = ripple.style.height = size + "px";
-      ripple.style.left = (e.clientX - rect.left - size / 2) + "px";
-      ripple.style.top = (e.clientY - rect.top - size / 2) + "px";
-      this.appendChild(ripple);
-      setTimeout(() => ripple.remove(), 600);
+  document.getElementById("welcome").textContent = "សួស្តី, " + name;
 
-      if (href) window.location.href = href;
-      else alert("Coming soon!");
-    });
-  });
+  profilePhoto.src = "https://secure-backend-tzj9.onrender.com/" + imgPath;
+  profilePhoto.onerror = function() {
+    this.onerror = null;
+    this.src = "icons/default-profile.png"; // fallback
+  };
 
-  // Voice Assistant setup
-  setupVoiceAssistant();
+  loadRobotMessage();
 });
 
-function setupVoiceAssistant() {
-  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SpeechRecognition) {
-    document.querySelector('.mic-btn')?.style.display = "none";
+// ✅ Load Robot Message API
+async function loadRobotMessage() {
+  try {
+    const res = await fetch("https://secure-backend-tzj9.onrender.com/api/robot-message", {
+      headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` }
+    });
+    const data = await res.json();
+    document.getElementById("robotMessage").textContent = data.message || "មិនទាន់មានសារ។";
+  } catch (error) {
+    console.error("Robot message error:", error);
+    document.getElementById("robotMessage").textContent = "មិនអាចទាញសារបានទេ។";
+  }
+}
+
+// ✅ Menu Button Ripple and Navigation
+document.querySelectorAll(".menu-item").forEach(item => {
+  const href = item.getAttribute("data-href");
+  item.addEventListener("click", function (e) {
+    e.preventDefault();
+    if (navigator.vibrate) navigator.vibrate(50);
+
+    const ripple = document.createElement("span");
+    ripple.className = "ripple";
+    const rect = this.getBoundingClientRect();
+    const size = Math.max(rect.width, rect.height);
+    ripple.style.width = ripple.style.height = size + "px";
+    ripple.style.left = (e.clientX - rect.left - size / 2) + "px";
+    ripple.style.top = (e.clientY - rect.top - size / 2) + "px";
+    this.appendChild(ripple);
+    setTimeout(() => ripple.remove(), 600);
+
+    if (href) window.location.href = href;
+    else alert("Coming soon!");
+  });
+});
+
+// ✅ Voice Assistant Setup
+const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+const speechSupported = !!SpeechRecognition;
+let recognition;
+
+window.addEventListener('DOMContentLoaded', () => {
+  const micButton = document.querySelector('.mic-btn');
+  if (isIOS || !speechSupported) {
+    if (micButton) micButton.style.display = "none";
     return;
   }
 
-  let recognition = new SpeechRecognition();
+  recognition = new SpeechRecognition();
   recognition.lang = 'km-KH';
   recognition.continuous = false;
   recognition.interimResults = true;
 
-  const micButton = document.querySelector('.mic-btn');
-  const overlay = document.getElementById("voiceOverlay");
-  const stopMicBtn = document.getElementById("stopMic");
-
-  micButton.addEventListener('pointerdown', () => {
-    overlay.style.display = "flex";
-    micButton.classList.add("listening");
-    stopMicBtn.classList.add("listening");
-    try { recognition.start(); } catch (e) {}
-  });
-
-  const stopListening = () => {
-    recognition.stop();
-    overlay.style.display = "none";
-    micButton.classList.remove("listening");
-    stopMicBtn.classList.remove("listening");
+  recognition.onstart = () => {
+    document.getElementById("liveSubtitle").textContent = "កំពុងស្តាប់...";
   };
-
-  micButton.addEventListener('pointerup', stopListening);
-  micButton.addEventListener('pointercancel', stopListening);
-  stopMicBtn.addEventListener('click', stopListening);
 
   recognition.onresult = (event) => {
     let finalTranscript = "";
@@ -541,18 +575,52 @@ function setupVoiceAssistant() {
         document.getElementById("liveSubtitle").textContent = transcript;
       }
     }
-    if (finalTranscript.trim()) handleVoiceCommand(finalTranscript.toLowerCase());
-  };
 
-  recognition.onerror = (e) => {
-    console.error("Speech error:", e.error);
+    if (finalTranscript.trim()) {
+      handleVoiceCommand(finalTranscript.toLowerCase());
+    }
   };
 
   recognition.onend = () => {
     document.getElementById("liveSubtitle").textContent = "";
   };
-}
 
+  recognition.onerror = (event) => {
+    console.error("Speech error:", event.error);
+    if (event.error !== "not-allowed") {
+      alert("បញ្ហាក្នុងការស្ដាប់សម្លេង: " + event.error);
+    }
+  };
+
+  const overlay = document.getElementById("voiceOverlay");
+  const stopMicBtn = document.getElementById("stopMic");
+
+  if (micButton) {
+    micButton.addEventListener('pointerdown', () => {
+      overlay.style.display = "flex";
+      stopMicBtn.classList.add("listening");
+      micButton.classList.add("listening");
+      try {
+        recognition.start();
+      } catch (e) {
+        console.log("Already recording");
+      }
+    });
+
+    const stopListening = () => {
+      recognition.stop();
+      overlay.style.display = "none";
+      stopMicBtn.classList.remove("listening");
+      micButton.classList.remove("listening");
+    };
+
+    micButton.addEventListener('pointerup', stopListening);
+    micButton.addEventListener('pointercancel', stopListening);
+    stopMicBtn.addEventListener("click", stopListening);
+  }
+});
+
+// ✅ Handle Voice Command
 function handleVoiceCommand(command) {
   let found = false;
   document.querySelectorAll('.menu-item').forEach(item => {
