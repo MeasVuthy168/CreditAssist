@@ -26,7 +26,7 @@ document.onclick = resetLogoutTimer;
 // 3. Load profile photo + welcome name
 document.addEventListener('DOMContentLoaded', () => {
   const name = sessionStorage.getItem('fullname') || 'អ្នកប្រើ';
-  const imgPath = sessionStorage.getItem('image') || 'profile/non-image.jpg';
+  const imgPath = sessionStorage.getItem('image');
 
   const profilePhoto = document.getElementById('profile-photo');
   const welcome = document.getElementById('welcome');
@@ -34,15 +34,17 @@ document.addEventListener('DOMContentLoaded', () => {
   if (welcome) welcome.textContent = "សួស្តី, " + name;
 
   if (profilePhoto) {
-    if (imgPath && imgPath !== 'profile/non-image.jpg') {
+    if (imgPath && imgPath.trim() !== '' && imgPath.trim() !== 'profile/non-image.jpg') {
+      // ✅ If real image exists
       profilePhoto.src = "https://secure-backend-tzj9.onrender.com/" + imgPath.replace(/^\/+/, '');
     } else {
-      profilePhoto.src = "icons/default-profile.png"; // fallback if no real image
+      // ✅ If no image, use default
+      profilePhoto.src = "icons/default-profile.png";
     }
 
     profilePhoto.onerror = function () {
       this.onerror = null; // avoid loop
-      this.src = "icons/default-profile.png"; // fallback if error loading
+      this.src = "icons/default-profile.png"; // fallback default
     };
   }
 
@@ -52,7 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // 4. Load robot assistant message
 async function loadRobotMessage() {
   const robotMsgEl = document.getElementById('robotMessage');
-  if (!robotMsgEl) return; // no robot box, skip
+  if (!robotMsgEl) return; // if no robot box, skip
 
   try {
     const res = await fetch("https://secure-backend-tzj9.onrender.com/api/robot-message", {
