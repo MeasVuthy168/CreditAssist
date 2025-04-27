@@ -34,17 +34,21 @@ document.addEventListener('DOMContentLoaded', () => {
   if (welcome) welcome.textContent = "សួស្តី, " + name;
 
   if (profilePhoto) {
-    if (imgPath && imgPath.trim() !== '' && imgPath.trim() !== 'profile/non-image.jpg') {
-      // ✅ If real image exists
-      profilePhoto.src = "https://secure-backend-tzj9.onrender.com/" + imgPath.replace(/^\/+/, '');
+    let finalImage = '';
+
+    if (!imgPath || imgPath === '' || imgPath === 'profile.jpg' || imgPath === 'profile/non-image.jpg') {
+      // No image or wrong placeholder image
+      finalImage = 'icons/default-profile.png';
     } else {
-      // ✅ If no image, use default
-      profilePhoto.src = "icons/default-profile.png";
+      // Correct user image
+      finalImage = "https://secure-backend-tzj9.onrender.com/" + imgPath.replace(/^\/+/, '');
     }
+
+    profilePhoto.src = finalImage;
 
     profilePhoto.onerror = function () {
       this.onerror = null; // avoid loop
-      this.src = "icons/default-profile.png"; // fallback default
+      this.src = "icons/default-profile.png";
     };
   }
 
