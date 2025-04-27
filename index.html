@@ -4,7 +4,6 @@
 <head>
   <meta charset="UTF-8" />
   <title>ជំនួយការឥណទាន</title>
-<<!--  <meta name="viewport" content="width=device-width, initial-scale=1.0" />-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="theme-color" content="#0d2d5c" />
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -468,7 +467,8 @@
   </button>
 </div>
 
-  <script>
+<script>
+  // ✅ . Riple all menu
     document.querySelectorAll(".menu-item").forEach(item => {
       const href = item.getAttribute("data-href");
       item.addEventListener("click", function (e) {
@@ -488,15 +488,14 @@
       });
     });
 
-<script>
-// ✅ Check Token First
+// ✅ 1. Check token immediately
 const token = sessionStorage.getItem('token');
 if (!token) {
   alert("Session expired or unauthorized access.");
   window.location.href = "login.html";
 }
 
-// ✅ Auto Logout Timer
+// ✅ 2. Auto Logout Setup
 const AUTO_LOGOUT_MINUTES = 1;
 let logoutTimer;
 function resetLogoutTimer() {
@@ -512,24 +511,50 @@ document.onmousemove = resetLogoutTimer;
 document.onkeydown = resetLogoutTimer;
 document.onclick = resetLogoutTimer;
 
-// ✅ Load Profile Info and Robot Message
+// ✅ 3. After page ready
 document.addEventListener('DOMContentLoaded', () => {
+  // Load profile name and photo
   const name = sessionStorage.getItem("fullname") || "អ្នកប្រើ";
-  const imgPath = sessionStorage.getItem("image");
+  const imgPath = sessionStorage.getItem("image") || "profile/non-image.jpg";
   const profilePhoto = document.getElementById("profile-photo");
-
   document.getElementById("welcome").textContent = "សួស្តី, " + name;
 
   if (imgPath && imgPath !== "profile/non-image.jpg") {
     profilePhoto.src = "https://secure-backend-tzj9.onrender.com/" + imgPath;
   } else {
-    profilePhoto.src = "icons/default-profile.png"; // fallback profile
+    profilePhoto.src = "icons/default-profile.png"; // fallback
   }
 
+  // Load robot message
   loadRobotMessage();
+
+  // Setup menu click (only 1 time)
+  document.querySelectorAll(".menu-item").forEach(item => {
+    item.addEventListener("click", function (e) {
+      e.preventDefault();
+      const href = item.getAttribute("data-href");
+      if (navigator.vibrate) navigator.vibrate(50);
+
+      const ripple = document.createElement("span");
+      ripple.className = "ripple";
+      const rect = this.getBoundingClientRect();
+      const size = Math.max(rect.width, rect.height);
+      ripple.style.width = ripple.style.height = size + "px";
+      ripple.style.left = (e.clientX - rect.left - size / 2) + "px";
+      ripple.style.top = (e.clientY - rect.top - size / 2) + "px";
+      this.appendChild(ripple);
+      setTimeout(() => ripple.remove(), 600);
+
+      if (href) window.location.href = href;
+      else alert("Coming soon!");
+    });
+  });
+
+  // Setup mic
+  setupVoiceAssistant();
 });
 
-// ✅ Load Robot Message API
+// ✅ 4. Load robot message from API
 async function loadRobotMessage() {
   try {
     const res = await fetch("https://secure-backend-tzj9.onrender.com/api/robot-message", {
@@ -543,38 +568,18 @@ async function loadRobotMessage() {
   }
 }
 
-// ✅ Menu Button Ripple and Navigation
-document.querySelectorAll(".menu-item").forEach(item => {
-  item.addEventListener("click", function (e) {
-    e.preventDefault();
-    const href = item.getAttribute("data-href");
-    if (navigator.vibrate) navigator.vibrate(50);
+// ✅ 5. Setup voice assistant
+function setupVoiceAssistant() {
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const speechSupported = !!SpeechRecognition;
+  let recognition;
 
-    const ripple = document.createElement("span");
-    ripple.className = "ripple";
-    const rect = this.getBoundingClientRect();
-    const size = Math.max(rect.width, rect.height);
-    ripple.style.width = ripple.style.height = size + "px";
-    ripple.style.left = (e.clientX - rect.left - size / 2) + "px";
-    ripple.style.top = (e.clientY - rect.top - size / 2) + "px";
-    this.appendChild(ripple);
-    setTimeout(() => ripple.remove(), 600);
-
-    if (href) window.location.href = href;
-    else alert("Coming soon!");
-  });
-});
-
-// ✅ Voice Assistant Setup
-const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-const speechSupported = !!SpeechRecognition;
-let recognition;
-
-window.addEventListener('DOMContentLoaded', () => {
   const micButton = document.querySelector('.mic-btn');
+  if (!micButton) return;
+
   if (isIOS || !speechSupported) {
-    if (micButton) micButton.style.display = "none";
+    micButton.style.display = "none";
     return;
   }
 
@@ -617,32 +622,30 @@ window.addEventListener('DOMContentLoaded', () => {
   const overlay = document.getElementById("voiceOverlay");
   const stopMicBtn = document.getElementById("stopMic");
 
-  if (micButton) {
-    micButton.addEventListener('pointerdown', () => {
-      overlay.style.display = "flex";
-      stopMicBtn.classList.add("listening");
-      micButton.classList.add("listening");
-      try {
-        recognition.start();
-      } catch (e) {
-        console.log("Already recording");
-      }
-    });
+  micButton.addEventListener('pointerdown', () => {
+    overlay.style.display = "flex";
+    stopMicBtn.classList.add("listening");
+    micButton.classList.add("listening");
+    try {
+      recognition.start();
+    } catch (e) {
+      console.log("Already recording");
+    }
+  });
 
-    const stopListening = () => {
-      recognition.stop();
-      overlay.style.display = "none";
-      stopMicBtn.classList.remove("listening");
-      micButton.classList.remove("listening");
-    };
+  const stopListening = () => {
+    recognition.stop();
+    overlay.style.display = "none";
+    stopMicBtn.classList.remove("listening");
+    micButton.classList.remove("listening");
+  };
 
-    micButton.addEventListener('pointerup', stopListening);
-    micButton.addEventListener('pointercancel', stopListening);
-    stopMicBtn.addEventListener("click", stopListening);
-  }
-});
+  micButton.addEventListener('pointerup', stopListening);
+  micButton.addEventListener('pointercancel', stopListening);
+  stopMicBtn.addEventListener("click", stopListening);
+}
 
-// ✅ Handle Voice Command
+// ✅ 6. Handle voice command
 function handleVoiceCommand(command) {
   let found = false;
   document.querySelectorAll('.menu-item').forEach(item => {
