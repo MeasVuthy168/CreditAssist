@@ -514,17 +514,20 @@ document.onclick = resetLogoutTimer;
 // ✅ 3. After page ready
 document.addEventListener('DOMContentLoaded', () => {
   // Load profile name and photo
-  const name = sessionStorage.getItem("fullname") || "អ្នកប្រើ";
+ const name = sessionStorage.getItem("fullname") || "អ្នកប្រើ";
   const imgPath = sessionStorage.getItem("image") || "profile/non-image.jpg";
   const profilePhoto = document.getElementById("profile-photo");
+
   document.getElementById("welcome").textContent = "សួស្តី, " + name;
 
-  if (imgPath && imgPath !== "profile/non-image.jpg") {
-    profilePhoto.src = "https://secure-backend-tzj9.onrender.com/" + imgPath;
-  } else {
-    profilePhoto.src = "icons/default-profile.png"; // fallback
-  }
+  // Always load image
+  profilePhoto.src = "https://secure-backend-tzj9.onrender.com/" + imgPath;
 
+  // ✅ If error (image missing), fallback to default
+  profilePhoto.onerror = function () {
+    this.onerror = null; // prevent infinite loop
+    this.src = "icons/default-profile.png";
+  };
   // Load robot message
   loadRobotMessage();
 
