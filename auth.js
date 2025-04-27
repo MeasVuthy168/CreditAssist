@@ -27,18 +27,23 @@ document.onclick = resetLogoutTimer;
 document.addEventListener('DOMContentLoaded', () => {
   const name = sessionStorage.getItem('fullname') || 'អ្នកប្រើ';
   const imgPath = sessionStorage.getItem('image') || 'profile/non-image.jpg';
-  
+
   const profilePhoto = document.getElementById('profile-photo');
   const welcome = document.getElementById('welcome');
-  
+
   if (welcome) welcome.textContent = "សួស្តី, " + name;
-  
+
   if (profilePhoto) {
     if (imgPath && imgPath !== 'profile/non-image.jpg') {
-      profilePhoto.src = "https://secure-backend-tzj9.onrender.com/" + imgPath;
+      profilePhoto.src = "https://secure-backend-tzj9.onrender.com/" + imgPath.replace(/^\/+/, '');
     } else {
-      profilePhoto.src = "icons/default-profile.png"; // fallback
+      profilePhoto.src = "icons/default-profile.png"; // fallback if no real image
     }
+
+    profilePhoto.onerror = function () {
+      this.onerror = null; // avoid loop
+      this.src = "icons/default-profile.png"; // fallback if error loading
+    };
   }
 
   loadRobotMessage();
@@ -47,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // 4. Load robot assistant message
 async function loadRobotMessage() {
   const robotMsgEl = document.getElementById('robotMessage');
-  if (!robotMsgEl) return; // if no robot box, skip
+  if (!robotMsgEl) return; // no robot box, skip
 
   try {
     const res = await fetch("https://secure-backend-tzj9.onrender.com/api/robot-message", {
