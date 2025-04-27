@@ -156,6 +156,7 @@
         const data = await res.json();
 
         if (res.ok && data.success) {
+          sessionStorage.setItem("token", data.token); // ✅ Save token here
           sessionStorage.setItem("loggedInUser", data.username);
           sessionStorage.setItem("userPosition", data.position);
           sessionStorage.setItem("fullname", data.fullname);
