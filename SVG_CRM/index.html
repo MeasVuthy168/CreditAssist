@@ -243,69 +243,79 @@
     <div class="spinner"></div>
   </div>
 
-  <!-- 🔍 Script -->
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      function performSearch() {
-        const query = document.getElementById("searchBox").value.trim();
-        if (query === "") {
-          alert("សូមបញ្ចូលលេខ​ CIF ឬឈ្មោះ​ ឬលេខទូរសព្ទ​ ឬ​អាស័យដ្ឋាន​");
-          return;
-        }
+  <!-- Scripts -->
+<script>
+// ✅ Check Token
+const token = sessionStorage.getItem('token');
+if (!token) {
+  alert("Session expired or unauthorized access.");
+  window.location.href = "../login.html";
+}
 
-        document.getElementById("loadingOverlay").style.display = "flex";
+// ✅ Auto Logout Timer
+const AUTO_LOGOUT_MINUTES = 1;
+let logoutTimer;
+function resetLogoutTimer() {
+  clearTimeout(logoutTimer);
+  logoutTimer = setTimeout(() => {
+    sessionStorage.clear();
+    alert("Session expired due to inactivity. Please log in again.");
+    window.location.href = "../login.html";
+  }, AUTO_LOGOUT_MINUTES * 60 * 1000);
+}
+function setupAutoLogoutEvents() {
+  ['mousemove', 'mousedown', 'keydown', 'touchstart', 'touchmove', 'scroll'].forEach(event => {
+    document.addEventListener(event, resetLogoutTimer, true);
+  });
+  resetLogoutTimer();
+}
+window.addEventListener('load', setupAutoLogoutEvents);
 
-        fetch(`https://secure-backend-tzj9.onrender.com/api/customers/search?q=${encodeURIComponent(query)}`)
-          .then(res => res.json())
-          .then(results => {
-            displayResults(results);
-            document.getElementById("loadingOverlay").style.display = "none";
-          })
-          .catch(err => {
-            alert("Search failed");
-            console.error("Search error:", err);
-            document.getElementById("loadingOverlay").style.display = "none";
-          });
-      }
-
-      function displayResults(results) {
-        const resultsTable = document.querySelector("#results tbody");
-        const tableHead = document.querySelector("#results thead");
-        const resultLabel = document.getElementById("resultLabel");
-
-        resultLabel.textContent = `លទ្ធផលស្វែងរក៖ ${results.length}`;
-        tableHead.style.display = results.length > 0 ? "table-header-group" : "none";
-
-        resultsTable.innerHTML = results.length > 0
-          ? results.map(item => `
-              <tr>
-                <td>${item.CIF || ''}</td>
-                <td>${item.Name || ''}</td>
-                <td>${item.Address || ''}</td>
-                <td>${item.Phone_Number || ''}</td>
-              </tr>`).join("")
-          : "<tr><td colspan='4'>រកមិនឃើញលទ្ធផលទេ</td></tr>";
-      }
-
-      document.getElementById("searchButton").addEventListener("click", performSearch);
-    });
-    
-    // ✅ Auto logout setup
-  const AUTO_LOGOUT_MINUTES = 1;
-  let logoutTimer;
-  function resetLogoutTimer() {
-    clearTimeout(logoutTimer);
-    logoutTimer = setTimeout(() => {
-      sessionStorage.removeItem("loggedInUser");
-      alert("Session expired due to inactivity. Please log in again.");
-      window.location.href = "../login.html";
-    }, AUTO_LOGOUT_MINUTES * 60 * 1000);
+// ✅ Search Logic
+document.addEventListener("DOMContentLoaded", () => {
+  function performSearch() {
+    const query = document.getElementById("searchBox").value.trim();
+    if (query === "") {
+      alert("សូមបញ្ចូលលេខ CIF ឬឈ្មោះ ឬលេខទូរស័ព្ទ");
+      return;
+    }
+    document.getElementById("loadingOverlay").style.display = "flex";
+    fetch(`https://secure-backend-tzj9.onrender.com/api/customers/search?q=${encodeURIComponent(query)}`, {
+      headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` }
+    })
+      .then(res => res.json())
+      .then(results => {
+        displayResults(results);
+        document.getElementById("loadingOverlay").style.display = "none";
+      })
+      .catch(err => {
+        alert("Search failed");
+        console.error("Search error:", err);
+        document.getElementById("loadingOverlay").style.display = "none";
+      });
   }
 
-  window.onload = resetLogoutTimer;
-  document.onmousemove = resetLogoutTimer;
-  document.onkeydown = resetLogoutTimer;
-  document.onclick = resetLogoutTimer;
-  </script>
+  function displayResults(results) {
+    const resultsTable = document.querySelector("#results tbody");
+    const tableHead = document.querySelector("#results thead");
+    const resultLabel = document.getElementById("resultLabel");
+
+    resultLabel.textContent = `លទ្ធផលស្វែងរក៖ ${results.length}`;
+    tableHead.style.display = results.length > 0 ? "table-header-group" : "none";
+
+    resultsTable.innerHTML = results.length > 0
+      ? results.map(item => `
+          <tr>
+            <td>${item.CIF || ''}</td>
+            <td>${item.Name || ''}</td>
+            <td>${item.Address || ''}</td>
+            <td>${item.Phone_Number || ''}</td>
+          </tr>`).join("")
+      : "<tr><td colspan='4'>រកមិនឃើញលទ្ធផលទេ</td></tr>";
+  }
+
+  document.getElementById("searchButton").addEventListener("click", performSearch);
+});
+</script>
 </body>
 </html>
