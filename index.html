@@ -488,15 +488,15 @@
       });
     });
 
- <script>
-// ✅ Global Token Setup
-window.token = sessionStorage.getItem('token');
-if (!window.token) {
+<script>
+// ✅ Check Token First
+const token = sessionStorage.getItem('token');
+if (!token) {
   alert("Session expired or unauthorized access.");
   window.location.href = "login.html";
 }
 
-// ✅ Auto Logout Setup
+// ✅ Auto Logout Timer
 const AUTO_LOGOUT_MINUTES = 1;
 let logoutTimer;
 function resetLogoutTimer() {
@@ -512,8 +512,8 @@ document.onmousemove = resetLogoutTimer;
 document.onkeydown = resetLogoutTimer;
 document.onclick = resetLogoutTimer;
 
-// ✅ Load Profile and Robot Message
-document.addEventListener("DOMContentLoaded", () => {
+// ✅ Load Profile Info and Robot Message
+document.addEventListener('DOMContentLoaded', () => {
   const name = sessionStorage.getItem("fullname") || "អ្នកប្រើ";
   const imgPath = sessionStorage.getItem("image");
   const profilePhoto = document.getElementById("profile-photo");
@@ -523,31 +523,33 @@ document.addEventListener("DOMContentLoaded", () => {
   if (imgPath && imgPath !== "profile/non-image.jpg") {
     profilePhoto.src = "https://secure-backend-tzj9.onrender.com/" + imgPath;
   } else {
-    profilePhoto.src = "icons/default-profile.png"; // ➡️ fallback image
+    profilePhoto.src = "icons/default-profile.png"; // fallback profile
   }
 
   loadRobotMessage();
 });
 
-// ✅ Load Robot Message
+// ✅ Load Robot Message API
 async function loadRobotMessage() {
   try {
     const res = await fetch("https://secure-backend-tzj9.onrender.com/api/robot-message", {
-      headers: { Authorization: `Bearer ${window.token}` }
+      headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` }
     });
     const data = await res.json();
     document.getElementById("robotMessage").textContent = data.message || "មិនទាន់មានសារ។";
-  } catch {
+  } catch (error) {
+    console.error("Robot message error:", error);
     document.getElementById("robotMessage").textContent = "មិនអាចទាញសារបានទេ។";
   }
 }
 
-// ✅ Menu Click with Ripple
+// ✅ Menu Button Ripple and Navigation
 document.querySelectorAll(".menu-item").forEach(item => {
-  const href = item.getAttribute("data-href");
   item.addEventListener("click", function (e) {
     e.preventDefault();
+    const href = item.getAttribute("data-href");
     if (navigator.vibrate) navigator.vibrate(50);
+
     const ripple = document.createElement("span");
     ripple.className = "ripple";
     const rect = this.getBoundingClientRect();
@@ -557,6 +559,7 @@ document.querySelectorAll(".menu-item").forEach(item => {
     ripple.style.top = (e.clientY - rect.top - size / 2) + "px";
     this.appendChild(ripple);
     setTimeout(() => ripple.remove(), 600);
+
     if (href) window.location.href = href;
     else alert("Coming soon!");
   });
@@ -596,27 +599,7 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     if (finalTranscript.trim()) {
-      const normalized = finalTranscript.toLowerCase();
-      let found = false;
-
-      document.querySelectorAll('.menu-item').forEach(item => {
-        const labelText = item.querySelector('.label')?.textContent?.toLowerCase() || '';
-        const labelWords = labelText.split(/\s+/);
-        const transcriptWords = normalized.split(/\s+/);
-
-        const match = transcriptWords.some(word =>
-          labelWords.some(labelWord =>
-            labelWord.includes(word) || word.includes(labelWord)
-          )
-        );
-
-        if (match) {
-          found = true;
-          item.click();
-        }
-      });
-
-      if (!found) alert(`កម្មវិធី "${finalTranscript}" មិនមានទេ!`);
+      handleVoiceCommand(finalTranscript.toLowerCase());
     }
   };
 
@@ -658,6 +641,20 @@ window.addEventListener('DOMContentLoaded', () => {
     stopMicBtn.addEventListener("click", stopListening);
   }
 });
+
+// ✅ Handle Voice Command
+function handleVoiceCommand(command) {
+  let found = false;
+  document.querySelectorAll('.menu-item').forEach(item => {
+    const labelText = item.querySelector('.label')?.textContent?.toLowerCase() || '';
+    if (labelText.includes(command)) {
+      found = true;
+      item.click();
+    }
+  });
+
+  if (!found) alert(`កម្មវិធី "${command}" មិនមានទេ!`);
+}
 </script>
 </body>
 </html>
