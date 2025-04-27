@@ -146,34 +146,49 @@
 
 <div class="admin-box" id="admin-input" style="display:none;">
   <label class="admin-title">✍️ Post Robot Message</label>
-  <textarea id="newMessage" placeholder="សូមសសេរសារថ្មី..." class="admin-textarea"></textarea>
+  <textarea id="newMessage" placeholder="សរសេរសារថ្មី..." class="admin-textarea"></textarea>
   <button class="admin-btn" onclick="postRobotMessage()">📤 Upload to Backend</button>
 </div>
 
 <div class="upload-box">
   <div class="upload-box-title">📄 Upload Excel Files (.xlsx)</div>
-<script>
-const token = sessionStorage.getItem("token");
-if (!token) {
-  alert("Session expired! Please login again.");
-  window.location.href = "login.html";
-}
-<script>
-  
-// 🔒 Verify Token on Page Load
-document.addEventListener("DOMContentLoaded", () => {
-  const token = sessionStorage.getItem("authToken");
-  const userPosition = sessionStorage.getItem("userPosition");
 
-  if (!token || (userPosition || '').toLowerCase() !== 'admin') {
-    alert("❌ Unauthorized access. Please login again.");
-    window.location.href = "login.html";
-    return;
-  }
+  <label class="upload-label">
+    <div>User Data</div>
+    <div class="uploader" id="by-user">Uploaded by: –</div>
+    <div class="timestamp" id="ts-user">–</div>
+  </label>
+  <input type="file" id="userFile" accept=".xlsx" onchange="showPreview('userFile', 'userPreview')" />
+  <div class="file-info" id="userPreview"></div>
+  <div class="progress-container"><div class="progress-bar" id="userProgress"></div></div>
 
-  loadRobotMessage(userPosition);
-  loadTimestamps();
-});
+  <label class="upload-label">
+    <div>Customer Data</div>
+    <div class="uploader" id="by-customer">Uploaded by: –</div>
+    <div class="timestamp" id="ts-customer">–</div>
+  </label>
+  <input type="file" id="customerFile" accept=".xlsx" onchange="showPreview('customerFile', 'customerPreview')" />
+  <div class="file-info" id="customerPreview"></div>
+  <div class="progress-container"><div class="progress-bar" id="customerProgress"></div></div>
+
+  <label class="upload-label">
+    <div>Turnover Data</div>
+    <div class="uploader" id="by-turnover">Uploaded by: –</div>
+    <div class="timestamp" id="ts-turnover">–</div>
+  </label>
+  <input type="file" id="turnoverFile" accept=".xlsx" onchange="showPreview('turnoverFile', 'turnoverPreview')" />
+  <div class="file-info" id="turnoverPreview"></div>
+  <div class="progress-container"><div class="progress-bar" id="turnoverProgress"></div></div>
+
+  <button class="upload-btn" onclick="uploadFiles()">📤 Upload to MongoDB</button>
+</div>
+
+<div class="log-box" id="uploadLog"></div>
+<div id="overlay"><span>Uploading... Please wait</span></div>
+
+
+<script>
+  const token = sessionStorage.getItem('token');
 
 function showPreview(fileInputId, previewId) {
   const file = document.getElementById(fileInputId).files[0];
@@ -197,12 +212,13 @@ function logMessage(msg) {
 
 async function loadTimestamps() {
   try {
-    const token = sessionStorage.getItem("authToken");
-    const res = await fetch("https://secure-backend-tzj9.onrender.com/api/admin/upload-timestamps", {
-      headers: { Authorization: `Bearer ${token}` }
-    });
+   const res = await fetch("https://secure-backend-tzj9.onrender.com/api/admin/upload-timestamps", {
+  headers: {
+    Authorization: `Bearer ${token}`
+  }
+});
     const data = await res.json();
-    console.log("Fetched upload timestamps:", data);
+    console.log("Fetched upload timestamps:", data); // ✅ Debug
 
     ['user', 'customer', 'turnover'].forEach(label => {
       const date = data[label];
@@ -223,17 +239,16 @@ async function uploadSingleFile(file, label, progressBarId) {
   const formData = new FormData();
 
   const fullname = sessionStorage.getItem("fullname") || "Unknown";
-  console.log(`Uploading ${label} as:`, fullname);
+  console.log(`Uploading ${label} as:`, fullname); // ✅ Debug here
 
   formData.append(label, file);
   formData.append("fullname", fullname);
 
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
-    const token = sessionStorage.getItem("authToken");
-
     xhr.open("POST", "https://secure-backend-tzj9.onrender.com/api/admin/upload");
-    xhr.setRequestHeader("Authorization", `Bearer ${token}`);
+
+    xhr.setRequestHeader("Authorization", `Bearer ${token}`); // ✅ Correct: set header BEFORE send
 
     xhr.upload.onprogress = (event) => {
       if (event.lengthComputable) {
@@ -258,10 +273,10 @@ async function uploadSingleFile(file, label, progressBarId) {
       reject();
     };
 
-    xhr.send(formData);
+    xhr.send(formData); // ✅ Finally send
   });
 }
-
+  
 async function uploadFiles() {
   const user = document.getElementById('userFile').files[0];
   const customer = document.getElementById('customerFile').files[0];
@@ -287,7 +302,7 @@ async function uploadFiles() {
       document.getElementById(id + 'Preview').textContent = "";
     });
 
-    await loadTimestamps();
+    await loadTimestamps(); // Refresh timestamps and uploader names
   } catch (err) {
     alert("❌ Some uploads failed. Check logs.");
   }
@@ -297,10 +312,12 @@ async function uploadFiles() {
 
 async function loadRobotMessage(userPosition) {
   try {
-    const token = sessionStorage.getItem("authToken");
-    const res = await fetch("https://secure-backend-tzj9.onrender.com/api/robot-message", {
-      headers: { Authorization: `Bearer ${token}` }
-    });
+   const res = await fetch("https://secure-backend-tzj9.onrender.com/api/robot-message", {
+  headers: {
+    Authorization: `Bearer ${token}`
+  }
+});
+
     const data = await res.json();
     if (userPosition === "admin") {
       document.getElementById("admin-input").style.display = "block";
@@ -316,15 +333,14 @@ async function postRobotMessage() {
   if (!msg) return;
 
   try {
-    const token = sessionStorage.getItem("authToken");
     const res = await fetch("https://secure-backend-tzj9.onrender.com/api/robot-message", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
-      },
-      body: JSON.stringify({ message: msg })
-    });
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${token}`
+  },
+  body: JSON.stringify({ message: msg })
+});
 
     if (res.ok) {
       alert("✅ Message posted & synced.");
@@ -336,4 +352,12 @@ async function postRobotMessage() {
     alert("❌ Error: " + err.message);
   }
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+  const userPosition = sessionStorage.getItem("userPosition") || "user";
+  loadRobotMessage(userPosition);
+  loadTimestamps();
+});
 </script>
+</body>
+</html>
