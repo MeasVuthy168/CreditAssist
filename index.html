@@ -9,14 +9,14 @@
   <meta name="theme-color" content="#0d2d5c" />
   <meta name="apple-mobile-web-app-capable" content="yes">
   
- <script>
-const token = sessionStorage.getItem("token");
-if (!token) {
-  sessionStorage.clear();
-  alert("Session expired. Please login again.");
-  window.location.href = "login.html";
-}
-</script>
+  <script>
+    const token = sessionStorage.getItem('token');
+  
+    if (!token) {
+      alert("Session expired or unauthorized access.");
+      window.location.href = "login.html";
+    }
+  </script>
 
   <style>
     @font-face {
@@ -497,61 +497,80 @@ if (!token) {
       });
     });
 
-    const AUTO_LOGOUT_MINUTES = 1;
-    let logoutTimer;
-    function resetLogoutTimer() {
-      clearTimeout(logoutTimer);
-      logoutTimer = setTimeout(() => {
-        sessionStorage.removeItem("loggedInUser");
-        alert("Session expired due to inactivity. Please log in again.");
-        window.location.href = "login.html";
-      }, AUTO_LOGOUT_MINUTES * 60 * 1000);
-    }
-    window.onload = resetLogoutTimer;
-    document.onmousemove = resetLogoutTimer;
-    document.onkeydown = resetLogoutTimer;
-    document.onclick = resetLogoutTimer;
+  const token = sessionStorage.getItem("token");
 
-   async function loadRobotMessage(userPosition) {
-  try {
-    const token = sessionStorage.getItem("token");
-    const res = await fetch("https://secure-backend-tzj9.onrender.com/api/robot-message", {
-      headers: { Authorization: `Bearer ${token}` }
-    });
-    const data = await res.json();
-    document.getElementById("robotMessage").textContent = data.message || "មិនទាន់មានសារ។";
-  } catch {
-    document.getElementById("robotMessage").textContent = "មិនអាចទាញសារបានទេ។";
+  // ✅ Auto Logout Setup
+  const AUTO_LOGOUT_MINUTES = 1;
+  let logoutTimer;
+  function resetLogoutTimer() {
+    clearTimeout(logoutTimer);
+    logoutTimer = setTimeout(() => {
+      sessionStorage.clear();
+      alert("Session expired due to inactivity. Please log in again.");
+      window.location.href = "login.html";
+    }, AUTO_LOGOUT_MINUTES * 60 * 1000);
   }
-}
+  window.onload = resetLogoutTimer;
+  document.onmousemove = resetLogoutTimer;
+  document.onkeydown = resetLogoutTimer;
+  document.onclick = resetLogoutTimer;
 
+  // ✅ Menu Click with Ripple
+  document.querySelectorAll(".menu-item").forEach(item => {
+    const href = item.getAttribute("data-href");
+    item.addEventListener("click", function (e) {
+      e.preventDefault();
+      if (navigator.vibrate) navigator.vibrate(50);
+      const ripple = document.createElement("span");
+      ripple.className = "ripple";
+      const rect = this.getBoundingClientRect();
+      const size = Math.max(rect.width, rect.height);
+      ripple.style.width = ripple.style.height = size + "px";
+      ripple.style.left = (e.clientX - rect.left - size / 2) + "px";
+      ripple.style.top = (e.clientY - rect.top - size / 2) + "px";
+      this.appendChild(ripple);
+      setTimeout(() => ripple.remove(), 600);
+      if (href) window.location.href = href;
+      else alert("Coming soon!");
+    });
+  });
 
-    
- // ✅ Properly placed DOM ready code
-document.addEventListener("DOMContentLoaded", () => {
-  const name = sessionStorage.getItem("fullname") || "អ្នកប្រើ";
-  const imgPath = sessionStorage.getItem("image") || "profile.jpg";
-  const userPosition = sessionStorage.getItem("userPosition") || "user";
+  // ✅ Load Robot Message (Protected)
+  async function loadRobotMessage() {
+    try {
+      const res = await fetch("https://secure-backend-tzj9.onrender.com/api/robot-message", {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      document.getElementById("robotMessage").textContent = data.message || "មិនទាន់មានសារ។";
+    } catch {
+      document.getElementById("robotMessage").textContent = "មិនអាចទាញសារបានទេ។";
+    }
+  }
 
-  document.getElementById("welcome").textContent = "សួស្តី, " + name;
-  document.getElementById("profile-photo").src = "https://secure-backend-tzj9.onrender.com/" + imgPath;
+  // ✅ Load Profile Info
+  document.addEventListener("DOMContentLoaded", () => {
+    const name = sessionStorage.getItem("fullname") || "អ្នកប្រើ";
+    const imgPath = sessionStorage.getItem("image");
+    const profilePhoto = document.getElementById("profile-photo");
 
-  // Only update voice assistant greeting (do not clean name)
-  const greetEl = document.getElementById("voiceGreeting");
-  if (greetEl) greetEl.textContent = "សួស្តី " + name;
+    document.getElementById("welcome").textContent = "សួស្តី, " + name;
 
-  loadRobotMessage(userPosition);
-});
-</script>
-    
-<!-- ✅ Voice Assistant -->
-<script>
+    if (imgPath && imgPath !== "profile/non-image.jpg") {
+      profilePhoto.src = "https://secure-backend-tzj9.onrender.com/" + imgPath;
+    } else {
+      profilePhoto.src = "icons/default-profile.png"; // ➡️ fallback if no image
+    }
+
+    loadRobotMessage();
+  });
+
+  // ✅ Voice Assistant Setup
   const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   const speechSupported = !!SpeechRecognition;
   let recognition;
 
-  // Hide mic button if iOS or speech not supported
   window.addEventListener('DOMContentLoaded', () => {
     const micButton = document.querySelector('.mic-btn');
     if (isIOS || !speechSupported) {
@@ -559,7 +578,6 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // Setup speech recognition
     recognition = new SpeechRecognition();
     recognition.lang = 'km-KH';
     recognition.continuous = false;
@@ -624,7 +642,6 @@ document.addEventListener("DOMContentLoaded", () => {
         overlay.style.display = "flex";
         stopMicBtn.classList.add("listening");
         micButton.classList.add("listening");
-        document.querySelector('.mic-ring')?.classList.add('blinking');
         try {
           recognition.start();
         } catch (e) {
@@ -637,7 +654,6 @@ document.addEventListener("DOMContentLoaded", () => {
         overlay.style.display = "none";
         stopMicBtn.classList.remove("listening");
         micButton.classList.remove("listening");
-        document.querySelector('.mic-ring')?.classList.remove('blinking');
       };
 
       micButton.addEventListener('pointerup', stopListening);
@@ -646,5 +662,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 </script>
+
 </body>
 </html>
