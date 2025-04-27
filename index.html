@@ -212,22 +212,23 @@
   filter: brightness(1.2) drop-shadow(0 0 3px #ffd700);
 }
     .robot-box {
-      position: relative;
-      margin-top: 20px;
-      background-color: rgba(0, 0, 0, 0.1);
-      border: 1px solid #ffd700; /* brighter gold */
-      border-radius: 12px;
-      display: flex;
-      flex-direction: column;
-      padding: 10px 16px 70px; /* ⬅️ Increased bottom padding to 70px */
-      font-family: 'Krasar', sans-serif;
-      color: white;
-      min-height: 60px;
-      animation: robotPulse 2s infinite;
-      box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
-      overflow: hidden;
-    }
-
+  position: fixed;
+  left: 16px;
+  right: 16px;
+  bottom: 76px; /* ✅ Make sure it FLOATS ABOVE the bottom bar (56px + small gap) */
+  background-color: rgba(0, 0, 0, 0.1);
+  border: 2px solid #d4af37;
+  border-radius: 12px;
+  padding: 10px 16px 70px; /* ✅ Padding bottom to reserve space for microphone */
+  font-family: 'Krasar', sans-serif;
+  color: white;
+  height: 120px; /* ✅ FIXED HEIGHT */
+  overflow-y: auto; /* ✅ SCROLL when too much text */
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
+  z-index: 999; /* Make sure it's above most things */
+}
     .robot-box img {
       width: 70px;
       height: 70px;
@@ -243,7 +244,9 @@
       margin-bottom: 8px;
       word-break: break-word;
       color: #ffd700;
-    }
+      flex: 1; /* ✅ Fill available space */
+      overflow-y: auto; /* ✅ Scroll the text inside */
+    }   
         .flicker {
       animation: flicker 2s infinite;
     }
