@@ -6,22 +6,135 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
   <meta name="theme-color" content="#0d2d5c" />
   <style>
-    body { margin: 0; font-family: 'Krasar', Arial, sans-serif; background: #1c2331; padding-top: 60px; }
-    .header { background: #0d2d5c; color: white; font-size: 18px; font-weight: bold; padding: 16px; text-align: center; position: fixed; top: 0; left: 0; right: 0; z-index: 999; box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
-    .close-btn { position: absolute; top: 12px; right: 16px; background: none; border: none; color: white; font-size: 24px; cursor: pointer; }
-    .admin-box, .upload-box, .log-box { background: white; padding: 20px 10px; border-radius: 12px; max-width: 500px; margin: 10px auto; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-    .admin-title { text-align: center; font-weight: bold; color: #0d2d5c; font-size: 16px; margin-bottom: 10px; }
-    .admin-textarea { width: 100%; height: 90px; font-family: 'Krasar', Arial, sans-serif; padding: 8px; font-size: 14px; border: 1px solid #ccc; border-radius: 6px; background: #f1f1f1; resize: none; margin-top: 6px; }
-    .admin-btn, .upload-btn { margin-top: 12px; width: 100%; padding: 12px; background: #0d2d5c; color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; }
-    .admin-btn:hover, .upload-btn:hover { background: #09306d; }
-    .upload-box-title { text-align: center; font-size: 17px; font-weight: bold; color: #0d2d5c; margin-bottom: 10px; }
-    .upload-label { margin-top: 16px; display: flex; flex-direction: column; align-items: flex-start; color: #0d2d5c; font-weight: bold; }
-    .uploader, .timestamp { font-size: 13px; color: #555; margin-bottom: 2px; }
-    .file-info { font-size: 14px; margin-bottom: 8px; color: #333; }
-    .progress-container { height: 10px; background: #ddd; border-radius: 5px; margin: 4px 0 16px; }
-    .progress-bar { height: 100%; width: 0; background: #0d2d5c; border-radius: 5px; transition: width 0.3s ease; }
-    #overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.4); display: none; align-items: center; justify-content: center; z-index: 2000; }
-    #overlay span { background: white; padding: 16px 32px; border-radius: 10px; color: #0d2d5c; font-weight: bold; box-shadow: 0 4px 12px rgba(0,0,0,0.25); }
+    body {
+      margin: 0;
+      font-family: 'Krasar', Arial, sans-serif;
+      background: #1c2331;
+      padding-top: 60px;
+    }
+    .header {
+      background-color: #0d2d5c;
+      color: white;
+      font-size: 18px;
+      font-weight: bold;
+      padding: 16px;
+      text-align: center;
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      z-index: 999;
+    }
+    .close-btn {
+      position: absolute;
+      top: 12px;
+      right: 16px;
+      background: transparent;
+      border: none;
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+    }
+    .admin-box, .upload-box, .log-box {
+      background: white;
+      padding: 20px 10px;
+      border-radius: 12px;
+      max-width: 500px;
+      margin: 10px auto;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .admin-title {
+      text-align: center;
+      font-weight: bold;
+      color: #0d2d5c;
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+    .admin-textarea {
+      width: 100%;
+      height: 90px;
+      font-family: 'Krasar', Arial, sans-serif;
+      padding: 8px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      resize: none;
+      margin-top: 6px;
+      box-sizing: border-box;
+      background: #f1f1f1;
+    }
+    .admin-btn, .upload-btn {
+      margin-top: 12px;
+      width: 100%;
+      padding: 12px;
+      background: #0d2d5c;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .admin-btn:hover, .upload-btn:hover {
+      background: #09306d;
+    }
+    .upload-box-title {
+      text-align: center;
+      font-size: 17px;
+      font-weight: bold;
+      color: #0d2d5c;
+      margin-bottom: 10px;
+    }
+    .upload-label {
+      margin-top: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      color: #0d2d5c;
+      font-weight: bold;
+    }
+    .uploader, .timestamp {
+      font-size: 13px;
+      color: #555;
+      margin-bottom: 2px;
+    }
+    input[type="file"] {
+      width: 100%;
+    }
+    .file-info {
+      font-size: 14px;
+      margin-bottom: 8px;
+      color: #333;
+    }
+    .progress-container {
+      height: 10px;
+      background: #ddd;
+      border-radius: 5px;
+      margin: 4px 0 16px;
+    }
+    .progress-bar {
+      height: 100%;
+      width: 0;
+      background: #0d2d5c;
+      border-radius: 5px;
+      transition: width 0.3s ease;
+    }
+    #overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+    }
+    #overlay span {
+      background: white;
+      padding: 16px 32px;
+      border-radius: 10px;
+      color: #0d2d5c;
+      font-weight: bold;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    }
   </style>
 </head>
 
@@ -40,9 +153,7 @@
 <div class="upload-box">
   <div class="upload-box-title">📄 Upload Excel Files (.xlsx)</div>
 
-  <!-- User -->
-  <label class="upload-label">
-    <div>User Data</div>
+  <label class="upload-label">User Data
     <div class="uploader" id="by-user">Uploaded by: –</div>
     <div class="timestamp" id="ts-user">–</div>
   </label>
@@ -50,9 +161,7 @@
   <div class="file-info" id="userPreview"></div>
   <div class="progress-container"><div class="progress-bar" id="userProgress"></div></div>
 
-  <!-- Customer -->
-  <label class="upload-label">
-    <div>Customer Data</div>
+  <label class="upload-label">Customer Data
     <div class="uploader" id="by-customer">Uploaded by: –</div>
     <div class="timestamp" id="ts-customer">–</div>
   </label>
@@ -60,9 +169,7 @@
   <div class="file-info" id="customerPreview"></div>
   <div class="progress-container"><div class="progress-bar" id="customerProgress"></div></div>
 
-  <!-- Turnover -->
-  <label class="upload-label">
-    <div>Turnover Data</div>
+  <label class="upload-label">Turnover Data
     <div class="uploader" id="by-turnover">Uploaded by: –</div>
     <div class="timestamp" id="ts-turnover">–</div>
   </label>
@@ -70,9 +177,7 @@
   <div class="file-info" id="turnoverPreview"></div>
   <div class="progress-container"><div class="progress-bar" id="turnoverProgress"></div></div>
 
-  <!-- NBCOS -->
-  <label class="upload-label">
-    <div>NBCOS Data</div>
+  <label class="upload-label">NBCOS Data
     <div class="uploader" id="by-nbcos">Uploaded by: –</div>
     <div class="timestamp" id="ts-nbcos">–</div>
   </label>
@@ -88,8 +193,6 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
-// ✅ FULL WORKING JS (correct)
-
 const token = sessionStorage.getItem('token');
 
 if (!token || isTokenExpired(token)) {
@@ -135,52 +238,55 @@ async function loadTimestamps() {
     ['user', 'customer', 'turnover', 'nbcos'].forEach(label => {
       const date = data[label];
       const fullname = data[`${label}Fullname`] || "–";
-      document.getElementById('ts-' + label).textContent = date ? new Date(date).toLocaleString() : "–";
-      document.getElementById('by-' + label).textContent = `Uploaded by: ${fullname}`;
+      const dateBox = document.getElementById('ts-' + label);
+      const nameBox = document.getElementById('by-' + label);
+      if (dateBox) dateBox.textContent = date ? new Date(date).toLocaleString() : "–";
+      if (nameBox) nameBox.textContent = `Uploaded by: ${fullname}`;
     });
   } catch (err) {
     console.warn("❌ Failed to load timestamps:", err);
   }
 }
 
-// Upload blob function
 async function uploadBlob(blob, label, progressBarId, partNumber) {
   const progressBar = document.getElementById(progressBarId);
   const formData = new FormData();
   const fullname = sessionStorage.getItem("fullname") || "Unknown";
-
-  formData.append(label, blob, `${label}${partNumber ? '_part' + partNumber : ''}.xlsx`);
+  formData.append(label, blob, `${label}_part${partNumber || 1}.xlsx`);
   formData.append("fullname", fullname);
 
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
     xhr.open("POST", "https://secure-backend-tzj9.onrender.com/api/admin/upload");
     xhr.setRequestHeader("Authorization", `Bearer ${token}`);
-    
+
     xhr.upload.onprogress = (e) => {
       if (e.lengthComputable) {
         const percent = (e.loaded / e.total) * 100;
         progressBar.style.width = `${percent.toFixed(0)}%`;
       }
     };
+
     xhr.onload = () => {
       if (xhr.status === 200) {
-        logMessage(`✅ ${label} ${partNumber ? 'part ' + partNumber : ''} upload complete.`);
+        progressBar.style.width = `100%`;
+        logMessage(`✅ ${label}${partNumber ? ` part ${partNumber}` : ''} upload complete.`);
         resolve();
       } else {
-        logMessage(`❌ Failed to upload ${label}`);
+        logMessage(`❌ Failed to upload ${label}${partNumber ? ` part ${partNumber}` : ''}`);
         reject();
       }
     };
+
     xhr.onerror = () => {
-      logMessage(`❌ Network error during ${label}`);
+      logMessage(`❌ Network error during ${label}${partNumber ? ` part ${partNumber}` : ''} upload`);
       reject();
     };
+
     xhr.send(formData);
   });
 }
 
-// Split if needed
 async function uploadFileWithSplit(file, label, progressBarId) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -207,16 +313,11 @@ async function uploadFileWithSplit(file, label, progressBarId) {
             await uploadBlob(blob, label, progressBarId, i + 1);
           }
         } else {
-          const fullWorkbook = XLSX.utils.book_new();
-          const fullSheet = XLSX.utils.json_to_sheet(data);
-          XLSX.utils.book_append_sheet(fullWorkbook, fullSheet, "Sheet1");
-
-          const fullBlob = XLSX.write(fullWorkbook, { bookType: "xlsx", type: "blob" });
-
-          await uploadBlob(fullBlob, label, progressBarId, null);
+          await uploadBlob(file, label, progressBarId, null);
         }
         resolve();
       } catch (error) {
+        logMessage(`❌ Failed to process ${label}`);
         reject();
       }
     };
@@ -225,7 +326,6 @@ async function uploadFileWithSplit(file, label, progressBarId) {
   });
 }
 
-// Upload all
 async function uploadFiles() {
   const user = document.getElementById('userFile').files[0];
   const customer = document.getElementById('customerFile').files[0];
@@ -233,7 +333,7 @@ async function uploadFiles() {
   const nbcos = document.getElementById('nbcosFile').files[0];
 
   if (!user && !customer && !turnover && !nbcos) {
-    alert("Please choose at least one file.");
+    alert("⚠️ Please select at least one file to upload.");
     return;
   }
 
@@ -246,7 +346,7 @@ async function uploadFiles() {
     if (nbcos) await uploadFileWithSplit(nbcos, "nbcos", "nbcosProgress");
 
     logMessage("✅ All uploads completed.");
-    alert("✅ All files uploaded successfully.");
+    alert("✅ All files uploaded successfully!");
 
     ['user', 'customer', 'turnover', 'nbcos'].forEach(id => {
       document.getElementById(id + 'File').value = "";
@@ -255,38 +355,57 @@ async function uploadFiles() {
 
     await loadTimestamps();
   } catch (err) {
-    alert("❌ Some uploads failed.");
+    alert("❌ Some uploads failed. Check logs.");
   }
 
   document.getElementById("overlay").style.display = "none";
 }
 
-// Robot Message
+// Robot message functions
+async function loadRobotMessage(userPosition) {
+  try {
+    const res = await fetch("https://secure-backend-tzj9.onrender.com/api/robot-message", {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const data = await res.json();
+    if (userPosition === "admin") {
+      document.getElementById("admin-input").style.display = "block";
+      document.getElementById("newMessage").value = data.message;
+    }
+  } catch (err) {
+    console.warn("❌ Failed to fetch robot message:", err);
+  }
+}
+
 async function postRobotMessage() {
   const msg = document.getElementById("newMessage").value.trim();
   if (!msg) return;
-
   try {
     const res = await fetch("https://secure-backend-tzj9.onrender.com/api/robot-message", {
       method: "POST",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      },
       body: JSON.stringify({ message: msg })
     });
 
     if (res.ok) {
-      alert("✅ Message posted.");
+      alert("✅ Message posted & synced.");
+      loadRobotMessage("admin");
     } else {
-      alert("⚠️ Message saved, GitHub sync failed.");
+      alert("⚠️ Message saved, but GitHub sync failed.");
     }
   } catch (err) {
-    alert("❌ Failed to post message.");
+    alert("❌ Error: " + err.message);
   }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  const userPosition = sessionStorage.getItem("userPosition") || "user";
+  loadRobotMessage(userPosition);
   loadTimestamps();
 });
 </script>
-
 </body>
 </html>
