@@ -137,6 +137,8 @@
     }
   </style>
 </head>
+
+<body>
 <div class="header">
   ADMIN MODE
   <button class="close-btn" onclick="window.location.href='index.html'">&times;</button>
@@ -151,7 +153,6 @@
 <div class="upload-box">
   <div class="upload-box-title">📄 Upload Excel Files (.xlsx)</div>
 
-  <!-- User Upload -->
   <label class="upload-label">
     <div>User Data</div>
     <div class="uploader" id="by-user">Uploaded by: –</div>
@@ -161,7 +162,6 @@
   <div class="file-info" id="userPreview"></div>
   <div class="progress-container"><div class="progress-bar" id="userProgress"></div></div>
 
-  <!-- Customer Upload -->
   <label class="upload-label">
     <div>Customer Data</div>
     <div class="uploader" id="by-customer">Uploaded by: –</div>
@@ -171,7 +171,6 @@
   <div class="file-info" id="customerPreview"></div>
   <div class="progress-container"><div class="progress-bar" id="customerProgress"></div></div>
 
-  <!-- Turnover Upload -->
   <label class="upload-label">
     <div>Turnover Data</div>
     <div class="uploader" id="by-turnover">Uploaded by: –</div>
@@ -181,126 +180,28 @@
   <div class="file-info" id="turnoverPreview"></div>
   <div class="progress-container"><div class="progress-bar" id="turnoverProgress"></div></div>
 
-  <!-- ✅ NBCOS Upload (new added) -->
-  <label class="upload-label">
-    <div>NBC OS Data</div>
-    <div class="uploader" id="by-nbcos">Uploaded by: –</div>
-    <div class="timestamp" id="ts-nbcos">–</div>
-  </label>
-  <input type="file" id="nbcosFile" accept=".xlsx" onchange="showPreview('nbcosFile', 'nbcosPreview')" />
-  <div class="file-info" id="nbcosPreview"></div>
-  <div class="progress-container"><div class="progress-bar" id="nbcosProgress"></div></div>
-
   <button class="upload-btn" onclick="uploadFiles()">📤 Upload to MongoDB</button>
 </div>
+
+  <!-- ✅ Add inside .upload-box (after turnover section) -->
+
+<label class="upload-label">
+  <div>NBCOS Data</div>
+  <div class="uploader" id="by-nbcos">Uploaded by: –</div>
+  <div class="timestamp" id="ts-nbcos">–</div>
+</label>
+<input type="file" id="nbcosFile" accept=".xlsx" onchange="showPreview('nbcosFile', 'nbcosPreview')" />
+<div class="file-info" id="nbcosPreview"></div>
+<div class="progress-container"><div class="progress-bar" id="nbcosProgress"></div></div>
 
 <div class="log-box" id="uploadLog"></div>
 <div id="overlay"><span>Uploading... Please wait</span></div>
 
 
-<script>
+
+ <script>
 const token = sessionStorage.getItem('token');
 
-// ✅ Check token existence
-if (!token) {
-  alert("❌ Unauthorized access. Please login again.");
-  window.location.href = "login.html";
-}
-
-// ✅ Check token expiration
-function isTokenExpired(token) {
-  if (!token) return true;
-  try {
-    const payload = JSON.parse(atob(token.split('.')[1]));
-    return Date.now() >= payload.exp * 1000;
-  } catch (e) {
-    return true;
-  }
-}
-
-if (isTokenExpired(token)) {
-  alert("⚠️ Session expired. Please login again.");
-  window.location.href = "login.html";
-}
-
-function showPreview(fileInputId, previewId) {
-  const file = document.getElementById(fileInputId).files[0];
-  const preview = document.getElementById(previewId);
-  if (file && file.name.endsWith(".xlsx")) {
-    preview.textContent = `${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
-  } else {
-    preview.textContent = 'Invalid file type. Must be .xlsx';
-    document.getElementById(fileInputId).value = '';
-  }
-}
-
-function logMessage(msg) {
-  const log = document.getElementById('uploadLog');
-  const entry = document.createElement('div');
-  entry.className = 'log-entry';
-  entry.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
-  log.appendChild(entry);
-  log.scrollTop = log.scrollHeight;
-}
-
-async function loadTimestamps() {
-  try {
-    const res = await fetch("https://secure-backend-tzj9.onrender.com/api/admin/upload-timestamps", {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    });
-    const data = await res.json();
-    ['user', 'customer', 'turnover'].forEach(label => {
-      const date = data[label];
-      const fullname = data[`${label}Fullname`] || "–";
-      const dateBox = document.getElementById('ts-' + label);
-      const nameBox = document.getElementById('by-' + label);
-      if (dateBox) dateBox.textContent = date ? new Date(date).toLocaleString() : "–";
-      if (nameBox) nameBox.textContent = `Uploaded by: ${fullname}`;
-    });
-  } catch (err) {
-    console.warn("❌ Failed to load timestamps:", err);
-  }
-}
-
-async function uploadSingleFile(file, label, progressBarId) {
-  const progressBar = document.getElementById(progressBarId);
-  const formData = new FormData();
-  const fullname = sessionStorage.getItem("fullname") || "Unknown";
-
-  formData.append(label, file);
-  formData.append("fullname", fullname);
-
-  return new Promise((resolve, reject) => {
-    const xhr = new XMLHttpRequest();
-    xhr.open("POST", "https://secure-backend-tzj9.onrender.com/api/admin/upload");
-    xhr.setRequestHeader("Authorization", `Bearer ${token}`);
-
-    xhr.upload.onprogress = (event) => {
-      if (event.lengthComputable) {
-        const percent = (event.loaded / event.total) * 100;
-        progressBar.style.width = `${percent.toFixed(0)}%`;
-      }
-    };
-
-    xhr.onload = () => {
-      if (xhr.status === 200) {
-        progressBar.style.width = `100%`;
-        logMessage(`✅ ${label} upload complete.`);
-        resolve();
-      } else {
-        logMessage(`❌ Failed to upload ${label}`);
-        reject();
-      }
-    };
-
-    xhr.onerror = () => {
-      logMessage(`❌ Network error during ${label} upload`);
-<script>
-const token = sessionStorage.getItem('token');
-
-// Check login
 if (!token || isTokenExpired(token)) {
   alert("⚠️ Session expired. Please login again.");
   window.location.href = "login.html";
