@@ -221,7 +221,30 @@ function showPreview(fileInputId, previewId) {
     const extension = file.name.split('.').pop();
     const baseName = file.name.substring(0, file.name.lastIndexOf('.'));
     const sizeKB = (file.size / 1024).toFixed(1);
-    preview.textContent = `${baseName}.${extension} (${sizeKB} KB)`;
+
+    // Special check for NBCOS
+    if (fileInputId === "nbcosFile") {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, { type: 'array' });
+        const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+        const firstCell = firstSheet["A1"] ? firstSheet["A1"].v : "";
+
+        if (firstCell.trim() !== "LD_CIF_OS") {
+          alert("❌ Wrong file format for NBCOS! First header must be 'LD_CIF_OS'.");
+          fileInput.value = "";
+          preview.textContent = "";
+        } else {
+          preview.textContent = `${baseName}.${extension} (${sizeKB} KB)`;
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    } else {
+      // Normal preview for other files
+      preview.textContent = `${baseName}.${extension} (${sizeKB} KB)`;
+    }
+
   } else {
     preview.textContent = '';
     fileInput.value = '';
