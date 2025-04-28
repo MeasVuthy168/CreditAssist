@@ -224,17 +224,24 @@ function showPreview(fileInputId, previewId) {
     const baseName = file.name.substring(0, file.name.lastIndexOf('.'));
     const sizeKB = (file.size / 1024).toFixed(1);
 
-    // Special check for NBCOS
-    if (fileInputId === "nbcosFile") {
+    // Define expected header for each file
+    const expectedFirstHeaders = {
+      userFile: "username",
+      customerFile: "CIF",
+      turnoverFile: "MONTH",
+      nbcosFile: "LD_CIF_OS"
+    };
+
+    if (expectedFirstHeaders[fileInputId]) {
       const reader = new FileReader();
       reader.onload = (e) => {
         const data = new Uint8Array(e.target.result);
         const workbook = XLSX.read(data, { type: 'array' });
         const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-        const firstCell = firstSheet["A1"] ? firstSheet["A1"].v : "";
+        const firstCell = firstSheet["A1"] ? String(firstSheet["A1"].v).trim() : "";
 
-        if (firstCell.trim() !== "LD_CIF_OS") {
-          alert("❌ Wrong file format for NBCOS! First header must be 'LD_CIF_OS'.");
+        if (firstCell !== expectedFirstHeaders[fileInputId]) {
+          alert(`❌ Wrong file format! First column must be '${expectedFirstHeaders[fileInputId]}'.`);
           fileInput.value = "";
           preview.textContent = "";
         } else {
@@ -243,7 +250,7 @@ function showPreview(fileInputId, previewId) {
       };
       reader.readAsArrayBuffer(file);
     } else {
-      // Normal preview for other files
+      // No special header check
       preview.textContent = `${baseName}.${extension} (${sizeKB} KB)`;
     }
 
@@ -253,7 +260,7 @@ function showPreview(fileInputId, previewId) {
     alert('❌ Invalid file type. Please upload .xlsx file only.');
   }
 }
-
+  
 function logMessage(msg) {
   const log = document.getElementById('uploadLog');
   const entry = document.createElement('div');
