@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin Data Upload</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <meta name="theme-color" content="#0d2d5c" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Krasar', Arial, sans-serif;
+      background: #1c2331;
+      padding-top: 60px;
+    }
+    .header {
+      background-color: #0d2d5c;
+      color: white;
+      font-size: 18px;
+      font-weight: bold;
+      padding: 16px;
+      text-align: center;
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      z-index: 999;
+    }
+    .close-btn {
+      position: absolute;
+      top: 12px;
+      right: 16px;
+      background: transparent;
+      border: none;
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+    }
+    .admin-box, .upload-box, .log-box {
+      background: white;
+      padding: 20px 10px;
+      border-radius: 12px;
+      max-width: 500px;
+      margin: 10px auto;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .admin-title {
+      text-align: center;
+      font-weight: bold;
+      color: #0d2d5c;
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+    .admin-textarea {
+      width: 100%;
+      height: 90px;
+      font-family: 'Krasar', Arial, sans-serif;
+      padding: 8px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      resize: none;
+      margin-top: 6px;
+      box-sizing: border-box;
+      background: #f1f1f1;
+    }
+    .admin-btn, .upload-btn {
+      margin-top: 12px;
+      width: 100%;
+      padding: 12px;
+      background: #0d2d5c;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .admin-btn:hover, .upload-btn:hover {
+      background: #09306d;
+    }
+    .upload-box-title {
+      text-align: center;
+      font-size: 17px;
+      font-weight: bold;
+      color: #0d2d5c;
+      margin-bottom: 10px;
+    }
+    .upload-label {
+      margin-top: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      color: #0d2d5c;
+      font-weight: bold;
+    }
+    .uploader, .timestamp {
+      font-size: 13px;
+      color: #555;
+      margin-bottom: 2px;
+    }
+    input[type="file"] {
+      width: 100%;
+    }
+    .file-info {
+      font-size: 14px;
+      margin-bottom: 8px;
+      color: #333;
+    }
+    .progress-container {
+      height: 10px;
+      background: #ddd;
+      border-radius: 5px;
+      margin: 4px 0 16px;
+    }
+    .progress-bar {
+      height: 100%;
+      width: 0;
+      background: #0d2d5c;
+      border-radius: 5px;
+      transition: width 0.3s ease;
+    }
+    #overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+    }
+    #overlay span {
+      background: white;
+      padding: 16px 32px;
+      border-radius: 10px;
+      color: #0d2d5c;
+      font-weight: bold;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    }
+  </style>
+</head>
+
+<body>
+<div class="header">
+  ADMIN MODE
+  <button class="close-btn" onclick="window.location.href='index.html'">&times;</button>
+</div>
+
+<div class="admin-box" id="admin-input" style="display:none;">
+  <label class="admin-title">✍️ Post Robot Message</label>
+  <textarea id="newMessage" placeholder="សរសេរសារថ្មី..." class="admin-textarea"></textarea>
+  <button class="admin-btn" onclick="postRobotMessage()">📤 Upload to Backend</button>
+</div>
+
+<div class="upload-box">
+  <div class="upload-box-title">📄 Upload Excel Files (.xlsx)</div>
+
+  <label class="upload-label">
+    <div>User Data</div>
+    <div class="uploader" id="by-user">Uploaded by: –</div>
+    <div class="timestamp" id="ts-user">–</div>
+  </label>
+  <input type="file" id="userFile" accept=".xlsx" onchange="showPreview('userFile', 'userPreview')" />
+  <div class="file-info" id="userPreview"></div>
+  <div class="progress-container"><div class="progress-bar" id="userProgress"></div></div>
+
+  <label class="upload-label">
+    <div>Customer Data</div>
+    <div class="uploader" id="by-customer">Uploaded by: –</div>
+    <div class="timestamp" id="ts-customer">–</div>
+  </label>
+  <input type="file" id="customerFile" accept=".xlsx" onchange="showPreview('customerFile', 'customerPreview')" />
+  <div class="file-info" id="customerPreview"></div>
+  <div class="progress-container"><div class="progress-bar" id="customerProgress"></div></div>
+
+  <label class="upload-label">
+    <div>Turnover Data</div>
+    <div class="uploader" id="by-turnover">Uploaded by: –</div>
+    <div class="timestamp" id="ts-turnover">–</div>
+  </label>
+  <input type="file" id="turnoverFile" accept=".xlsx" onchange="showPreview('turnoverFile', 'turnoverPreview')" />
+  <div class="file-info" id="turnoverPreview"></div>
+  <div class="progress-container"><div class="progress-bar" id="turnoverProgress"></div></div>
+
+  <label class="upload-label">
+    <div>NBCOS Data</div>
+    <div class="uploader" id="by-nbcos">Uploaded by: –</div>
+    <div class="timestamp" id="ts-nbcos">–</div>
+  </label>
+  <input type="file" id="nbcosFile" accept=".xlsx" onchange="showPreview('nbcosFile', 'nbcosPreview')" />
+  <div class="file-info" id="nbcosPreview"></div>
+  <div class="progress-container"><div class="progress-bar" id="nbcosProgress"></div></div>
+
+  <button class="upload-btn" onclick="uploadFiles()">📤 Upload to MongoDB</button>
+</div>
+
+<div class="log-box" id="uploadLog"></div>
+<div id="overlay"><span>Uploading... Please wait</span></div>
+<script>
+const token = sessionStorage.getItem('token');
+
+if (!token || isTokenExpired(token)) {
+  alert("⚠️ Session expired. Please login again.");
+  window.location.href = "login.html";
+}
+
+function isTokenExpired(token) {
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    return Date.now() >= payload.exp * 1000;
+  } catch (e) {
+    return true;
+  }
+}
+
+function showPreview(fileInputId, previewId) {
+  const fileInput = document.getElementById(fileInputId);
+  const preview = document.getElementById(previewId);
+  const file = fileInput.files[0];
+
+  if (file && file.name.endsWith(".xlsx")) {
+    const extension = file.name.split('.').pop();
+    const baseName = file.name.substring(0, file.name.lastIndexOf('.'));
+    const sizeKB = (file.size / 1024).toFixed(1);
+    preview.textContent = `${baseName}.${extension} (${sizeKB} KB)`;
+  } else {
+    preview.textContent = '';
+    fileInput.value = '';
+    alert('❌ Invalid file type. Please upload .xlsx file only.');
+  }
+}
+
+function logMessage(msg) {
+  const log = document.getElementById('uploadLog');
+  const entry = document.createElement('div');
+  entry.className = 'log-entry';
+  entry.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+  log.appendChild(entry);
+  log.scrollTop = log.scrollHeight;
+}
+
+async function loadTimestamps() {
+  try {
+    const res = await fetch("https://secure-backend-tzj9.onrender.com/api/admin/upload-timestamps", {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const data = await res.json();
+    ['user', 'customer', 'turnover', 'nbcos'].forEach(label => {
+      const date = data[label];
+      const fullname = data[`${label}Fullname`] || "–";
+      const dateBox = document.getElementById('ts-' + label);
+      const nameBox = document.getElementById('by-' + label);
+      if (dateBox) dateBox.textContent = date ? new Date(date).toLocaleString() : "–";
+      if (nameBox) nameBox.textContent = `Uploaded by: ${fullname}`;
+    });
+  } catch (err) {
+    console.warn("❌ Failed to load timestamps:", err);
+  }
+}
+
+async function uploadSingleFile(file, label, progressBarId, fileInputId, previewId) {
+  const progressBar = document.getElementById(progressBarId);
+  const preview = document.getElementById(previewId);
+  const fileInput = document.getElementById(fileInputId);
+
+  const formData = new FormData();
+  const fullname = sessionStorage.getItem("fullname") || "Unknown";
+
+  formData.append(label, file);
+  formData.append("fullname", fullname);
+
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", "https://secure-backend-tzj9.onrender.com/api/admin/upload");
+    xhr.setRequestHeader("Authorization", `Bearer ${token}`);
+
+    xhr.upload.onprogress = (event) => {
+      if (event.lengthComputable) {
+        const percent = (event.loaded / event.total) * 100;
+        progressBar.style.width = `${percent.toFixed(0)}%`;
+        preview.textContent = `Uploading ${percent.toFixed(0)}%...`;
+      }
+    };
+
+    xhr.onload = () => {
+      if (xhr.status === 200) {
+        progressBar.style.width = `100%`;
+        const extension = file.name.split('.').pop();
+        const baseName = file.name.substring(0, file.name.lastIndexOf('.'));
+        const sizeKB = (file.size / 1024).toFixed(1);
+        preview.textContent = `${baseName}.${extension} (${sizeKB} KB)`;
+        logMessage(`✅ ${label} upload complete.`);
+        resolve();
+      } else {
+        resetFile(fileInputId, previewId, progressBarId);
+        logMessage(`❌ Failed to upload ${label}`);
+        reject();
+      }
+    };
+
+    xhr.onerror = () => {
+      resetFile(fileInputId, previewId, progressBarId);
+      logMessage(`❌ Network error during ${label} upload`);
+      reject();
+    };
+
+    xhr.send(formData);
+  });
+}
+
+function resetFile(fileInputId, previewId, progressBarId) {
+  document.getElementById(fileInputId).value = "";
+  document.getElementById(previewId).textContent = "";
+  document.getElementById(progressBarId).style.width = "0%";
+}
+
+async function uploadFiles() {
+  const user = document.getElementById('userFile').files[0];
+  const customer = document.getElementById('customerFile').files[0];
+  const turnover = document.getElementById('turnoverFile').files[0];
+  const nbcos = document.getElementById('nbcosFile').files[0];
+
+  if (!user && !customer && !turnover && !nbcos) {
+    alert("Please choose at least one file to upload.");
+    return;
+  }
+
+  document.getElementById("overlay").style.display = "flex";
+
+  try {
+    if (user) await uploadSingleFile(user, "user", "userProgress", "userFile", "userPreview");
+    if (customer) await uploadSingleFile(customer, "customer", "customerProgress", "customerFile", "customerPreview");
+    if (turnover) await uploadSingleFile(turnover, "turnover", "turnoverProgress", "turnoverFile", "turnoverPreview");
+    if (nbcos) await uploadSingleFile(nbcos, "nbcos", "nbcosProgress", "nbcosFile", "nbcosPreview");
+
+    logMessage("✅ All uploads completed.");
+    alert("✅ All files uploaded successfully.");
+
+    await loadTimestamps();
+  } catch (err) {
+    alert("❌ Some uploads failed. Check logs.");
+  }
+
+  document.getElementById("overlay").style.display = "none";
+}
+
+async function loadRobotMessage(userPosition) {
+  try {
+    const res = await fetch("https://secure-backend-tzj9.onrender.com/api/robot-message", {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const data = await res.json();
+    if (userPosition === "admin") {
+      document.getElementById("admin-input").style.display = "block";
+      document.getElementById("newMessage").value = data.message;
+    }
+  } catch (err) {
+    console.warn("❌ Failed to fetch robot message:", err);
+  }
+}
+
+async function postRobotMessage() {
+  const msg = document.getElementById("newMessage").value.trim();
+  if (!msg) return;
+
+  try {
+    const res = await fetch("https://secure-backend-tzj9.onrender.com/api/robot-message", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({ message: msg })
+    });
+
+    if (res.ok) {
+      alert("✅ Message posted & synced.");
+      loadRobotMessage("admin");
+    } else {
+      alert("⚠️ Message saved, but GitHub sync failed.");
+    }
+  } catch (err) {
+    alert("❌ Error: " + err.message);
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const userPosition = sessionStorage.getItem("userPosition") || "user";
+  loadRobotMessage(userPosition);
+  loadTimestamps();
+});
+<script>
+</body>
+</html>
