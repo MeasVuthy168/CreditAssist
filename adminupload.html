@@ -248,18 +248,19 @@ async function loadTimestamps() {
   }
 }
 
-async function uploadBlob(blob, label, progressBarId, partNumber) {
+async function uploadBlob(fileObj, label, progressBarId, partNumber) {
   const progressBar = document.getElementById(progressBarId);
   const formData = new FormData();
   const fullname = sessionStorage.getItem("fullname") || "Unknown";
-  formData.append(label, blob, `${label}_part${partNumber || 1}.xlsx`);
+
+  formData.append(label, fileObj, fileObj.name);
   formData.append("fullname", fullname);
 
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
     xhr.open("POST", "https://secure-backend-tzj9.onrender.com/api/admin/upload");
     xhr.setRequestHeader("Authorization", `Bearer ${token}`);
-
+    
     xhr.upload.onprogress = (e) => {
       if (e.lengthComputable) {
         const percent = (e.loaded / e.total) * 100;
@@ -270,16 +271,16 @@ async function uploadBlob(blob, label, progressBarId, partNumber) {
     xhr.onload = () => {
       if (xhr.status === 200) {
         progressBar.style.width = `100%`;
-        logMessage(`✅ ${label}${partNumber ? ` part ${partNumber}` : ''} upload complete.`);
+        logMessage(`✅ ${label} ${partNumber ? `part ${partNumber}` : ''} upload complete.`);
         resolve();
       } else {
-        logMessage(`❌ Failed to upload ${label}${partNumber ? ` part ${partNumber}` : ''}`);
+        logMessage(`❌ Failed to upload ${label} ${partNumber ? `part ${partNumber}` : ''}`);
         reject();
       }
     };
 
     xhr.onerror = () => {
-      logMessage(`❌ Network error during ${label}${partNumber ? ` part ${partNumber}` : ''} upload`);
+      logMessage(`❌ Network error during ${label} ${partNumber ? `part ${partNumber}` : ''} upload`);
       reject();
     };
 
@@ -310,9 +311,13 @@ async function uploadFileWithSplit(file, label, progressBarId) {
 
             const blob = XLSX.write(partWorkbook, { bookType: "xlsx", type: "blob" });
 
-            await uploadBlob(blob, label, progressBarId, i + 1);
+            // ✅ Create real file object
+            const partFile = new File([blob], `${label}_part${i+1}.xlsx`, { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+
+            await uploadBlob(partFile, label, progressBarId, i+1);
           }
         } else {
+          // small file, no split
           await uploadBlob(file, label, progressBarId, null);
         }
         resolve();
@@ -333,7 +338,7 @@ async function uploadFiles() {
   const nbcos = document.getElementById('nbcosFile').files[0];
 
   if (!user && !customer && !turnover && !nbcos) {
-    alert("⚠️ Please select at least one file to upload.");
+    alert("Please choose at least one file to upload.");
     return;
   }
 
@@ -346,7 +351,7 @@ async function uploadFiles() {
     if (nbcos) await uploadFileWithSplit(nbcos, "nbcos", "nbcosProgress");
 
     logMessage("✅ All uploads completed.");
-    alert("✅ All files uploaded successfully!");
+    alert("✅ All files uploaded successfully.");
 
     ['user', 'customer', 'turnover', 'nbcos'].forEach(id => {
       document.getElementById(id + 'File').value = "";
@@ -361,7 +366,7 @@ async function uploadFiles() {
   document.getElementById("overlay").style.display = "none";
 }
 
-// Robot message functions
+// Robot message
 async function loadRobotMessage(userPosition) {
   try {
     const res = await fetch("https://secure-backend-tzj9.onrender.com/api/robot-message", {
