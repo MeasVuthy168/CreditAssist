@@ -5,12 +5,6 @@
   <title>ការគណនាចំនួនខែចូលនិវត្តន៍</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="theme-color" content="#0d2d5c" />
-
-  <script>
-  if (!sessionStorage.getItem("loggedInUser")) {
-    window.location.href = "login.html";
-  }
-</script>
   
   <style>
     @font-face {
@@ -182,29 +176,6 @@
       }
     }
   </style>
-
-  <script>
-    const user = sessionStorage.getItem("loggedInUser");
-    if (!user) {
-      window.location.href = "https://measvuthy168.github.io/CreditAssist/login.html";
-    }
-
-    const AUTO_LOGOUT_MINUTES = 1;
-    let logoutTimer;
-    function resetLogoutTimer() {
-      clearTimeout(logoutTimer);
-      logoutTimer = setTimeout(() => {
-        sessionStorage.removeItem("loggedInUser");
-        alert("Session expired due to inactivity. Please log in again.");
-        window.location.href = "https://measvuthy168.github.io/CreditAssist/login.html";
-      }, AUTO_LOGOUT_MINUTES * 60 * 1000);
-    }
-
-    window.onload = resetLogoutTimer;
-    document.onmousemove = resetLogoutTimer;
-    document.onkeydown = resetLogoutTimer;
-    document.onclick = resetLogoutTimer;
-  </script>
 </head>
 <body>
 
@@ -257,54 +228,81 @@
   </button>
 </div>
   <script>
-    function setMaxDateToToday() {
-      const today = new Date();
-      const year = today.getFullYear();
-      const month = String(today.getMonth() + 1).padStart(2, '0');
-      const day = String(today.getDate()).padStart(2, '0');
-      const maxDate = `${year}-${month}-${day}`;
-      document.getElementById("dob").setAttribute("max", maxDate);
-      document.getElementById("currentDate").setAttribute("max", maxDate);
-      document.getElementById("currentDate").value = maxDate;
-    }
+// ✅ Protect Page by Token
+const token = sessionStorage.getItem('token');
+if (!token) {
+  alert("Session expired or unauthorized access.");
+  window.location.href = "../login.html";
+}
 
-    function calculateMonthsLeft() {
-      const dobInput = document.getElementById("dob").value;
-      const retirementAge = parseInt(document.getElementById("retirementAge").value);
-      const currentDateInput = document.getElementById("currentDate").value;
-      const monthsLeftCell = document.getElementById("monthsLeft");
-      const description = document.getElementById("description");
+// ✅ Auto Logout Setup
+const AUTO_LOGOUT_MINUTES = 1;
+let logoutTimer;
+function resetLogoutTimer() {
+  clearTimeout(logoutTimer);
+  logoutTimer = setTimeout(() => {
+    sessionStorage.clear();
+    alert("Session expired due to inactivity. Please log in again.");
+    window.location.href = "../login.html";
+  }, AUTO_LOGOUT_MINUTES * 60 * 1000);
+}
+function setupAutoLogoutEvents() {
+  ['mousemove', 'mousedown', 'keydown', 'touchstart', 'touchmove', 'scroll'].forEach(event => {
+    document.addEventListener(event, resetLogoutTimer, true);
+  });
+  resetLogoutTimer();
+}
+window.addEventListener('load', setupAutoLogoutEvents);
 
-      const dob = new Date(dobInput);
-      const currentDate = new Date(currentDateInput);
-      const retirementDate = new Date(dob);
-      retirementDate.setFullYear(dob.getFullYear() + retirementAge);
+// ✅ Your Original Retirement Calculation Scripts Start Here
+function setMaxDateToToday() {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, '0');
+  const day = String(today.getDate()).padStart(2, '0');
+  const maxDate = `${year}-${month}-${day}`;
+  document.getElementById("dob").setAttribute("max", maxDate);
+  document.getElementById("currentDate").setAttribute("max", maxDate);
+  document.getElementById("currentDate").value = maxDate;
+}
 
-      let totalMonths = (retirementDate.getFullYear() - currentDate.getFullYear()) * 12 + (retirementDate.getMonth() - currentDate.getMonth());
-      if (currentDate.getDate() > retirementDate.getDate()) totalMonths--;
+function calculateMonthsLeft() {
+  const dobInput = document.getElementById("dob").value;
+  const retirementAge = parseInt(document.getElementById("retirementAge").value);
+  const currentDateInput = document.getElementById("currentDate").value;
+  const monthsLeftCell = document.getElementById("monthsLeft");
+  const description = document.getElementById("description");
 
-      if (totalMonths < 0) {
-        monthsLeftCell.textContent = "បានចូលនិវត្តន៍រួចហើយ";
-        description.textContent = "បានចូលនិវត្តន៍រួចហើយ";
-      } else {
-        monthsLeftCell.textContent = totalMonths + " ខែ";
-        const years = Math.floor(totalMonths / 12);
-        const months = totalMonths % 12;
-        const days = Math.max(0, retirementDate.getDate() - currentDate.getDate());
+  const dob = new Date(dobInput);
+  const currentDate = new Date(currentDateInput);
+  const retirementDate = new Date(dob);
+  retirementDate.setFullYear(dob.getFullYear() + retirementAge);
 
-        description.innerHTML = `នៅសល់ <span class="highlight">${years.toString().padStart(2, '0')}</span> ឆ្នាំ 
-          <span class="highlight">${months.toString().padStart(2, '0')}</span> ខែ 
-          និង <span class="highlight">${days.toString().padStart(2, '0')}</span> ថ្ងៃទៀត`;
-      }
-    }
+  let totalMonths = (retirementDate.getFullYear() - currentDate.getFullYear()) * 12 + (retirementDate.getMonth() - currentDate.getMonth());
+  if (currentDate.getDate() > retirementDate.getDate()) totalMonths--;
 
-    document.addEventListener("DOMContentLoaded", () => {
-      setMaxDateToToday();
-      calculateMonthsLeft();
-      document.getElementById("dob").addEventListener("change", calculateMonthsLeft);
-      document.getElementById("retirementAge").addEventListener("change", calculateMonthsLeft);
-      document.getElementById("currentDate").addEventListener("change", calculateMonthsLeft);
-    });
-  </script>
+  if (totalMonths < 0) {
+    monthsLeftCell.textContent = "បានចូលនិវត្តន៍រួចហើយ";
+    description.textContent = "បានចូលនិវត្តន៍រួចហើយ";
+  } else {
+    monthsLeftCell.textContent = totalMonths + " ខែ";
+    const years = Math.floor(totalMonths / 12);
+    const months = totalMonths % 12;
+    const days = Math.max(0, retirementDate.getDate() - currentDate.getDate());
+
+    description.innerHTML = `នៅសល់ <span class="highlight">${years.toString().padStart(2, '0')}</span> ឆ្នាំ 
+      <span class="highlight">${months.toString().padStart(2, '0')}</span> ខែ 
+      និង <span class="highlight">${days.toString().padStart(2, '0')}</span> ថ្ងៃទៀត`;
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  setMaxDateToToday();
+  calculateMonthsLeft();
+  document.getElementById("dob").addEventListener("change", calculateMonthsLeft);
+  document.getElementById("retirementAge").addEventListener("change", calculateMonthsLeft);
+  document.getElementById("currentDate").addEventListener("change", calculateMonthsLeft);
+});
+</script>
 </body>
 </html>
