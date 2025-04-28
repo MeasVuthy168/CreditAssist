@@ -281,16 +281,19 @@
   <!-- ✅ Spinner container -->
   <div id="loadingSpinnerWrapper"><div class="spinner"></div></div>
 
-  <!-- ✅ Protect script: Check Token + Auto Logout -->
+  <!-- ✅ Protect and Full Script Section -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
 <script>
-// ✅ Check Token
+// ✅ Check Token First
 const token = sessionStorage.getItem('token');
 if (!token) {
   alert("Session expired or unauthorized access.");
-  window.location.href = "../login.html"; // ✅ go to parent folder login
+  window.location.href = "../login.html";
 }
 
-// ✅ Auto Logout Timer
+// ✅ Auto Logout Setup
 const AUTO_LOGOUT_MINUTES = 1;
 let logoutTimer;
 function resetLogoutTimer() {
@@ -301,214 +304,190 @@ function resetLogoutTimer() {
     window.location.href = "../login.html";
   }, AUTO_LOGOUT_MINUTES * 60 * 1000);
 }
-
-// ✅ Attach event reset on action
 function setupAutoLogoutEvents() {
   ['mousemove', 'mousedown', 'keydown', 'touchstart', 'touchmove', 'scroll'].forEach(event => {
     document.addEventListener(event, resetLogoutTimer, true);
   });
-  resetLogoutTimer(); // Start countdown now
+  resetLogoutTimer();
 }
 window.addEventListener('load', setupAutoLogoutEvents);
-</script>
 
-<!-- ✅ Your original script start here (not changed) -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+// ✅ Your Original Scripts Start Here
+let combinedData = [];
+let monthList = [];
 
-<script>
-  let combinedData = [];
-  let monthList = [];
-
-  function getLast12MonthEnds(baseDate) { /* ... your original code ... */ }
-  function updateTableWithEmptyMonths(months) { /* ... your original code ... */ }
-  async function loadAllData() { /* ... your original code ... */ }
-  async function fetchAndFillData(cif) { /* ... your original code ... */ }
-
-  document.getElementById('prepared-date').addEventListener('change', async (e) => { /* ... */ });
-  document.getElementById('input-cif').addEventListener('change', async (e) => { /* ... */ });
-
-  function exportToExcel() { /* ... your original code ... */ }
-  function printPage() { /* ... your original code ... */ }
-</script>
-  
-  <script>
-  let combinedData = [];
-  let monthList = [];
-
-  function getLast12MonthEnds(baseDate) {
-    const months = [];
-    const date = new Date(baseDate);
-    date.setDate(1);
-    for (let i = 0; i < 12; i++) {
-      date.setMonth(date.getMonth() - 1);
-      const endOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0);
-      const dd = String(endOfMonth.getDate()).padStart(2, '0');
-      const mm = String(endOfMonth.getMonth() + 1).padStart(2, '0');
-      const yy = String(endOfMonth.getFullYear()).slice(-2);
-      months.push(`${dd}-${mm}-${yy}`);
-    }
-    return months;
+function getLast12MonthEnds(baseDate) {
+  const months = [];
+  const date = new Date(baseDate);
+  date.setDate(1);
+  for (let i = 0; i < 12; i++) {
+    date.setMonth(date.getMonth() - 1);
+    const endOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+    const dd = String(endOfMonth.getDate()).padStart(2, '0');
+    const mm = String(endOfMonth.getMonth() + 1).padStart(2, '0');
+    const yy = String(endOfMonth.getFullYear()).slice(-2);
+    months.push(`${dd}-${mm}-${yy}`);
   }
+  return months;
+}
 
-  function updateTableWithEmptyMonths(months) {
-    const tbody = document.getElementById('data-body');
-    tbody.innerHTML = '';
-    months.forEach(month => {
-      const row = document.createElement('tr');
-      row.innerHTML = `<td>${month}</td><td></td><td></td><td></td><td></td>`;
-      tbody.appendChild(row);
-    });
+function updateTableWithEmptyMonths(months) {
+  const tbody = document.getElementById('data-body');
+  tbody.innerHTML = '';
+  months.forEach(month => {
+    const row = document.createElement('tr');
+    row.innerHTML = `<td>${month}</td><td></td><td></td><td></td><td></td>`;
+    tbody.appendChild(row);
+  });
+}
+
+async function loadAllData() {
+  try {
+    const res = await fetch("https://secure-backend-tzj9.onrender.com/api/turnover");
+    combinedData = await res.json();
+  } catch {
+    alert("បញ្ហាភ្ជាប់ម៉ាស៊ីនមេ");
   }
+}
 
-  async function loadAllData() {
-    try {
-      const res = await fetch("https://secure-backend-tzj9.onrender.com/api/turnover");
-      combinedData = await res.json();
-    } catch {
-      alert("បញ្ហាភ្ជាប់ម៉ាស៊ីនមេ");
-    }
-  }
+async function fetchAndFillData(cif) {
+  let totalAmtIn = 0, totalOd = 0, totalRate = 0, count = 0;
+  const tbody = document.getElementById('data-body');
+  const getDate = d => new Date(d.split('-').reverse().join('-'));
 
-  async function fetchAndFillData(cif) {
-    let totalAmtIn = 0, totalOd = 0, totalRate = 0, count = 0;
-    const tbody = document.getElementById('data-body');
-    const getDate = d => new Date(d.split('-').reverse().join('-'));
+  const latestEff = combinedData.filter(d => d.CUSTOMER === cif && d.Effective_Date)
+    .map(d => getDate(d.Effective_Date)).sort((a,b) => b - a)[0];
 
-    const latestEff = combinedData.filter(d => d.CUSTOMER === cif && d.Effective_Date)
-      .map(d => getDate(d.Effective_Date)).sort((a,b) => b - a)[0];
+  const oldestEff = combinedData.filter(d => d.CUSTOMER === cif && d.Effective_Date)
+    .map(d => getDate(d.Effective_Date)).sort((a,b) => a - b)[0];
 
-    const oldestEff = combinedData.filter(d => d.CUSTOMER === cif && d.Effective_Date)
-      .map(d => getDate(d.Effective_Date)).sort((a,b) => a - b)[0];
+  [...tbody.rows].forEach(row => {
+    const month = row.cells[0].innerText;
+    const match = combinedData.find(d => d.CUSTOMER === cif && d.MONTH.includes(month.slice(3)));
 
-    [...tbody.rows].forEach(row => {
-      const month = row.cells[0].innerText;
-      const match = combinedData.find(d => d.CUSTOMER === cif && d.MONTH.includes(month.slice(3)));
+    if (match) {
+      row.cells[1].innerText = parseFloat(match.AMT_IN).toLocaleString();
+      row.cells[2].innerText = parseFloat(match.CURRENT_OD).toLocaleString();
+      row.cells[3].innerText = match.TURNOVER_RATE + '%';
+      row.cells[4].innerText = match.Effective_Date;
 
-      if (match) {
-        row.cells[1].innerText = parseFloat(match.AMT_IN).toLocaleString();
-        row.cells[2].innerText = parseFloat(match.CURRENT_OD).toLocaleString();
-        row.cells[3].innerText = match.TURNOVER_RATE + '%';
-        row.cells[4].innerText = match.Effective_Date;
+      totalAmtIn += parseFloat(match.AMT_IN);
+      totalOd += parseFloat(match.CURRENT_OD);
+      totalRate += parseFloat(match.TURNOVER_RATE);
+      count++;
 
-        totalAmtIn += parseFloat(match.AMT_IN);
-        totalOd += parseFloat(match.CURRENT_OD);
-        totalRate += parseFloat(match.TURNOVER_RATE);
-        count++;
-
-        if (match.Effective_Date === latestEff.toLocaleDateString('en-GB')) row.classList.add('newest');
-        if (match.Effective_Date === oldestEff.toLocaleDateString('en-GB')) row.classList.add('oldest');
-      } else {
-        row.classList.add("not-found");
-        row.cells[1].innerText = row.cells[2].innerText = row.cells[3].innerText = row.cells[4].innerText = 'No Data';
-      }
-    });
-
-    document.getElementById('avg-amt-in').innerText = totalAmtIn.toLocaleString(undefined, { maximumFractionDigits: 2 });
-    document.getElementById('avg-current-od').innerText = totalOd.toLocaleString(undefined, { maximumFractionDigits: 2 });
-    document.getElementById('avg-turnover-rate').innerText = count ? (totalRate / count).toFixed(2) + '%' : '';
-  }
-
-  document.getElementById('prepared-date').addEventListener('change', async (e) => {
-    const selectedDate = e.target.value;
-    if (selectedDate) {
-      monthList = getLast12MonthEnds(selectedDate);
-      updateTableWithEmptyMonths(monthList);
-      document.getElementById('input-cif').value = '';
-      document.getElementById('customer-name-label').textContent = '-';
-      await loadAllData();
+      if (match.Effective_Date === latestEff.toLocaleDateString('en-GB')) row.classList.add('newest');
+      if (match.Effective_Date === oldestEff.toLocaleDateString('en-GB')) row.classList.add('oldest');
+    } else {
+      row.classList.add("not-found");
+      row.cells[1].innerText = row.cells[2].innerText = row.cells[3].innerText = row.cells[4].innerText = 'No Data';
     }
   });
 
-  // ✅ Spinner while fetching CIF data
-  document.getElementById('input-cif').addEventListener('change', async (e) => {
-    const cif = e.target.value.trim();
-    if (!cif) return;
+  document.getElementById('avg-amt-in').innerText = totalAmtIn.toLocaleString(undefined, { maximumFractionDigits: 2 });
+  document.getElementById('avg-current-od').innerText = totalOd.toLocaleString(undefined, { maximumFractionDigits: 2 });
+  document.getElementById('avg-turnover-rate').innerText = count ? (totalRate / count).toFixed(2) + '%' : '';
+}
 
-    const spinner = document.getElementById('loadingSpinnerWrapper');
-    spinner.style.display = 'block';
+document.getElementById('prepared-date').addEventListener('change', async (e) => {
+  const selectedDate = e.target.value;
+  if (selectedDate) {
+    monthList = getLast12MonthEnds(selectedDate);
+    updateTableWithEmptyMonths(monthList);
+    document.getElementById('input-cif').value = '';
+    document.getElementById('customer-name-label').textContent = '-';
+    await loadAllData();
+  }
+});
 
-    try {
-      if (!combinedData.length) await loadAllData();
-      const found = combinedData.find(d => d.CUSTOMER === cif);
-      document.getElementById('customer-name-label').textContent = found ? found["Name(Eng)"] : 'Not Found';
-      await fetchAndFillData(cif);
-    } catch (err) {
-      alert("Error loading data");
-      console.error(err);
-    } finally {
-      spinner.style.display = 'none';
-    }
+document.getElementById('input-cif').addEventListener('change', async (e) => {
+  const cif = e.target.value.trim();
+  if (!cif) return;
+
+  const spinner = document.getElementById('loadingSpinnerWrapper');
+  spinner.style.display = 'block';
+
+  try {
+    if (!combinedData.length) await loadAllData();
+    const found = combinedData.find(d => d.CUSTOMER === cif);
+    document.getElementById('customer-name-label').textContent = found ? found["Name(Eng)"] : 'Not Found';
+    await fetchAndFillData(cif);
+  } catch (err) {
+    alert("Error loading data");
+    console.error(err);
+  } finally {
+    spinner.style.display = 'none';
+  }
+});
+
+function exportToExcel() {
+  const preparedDate = document.getElementById("prepared-date").value || '-';
+  const cif = document.getElementById("input-cif").value.trim() || '-';
+  const customerName = document.getElementById("customer-name-label").textContent || '-';
+
+  const table = document.getElementById("turnover-table");
+  const wb = XLSX.utils.book_new();
+  const ws_data = [];
+
+  ws_data.push(["Average Debit Turnover"]);
+  ws_data.push([`Prepared Date: ${preparedDate}`]);
+  ws_data.push([`CIF: ${cif}`]);
+  ws_data.push([`Customer Name: ${customerName}`]);
+
+  const headers = [];
+  table.querySelectorAll("thead th").forEach(th => headers.push(th.innerText.trim()));
+  ws_data.push(headers);
+
+  table.querySelectorAll("tbody tr").forEach(row => {
+    const rowData = [];
+    row.querySelectorAll("td").forEach(td => rowData.push(td.innerText.trim()));
+    ws_data.push(rowData);
   });
 
-  function exportToExcel() {
-    const preparedDate = document.getElementById("prepared-date").value || '-';
-    const cif = document.getElementById("input-cif").value.trim() || '-';
-    const customerName = document.getElementById("customer-name-label").textContent || '-';
+  const footerRow = [];
+  table.querySelectorAll("tfoot td").forEach(td => footerRow.push(td.innerText.trim()));
+  ws_data.push(footerRow);
 
-    const table = document.getElementById("turnover-table");
-    const wb = XLSX.utils.book_new();
-    const ws_data = [];
+  const ws = XLSX.utils.aoa_to_sheet(ws_data);
+  XLSX.utils.book_append_sheet(wb, ws, "Turnover");
+  XLSX.writeFile(wb, "Turnover_Average.xlsx");
+}
 
-    ws_data.push(["Average Debit Turnover"]);
-    ws_data.push([`Prepared Date: ${preparedDate}`]);
-    ws_data.push([`CIF: ${cif}`]);
-    ws_data.push([`Customer Name: ${customerName}`]);
+function printPage() {
+  const preparedDate = document.getElementById("prepared-date").value || '-';
+  const cif = document.getElementById("input-cif").value.trim() || '-';
+  const customerName = document.getElementById("customer-name-label").textContent || '-';
 
-    const headers = [];
-    table.querySelectorAll("thead th").forEach(th => headers.push(th.innerText.trim()));
-    ws_data.push(headers);
+  const metadata = document.createElement("div");
+  metadata.style.textAlign = "center";
+  metadata.style.fontWeight = "bold";
+  metadata.style.marginBottom = "10px";
+  metadata.innerHTML = `
+    <h2 style="margin: 0 0 10px; font-size: 16px; color: #0d2d5c;">
+      Yearly Average of Debit Turnover
+    </h2>
+    <div>Prepared Date: ${preparedDate}</div>
+    <div>CIF: ${cif}</div>
+    <div>Customer Name: ${customerName}</div>
+    <hr style="margin:10px 0;">
+  `;
 
-    table.querySelectorAll("tbody tr").forEach(row => {
-      const rowData = [];
-      row.querySelectorAll("td").forEach(td => rowData.push(td.innerText.trim()));
-      ws_data.push(rowData);
-    });
+  const tableSection = document.querySelector(".table-container").cloneNode(true);
+  const wrapper = document.createElement("div");
+  wrapper.style.fontFamily = "'Krasar', Arial, sans-serif";
+  wrapper.style.fontSize = "12px";
+  wrapper.style.padding = "20px";
+  wrapper.style.backgroundColor = "white";
+  wrapper.appendChild(metadata);
+  wrapper.appendChild(tableSection);
 
-    const footerRow = [];
-    table.querySelectorAll("tfoot td").forEach(td => footerRow.push(td.innerText.trim()));
-    ws_data.push(footerRow);
-
-    const ws = XLSX.utils.aoa_to_sheet(ws_data);
-    XLSX.utils.book_append_sheet(wb, ws, "Turnover");
-    XLSX.writeFile(wb, "Turnover_Average.xlsx");
-  }
-
-  function printPage() {
-    const preparedDate = document.getElementById("prepared-date").value || '-';
-    const cif = document.getElementById("input-cif").value.trim() || '-';
-    const customerName = document.getElementById("customer-name-label").textContent || '-';
-
-    const metadata = document.createElement("div");
-    metadata.style.textAlign = "center";
-    metadata.style.fontWeight = "bold";
-    metadata.style.marginBottom = "10px";
-    metadata.innerHTML = `
-      <h2 style="margin: 0 0 10px; font-size: 16px; color: #0d2d5c;">
-        Yearly Average of Debit Turnover
-      </h2>
-      <div>Prepared Date: ${preparedDate}</div>
-      <div>CIF: ${cif}</div>
-      <div>Customer Name: ${customerName}</div>
-      <hr style="margin:10px 0;">
-    `;
-
-    const tableSection = document.querySelector(".table-container").cloneNode(true);
-    const wrapper = document.createElement("div");
-    wrapper.style.fontFamily = "'Krasar', Arial, sans-serif";
-    wrapper.style.fontSize = "12px";
-    wrapper.style.padding = "20px";
-    wrapper.style.backgroundColor = "white";
-    wrapper.appendChild(metadata);
-    wrapper.appendChild(tableSection);
-
-    html2pdf().from(wrapper).set({
-      filename: "Turnover_Report.pdf",
-      margin: 0.5,
-      html2canvas: { scale: 2 },
-      jsPDF: { unit: "in", format: "a4", orientation: "portrait" }
-    }).save();
-  }
-</script>
+  html2pdf().from(wrapper).set({
+    filename: "Turnover_Report.pdf",
+    margin: 0.5,
+    html2canvas: { scale: 2 },
+    jsPDF: { unit: "in", format: "a4", orientation: "portrait" }
+  }).save();
+}
+</script> 
 </body>
 </html>
