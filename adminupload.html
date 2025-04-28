@@ -153,7 +153,8 @@
 <div class="upload-box">
   <div class="upload-box-title">📄 Upload Excel Files (.xlsx)</div>
 
-  <label class="upload-label">User Data
+  <label class="upload-label">
+    <div>User Data</div>
     <div class="uploader" id="by-user">Uploaded by: –</div>
     <div class="timestamp" id="ts-user">–</div>
   </label>
@@ -161,7 +162,8 @@
   <div class="file-info" id="userPreview"></div>
   <div class="progress-container"><div class="progress-bar" id="userProgress"></div></div>
 
-  <label class="upload-label">Customer Data
+  <label class="upload-label">
+    <div>Customer Data</div>
     <div class="uploader" id="by-customer">Uploaded by: –</div>
     <div class="timestamp" id="ts-customer">–</div>
   </label>
@@ -169,7 +171,8 @@
   <div class="file-info" id="customerPreview"></div>
   <div class="progress-container"><div class="progress-bar" id="customerProgress"></div></div>
 
-  <label class="upload-label">Turnover Data
+  <label class="upload-label">
+    <div>Turnover Data</div>
     <div class="uploader" id="by-turnover">Uploaded by: –</div>
     <div class="timestamp" id="ts-turnover">–</div>
   </label>
@@ -177,13 +180,16 @@
   <div class="file-info" id="turnoverPreview"></div>
   <div class="progress-container"><div class="progress-bar" id="turnoverProgress"></div></div>
 
-  <label class="upload-label">NBCOS Data
-    <div class="uploader" id="by-nbcos">Uploaded by: –</div>
-    <div class="timestamp" id="ts-nbcos">–</div>
-  </label>
-  <input type="file" id="nbcosFile" accept=".xlsx" onchange="showPreview('nbcosFile', 'nbcosPreview')" />
-  <div class="file-info" id="nbcosPreview"></div>
-  <div class="progress-container"><div class="progress-bar" id="nbcosProgress"></div></div>
+  <!-- ✅ Add inside .upload-box (after turnover section) -->
+
+<label class="upload-label">
+  <div>NBCOS Data</div>
+  <div class="uploader" id="by-nbcos">Uploaded by: –</div>
+  <div class="timestamp" id="ts-nbcos">–</div>
+</label>
+<input type="file" id="nbcosFile" accept=".xlsx" onchange="showPreview('nbcosFile', 'nbcosPreview')" />
+<div class="file-info" id="nbcosPreview"></div>
+<div class="progress-container"><div class="progress-bar" id="nbcosProgress"></div></div>
 
   <button class="upload-btn" onclick="uploadFiles()">📤 Upload to MongoDB</button>
 </div>
@@ -191,8 +197,9 @@
 <div class="log-box" id="uploadLog"></div>
 <div id="overlay"><span>Uploading... Please wait</span></div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script>
+
+
+ <script>
 const token = sessionStorage.getItem('token');
 
 if (!token || isTokenExpired(token)) {
@@ -248,22 +255,22 @@ async function loadTimestamps() {
   }
 }
 
-async function uploadBlob(fileObj, label, progressBarId, partNumber) {
+async function uploadSingleFile(file, label, progressBarId) {
   const progressBar = document.getElementById(progressBarId);
   const formData = new FormData();
   const fullname = sessionStorage.getItem("fullname") || "Unknown";
 
-  formData.append(label, fileObj, fileObj.name);
+  formData.append(label, file);
   formData.append("fullname", fullname);
 
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
     xhr.open("POST", "https://secure-backend-tzj9.onrender.com/api/admin/upload");
     xhr.setRequestHeader("Authorization", `Bearer ${token}`);
-    
-    xhr.upload.onprogress = (e) => {
-      if (e.lengthComputable) {
-        const percent = (e.loaded / e.total) * 100;
+
+    xhr.upload.onprogress = (event) => {
+      if (event.lengthComputable) {
+        const percent = (event.loaded / event.total) * 100;
         progressBar.style.width = `${percent.toFixed(0)}%`;
       }
     };
@@ -271,63 +278,20 @@ async function uploadBlob(fileObj, label, progressBarId, partNumber) {
     xhr.onload = () => {
       if (xhr.status === 200) {
         progressBar.style.width = `100%`;
-        logMessage(`✅ ${label} ${partNumber ? `part ${partNumber}` : ''} upload complete.`);
+        logMessage(`✅ ${label} upload complete.`);
         resolve();
       } else {
-        logMessage(`❌ Failed to upload ${label} ${partNumber ? `part ${partNumber}` : ''}`);
+        logMessage(`❌ Failed to upload ${label}`);
         reject();
       }
     };
 
     xhr.onerror = () => {
-      logMessage(`❌ Network error during ${label} ${partNumber ? `part ${partNumber}` : ''} upload`);
+      logMessage(`❌ Network error during ${label} upload`);
       reject();
     };
 
     xhr.send(formData);
-  });
-}
-
-async function uploadFileWithSplit(file, label, progressBarId) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = async (e) => {
-      try {
-        const workbook = XLSX.read(e.target.result, { type: "binary" });
-        const sheet = workbook.Sheets[workbook.SheetNames[0]];
-        const data = XLSX.utils.sheet_to_json(sheet, { defval: "" });
-
-        if (["customer", "turnover", "nbcos"].includes(label) && data.length > 3000) {
-          const chunkSize = 3000;
-          const totalParts = Math.ceil(data.length / chunkSize);
-
-          logMessage(`⚙️ Splitting ${label} into ${totalParts} parts...`);
-
-          for (let i = 0; i < totalParts; i++) {
-            const partData = data.slice(i * chunkSize, (i + 1) * chunkSize);
-            const partWorkbook = XLSX.utils.book_new();
-            const partSheet = XLSX.utils.json_to_sheet(partData);
-            XLSX.utils.book_append_sheet(partWorkbook, partSheet, "Sheet1");
-
-            const blob = XLSX.write(partWorkbook, { bookType: "xlsx", type: "blob" });
-
-            // ✅ Create real file object
-            const partFile = new File([blob], `${label}_part${i+1}.xlsx`, { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
-
-            await uploadBlob(partFile, label, progressBarId, i+1);
-          }
-        } else {
-          // small file, no split
-          await uploadBlob(file, label, progressBarId, null);
-        }
-        resolve();
-      } catch (error) {
-        logMessage(`❌ Failed to process ${label}`);
-        reject();
-      }
-    };
-    reader.onerror = () => reject();
-    reader.readAsBinaryString(file);
   });
 }
 
@@ -345,10 +309,10 @@ async function uploadFiles() {
   document.getElementById("overlay").style.display = "flex";
 
   try {
-    if (user) await uploadFileWithSplit(user, "user", "userProgress");
-    if (customer) await uploadFileWithSplit(customer, "customer", "customerProgress");
-    if (turnover) await uploadFileWithSplit(turnover, "turnover", "turnoverProgress");
-    if (nbcos) await uploadFileWithSplit(nbcos, "nbcos", "nbcosProgress");
+    if (user) await uploadSingleFile(user, "user", "userProgress");
+    if (customer) await uploadSingleFile(customer, "customer", "customerProgress");
+    if (turnover) await uploadSingleFile(turnover, "turnover", "turnoverProgress");
+    if (nbcos) await uploadSingleFile(nbcos, "nbcos", "nbcosProgress");
 
     logMessage("✅ All uploads completed.");
     alert("✅ All files uploaded successfully.");
@@ -366,7 +330,6 @@ async function uploadFiles() {
   document.getElementById("overlay").style.display = "none";
 }
 
-// Robot message
 async function loadRobotMessage(userPosition) {
   try {
     const res = await fetch("https://secure-backend-tzj9.onrender.com/api/robot-message", {
@@ -385,6 +348,7 @@ async function loadRobotMessage(userPosition) {
 async function postRobotMessage() {
   const msg = document.getElementById("newMessage").value.trim();
   if (!msg) return;
+
   try {
     const res = await fetch("https://secure-backend-tzj9.onrender.com/api/robot-message", {
       method: "POST",
