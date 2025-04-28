@@ -156,28 +156,6 @@
   pointer-events: none;
 }
   </style>
-  <script>
-    const user = sessionStorage.getItem("loggedInUser");
-    if (!user) {
-      window.location.href = "https://measvuthy168.github.io/CreditAssist/login.html";
-    }
-
-    const AUTO_LOGOUT_MINUTES = 1;
-    let logoutTimer;
-    function resetLogoutTimer() {
-      clearTimeout(logoutTimer);
-      logoutTimer = setTimeout(() => {
-        sessionStorage.removeItem("loggedInUser");
-        alert("Session expired due to inactivity. Please log in again.");
-        window.location.href = "https://measvuthy168.github.io/CreditAssist/login.html";
-      }, AUTO_LOGOUT_MINUTES * 60 * 1000);
-    }
-
-    window.onload = resetLogoutTimer;
-    document.onmousemove = resetLogoutTimer;
-    document.onkeydown = resetLogoutTimer;
-    document.onclick = resetLogoutTimer;
-  </script>
 </head>
 <body>
   <div class="header">
@@ -217,152 +195,184 @@
     <img src="../icons/Notification.png" width="24" height="24" /><div>Notification</div>
   </button>
 </div>
-  <script>
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
 
-  // Helper: format number like 1,000,000.00
-  function format(num) {
-    return num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+<script>
+// ✅ Protect Page by Token
+const token = sessionStorage.getItem('token');
+if (!token) {
+  alert("Session expired or unauthorized access.");
+  window.location.href = "../login.html";
+}
+
+// ✅ Auto Logout Setup
+const AUTO_LOGOUT_MINUTES = 1;
+let logoutTimer;
+function resetLogoutTimer() {
+  clearTimeout(logoutTimer);
+  logoutTimer = setTimeout(() => {
+    sessionStorage.clear();
+    alert("Session expired due to inactivity. Please log in again.");
+    window.location.href = "../login.html";
+  }, AUTO_LOGOUT_MINUTES * 60 * 1000);
+}
+function setupAutoLogoutEvents() {
+  ['mousemove', 'mousedown', 'keydown', 'touchstart', 'touchmove', 'scroll'].forEach(event => {
+    document.addEventListener(event, resetLogoutTimer, true);
+  });
+  resetLogoutTimer();
+}
+window.addEventListener('load', setupAutoLogoutEvents);
+
+// ✅ Your Original Scripts Start Here
+
+// Helper: format number like 1,000,000.00
+function format(num) {
+  return num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function calculateLoan() {
+  const loan = parseFloat(document.getElementById("loanAmount").value);
+  const repayment = parseFloat(document.getElementById("periodicRepayment").value);
+  const term = parseFloat(document.getElementById("term").value);
+  const interestRate = parseFloat(document.getElementById("interestRate").value);
+  const method = document.getElementById("paymentMethod").value;
+  const rate = (interestRate / 100) / 12;
+
+  let loanVal = loan, payVal = repayment, months = term;
+  const missing = [isNaN(loan), isNaN(repayment), isNaN(term)].filter(Boolean).length;
+  if (missing !== 1) {
+    alert("សូមទុកប្រអប់មួយ ដើម្បីគណនា។");
+    return;
   }
 
-  function calculateLoan() {
-    const loan = parseFloat(document.getElementById("loanAmount").value);
-    const repayment = parseFloat(document.getElementById("periodicRepayment").value);
-    const term = parseFloat(document.getElementById("term").value);
-    const interestRate = parseFloat(document.getElementById("interestRate").value);
-    const method = document.getElementById("paymentMethod").value;
-    const rate = (interestRate / 100) / 12;
-
-    let loanVal = loan, payVal = repayment, months = term;
-    const missing = [isNaN(loan), isNaN(repayment), isNaN(term)].filter(Boolean).length;
-    if (missing !== 1) {
-      alert("សូមទុកប្រអប់មួយ ដើម្បីគណនា។");
-      return;
-    }
-
-    if (isNaN(loanVal)) {
-      loanVal = method === "Annuity"
-        ? payVal * (1 - Math.pow(1 + rate, -months)) / rate
-        : payVal / ((1 / months) + rate);
-    } else if (isNaN(payVal)) {
-      payVal = method === "Annuity"
-        ? (loanVal * rate) / (1 - Math.pow(1 + rate, -months))
-        : (loanVal / months) + (loanVal * rate);
-    } else if (isNaN(months)) {
-      months = Math.ceil(Math.log(payVal / (payVal - loanVal * rate)) / Math.log(1 + rate));
-    }
-
-    let balance = loanVal;
-    let totalPrincipal = 0, totalInterest = 0, totalPayment = 0;
-
-    let html = `<div class="pdf-wrapper"><div style="text-align:center; font-size:22px; font-weight:bold; margin-bottom:15px;">តារាងកាលវិភាគសងប្រាក់</div>`;
-    html += `<table><tr><th>ទំហំឥណទាន</th><td>${format(loanVal)}</td></tr>
-      <tr><th>ប្រាក់សំណងខួប</th><td>${format(payVal)}</td></tr>
-      <tr><th>រយៈពេលខ្ចី (ខែ)</th><td>${months}</td></tr>
-      <tr><th>អត្រា​ការ​ប្រាក់​ប្រចាំឆ្នាំ</th><td>${interestRate}%</td></tr>
-      <tr><th>របៀបសងប្រាក់</th><td>${method === "Annuity" ? "បង់ថេរ" : "បង់ថយ"}</td></tr></table>`;
-
-    html += `<div class="table-scroll"><table><thead><tr>
-      <th>ល.រ</th><th>ប្រាក់ដើម</th><th>ការប្រាក់</th><th>សរុបបង់</th><th>សមតុល្យ</th>
-      </tr></thead><tbody>`;
-
-    for (let i = 1; i <= months; i++) {
-      const interest = balance * rate;
-      const principal = method === "Annuity" ? payVal - interest : loanVal / months;
-      const payment = method === "Annuity" ? payVal : principal + interest;
-      balance -= principal;
-      if (balance < 0) balance = 0;
-
-      totalPrincipal += principal;
-      totalInterest += interest;
-      totalPayment += payment;
-
-      html += `<tr>
-        <td>${i}</td>
-        <td>${format(principal)}</td>
-        <td>${format(interest)}</td>
-        <td>${format(payment)}</td>
-        <td>${format(balance)}</td>
-      </tr>`;
-    }
-
-    html += `<tr class="total-row">
-      <td>សរុប</td>
-      <td>${format(totalPrincipal)}</td>
-      <td>${format(totalInterest)}</td>
-      <td>${format(totalPayment)}</td>
-      <td>-</td>
-    </tr></tbody></table></div></div>`;
-
-    document.getElementById("exportSection").innerHTML = html;
+  if (isNaN(loanVal)) {
+    loanVal = method === "Annuity"
+      ? payVal * (1 - Math.pow(1 + rate, -months)) / rate
+      : payVal / ((1 / months) + rate);
+  } else if (isNaN(payVal)) {
+    payVal = method === "Annuity"
+      ? (loanVal * rate) / (1 - Math.pow(1 + rate, -months))
+      : (loanVal / months) + (loanVal * rate);
+  } else if (isNaN(months)) {
+    months = Math.ceil(Math.log(payVal / (payVal - loanVal * rate)) / Math.log(1 + rate));
   }
 
-  async function exportToPDF() {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF('p', 'pt', 'a4');
-    const exportSection = document.getElementById("exportSection");
-    if (!exportSection || exportSection.innerHTML.trim() === "") {
-      alert("សូមគណនាមុននឹងនាំចេញ។");
-      return;
-    }
+  let balance = loanVal;
+  let totalPrincipal = 0, totalInterest = 0, totalPayment = 0;
 
-    const translatedSection = exportSection.cloneNode(true);
-    translatedSection.querySelectorAll("th, td").forEach(cell => {
-      cell.textContent = cell.textContent
-        .replace("ល.រ", "No")
-        .replace("ប្រាក់ដើម", "Principal")
-        .replace("ការប្រាក់", "Interest")
-        .replace("សរុបបង់", "Total Payment")
-        .replace("សមតុល្យ", "Balance")
-        .replace("ទំហំឥណទាន", "Loan Amount")
-        .replace("ប្រាក់សំណងខួប", "Periodic Repayment")
-        .replace("រយៈពេលខ្ចី (ខែ)", "Loan Term (months)")
-        .replace("អត្រា​ការ​ប្រាក់​ប្រចាំឆ្នាំ", "Annual Interest Rate")
-        .replace("របៀបសងប្រាក់", "Repayment Method")
-        .replace("បង់ថេរ", "Annuity")
-        .replace("បង់ថយ", "Linear")
-        .replace("សរុប", "Total");
+  let html = `<div class="pdf-wrapper"><div style="text-align:center; font-size:22px; font-weight:bold; margin-bottom:15px;">តារាងកាលវិភាគសងប្រាក់</div>`;
+  html += `<table><tr><th>ទំហំឥណទាន</th><td>${format(loanVal)}</td></tr>
+    <tr><th>ប្រាក់សំណងខួប</th><td>${format(payVal)}</td></tr>
+    <tr><th>រយៈពេលខ្ចី (ខែ)</th><td>${months}</td></tr>
+    <tr><th>អត្រា​ការ​ប្រាក់​ប្រចាំឆ្នាំ</th><td>${interestRate}%</td></tr>
+    <tr><th>របៀបសងប្រាក់</th><td>${method === "Annuity" ? "បង់ថេរ" : "បង់ថយ"}</td></tr></table>`;
+
+  html += `<div class="table-scroll"><table><thead><tr>
+    <th>ល.រ</th><th>ប្រាក់ដើម</th><th>ការប្រាក់</th><th>សរុបបង់</th><th>សមតុល្យ</th>
+    </tr></thead><tbody>`;
+
+  for (let i = 1; i <= months; i++) {
+    const interest = balance * rate;
+    const principal = method === "Annuity" ? payVal - interest : loanVal / months;
+    const payment = method === "Annuity" ? payVal : principal + interest;
+    balance -= principal;
+    if (balance < 0) balance = 0;
+
+    totalPrincipal += principal;
+    totalInterest += interest;
+    totalPayment += payment;
+
+    html += `<tr>
+      <td>${i}</td>
+      <td>${format(principal)}</td>
+      <td>${format(interest)}</td>
+      <td>${format(payment)}</td>
+      <td>${format(balance)}</td>
+    </tr>`;
+  }
+
+  html += `<tr class="total-row">
+    <td>សរុប</td>
+    <td>${format(totalPrincipal)}</td>
+    <td>${format(totalInterest)}</td>
+    <td>${format(totalPayment)}</td>
+    <td>-</td>
+  </tr></tbody></table></div></div>`;
+
+  document.getElementById("exportSection").innerHTML = html;
+}
+
+async function exportToPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF('p', 'pt', 'a4');
+  const exportSection = document.getElementById("exportSection");
+  if (!exportSection || exportSection.innerHTML.trim() === "") {
+    alert("សូមគណនាមុននឹងនាំចេញ។");
+    return;
+  }
+
+  const translatedSection = exportSection.cloneNode(true);
+  translatedSection.querySelectorAll("th, td").forEach(cell => {
+    cell.textContent = cell.textContent
+      .replace("ល.រ", "No")
+      .replace("ប្រាក់ដើម", "Principal")
+      .replace("ការប្រាក់", "Interest")
+      .replace("សរុបបង់", "Total Payment")
+      .replace("សមតុល្យ", "Balance")
+      .replace("ទំហំឥណទាន", "Loan Amount")
+      .replace("ប្រាក់សំណងខួប", "Periodic Repayment")
+      .replace("រយៈពេលខ្ចី (ខែ)", "Loan Term (months)")
+      .replace("អត្រា​ការ​ប្រាក់​ប្រចាំឆ្នាំ", "Annual Interest Rate")
+      .replace("របៀបសងប្រាក់", "Repayment Method")
+      .replace("បង់ថេរ", "Annuity")
+      .replace("បង់ថយ", "Linear")
+      .replace("សរុប", "Total");
+  });
+
+  const titleBox = translatedSection.querySelector(".pdf-wrapper > div");
+  if (titleBox) titleBox.textContent = "Repayment Schedule";
+
+  const tables = translatedSection.querySelectorAll("table");
+  let finalY = 40;
+  tables.forEach(table => {
+    doc.autoTable({
+      html: table,
+      startY: finalY,
+      styles: { fontSize: 10, halign: 'center' },
+      headStyles: { fillColor: [13, 45, 92], textColor: 255 },
     });
+    finalY = doc.lastAutoTable.finalY + 20;
+  });
 
-    const titleBox = translatedSection.querySelector(".pdf-wrapper > div");
-    if (titleBox) titleBox.textContent = "Repayment Schedule";
+  doc.save("Repayment_Schedule.pdf");
+}
 
-    const tables = translatedSection.querySelectorAll("table");
-    let finalY = 40;
-    tables.forEach(table => {
-      doc.autoTable({
-        html: table,
-        startY: finalY,
-        styles: { fontSize: 10, halign: 'center' },
-        headStyles: { fillColor: [13, 45, 92], textColor: 255 },
-      });
-      finalY = doc.lastAutoTable.finalY + 20;
-    });
-
-    doc.save("Repayment_Schedule.pdf");
+function exportToExcel() {
+  const exportSection = document.getElementById("exportSection");
+  if (!exportSection || exportSection.innerHTML.trim() === "") {
+    alert("សូមគណនាមុននឹងនាំចេញ។");
+    return;
   }
 
-  function exportToExcel() {
-    const exportSection = document.getElementById("exportSection");
-    if (!exportSection || exportSection.innerHTML.trim() === "") {
-      alert("សូមគណនាមុននឹងនាំចេញ។");
-      return;
-    }
+  const tables = exportSection.querySelectorAll("table");
+  const wb = XLSX.utils.book_new();
+  let allData = [];
 
-    const tables = exportSection.querySelectorAll("table");
-    const wb = XLSX.utils.book_new();
-    let allData = [];
+  tables.forEach((table, index) => {
+    const sheet = XLSX.utils.table_to_sheet(table);
+    const data = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+    if (index > 0) allData.push([""]);
+    allData = allData.concat(data);
+  });
 
-    tables.forEach((table, index) => {
-      const sheet = XLSX.utils.table_to_sheet(table);
-      const data = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-      if (index > 0) allData.push([""]);
-      allData = allData.concat(data);
-    });
-
-    const ws = XLSX.utils.aoa_to_sheet(allData);
-    XLSX.utils.book_append_sheet(wb, ws, "Repayment Schedule");
-    XLSX.writeFile(wb, "Repayment_Schedule.xlsx");
-  }
-</script>
+  const ws = XLSX.utils.aoa_to_sheet(allData);
+  XLSX.utils.book_append_sheet(wb, ws, "Repayment Schedule");
+  XLSX.writeFile(wb, "Repayment_Schedule.xlsx");
+}
+</script> 
 </body>
 </html>
