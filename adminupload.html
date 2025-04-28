@@ -287,6 +287,137 @@ async function uploadSingleFile(file, label, progressBarId) {
     };
 
     xhr.onerror = () => {
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+const token = sessionStorage.getItem('token');
+
+if (!token || isTokenExpired(token)) {
+  alert("⚠️ Session expired. Please login again.");
+  window.location.href = "login.html";
+}
+
+function isTokenExpired(token) {
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    return Date.now() >= payload.exp * 1000;
+  } catch (e) {
+    return true;
+  }
+}
+
+function showPreview(fileInputId, previewId) {
+  const file = document.getElementById(fileInputId).files[0];
+  const preview = document.getElementById(previewId);
+  if (file && file.name.endsWith(".xlsx")) {
+    preview.textContent = `${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
+  } else {
+    preview.textContent = 'Invalid file type. Must be .xlsx';
+    document.getElementById(fileInputId).value = '';
+  }
+}
+
+function logMessage(msg) {
+  const log = document.getElementById('uploadLog');
+  const entry = document.createElement('div');
+  entry.className = 'log-entry';
+  entry.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+  log.appendChild(entry);
+  log.scrollTop = log.scrollHeight;
+}
+
+async function loadTimestamps() {
+  try {
+    const res = await fetch("https://secure-backend-tzj9.onrender.com/api/admin/upload-timestamps", {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const data = await res.json();
+    ['user', 'customer', 'turnover', 'nbcos'].forEach(label => {
+      const date = data[label];
+      const fullname = data[`${label}Fullname`] || "–";
+      const dateBox = document.getElementById('ts-' + label);
+      const nameBox = document.getElementById('by-' + label);
+      if (dateBox) dateBox.textContent = date ? new Date(date).toLocaleString() : "–";
+      if (nameBox) nameBox.textContent = `Uploaded by: ${fullname}`;
+    });
+  } catch (err) {
+    console.warn("❌ Failed to load timestamps:", err);
+  }
+}
+
+// ✅ NEW function: upload with splitting for customer/turnover/nbcos if needed
+async function uploadSingleFileWithSplit(file, label, progressBarId) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      try {
+        const workbook = XLSX.read(e.target.result, { type: "binary" });
+        const sheetName = workbook.SheetNames[0];
+        const sheet = workbook.Sheets[sheetName];
+        const data = XLSX.utils.sheet_to_json(sheet, { defval: "" });
+
+        if (["customer", "turnover", "nbcos"].includes(label) && data.length > 3000) {
+          const chunkSize = 3000;
+          const totalParts = Math.ceil(data.length / chunkSize);
+
+          logMessage(`⚙️ Splitting ${label} into ${totalParts} parts...`);
+
+          for (let i = 0; i < totalParts; i++) {
+            const partData = data.slice(i * chunkSize, (i + 1) * chunkSize);
+            const partWorkbook = XLSX.utils.book_new();
+            const partSheet = XLSX.utils.json_to_sheet(partData);
+            XLSX.utils.book_append_sheet(partWorkbook, partSheet, "Sheet1");
+
+            const partBlob = XLSX.write(partWorkbook, { bookType: "xlsx", type: "blob" });
+            const partFile = new File([partBlob], `${label}_part${i+1}.xlsx`, { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+
+            await uploadSingleFile(partFile, label, progressBarId);
+          }
+        } else {
+          await uploadSingleFile(file, label, progressBarId);
+        }
+        resolve();
+      } catch (error) {
+        logMessage(`❌ Failed to process ${label}`);
+        reject();
+      }
+    };
+    reader.onerror = () => reject();
+    reader.readAsBinaryString(file);
+  });
+}
+
+async function uploadSingleFile(file, label, progressBarId) {
+  const progressBar = document.getElementById(progressBarId);
+  const formData = new FormData();
+  const fullname = sessionStorage.getItem("fullname") || "Unknown";
+
+  formData.append(label, file);
+  formData.append("fullname", fullname);
+
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", "https://secure-backend-tzj9.onrender.com/api/admin/upload");
+    xhr.setRequestHeader("Authorization", `Bearer ${token}`);
+
+    xhr.upload.onprogress = (event) => {
+      if (event.lengthComputable) {
+        const percent = (event.loaded / event.total) * 100;
+        progressBar.style.width = `${percent.toFixed(0)}%`;
+      }
+    };
+
+    xhr.onload = () => {
+      if (xhr.status === 200) {
+        progressBar.style.width = `100%`;
+        logMessage(`✅ ${label} upload complete.`);
+        resolve();
+      } else {
+        logMessage(`❌ Failed to upload ${label}`);
+        reject();
+      }
+    };
+
+    xhr.onerror = () => {
       logMessage(`❌ Network error during ${label} upload`);
       reject();
     };
@@ -309,10 +440,10 @@ async function uploadFiles() {
   document.getElementById("overlay").style.display = "flex";
 
   try {
-    if (user) await uploadSingleFile(user, "user", "userProgress");
-    if (customer) await uploadSingleFile(customer, "customer", "customerProgress");
-    if (turnover) await uploadSingleFile(turnover, "turnover", "turnoverProgress");
-    if (nbcos) await uploadSingleFile(nbcos, "nbcos", "nbcosProgress");
+    if (user) await uploadSingleFile(user, "user", "userProgress"); // No split
+    if (customer) await uploadSingleFileWithSplit(customer, "customer", "customerProgress");
+    if (turnover) await uploadSingleFileWithSplit(turnover, "turnover", "turnoverProgress");
+    if (nbcos) await uploadSingleFileWithSplit(nbcos, "nbcos", "nbcosProgress");
 
     logMessage("✅ All uploads completed.");
     alert("✅ All files uploaded successfully.");
@@ -330,6 +461,7 @@ async function uploadFiles() {
   document.getElementById("overlay").style.display = "none";
 }
 
+// ✅ Keep your existing loadRobotMessage and postRobotMessage
 async function loadRobotMessage(userPosition) {
   try {
     const res = await fetch("https://secure-backend-tzj9.onrender.com/api/robot-message", {
