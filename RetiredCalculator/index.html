@@ -227,15 +227,16 @@
     <img src="../icons/Notification.png" width="24" height="24" /><div>Notification</div>
   </button>
 </div>
+  
   <script>
-// ✅ Protect Page by Token
+// ✅ Protect page first
 const token = sessionStorage.getItem('token');
 if (!token) {
   alert("Session expired or unauthorized access.");
   window.location.href = "../login.html";
 }
 
-// ✅ Auto Logout Setup
+// ✅ Auto logout setup
 const AUTO_LOGOUT_MINUTES = 1;
 let logoutTimer;
 function resetLogoutTimer() {
@@ -254,7 +255,7 @@ function setupAutoLogoutEvents() {
 }
 window.addEventListener('load', setupAutoLogoutEvents);
 
-// ✅ Your Original Retirement Calculation Scripts Start Here
+// ✅ Your original Retirement Calculator functions
 function setMaxDateToToday() {
   const today = new Date();
   const year = today.getFullYear();
