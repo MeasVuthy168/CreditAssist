@@ -180,9 +180,6 @@
   <div class="file-info" id="turnoverPreview"></div>
   <div class="progress-container"><div class="progress-bar" id="turnoverProgress"></div></div>
 
-  <button class="upload-btn" onclick="uploadFiles()">📤 Upload to MongoDB</button>
-</div>
-
   <!-- ✅ Add inside .upload-box (after turnover section) -->
 
 <label class="upload-label">
@@ -193,6 +190,9 @@
 <input type="file" id="nbcosFile" accept=".xlsx" onchange="showPreview('nbcosFile', 'nbcosPreview')" />
 <div class="file-info" id="nbcosPreview"></div>
 <div class="progress-container"><div class="progress-bar" id="nbcosProgress"></div></div>
+
+  <button class="upload-btn" onclick="uploadFiles()">📤 Upload to MongoDB</button>
+</div>
 
 <div class="log-box" id="uploadLog"></div>
 <div id="overlay"><span>Uploading... Please wait</span></div>
