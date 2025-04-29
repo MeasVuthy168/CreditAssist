@@ -40,7 +40,7 @@
       cursor: pointer;
     }
     .admin-box, .upload-box, .log-box {
-      text-align: center;
+      text-align: left;
       background: white;
       padding: 20px 10px;
       border-radius: 12px;
@@ -49,7 +49,6 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
     .admin-title {
-      text-align: center;
       font-weight: bold;
       color: #0d2d5c;
       font-size: 16px;
@@ -165,9 +164,9 @@
 </div>
 
 <div class="admin-box" id="admin-input" style="display:none;">
-  <label class="admin-title">✍️ Post Robot Message</label>
+  <label class="admin-title">📩 Post Robot Message</label>
   <textarea id="newMessage" placeholder="សរសេរសារថ្មី..." class="admin-textarea"></textarea>
-  <button class="admin-btn" onclick="postRobotMessage()">📤 Upload to Backend(Github)</button>
+  <button class="admin-btn" onclick="postRobotMessage()">🗃️ Upload to Backend(Github)</button>
 </div>
 
 <div class="upload-box">
@@ -209,11 +208,11 @@
   <div class="file-info" id="nbcosPreview"></div>
   <div class="progress-container"><div class="progress-bar" id="nbcosProgress"></div></div>
 
-  <button class="upload-btn" onclick="uploadFiles()">📤 Upload to Backend(MongoDB)</button>
+  <button class="upload-btn" onclick="uploadFiles()">🗃️ Upload to Backend(MongoDB)</button>
 </div>
 
 <div class="log-box" id="uploadLog"></div>
-<div id="overlay"><span>កំពុងUpload... សូមរង់ចាំ</span></div>
+<div id="overlay"><span>កំពុងបញ្ជូនទិន្នន័យ...សូមរង់ចាំ</span></div>
   
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
