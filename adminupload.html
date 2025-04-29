@@ -305,8 +305,13 @@ preview.appendChild(a);
           
           // After trim finished, show success
           setTimeout(() => {
-            preview.innerHTML = `✅ Trim Success: ${baseName}.${extension} (${sizeKB} KB)`;
-          }, 300); // short delay so spinner shows
+  const successText = document.createElement("div");
+  successText.textContent = `✅ Trim Success: ${baseName}.${extension} (${sizeKB} KB)`;
+  successText.style.marginTop = "6px";
+  successText.style.color = "#0d2d5c";
+  successText.style.fontSize = "13px";
+  preview.appendChild(successText);
+}, 300); short delay so spinner shows
         } else {
           // If not NBCOS
           setTimeout(() => {
