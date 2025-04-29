@@ -369,7 +369,12 @@ async function uploadSingleFile(file, label, progressBarId, fileInputId, preview
   const formData = new FormData();
   const fullname = sessionStorage.getItem("fullname") || "Unknown";
 
-const fileToSend = fileInput.processedFile || file;
+let fileToSend = fileInput.processedFile || file;
+
+if (fileInput.processedFile) {
+  // Set a name for processed Blob, so multer can recognize it
+  fileToSend = new File([fileInput.processedFile], "nbcos.xlsx", { type: file.type });
+}
 
 if (!fileToSend || !(fileToSend instanceof Blob)) {
   preview.textContent = '';
