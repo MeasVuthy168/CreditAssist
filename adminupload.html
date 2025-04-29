@@ -251,6 +251,12 @@ function showPreview(fileInputId, previewId) {
       nbcosFile: "LD_CIF_OS"
     };
 
+const allowedColumns = {
+  userFile: ['username', 'password', 'position', 'fullname', 'phone', 'image'],
+  customerFile: ['CIF', 'Name', 'Address', 'Phone_Number'],
+  turnoverFile: ['MONTH', 'CUSTOMER', 'Name(Eng)', 'CURRENT_OD', 'TURNOVER_RATE', 'AMT_IN', 'Effective_Date']
+};
+    
     if (expectedFirstHeaders[fileInputId]) {
       const reader = new FileReader();
       
@@ -274,54 +280,45 @@ function showPreview(fileInputId, previewId) {
         }
 
         // Special handling for NBCOS file
-        if (fileInputId === "nbcosFile") {
-          const allowed = ['LD_CIF_OS', 'LD_CUSTOMER_ID', 'CONTRACT_LD', 'NAME_KHMER', 'NAME_ENG'];
-          const trimmed = json.map(row => {
-            const filtered = {};
-            for (const key of allowed) {
-              filtered[key] = row[key] || "";
-            }
-            return filtered;
-          });
+        if (allowedColumns[fileInputId]) {
+  const allowed = allowedColumns[fileInputId];
+  const trimmed = json.map(row => {
+    const filtered = {};
+    for (const key of allowed) {
+      filtered[key] = row[key] || "";
+    }
+    return filtered;
+  });
 
-          console.log("✅ Trimmed NBCOS data preview:", trimmed.slice(0, 5));
+  const newSheet = XLSX.utils.json_to_sheet(trimmed);
+  const newWorkbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(newWorkbook, newSheet, firstSheetName);
 
-          const newSheet = XLSX.utils.json_to_sheet(trimmed);
-          const newWorkbook = XLSX.utils.book_new();
-          XLSX.utils.book_append_sheet(newWorkbook, newSheet, firstSheetName);
+  const wbout = XLSX.write(newWorkbook, { bookType: 'xlsx', type: 'array' });
+  fileInput.processedFile = new Blob([wbout], { type: file.type });
 
-          const wbout = XLSX.write(newWorkbook, { bookType: 'xlsx', type: 'array' });
-          fileInput.processedFile = new Blob([wbout], { type: file.type });
+  const blobURL = URL.createObjectURL(fileInput.processedFile);
+  const a = document.createElement("a");
+  a.href = blobURL;
+  a.download = `trimmed_${fileInputId.replace('File','')}.xlsx`;
+  a.textContent = "⬇️ Download trimmed file";
+  a.style.display = "block";
+  a.style.marginTop = "8px";
+  a.style.color = "#0d2d5c";
+  a.style.fontSize = "13px";
 
-          // Create download link
-          const blobURL = URL.createObjectURL(fileInput.processedFile);
-          const a = document.createElement("a");
-          a.href = blobURL;
-          a.download = "trimmed_nbcos.xlsx";
-          a.textContent = "⬇️ Download trimmed NBCOS file";
-          a.style.display = "block";
-          a.style.marginTop = "8px";
-          a.style.color = "#0d2d5c";
-          a.style.fontSize = "13px";
+  setTimeout(() => {
+    preview.innerHTML = "";
+    preview.appendChild(a);
 
-          setTimeout(() => {
-            preview.innerHTML = ""; // Clear spinner after processing
-            preview.appendChild(a);
-
-            const successText = document.createElement("div");
-            successText.textContent = `✅ Trim Success: ${baseName}.${extension} (${sizeKB} KB)`;
-            successText.style.marginTop = "6px";
-            successText.style.color = "#0d2d5c";
-            successText.style.fontSize = "13px";
-            preview.appendChild(successText);
-          }, 300);
-          
-        } else {
-          // Not NBCOS file, normal file
-          setTimeout(() => {
-            preview.innerHTML = `✅ ${baseName}.${extension} (${sizeKB} KB)`;
-          }, 300);
-        }
+    const successText = document.createElement("div");
+    successText.textContent = `✅ Trim Success: ${baseName}.${extension} (${sizeKB} KB)`;
+    successText.style.marginTop = "6px";
+    successText.style.color = "#0d2d5c";
+    successText.style.fontSize = "13px";
+    preview.appendChild(successText);
+  }, 300);
+}
       };
 
       reader.readAsArrayBuffer(file);
