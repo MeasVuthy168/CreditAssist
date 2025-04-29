@@ -217,6 +217,7 @@ function isTokenExpired(token) {
 
 
 function showPreview(fileInputId, previewId) {
+function showPreview(fileInputId, previewId) {
   const fileInput = document.getElementById(fileInputId);
   const preview = document.getElementById(previewId);
   const file = fileInput.files[0];
@@ -261,6 +262,9 @@ function showPreview(fileInputId, previewId) {
             }
             return filtered;
           });
+
+          // Log preview of trimmed data
+          console.log("✅ Trimmed NBCOS Data Preview:", trimmed.slice(0, 5));
 
           const newSheet = XLSX.utils.json_to_sheet(trimmed);
           const newWorkbook = XLSX.utils.book_new();
