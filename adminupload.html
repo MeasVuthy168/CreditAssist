@@ -35,7 +35,7 @@
       font-size: 24px;
       cursor: pointer;
     }
-    .admin-box, .upload-box{
+    .admin-box, .upload-box, .log-box {
       background: white;
       padding: 20px 10px;
       border-radius: 12px;
@@ -43,16 +43,6 @@
       margin: 10px auto;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
-
-  .log-box {
-  max-height: 300px;
-  overflow-y: auto;
-  font-family: monospace;
-  background: #fff;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  padding: 10px;
-}
     .admin-title {
       text-align: center;
       font-weight: bold;
@@ -259,7 +249,8 @@ function showPreview(fileInputId, previewId) {
 
     if (expectedFirstHeaders[fileInputId]) {
       const reader = new FileReader();
-
+      
+      preview.innerHTML = ""; // Clear any old preview content
       preview.innerHTML = `<div class="spinner"></div> <span style="margin-left:8px;">Processing...</span>`;
 
       reader.onload = (e) => {
@@ -274,11 +265,11 @@ function showPreview(fileInputId, previewId) {
         if (firstHeader !== expectedFirstHeaders[fileInputId]) {
           alert(`❌ Wrong file format! First column must be '${expectedFirstHeaders[fileInputId]}'.`);
           fileInput.value = "";
-          preview.innerHTML = "";
+          preview.innerHTML = ""; // Clear spinner
           return;
         }
 
-        // Special handling for NBCOS
+        // Special handling for NBCOS file
         if (fileInputId === "nbcosFile") {
           const allowed = ['LD_CIF_OS', 'LD_CUSTOMER_ID', 'CONTRACT_LD', 'NAME_KHMER', 'NAME_ENG'];
           const trimmed = json.map(row => {
@@ -289,32 +280,34 @@ function showPreview(fileInputId, previewId) {
             return filtered;
           });
 
+          console.log("✅ Trimmed NBCOS data preview:", trimmed.slice(0, 5));
+
           const newSheet = XLSX.utils.json_to_sheet(trimmed);
           const newWorkbook = XLSX.utils.book_new();
           XLSX.utils.book_append_sheet(newWorkbook, newSheet, firstSheetName);
 
           const wbout = XLSX.write(newWorkbook, { bookType: 'xlsx', type: 'array' });
-          fileInput.processedFile = new Blob([wbout], { type: file.type });
+          fileInput.processedFile = new Blob([wbout], { type: // Create download link
+const blobURL = URL.createObjectURL(fileInput.processedFile);
+const a = document.createElement("a");
+a.href = blobURL;
+a.download = "trimmed_nbcos.xlsx";
+a.textContent = "⬇️ Download trimmed NBCOS file";
+a.style.display = "block";
+a.style.marginTop = "8px";
+a.style.color = "#0d2d5c";
+a.style.fontSize = "13px";
 
-          const blobURL = URL.createObjectURL(fileInput.processedFile);
+// Revoke the blob URL after user clicks it (important for iOS)
+a.onclick = () => {
+  setTimeout(() => URL.revokeObjectURL(blobURL), 100);
+};
 
           setTimeout(() => {
-            preview.innerHTML = ""; // clear spinner first
-
-            const a = document.createElement("a");
-            a.href = blobURL;
-            a.download = "trimmed_nbcos.xlsx";
-            a.textContent = "⬇️ Download trimmed NBCOS file";
-            a.style.display = "block";
-            a.style.marginTop = "8px";
-            a.style.color = "#0d2d5c";
-            a.style.fontSize = "13px";
-
-            a.onclick = () => {
-              setTimeout(() => URL.revokeObjectURL(blobURL), 100);
-            };
-
-            preview.appendChild(a);
+  preview.innerHTML = ""; // clear spinner
+  preview.appendChild(a); // add download link
+  preview.appendChild(successText);
+}, 300);
 
             const successText = document.createElement("div");
             successText.textContent = `✅ Trim Success: ${baseName}.${extension} (${sizeKB} KB)`;
@@ -323,9 +316,9 @@ function showPreview(fileInputId, previewId) {
             successText.style.fontSize = "13px";
             preview.appendChild(successText);
           }, 300);
-
+          
         } else {
-          // Not NBCOS file
+          // Not NBCOS file, normal file
           setTimeout(() => {
             preview.innerHTML = `✅ ${baseName}.${extension} (${sizeKB} KB)`;
           }, 300);
@@ -335,7 +328,7 @@ function showPreview(fileInputId, previewId) {
       reader.readAsArrayBuffer(file);
 
     } else {
-      preview.innerHTML = `${baseName}.${extension} (${sizeKB} KB)`;
+      preview.textContent = `${baseName}.${extension} (${sizeKB} KB)`;
     }
 
   } else {
@@ -349,15 +342,9 @@ function logMessage(msg) {
   const log = document.getElementById('uploadLog');
   const entry = document.createElement('div');
   entry.className = 'log-entry';
-  entry.style.fontSize = '13px';
-  entry.style.margin = '2px 0';
   entry.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
   log.appendChild(entry);
-  log.scrollTop = log.scrollHeight; // Auto scroll down
-}
-  function clearLog() {
-  const log = document.getElementById('uploadLog');
-  log.innerHTML = '';
+  log.scrollTop = log.scrollHeight;
 }
 
 async function loadTimestamps() {
@@ -411,28 +398,20 @@ async function uploadSingleFile(file, label, progressBarId, fileInputId, preview
     };
 
     xhr.onload = () => {
-  if (xhr.status === 200) {
-    const response = JSON.parse(xhr.responseText);
-
-    if (response.logs && Array.isArray(response.logs)) {
-      response.logs.forEach(log => logMessage(log));
-    } else {
-      logMessage("✅ Upload completed.");
-    }
-
-    progressBar.style.width = `100%`;
-    const extension = file.name.split('.').pop();
-    const baseName = file.name.substring(0, file.name.lastIndexOf('.'));
-    const sizeKB = (file.size / 1024).toFixed(1);
-    preview.textContent = `${baseName}.${extension} (${sizeKB} KB)`;
-
-    resolve();
-  } else {
-    resetFile(fileInputId, previewId, progressBarId);
-    logMessage(`❌ Failed to upload ${label}`);
-    reject();
-  }
-};
+      if (xhr.status === 200) {
+        progressBar.style.width = `100%`;
+        const extension = file.name.split('.').pop();
+        const baseName = file.name.substring(0, file.name.lastIndexOf('.'));
+        const sizeKB = (file.size / 1024).toFixed(1);
+        preview.textContent = `${baseName}.${extension} (${sizeKB} KB)`;
+        logMessage(`✅ ${label} upload complete.`);
+        resolve();
+      } else {
+        resetFile(fileInputId, previewId, progressBarId);
+        logMessage(`❌ Failed to upload ${label}`);
+        reject();
+      }
+    };
 
     xhr.onerror = () => {
       resetFile(fileInputId, previewId, progressBarId);
