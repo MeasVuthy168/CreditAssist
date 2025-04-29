@@ -7,6 +7,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
   <meta name="theme-color" content="#0d2d5c" />
   <style>
+    @font-face {
+      font-family: 'Krasar';
+      src: url('Krasar-Regular.ttf') format('truetype');
+    }
     body {
       margin: 0;
       font-family: 'Krasar', Arial, sans-serif;
@@ -36,6 +40,7 @@
       cursor: pointer;
     }
     .admin-box, .upload-box, .log-box {
+      text-align: center;
       background: white;
       padding: 20px 10px;
       border-radius: 12px;
@@ -162,14 +167,14 @@
 <div class="admin-box" id="admin-input" style="display:none;">
   <label class="admin-title">✍️ Post Robot Message</label>
   <textarea id="newMessage" placeholder="សរសេរសារថ្មី..." class="admin-textarea"></textarea>
-  <button class="admin-btn" onclick="postRobotMessage()">📤 Upload to Backend</button>
+  <button class="admin-btn" onclick="postRobotMessage()">📤 Upload to Backend(Github)</button>
 </div>
 
 <div class="upload-box">
   <div class="upload-box-title">📄 Upload Excel Files (.xlsx)</div>
 
   <label class="upload-label">
-    <div>User Data</div>
+    <div>ទិន្នន័យបុគ្គលិក</div>
     <div class="uploader" id="by-user">Uploaded by: –</div>
     <div class="timestamp" id="ts-user">–</div>
   </label>
@@ -178,7 +183,7 @@
   <div class="progress-container"><div class="progress-bar" id="userProgress"></div></div>
 
   <label class="upload-label">
-    <div>Customer Data</div>
+    <div>ទិន្នន័យអតិថិជន</div>
     <div class="uploader" id="by-customer">Uploaded by: –</div>
     <div class="timestamp" id="ts-customer">–</div>
   </label>
@@ -187,7 +192,7 @@
   <div class="progress-container"><div class="progress-bar" id="customerProgress"></div></div>
 
   <label class="upload-label">
-    <div>Turnover Data</div>
+    <div>ទិន្នន័យDebitTurnover</div>
     <div class="uploader" id="by-turnover">Uploaded by: –</div>
     <div class="timestamp" id="ts-turnover">–</div>
   </label>
@@ -196,7 +201,7 @@
   <div class="progress-container"><div class="progress-bar" id="turnoverProgress"></div></div>
 
   <label class="upload-label">
-    <div>NBCOS Data</div>
+    <div>ទិន្នន័យLoanOutstanding</div>
     <div class="uploader" id="by-nbcos">Uploaded by: –</div>
     <div class="timestamp" id="ts-nbcos">–</div>
   </label>
@@ -204,11 +209,11 @@
   <div class="file-info" id="nbcosPreview"></div>
   <div class="progress-container"><div class="progress-bar" id="nbcosProgress"></div></div>
 
-  <button class="upload-btn" onclick="uploadFiles()">📤 Upload to MongoDB</button>
+  <button class="upload-btn" onclick="uploadFiles()">📤 Upload to Backend(MongoDB)</button>
 </div>
 
 <div class="log-box" id="uploadLog"></div>
-<div id="overlay"><span>Uploading... Please wait</span></div>
+<div id="overlay"><span>កំពុងUpload... សូមរង់ចាំ</span></div>
   
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
