@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="km">
 <head>
@@ -5,7 +6,6 @@
   <title>Admin Data Upload</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
   <meta name="theme-color" content="#0d2d5c" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <style>
     body {
       margin: 0;
@@ -145,6 +145,12 @@
   <button class="close-btn" onclick="window.location.href='index.html'">&times;</button>
 </div>
 
+<div class="admin-box" id="admin-input" style="display:none;">
+  <label class="admin-title">✍️ Post Robot Message</label>
+  <textarea id="newMessage" placeholder="សរសេរសារថ្មី..." class="admin-textarea"></textarea>
+  <button class="admin-btn" onclick="postRobotMessage()">📤 Upload to Backend</button>
+</div>
+
 <div class="upload-box">
   <div class="upload-box-title">📄 Upload Excel Files (.xlsx)</div>
 
@@ -176,11 +182,11 @@
   <div class="progress-container"><div class="progress-bar" id="turnoverProgress"></div></div>
 
   <label class="upload-label">
-    <div>NBCOS Data (Multiple Files)</div>
+    <div>NBCOS Data</div>
     <div class="uploader" id="by-nbcos">Uploaded by: –</div>
     <div class="timestamp" id="ts-nbcos">–</div>
   </label>
-  <input type="file" id="nbcosFile" multiple accept=".xlsx" onchange="showPreviewMultiple('nbcosFile', 'nbcosPreview')" />
+  <input type="file" id="nbcosFile" accept=".xlsx" onchange="showPreview('nbcosFile', 'nbcosPreview')" />
   <div class="file-info" id="nbcosPreview"></div>
   <div class="progress-container"><div class="progress-bar" id="nbcosProgress"></div></div>
 
@@ -189,15 +195,17 @@
 
 <div class="log-box" id="uploadLog"></div>
 <div id="overlay"><span>Uploading... Please wait</span></div>
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
 <script>
 const token = sessionStorage.getItem('token');
 
-// Token Validation
 if (!token || isTokenExpired(token)) {
   alert("⚠️ Session expired. Please login again.");
   window.location.href = "login.html";
 }
+
 function isTokenExpired(token) {
   try {
     const payload = JSON.parse(atob(token.split('.')[1]));
@@ -207,7 +215,6 @@ function isTokenExpired(token) {
   }
 }
 
-// Show preview (single)
 function showPreview(fileInputId, previewId) {
   const fileInput = document.getElementById(fileInputId);
   const preview = document.getElementById(previewId);
@@ -218,53 +225,43 @@ function showPreview(fileInputId, previewId) {
     const baseName = file.name.substring(0, file.name.lastIndexOf('.'));
     const sizeKB = (file.size / 1024).toFixed(1);
 
-    preview.textContent = `${baseName}.${extension} (${sizeKB} KB)`;
+    // Define expected header for each file
+    const expectedFirstHeaders = {
+      userFile: "username",
+      customerFile: "CIF",
+      turnoverFile: "MONTH",
+      nbcosFile: "LD_CIF_OS"
+    };
+
+    if (expectedFirstHeaders[fileInputId]) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, { type: 'array' });
+        const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+        const firstCell = firstSheet["A1"] ? String(firstSheet["A1"].v).trim() : "";
+
+        if (firstCell !== expectedFirstHeaders[fileInputId]) {
+          alert(`❌ Wrong file format! First column must be '${expectedFirstHeaders[fileInputId]}'.`);
+          fileInput.value = "";
+          preview.textContent = "";
+        } else {
+          preview.textContent = `${baseName}.${extension} (${sizeKB} KB)`;
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    } else {
+      // No special header check
+      preview.textContent = `${baseName}.${extension} (${sizeKB} KB)`;
+    }
+
   } else {
     preview.textContent = '';
     fileInput.value = '';
     alert('❌ Invalid file type. Please upload .xlsx file only.');
   }
 }
-
-// Show preview (NBCOS multiple)
-function showPreviewMultiple(fileInputId, previewId) {
-  const fileInput = document.getElementById(fileInputId);
-  const preview = document.getElementById(previewId);
-  const files = Array.from(fileInput.files);
-
-  preview.innerHTML = "";
-
-  if (files.length === 0) return;
-
-  const expectedHeader = "LD_CIF_OS";
-
-  files.forEach(file => {
-    const fileBox = document.createElement("div");
-    fileBox.style.marginBottom = "6px";
-    fileBox.style.color = "#333";
-
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const data = new Uint8Array(e.target.result);
-      const workbook = XLSX.read(data, { type: 'array' });
-      const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-      const firstCell = firstSheet["A1"] ? String(firstSheet["A1"].v).trim() : "";
-
-      if (firstCell !== expectedHeader) {
-        alert(`❌ Wrong file format! First column must be '${expectedHeader}'.`);
-        fileInput.value = "";
-        preview.innerHTML = "";
-      } else {
-        const sizeKB = (file.size / 1024).toFixed(1);
-        fileBox.textContent = `${file.name} (${sizeKB} KB)`;
-        preview.appendChild(fileBox);
-      }
-    };
-    reader.readAsArrayBuffer(file);
-  });
-}
-
-// Log message
+  
 function logMessage(msg) {
   const log = document.getElementById('uploadLog');
   const entry = document.createElement('div');
@@ -274,41 +271,30 @@ function logMessage(msg) {
   log.scrollTop = log.scrollHeight;
 }
 
-// Upload all files
-async function uploadFiles() {
-  const user = document.getElementById('userFile').files[0];
-  const customer = document.getElementById('customerFile').files[0];
-  const turnover = document.getElementById('turnoverFile').files[0];
-  const nbcosFiles = Array.from(document.getElementById('nbcosFile').files);
-
-  if (!user && !customer && !turnover && nbcosFiles.length === 0) {
-    alert("Please choose at least one file to upload.");
-    return;
-  }
-
-  document.getElementById("overlay").style.display = "flex";
-
+async function loadTimestamps() {
   try {
-    if (user) await uploadSingleFile(user, "user", "userProgress");
-    if (customer) await uploadSingleFile(customer, "customer", "customerProgress");
-    if (turnover) await uploadSingleFile(turnover, "turnover", "turnoverProgress");
-    if (nbcosFiles.length > 0) {
-      for (const file of nbcosFiles) {
-        await uploadSingleFile(file, "nbcos", "nbcosProgress");
-      }
-    }
-
-    alert("✅ All files uploaded successfully.");
+    const res = await fetch("https://secure-backend-tzj9.onrender.com/api/admin/upload-timestamps", {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const data = await res.json();
+    ['user', 'customer', 'turnover', 'nbcos'].forEach(label => {
+      const date = data[label];
+      const fullname = data[`${label}Fullname`] || "–";
+      const dateBox = document.getElementById('ts-' + label);
+      const nameBox = document.getElementById('by-' + label);
+      if (dateBox) dateBox.textContent = date ? new Date(date).toLocaleString() : "–";
+      if (nameBox) nameBox.textContent = `Uploaded by: ${fullname}`;
+    });
   } catch (err) {
-    alert("❌ Some uploads failed. Check logs.");
+    console.warn("❌ Failed to load timestamps:", err);
   }
-
-  document.getElementById("overlay").style.display = "none";
 }
 
-// Upload single file
-async function uploadSingleFile(file, label, progressBarId) {
+async function uploadSingleFile(file, label, progressBarId, fileInputId, previewId) {
   const progressBar = document.getElementById(progressBarId);
+  const preview = document.getElementById(previewId);
+  const fileInput = document.getElementById(fileInputId);
+
   const formData = new FormData();
   const fullname = sessionStorage.getItem("fullname") || "Unknown";
 
@@ -324,28 +310,117 @@ async function uploadSingleFile(file, label, progressBarId) {
       if (event.lengthComputable) {
         const percent = (event.loaded / event.total) * 100;
         progressBar.style.width = `${percent.toFixed(0)}%`;
+        preview.textContent = `Uploading ${percent.toFixed(0)}%...`;
       }
     };
 
     xhr.onload = () => {
       if (xhr.status === 200) {
         progressBar.style.width = `100%`;
-        logMessage(`✅ Uploaded: ${file.name}`);
+        const extension = file.name.split('.').pop();
+        const baseName = file.name.substring(0, file.name.lastIndexOf('.'));
+        const sizeKB = (file.size / 1024).toFixed(1);
+        preview.textContent = `${baseName}.${extension} (${sizeKB} KB)`;
+        logMessage(`✅ ${label} upload complete.`);
         resolve();
       } else {
-        logMessage(`❌ Failed to upload: ${file.name}`);
+        resetFile(fileInputId, previewId, progressBarId);
+        logMessage(`❌ Failed to upload ${label}`);
         reject();
       }
     };
 
     xhr.onerror = () => {
-      logMessage(`❌ Error uploading: ${file.name}`);
+      resetFile(fileInputId, previewId, progressBarId);
+      logMessage(`❌ Network error during ${label} upload`);
       reject();
     };
 
     xhr.send(formData);
   });
 }
+
+function resetFile(fileInputId, previewId, progressBarId) {
+  document.getElementById(fileInputId).value = "";
+  document.getElementById(previewId).textContent = "";
+  document.getElementById(progressBarId).style.width = "0%";
+}
+
+async function uploadFiles() {
+  const user = document.getElementById('userFile').files[0];
+  const customer = document.getElementById('customerFile').files[0];
+  const turnover = document.getElementById('turnoverFile').files[0];
+  const nbcos = document.getElementById('nbcosFile').files[0];
+
+  if (!user && !customer && !turnover && !nbcos) {
+    alert("Please choose at least one file to upload.");
+    return;
+  }
+
+  document.getElementById("overlay").style.display = "flex";
+
+  try {
+    if (user) await uploadSingleFile(user, "user", "userProgress", "userFile", "userPreview");
+    if (customer) await uploadSingleFile(customer, "customer", "customerProgress", "customerFile", "customerPreview");
+    if (turnover) await uploadSingleFile(turnover, "turnover", "turnoverProgress", "turnoverFile", "turnoverPreview");
+    if (nbcos) await uploadSingleFile(nbcos, "nbcos", "nbcosProgress", "nbcosFile", "nbcosPreview");
+
+    logMessage("✅ All uploads completed.");
+    alert("✅ All files uploaded successfully.");
+
+    await loadTimestamps();
+  } catch (err) {
+    alert("❌ Some uploads failed. Check logs.");
+  }
+
+  document.getElementById("overlay").style.display = "none";
+}
+
+async function loadRobotMessage(userPosition) {
+  try {
+    const res = await fetch("https://secure-backend-tzj9.onrender.com/api/robot-message", {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const data = await res.json();
+    if (userPosition === "admin") {
+      document.getElementById("admin-input").style.display = "block";
+      document.getElementById("newMessage").value = data.message;
+    }
+  } catch (err) {
+    console.warn("❌ Failed to fetch robot message:", err);
+  }
+}
+
+async function postRobotMessage() {
+  const msg = document.getElementById("newMessage").value.trim();
+  if (!msg) return;
+
+  try {
+    const res = await fetch("https://secure-backend-tzj9.onrender.com/api/robot-message", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({ message: msg })
+    });
+
+    if (res.ok) {
+      alert("✅ Message posted & synced.");
+      loadRobotMessage("admin");
+    } else {
+      alert("⚠️ Message saved, but GitHub sync failed.");
+    }
+  } catch (err) {
+    alert("❌ Error: " + err.message);
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const userPosition = sessionStorage.getItem("userPosition") || "user";
+  loadRobotMessage(userPosition);
+  loadTimestamps();
+});
 </script>
 </body>
 </html>
