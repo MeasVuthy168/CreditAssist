@@ -287,22 +287,27 @@ function showPreview(fileInputId, previewId) {
           XLSX.utils.book_append_sheet(newWorkbook, newSheet, firstSheetName);
 
           const wbout = XLSX.write(newWorkbook, { bookType: 'xlsx', type: 'array' });
-          fileInput.processedFile = new Blob([wbout], { type: file.type });
+          fileInput.processedFile = new Blob([wbout], { type: // Create download link
+const blobURL = URL.createObjectURL(fileInput.processedFile);
+const a = document.createElement("a");
+a.href = blobURL;
+a.download = "trimmed_nbcos.xlsx";
+a.textContent = "⬇️ Download trimmed NBCOS file";
+a.style.display = "block";
+a.style.marginTop = "8px";
+a.style.color = "#0d2d5c";
+a.style.fontSize = "13px";
 
-          // Create download link
-          const blobURL = URL.createObjectURL(fileInput.processedFile);
-          const a = document.createElement("a");
-          a.href = blobURL;
-          a.download = "trimmed_nbcos.xlsx";
-          a.textContent = "⬇️ Download trimmed NBCOS file";
-          a.style.display = "block";
-          a.style.marginTop = "8px";
-          a.style.color = "#0d2d5c";
-          a.style.fontSize = "13px";
+// Revoke the blob URL after user clicks it (important for iOS)
+a.onclick = () => {
+  setTimeout(() => URL.revokeObjectURL(blobURL), 100);
+};
 
           setTimeout(() => {
-            preview.innerHTML = ""; // Clear spinner after processing
-            preview.appendChild(a);
+  preview.innerHTML = ""; // clear spinner
+  preview.appendChild(a); // add download link
+  preview.appendChild(successText);
+}, 300);
 
             const successText = document.createElement("div");
             successText.textContent = `✅ Trim Success: ${baseName}.${extension} (${sizeKB} KB)`;
