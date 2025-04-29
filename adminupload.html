@@ -43,6 +43,12 @@
       margin: 10px auto;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
+
+    .log-box {
+  overflow-y: auto;
+  font-family: monospace;
+  
+}
     .admin-title {
       text-align: center;
       font-weight: bold;
@@ -342,9 +348,15 @@ function logMessage(msg) {
   const log = document.getElementById('uploadLog');
   const entry = document.createElement('div');
   entry.className = 'log-entry';
+  entry.style.fontSize = '13px';
+  entry.style.margin = '2px 0';
   entry.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
   log.appendChild(entry);
-  log.scrollTop = log.scrollHeight;
+  log.scrollTop = log.scrollHeight; // Auto scroll down
+}
+  function clearLog() {
+  const log = document.getElementById('uploadLog');
+  log.innerHTML = '';
 }
 
 async function loadTimestamps() {
@@ -398,20 +410,28 @@ async function uploadSingleFile(file, label, progressBarId, fileInputId, preview
     };
 
     xhr.onload = () => {
-      if (xhr.status === 200) {
-        progressBar.style.width = `100%`;
-        const extension = file.name.split('.').pop();
-        const baseName = file.name.substring(0, file.name.lastIndexOf('.'));
-        const sizeKB = (file.size / 1024).toFixed(1);
-        preview.textContent = `${baseName}.${extension} (${sizeKB} KB)`;
-        logMessage(`✅ ${label} upload complete.`);
-        resolve();
-      } else {
-        resetFile(fileInputId, previewId, progressBarId);
-        logMessage(`❌ Failed to upload ${label}`);
-        reject();
-      }
-    };
+  if (xhr.status === 200) {
+    const response = JSON.parse(xhr.responseText);
+
+    if (response.logs && Array.isArray(response.logs)) {
+      response.logs.forEach(log => logMessage(log));
+    } else {
+      logMessage("✅ Upload completed.");
+    }
+
+    progressBar.style.width = `100%`;
+    const extension = file.name.split('.').pop();
+    const baseName = file.name.substring(0, file.name.lastIndexOf('.'));
+    const sizeKB = (file.size / 1024).toFixed(1);
+    preview.textContent = `${baseName}.${extension} (${sizeKB} KB)`;
+
+    resolve();
+  } else {
+    resetFile(fileInputId, previewId, progressBarId);
+    logMessage(`❌ Failed to upload ${label}`);
+    reject();
+  }
+};
 
     xhr.onerror = () => {
       resetFile(fileInputId, previewId, progressBarId);
