@@ -136,7 +136,21 @@
       font-weight: bold;
       box-shadow: 0 4px 12px rgba(0,0,0,0.25);
     }
-  </style>
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 3px solid #ccc;
+  border-top: 3px solid #0d2d5c;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+</style>
 </head>
 
 <body>
@@ -235,6 +249,8 @@ function showPreview(fileInputId, previewId) {
 
     if (expectedFirstHeaders[fileInputId]) {
       const reader = new FileReader();
+      preview.innerHTML = `<div class="spinner"></div> <span style="margin-left:8px;">Processing...</span>`; // Show spinner immediately
+
       reader.onload = (e) => {
         const data = new Uint8Array(e.target.result);
         const workbook = XLSX.read(data, { type: 'array' });
@@ -262,21 +278,28 @@ function showPreview(fileInputId, previewId) {
             return filtered;
           });
 
-          // Log preview of trimmed data
           console.log("✅ Trimmed NBCOS Data Preview:", trimmed.slice(0, 5));
 
           const newSheet = XLSX.utils.json_to_sheet(trimmed);
           const newWorkbook = XLSX.utils.book_new();
           XLSX.utils.book_append_sheet(newWorkbook, newSheet, firstSheetName);
 
-          // Overwrite original workbook sheet for upload
-          workbook.Sheets[firstSheetName] = newSheet;
-          const wbout = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+          // Save trimmed file
+          const wbout = XLSX.write(newWorkbook, { bookType: 'xlsx', type: 'array' });
           fileInput.processedFile = new Blob([wbout], { type: file.type });
-        }
 
-        preview.textContent = `${baseName}.${extension} (${sizeKB} KB)`;
+          // After trim finished, show success
+          setTimeout(() => {
+            preview.innerHTML = `✅ Trim Success: ${baseName}.${extension} (${sizeKB} KB)`;
+          }, 300); // short delay so spinner shows
+        } else {
+          // If not NBCOS
+          setTimeout(() => {
+            preview.textContent = `${baseName}.${extension} (${sizeKB} KB)`;
+          }, 300);
+        }
       };
+
       reader.readAsArrayBuffer(file);
     } else {
       preview.textContent = `${baseName}.${extension} (${sizeKB} KB)`;
