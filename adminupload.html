@@ -370,9 +370,17 @@ async function uploadSingleFile(file, label, progressBarId, fileInputId, preview
   const fullname = sessionStorage.getItem("fullname") || "Unknown";
 
 const fileToSend = fileInput.processedFile || file;
-formData.append(label, fileToSend);
-  formData.append("fullname", fullname);
 
+if (!fileToSend || !(fileToSend instanceof Blob)) {
+  preview.textContent = '';
+  logMessage(`❌ File "${label}" is invalid or not processed correctly.`);
+  resetFile(fileInputId, previewId, progressBarId);
+  reject();
+  return;
+}
+
+formData.append(label, fileToSend);
+formData.append("fullname", fullname);
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
     xhr.open("POST", "https://secure-backend-tzj9.onrender.com/api/admin/upload");
