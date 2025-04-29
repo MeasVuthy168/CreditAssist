@@ -395,20 +395,32 @@ formData.append("fullname", fullname);
     };
 
     xhr.onload = () => {
-      if (xhr.status === 200) {
-        progressBar.style.width = `100%`;
-        const extension = file.name.split('.').pop();
-        const baseName = file.name.substring(0, file.name.lastIndexOf('.'));
-        const sizeKB = (file.size / 1024).toFixed(1);
-        preview.textContent = `${baseName}.${extension} (${sizeKB} KB)`;
-        logMessage(`✅ ${label} upload complete.`);
-        resolve();
-      } else {
-        resetFile(fileInputId, previewId, progressBarId);
-        logMessage(`❌ Failed to upload ${label}`);
-        reject();
-      }
-    };
+  if (xhr.status === 200) {
+    progressBar.style.width = `100%`;
+    const extension = file.name.split('.').pop();
+    const baseName = file.name.substring(0, file.name.lastIndexOf('.'));
+    const sizeKB = (file.size / 1024).toFixed(1);
+    preview.textContent = `${baseName}.${extension} (${sizeKB} KB)`;
+    logMessage(`✅ ${label} upload complete.`);
+    resolve();
+  } else {
+    resetFile(fileInputId, previewId, progressBarId);
+
+    let response = {};
+    try {
+      response = JSON.parse(xhr.responseText);
+    } catch (e) {
+      response.message = xhr.statusText;
+    }
+
+    logMessage(`❌ Failed to upload ${label}: ${response.message}`);
+    if (response.logs) {
+      response.logs.forEach(log => logMessage(log));
+    }
+
+    reject();
+  }
+};
 
     xhr.onerror = () => {
       resetFile(fileInputId, previewId, progressBarId);
