@@ -441,6 +441,7 @@ async function uploadFiles() {
   }
 
   document.getElementById("overlay").style.display = "flex";
+  clearLog(); // Clear old logs first
 
   try {
     if (user) await uploadSingleFile(user, "user", "userProgress", "userFile", "userPreview");
@@ -453,6 +454,7 @@ async function uploadFiles() {
 
     await loadTimestamps();
   } catch (err) {
+    logMessage(`❌ Error: ${err.message}`);
     alert("❌ Some uploads failed. Check logs.");
   }
 
