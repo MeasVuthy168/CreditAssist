@@ -374,7 +374,13 @@ async function uploadSingleFile(file, label, progressBarId, fileInputId, preview
   const formData = new FormData();
   const fullname = sessionStorage.getItem("fullname") || "Unknown";
 
-const fileToSend = fileInput.processedFile || file;
+let fileToSend = fileInput.processedFile || file;
+
+// If processedFile exists, turn it into a real File (with filename and type)
+if (fileInput.processedFile) {
+  fileToSend = new File([fileInput.processedFile], file.name, { type: file.type });
+}
+
 formData.append(label, fileToSend);
   formData.append("fullname", fullname);
 
