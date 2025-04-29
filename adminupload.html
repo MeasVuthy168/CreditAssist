@@ -136,10 +136,6 @@
       font-weight: bold;
       box-shadow: 0 4px 12px rgba(0,0,0,0.25);
     }
-    .file-preview-item {
-      margin-bottom: 6px;
-      color: #333;
-    }
   </style>
 </head>
 
@@ -153,12 +149,40 @@
   <div class="upload-box-title">📄 Upload Excel Files (.xlsx)</div>
 
   <label class="upload-label">
+    <div>User Data</div>
+    <div class="uploader" id="by-user">Uploaded by: –</div>
+    <div class="timestamp" id="ts-user">–</div>
+  </label>
+  <input type="file" id="userFile" accept=".xlsx" onchange="showPreview('userFile', 'userPreview')" />
+  <div class="file-info" id="userPreview"></div>
+  <div class="progress-container"><div class="progress-bar" id="userProgress"></div></div>
+
+  <label class="upload-label">
+    <div>Customer Data</div>
+    <div class="uploader" id="by-customer">Uploaded by: –</div>
+    <div class="timestamp" id="ts-customer">–</div>
+  </label>
+  <input type="file" id="customerFile" accept=".xlsx" onchange="showPreview('customerFile', 'customerPreview')" />
+  <div class="file-info" id="customerPreview"></div>
+  <div class="progress-container"><div class="progress-bar" id="customerProgress"></div></div>
+
+  <label class="upload-label">
+    <div>Turnover Data</div>
+    <div class="uploader" id="by-turnover">Uploaded by: –</div>
+    <div class="timestamp" id="ts-turnover">–</div>
+  </label>
+  <input type="file" id="turnoverFile" accept=".xlsx" onchange="showPreview('turnoverFile', 'turnoverPreview')" />
+  <div class="file-info" id="turnoverPreview"></div>
+  <div class="progress-container"><div class="progress-bar" id="turnoverProgress"></div></div>
+
+  <label class="upload-label">
     <div>NBCOS Data (Multiple Files)</div>
     <div class="uploader" id="by-nbcos">Uploaded by: –</div>
     <div class="timestamp" id="ts-nbcos">–</div>
   </label>
-  <input type="file" id="nbcosFile" multiple accept=".xlsx" onchange="showPreview('nbcosFile', 'nbcosPreview')" />
-  <div id="nbcosPreview" style="margin-top:8px;"></div>
+  <input type="file" id="nbcosFile" multiple accept=".xlsx" onchange="showPreviewMultiple('nbcosFile', 'nbcosPreview')" />
+  <div class="file-info" id="nbcosPreview"></div>
+  <div class="progress-container"><div class="progress-bar" id="nbcosProgress"></div></div>
 
   <button class="upload-btn" onclick="uploadFiles()">📤 Upload to MongoDB</button>
 </div>
@@ -167,13 +191,13 @@
 <div id="overlay"><span>Uploading... Please wait</span></div>
 
 <script>
-// Token Validation
 const token = sessionStorage.getItem('token');
+
+// Token Validation
 if (!token || isTokenExpired(token)) {
   alert("⚠️ Session expired. Please login again.");
   window.location.href = "login.html";
 }
-
 function isTokenExpired(token) {
   try {
     const payload = JSON.parse(atob(token.split('.')[1]));
@@ -183,8 +207,27 @@ function isTokenExpired(token) {
   }
 }
 
-// Preview function
+// Show preview (single)
 function showPreview(fileInputId, previewId) {
+  const fileInput = document.getElementById(fileInputId);
+  const preview = document.getElementById(previewId);
+  const file = fileInput.files[0];
+
+  if (file && file.name.endsWith(".xlsx")) {
+    const extension = file.name.split('.').pop();
+    const baseName = file.name.substring(0, file.name.lastIndexOf('.'));
+    const sizeKB = (file.size / 1024).toFixed(1);
+
+    preview.textContent = `${baseName}.${extension} (${sizeKB} KB)`;
+  } else {
+    preview.textContent = '';
+    fileInput.value = '';
+    alert('❌ Invalid file type. Please upload .xlsx file only.');
+  }
+}
+
+// Show preview (NBCOS multiple)
+function showPreviewMultiple(fileInputId, previewId) {
   const fileInput = document.getElementById(fileInputId);
   const preview = document.getElementById(previewId);
   const files = Array.from(fileInput.files);
@@ -197,7 +240,8 @@ function showPreview(fileInputId, previewId) {
 
   files.forEach(file => {
     const fileBox = document.createElement("div");
-    fileBox.className = "file-preview-item";
+    fileBox.style.marginBottom = "6px";
+    fileBox.style.color = "#333";
 
     const reader = new FileReader();
     reader.onload = (e) => {
@@ -220,7 +264,7 @@ function showPreview(fileInputId, previewId) {
   });
 }
 
-// Upload log
+// Log message
 function logMessage(msg) {
   const log = document.getElementById('uploadLog');
   const entry = document.createElement('div');
@@ -230,22 +274,31 @@ function logMessage(msg) {
   log.scrollTop = log.scrollHeight;
 }
 
-// Upload files
+// Upload all files
 async function uploadFiles() {
+  const user = document.getElementById('userFile').files[0];
+  const customer = document.getElementById('customerFile').files[0];
+  const turnover = document.getElementById('turnoverFile').files[0];
   const nbcosFiles = Array.from(document.getElementById('nbcosFile').files);
 
-  if (nbcosFiles.length === 0) {
-    alert("Please choose at least one NBCOS file to upload.");
+  if (!user && !customer && !turnover && nbcosFiles.length === 0) {
+    alert("Please choose at least one file to upload.");
     return;
   }
 
   document.getElementById("overlay").style.display = "flex";
 
   try {
-    for (const file of nbcosFiles) {
-      await uploadSingleFile(file, "nbcos");
+    if (user) await uploadSingleFile(user, "user", "userProgress");
+    if (customer) await uploadSingleFile(customer, "customer", "customerProgress");
+    if (turnover) await uploadSingleFile(turnover, "turnover", "turnoverProgress");
+    if (nbcosFiles.length > 0) {
+      for (const file of nbcosFiles) {
+        await uploadSingleFile(file, "nbcos", "nbcosProgress");
+      }
     }
-    alert("✅ All NBCOS files uploaded successfully.");
+
+    alert("✅ All files uploaded successfully.");
   } catch (err) {
     alert("❌ Some uploads failed. Check logs.");
   }
@@ -254,7 +307,8 @@ async function uploadFiles() {
 }
 
 // Upload single file
-async function uploadSingleFile(file, label) {
+async function uploadSingleFile(file, label, progressBarId) {
+  const progressBar = document.getElementById(progressBarId);
   const formData = new FormData();
   const fullname = sessionStorage.getItem("fullname") || "Unknown";
 
@@ -269,22 +323,23 @@ async function uploadSingleFile(file, label) {
     xhr.upload.onprogress = (event) => {
       if (event.lengthComputable) {
         const percent = (event.loaded / event.total) * 100;
-        console.log(`Uploading ${file.name}: ${percent.toFixed(0)}%`);
+        progressBar.style.width = `${percent.toFixed(0)}%`;
       }
     };
 
     xhr.onload = () => {
       if (xhr.status === 200) {
+        progressBar.style.width = `100%`;
         logMessage(`✅ Uploaded: ${file.name}`);
         resolve();
       } else {
-        logMessage(`❌ Failed: ${file.name}`);
+        logMessage(`❌ Failed to upload: ${file.name}`);
         reject();
       }
     };
 
     xhr.onerror = () => {
-      logMessage(`❌ Error: ${file.name}`);
+      logMessage(`❌ Error uploading: ${file.name}`);
       reject();
     };
 
