@@ -216,6 +216,7 @@ function isTokenExpired(token) {
 }
 
 function showPreview(fileInputId, previewId) {
+function showPreview(fileInputId, previewId) {
   const fileInput = document.getElementById(fileInputId);
   const preview = document.getElementById(previewId);
   const file = fileInput.files[0];
@@ -225,7 +226,6 @@ function showPreview(fileInputId, previewId) {
     const baseName = file.name.substring(0, file.name.lastIndexOf('.'));
     const sizeKB = (file.size / 1024).toFixed(1);
 
-    // Define expected header for each file
     const expectedFirstHeaders = {
       userFile: "username",
       customerFile: "CIF",
@@ -238,20 +238,44 @@ function showPreview(fileInputId, previewId) {
       reader.onload = (e) => {
         const data = new Uint8Array(e.target.result);
         const workbook = XLSX.read(data, { type: 'array' });
-        const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-        const firstCell = firstSheet["A1"] ? String(firstSheet["A1"].v).trim() : "";
+        const firstSheetName = workbook.SheetNames[0];
+        const sheet = workbook.Sheets[firstSheetName];
+        const json = XLSX.utils.sheet_to_json(sheet, { defval: "" });
 
-        if (firstCell !== expectedFirstHeaders[fileInputId]) {
+        const firstHeader = Object.keys(json[0] || {})[0] || "";
+
+        if (firstHeader !== expectedFirstHeaders[fileInputId]) {
           alert(`❌ Wrong file format! First column must be '${expectedFirstHeaders[fileInputId]}'.`);
           fileInput.value = "";
           preview.textContent = "";
-        } else {
-          preview.textContent = `${baseName}.${extension} (${sizeKB} KB)`;
+          return;
         }
+
+        // Special: Trim NBCOS columns
+        if (fileInputId === "nbcosFile") {
+          const allowed = ['LD_CIF_OS', 'LD_CUSTOMER_ID', 'CONTRACT_LD', 'NAME_KHMER', 'NAME_ENG'];
+          const trimmed = json.map(row => {
+            const filtered = {};
+            for (const key of allowed) {
+              filtered[key] = row[key] || "";
+            }
+            return filtered;
+          });
+
+          const newSheet = XLSX.utils.json_to_sheet(trimmed);
+          const newWorkbook = XLSX.utils.book_new();
+          XLSX.utils.book_append_sheet(newWorkbook, newSheet, firstSheetName);
+
+          // Overwrite original workbook sheet for upload
+          workbook.Sheets[firstSheetName] = newSheet;
+          const wbout = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+          fileInput.processedFile = new Blob([wbout], { type: file.type });
+        }
+
+        preview.textContent = `${baseName}.${extension} (${sizeKB} KB)`;
       };
       reader.readAsArrayBuffer(file);
     } else {
-      // No special header check
       preview.textContent = `${baseName}.${extension} (${sizeKB} KB)`;
     }
 
