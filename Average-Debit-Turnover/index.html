@@ -381,7 +381,7 @@ async function fetchAndFillData(cif) {
 
       row.cells[1].innerText = parseFloat(match.AMT_IN).toLocaleString();
       row.cells[2].innerText = parseFloat(match.CURRENT_OD).toLocaleString();
-      row.cells[3].innerText = !isNaN(turnoverPercent) ? turnoverPercent.toFixed(1) + '%' : '-';
+      row.cells[3].innerText = !isNaN(turnoverPercent) ? turnoverPercent.toFixed(3) + '%' : '-';
       row.cells[4].innerText = match.EFFECTIVE_DATE ? formatYMD(match.EFFECTIVE_DATE) : '';
 
       if (match.EFFECTIVE_DATE && formatYMD(match.EFFECTIVE_DATE) === formatYMD(latestEff)) {
