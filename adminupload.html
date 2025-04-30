@@ -235,13 +235,20 @@ function isTokenExpired(token) {
 
 // ✅ Unified allowedColumns list
 const allowedColumns = {
+const allowedColumns = {
   userFile: ['username', 'password', 'position', 'fullname', 'phone', 'image'],
   customerFile: ['CIF', 'Name', 'Address', 'Phone_Number'],
   turnoverFile: ['MONTH', 'CUSTOMER', 'Name(Eng)', 'CURRENT_OD', 'TURNOVER_RATE', 'AMT_IN', 'Effective_Date'],
   nbcosFile: ['LD_CIF_OS', 'LD_CUSTOMER_ID', 'CONTRACT_LD', 'NAME_KHMER', 'NAME_ENG']
 };
+// ✅ expectedFirstHeaders → for validating the first column name before trimming
+const expectedFirstHeaders = {
+  userFile: "username",
+  customerFile: "CIF",
+  turnoverFile: "MONTH",
+  nbcosFile: "LD_CIF_OS"
+};
 
-// ✅ Show preview + trim
 function showPreview(fileInputId, previewId) {
   const fileInput = document.getElementById(fileInputId);
   const preview = document.getElementById(previewId);
@@ -268,6 +275,17 @@ function showPreview(fileInputId, previewId) {
         return;
       }
 
+      // ✅ First column validation
+      const firstHeader = Object.keys(json[0])[0] || "";
+      const expectedHeader = expectedFirstHeaders[fileInputId];
+      if (expectedHeader && firstHeader !== expectedHeader) {
+        alert(`❌ Wrong file format! First column must be '${expectedHeader}'.`);
+        fileInput.value = "";
+        preview.innerHTML = '';
+        return;
+      }
+
+      // ✅ Trim to allowed columns
       const allowed = allowedColumns[fileInputId];
       if (allowed) {
         const trimmed = json.map(row => {
