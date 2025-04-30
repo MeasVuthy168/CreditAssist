@@ -280,18 +280,19 @@
 
   <!-- ✅ Spinner container -->
   <div id="loadingSpinnerWrapper"><div class="spinner"></div></div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <script>
-// ✅ Check Token First
+// ✅ Token Protection
 const token = sessionStorage.getItem('token');
 if (!token) {
   alert("Session expired or unauthorized access.");
   window.location.href = "../login.html";
 }
 
-// ✅ Auto Logout Setup
+// ✅ Auto Logout
 const AUTO_LOGOUT_MINUTES = 1;
 let logoutTimer;
 function resetLogoutTimer() {
@@ -310,7 +311,7 @@ function setupAutoLogoutEvents() {
 }
 window.addEventListener('load', setupAutoLogoutEvents);
 
-// ✅ Original Scripts
+// ✅ Variables and Helpers
 let combinedData = [];
 let monthList = [];
 
@@ -349,7 +350,7 @@ function formatMonth(isoDateStr) {
 
 function formatYMD(dateInput) {
   const d = new Date(dateInput);
-  return d.toISOString().split('T')[0]; // "YYYY-MM-DD"
+  return isNaN(d.getTime()) ? '' : d.toISOString().split('T')[0]; // YYYY-MM-DD
 }
 
 async function loadAllData() {
@@ -365,15 +366,9 @@ async function fetchAndFillData(cif) {
   let totalAmtIn = 0, totalOd = 0, totalRate = 0, count = 0;
   const tbody = document.getElementById('data-body');
 
-  const latestEff = combinedData
-    .filter(d => d.CUSTOMER === cif && d.Effective_Date)
-    .map(d => new Date(d.Effective_Date))
-    .sort((a, b) => b - a)[0];
-
-  const oldestEff = combinedData
-    .filter(d => d.CUSTOMER === cif && d.Effective_Date)
-    .map(d => new Date(d.Effective_Date))
-    .sort((a, b) => a - b)[0];
+  const records = combinedData.filter(d => d.CUSTOMER === cif && d.Effective_Date);
+  const latestEff = records.map(d => new Date(d.Effective_Date)).sort((a, b) => b - a)[0];
+  const oldestEff = records.map(d => new Date(d.Effective_Date)).sort((a, b) => a - b)[0];
 
   [...tbody.rows].forEach(row => {
     const month = row.cells[0].innerText;
@@ -384,19 +379,27 @@ async function fetchAndFillData(cif) {
     if (match) {
       row.cells[1].innerText = parseFloat(match.AMT_IN).toLocaleString();
       row.cells[2].innerText = parseFloat(match.CURRENT_OD).toLocaleString();
-      row.cells[3].innerText = match.TURNOVER_RATE + '%';
-      row.cells[4].innerText = formatYMD(match.Effective_Date);
+      row.cells[3].innerText = match.TURNOVER ? parseFloat(match.TURNOVER).toFixed(3) + '%' : '-';
+      row.cells[4].innerText = match.Effective_Date ? formatYMD(match.Effective_Date) : '';
 
       totalAmtIn += parseFloat(match.AMT_IN);
       totalOd += parseFloat(match.CURRENT_OD);
-      totalRate += parseFloat(match.TURNOVER_RATE);
-      count++;
+      if (!isNaN(parseFloat(match.TURNOVER))) {
+        totalRate += parseFloat(match.TURNOVER);
+        count++;
+      }
 
-      if (formatYMD(match.Effective_Date) === formatYMD(latestEff)) row.classList.add('newest');
-      if (formatYMD(match.Effective_Date) === formatYMD(oldestEff)) row.classList.add('oldest');
+      if (match.Effective_Date && latestEff && formatYMD(match.Effective_Date) === formatYMD(latestEff)) {
+        row.classList.add('newest');
+      }
+      if (match.Effective_Date && oldestEff && formatYMD(match.Effective_Date) === formatYMD(oldestEff)) {
+        row.classList.add('oldest');
+      }
     } else {
       row.classList.add("not-found");
-      row.cells[1].innerText = row.cells[2].innerText = row.cells[3].innerText = row.cells[4].innerText = 'No Data';
+      for (let i = 1; i < 5; i++) {
+        row.cells[i].innerText = 'No Data';
+      }
     }
   });
 
@@ -505,5 +508,6 @@ function printPage() {
   }).save();
 }
 </script>
+
 </body>
 </html>
