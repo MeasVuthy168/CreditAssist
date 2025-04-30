@@ -281,11 +281,14 @@
   <!-- ✅ Spinner container -->
   <div id="loadingSpinnerWrapper"><div class="spinner"></div></div>
 
+
+
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <script>
-// ✅ Token Protection
+// ✅ Session Protection
 const token = sessionStorage.getItem('token');
 if (!token) {
   alert("Session expired or unauthorized access.");
@@ -311,7 +314,7 @@ function setupAutoLogoutEvents() {
 }
 window.addEventListener('load', setupAutoLogoutEvents);
 
-// ✅ Variables and Helpers
+// ✅ Main Variables and Helpers
 let combinedData = [];
 let monthList = [];
 
@@ -366,7 +369,7 @@ async function fetchAndFillData(cif) {
   let totalAmtIn = 0, totalOd = 0, totalRate = 0, count = 0;
   const tbody = document.getElementById('data-body');
 
-  const records = combinedData.filter(d => d.CUSTOMER === cif && d.Effective_Date);
+  const records = combinedData.filter(d => d.CUSTOMER === cif && d.EFFECTIVE_DATE);
   const latestEff = records.map(d => new Date(d.EFFECTIVE_DATE)).sort((a, b) => b - a)[0];
   const oldestEff = records.map(d => new Date(d.EFFECTIVE_DATE)).sort((a, b) => a - b)[0];
 
@@ -389,10 +392,10 @@ async function fetchAndFillData(cif) {
         count++;
       }
 
-      if (match.EFFECTIVE_DATE && latestEff && formatYMD(match.EFFECTIVE_DATE === formatYMD(latestEff)) {
+      if (match.EFFECTIVE_DATE && latestEff && formatYMD(match.EFFECTIVE_DATE) === formatYMD(latestEff)) {
         row.classList.add('newest');
       }
-      if (match.EFFECTIVE_DATE && oldestEff && formatYMD(match.EFFECTIVE_DATE === formatYMD(oldestEff)) {
+      if (match.EFFECTIVE_DATE && oldestEff && formatYMD(match.EFFECTIVE_DATE) === formatYMD(oldestEff)) {
         row.classList.add('oldest');
       }
     } else {
@@ -408,6 +411,7 @@ async function fetchAndFillData(cif) {
   document.getElementById('avg-turnover-rate').innerText = count ? (totalRate / count).toFixed(2) + '%' : '';
 }
 
+// ✅ Event Listeners
 document.getElementById('prepared-date').addEventListener('change', async (e) => {
   const selectedDate = e.target.value;
   if (selectedDate) {
@@ -439,6 +443,7 @@ document.getElementById('input-cif').addEventListener('change', async (e) => {
   }
 });
 
+// ✅ Export Functions
 function exportToExcel() {
   const preparedDate = document.getElementById("prepared-date").value || '-';
   const cif = document.getElementById("input-cif").value.trim() || '-';
@@ -508,6 +513,5 @@ function printPage() {
   }).save();
 }
 </script>
-
 </body>
 </html>
