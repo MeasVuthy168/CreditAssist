@@ -281,9 +281,6 @@
   <!-- ✅ Spinner container -->
   <div id="loadingSpinnerWrapper"><div class="spinner"></div></div>
 
-
-
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
@@ -314,7 +311,7 @@ function setupAutoLogoutEvents() {
 }
 window.addEventListener('load', setupAutoLogoutEvents);
 
-// ✅ Main Variables and Helpers
+// ✅ Helpers
 let combinedData = [];
 let monthList = [];
 
@@ -353,7 +350,7 @@ function formatMonth(isoDateStr) {
 
 function formatYMD(dateInput) {
   const d = new Date(dateInput);
-  return isNaN(d.getTime()) ? '' : d.toISOString().split('T')[0]; // YYYY-MM-DD
+  return isNaN(d.getTime()) ? '' : d.toISOString().split('T')[0];
 }
 
 async function loadAllData() {
@@ -380,22 +377,22 @@ async function fetchAndFillData(cif) {
     );
 
     if (match) {
+      const turnoverPercent = match.TURNOVER ? parseFloat(match.TURNOVER) * 100 : 0;
+
       row.cells[1].innerText = parseFloat(match.AMT_IN).toLocaleString();
       row.cells[2].innerText = parseFloat(match.CURRENT_OD).toLocaleString();
-      row.cells[3].innerText = match.TURNOVER ? parseFloat(match.TURNOVER).toFixed(3) + '%' : '-';
+      row.cells[3].innerText = !isNaN(turnoverPercent) ? turnoverPercent.toFixed(3) + '%' : '-';
       row.cells[4].innerText = match.EFFECTIVE_DATE ? formatYMD(match.EFFECTIVE_DATE) : '';
 
-      totalAmtIn += parseFloat(match.AMT_IN);
-      totalOd += parseFloat(match.CURRENT_OD);
-      if (!isNaN(parseFloat(match.TURNOVER))) {
-        totalRate += parseFloat(match.TURNOVER);
+      if (match.EFFECTIVE_DATE && formatYMD(match.EFFECTIVE_DATE) === formatYMD(latestEff)) {
+        row.classList.add('newest');
+        totalAmtIn += parseFloat(match.AMT_IN);
+        totalOd += parseFloat(match.CURRENT_OD);
+        totalRate += turnoverPercent;
         count++;
       }
 
-      if (match.EFFECTIVE_DATE && latestEff && formatYMD(match.EFFECTIVE_DATE) === formatYMD(latestEff)) {
-        row.classList.add('newest');
-      }
-      if (match.EFFECTIVE_DATE && oldestEff && formatYMD(match.EFFECTIVE_DATE) === formatYMD(oldestEff)) {
+      if (match.EFFECTIVE_DATE && formatYMD(match.EFFECTIVE_DATE) === formatYMD(oldestEff)) {
         row.classList.add('oldest');
       }
     } else {
@@ -411,7 +408,7 @@ async function fetchAndFillData(cif) {
   document.getElementById('avg-turnover-rate').innerText = count ? (totalRate / count).toFixed(2) + '%' : '';
 }
 
-// ✅ Event Listeners
+// ✅ Events
 document.getElementById('prepared-date').addEventListener('change', async (e) => {
   const selectedDate = e.target.value;
   if (selectedDate) {
@@ -443,7 +440,7 @@ document.getElementById('input-cif').addEventListener('change', async (e) => {
   }
 });
 
-// ✅ Export Functions
+// ✅ Export
 function exportToExcel() {
   const preparedDate = document.getElementById("prepared-date").value || '-';
   const cif = document.getElementById("input-cif").value.trim() || '-';
@@ -512,6 +509,6 @@ function printPage() {
     jsPDF: { unit: "in", format: "a4", orientation: "portrait" }
   }).save();
 }
-</script>
+</script>    
 </body>
 </html>
