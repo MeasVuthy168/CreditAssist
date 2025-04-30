@@ -377,7 +377,7 @@ async function fetchAndFillData(cif) {
     );
 
     if (match) {
-      const turnoverPercent = match.TURNOVER ? parseFloat(match.TURNOVER) * 100 : 0;
+      const turnoverPercent = Number(match.TURNOVER) * 100;
 
       row.cells[1].innerText = parseFloat(match.AMT_IN).toLocaleString();
       row.cells[2].innerText = parseFloat(match.CURRENT_OD).toLocaleString();
