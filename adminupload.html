@@ -233,7 +233,15 @@ function isTokenExpired(token) {
   }
 }
 
+// ✅ Unified allowedColumns list
+const allowedColumns = {
+  userFile: ['username', 'password', 'position', 'fullname', 'phone', 'image'],
+  customerFile: ['CIF', 'Name', 'Address', 'Phone_Number'],
+  turnoverFile: ['MONTH', 'CUSTOMER', 'Name(Eng)', 'CURRENT_OD', 'TURNOVER_RATE', 'AMT_IN', 'Effective_Date'],
+  nbcosFile: ['LD_CIF_OS', 'LD_CUSTOMER_ID', 'CONTRACT_LD', 'NAME_KHMER', 'NAME_ENG']
+};
 
+// ✅ Show preview + trim
 function showPreview(fileInputId, previewId) {
   const fileInput = document.getElementById(fileInputId);
   const preview = document.getElementById(previewId);
@@ -244,96 +252,72 @@ function showPreview(fileInputId, previewId) {
     const baseName = file.name.substring(0, file.name.lastIndexOf('.'));
     const sizeKB = (file.size / 1024).toFixed(1);
 
-    const expectedFirstHeaders = {
-      userFile: "username",
-      customerFile: "CIF",
-      turnoverFile: "MONTH",
-      nbcosFile: "LD_CIF_OS"
+    preview.innerHTML = `<div class="spinner"></div> <span style="margin-left:8px;">Processing...</span>`;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const data = new Uint8Array(e.target.result);
+      const workbook = XLSX.read(data, { type: 'array' });
+      const firstSheetName = workbook.SheetNames[0];
+      const sheet = workbook.Sheets[firstSheetName];
+      const json = XLSX.utils.sheet_to_json(sheet, { defval: "" });
+
+      if (!json || json.length === 0) {
+        preview.innerHTML = '❌ No rows found.';
+        fileInput.value = '';
+        return;
+      }
+
+      const allowed = allowedColumns[fileInputId];
+      if (allowed) {
+        const trimmed = json.map(row => {
+          const filtered = {};
+          for (const key of allowed) {
+            filtered[key] = row[key] || "";
+          }
+          return filtered;
+        });
+
+        const newSheet = XLSX.utils.json_to_sheet(trimmed);
+        const newWorkbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(newWorkbook, newSheet, firstSheetName);
+
+        const wbout = XLSX.write(newWorkbook, { bookType: 'xlsx', type: 'array' });
+        fileInput.processedFile = new Blob([wbout], { type: file.type });
+
+        const blobURL = URL.createObjectURL(fileInput.processedFile);
+        const a = document.createElement("a");
+        a.href = blobURL;
+        a.download = `trimmed_${fileInputId.replace('File','')}.xlsx`;
+        a.textContent = "⬇️ Download trimmed file";
+        a.style.display = "block";
+        a.style.marginTop = "8px";
+        a.style.color = "#0d2d5c";
+        a.style.fontSize = "13px";
+
+        setTimeout(() => {
+          preview.innerHTML = "";
+          preview.appendChild(a);
+
+          const successText = document.createElement("div");
+          successText.textContent = `✅ Trim Success: ${baseName}.${extension} (${sizeKB} KB)`;
+          successText.style.marginTop = "6px";
+          successText.style.color = "#0d2d5c";
+          successText.style.fontSize = "13px";
+          preview.appendChild(successText);
+        }, 300);
+      } else {
+        preview.textContent = `✅ ${baseName}.${extension} (${sizeKB} KB)`;
+      }
     };
-
-const allowedColumns = {
-  userFile: ['username', 'password', 'position', 'fullname', 'phone', 'image'],
-  customerFile: ['CIF', 'Name', 'Address', 'Phone_Number'],
-  turnoverFile: ['MONTH', 'CUSTOMER', 'Name(Eng)', 'CURRENT_OD', 'TURNOVER_RATE', 'AMT_IN', 'Effective_Date']
-};
-    
-    if (expectedFirstHeaders[fileInputId]) {
-      const reader = new FileReader();
-      
-      preview.innerHTML = ""; // Clear any old preview content
-      preview.innerHTML = `<div class="spinner"></div> <span style="margin-left:8px;">Processing...</span>`;
-
-      reader.onload = (e) => {
-        const data = new Uint8Array(e.target.result);
-        const workbook = XLSX.read(data, { type: 'array' });
-        const firstSheetName = workbook.SheetNames[0];
-        const sheet = workbook.Sheets[firstSheetName];
-        const json = XLSX.utils.sheet_to_json(sheet, { defval: "" });
-
-        const firstHeader = Object.keys(json[0] || {})[0] || "";
-
-        if (firstHeader !== expectedFirstHeaders[fileInputId]) {
-          alert(`❌ Wrong file format! First column must be '${expectedFirstHeaders[fileInputId]}'.`);
-          fileInput.value = "";
-          preview.innerHTML = ""; // Clear spinner
-          return;
-        }
-
-        // Special handling for NBCOS file
-        if (allowedColumns[fileInputId]) {
-  const allowed = allowedColumns[fileInputId];
-  const trimmed = json.map(row => {
-    const filtered = {};
-    for (const key of allowed) {
-      filtered[key] = row[key] || "";
-    }
-    return filtered;
-  });
-
-  const newSheet = XLSX.utils.json_to_sheet(trimmed);
-  const newWorkbook = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(newWorkbook, newSheet, firstSheetName);
-
-  const wbout = XLSX.write(newWorkbook, { bookType: 'xlsx', type: 'array' });
-  fileInput.processedFile = new Blob([wbout], { type: file.type });
-
-  const blobURL = URL.createObjectURL(fileInput.processedFile);
-  const a = document.createElement("a");
-  a.href = blobURL;
-  a.download = `trimmed_${fileInputId.replace('File','')}.xlsx`;
-  a.textContent = "⬇️ Download trimmed file";
-  a.style.display = "block";
-  a.style.marginTop = "8px";
-  a.style.color = "#0d2d5c";
-  a.style.fontSize = "13px";
-
-  setTimeout(() => {
-    preview.innerHTML = "";
-    preview.appendChild(a);
-
-    const successText = document.createElement("div");
-    successText.textContent = `✅ Trim Success: ${baseName}.${extension} (${sizeKB} KB)`;
-    successText.style.marginTop = "6px";
-    successText.style.color = "#0d2d5c";
-    successText.style.fontSize = "13px";
-    preview.appendChild(successText);
-  }, 300);
-}
-      };
-
-      reader.readAsArrayBuffer(file);
-
-    } else {
-      preview.textContent = `${baseName}.${extension} (${sizeKB} KB)`;
-    }
-
+    reader.readAsArrayBuffer(file);
   } else {
     preview.innerHTML = '';
     fileInput.value = '';
     alert('❌ Invalid file type. Please upload .xlsx file only.');
   }
 }
-  
+
 function logMessage(msg) {
   const log = document.getElementById('uploadLog');
   const entry = document.createElement('div');
