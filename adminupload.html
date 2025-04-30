@@ -466,8 +466,12 @@ async function uploadFiles() {
 
     logMessage("✅ All uploads completed.");
     alert("✅ All files uploaded successfully.");
-
+    
+  }
+  document.getElementById("overlay").style.display = "none";
+  }
     await loadTimestamps();
+  
   } catch (err) {
     alert("❌ Some uploads failed. Check logs.");
   }
