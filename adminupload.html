@@ -409,6 +409,11 @@ formData.append("fullname", fullname);
     const sizeKB = (file.size / 1024).toFixed(1);
     preview.textContent = `${baseName}.${extension} (${sizeKB} KB)`;
     logMessage(`✅ ${label} upload complete.`);
+      // ✅ Reset progress bar after short delay
+    setTimeout(() => {
+      progressBar.style.width = "0%";
+    }, 500);
+    
     resolve();
   } else {
     resetFile(fileInputId, previewId, progressBarId);
