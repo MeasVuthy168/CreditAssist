@@ -367,8 +367,8 @@ async function fetchAndFillData(cif) {
   const tbody = document.getElementById('data-body');
 
   const records = combinedData.filter(d => d.CUSTOMER === cif && d.Effective_Date);
-  const latestEff = records.map(d => new Date(d.Effective_Date)).sort((a, b) => b - a)[0];
-  const oldestEff = records.map(d => new Date(d.Effective_Date)).sort((a, b) => a - b)[0];
+  const latestEff = records.map(d => new Date(d.EFFECTIVE_DATE)).sort((a, b) => b - a)[0];
+  const oldestEff = records.map(d => new Date(d.EFFECTIVE_DATE)).sort((a, b) => a - b)[0];
 
   [...tbody.rows].forEach(row => {
     const month = row.cells[0].innerText;
@@ -380,7 +380,7 @@ async function fetchAndFillData(cif) {
       row.cells[1].innerText = parseFloat(match.AMT_IN).toLocaleString();
       row.cells[2].innerText = parseFloat(match.CURRENT_OD).toLocaleString();
       row.cells[3].innerText = match.TURNOVER ? parseFloat(match.TURNOVER).toFixed(3) + '%' : '-';
-      row.cells[4].innerText = match.Effective_Date ? formatYMD(match.Effective_Date) : '';
+      row.cells[4].innerText = match.EFFECTIVE_DATE ? formatYMD(match.EFFECTIVE_DATE) : '';
 
       totalAmtIn += parseFloat(match.AMT_IN);
       totalOd += parseFloat(match.CURRENT_OD);
@@ -389,10 +389,10 @@ async function fetchAndFillData(cif) {
         count++;
       }
 
-      if (match.Effective_Date && latestEff && formatYMD(match.Effective_Date) === formatYMD(latestEff)) {
+      if (match.EFFECTIVE_DATE && latestEff && formatYMD(match.EFFECTIVE_DATE === formatYMD(latestEff)) {
         row.classList.add('newest');
       }
-      if (match.Effective_Date && oldestEff && formatYMD(match.Effective_Date) === formatYMD(oldestEff)) {
+      if (match.EFFECTIVE_DATE && oldestEff && formatYMD(match.EFFECTIVE_DATE === formatYMD(oldestEff)) {
         row.classList.add('oldest');
       }
     } else {
