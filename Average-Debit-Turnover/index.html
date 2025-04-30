@@ -280,8 +280,6 @@
 
   <!-- ✅ Spinner container -->
   <div id="loadingSpinnerWrapper"><div class="spinner"></div></div>
-
-  <!-- ✅ Protect and Full Script Section -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
@@ -312,7 +310,7 @@ function setupAutoLogoutEvents() {
 }
 window.addEventListener('load', setupAutoLogoutEvents);
 
-// ✅ Your Original Scripts Start Here
+// ✅ Original Scripts
 let combinedData = [];
 let monthList = [];
 
@@ -341,6 +339,19 @@ function updateTableWithEmptyMonths(months) {
   });
 }
 
+function formatMonth(isoDateStr) {
+  const d = new Date(isoDateStr);
+  const dd = String(d.getDate()).padStart(2, '0');
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  const yy = String(d.getFullYear()).slice(-2);
+  return `${dd}-${mm}-${yy}`;
+}
+
+function formatYMD(dateInput) {
+  const d = new Date(dateInput);
+  return d.toISOString().split('T')[0]; // "YYYY-MM-DD"
+}
+
 async function loadAllData() {
   try {
     const res = await fetch("https://secure-backend-tzj9.onrender.com/api/turnover");
@@ -353,31 +364,36 @@ async function loadAllData() {
 async function fetchAndFillData(cif) {
   let totalAmtIn = 0, totalOd = 0, totalRate = 0, count = 0;
   const tbody = document.getElementById('data-body');
-  const getDate = d => new Date(d.split('-').reverse().join('-'));
 
-  const latestEff = combinedData.filter(d => d.CUSTOMER === cif && d.Effective_Date)
-    .map(d => getDate(d.Effective_Date)).sort((a,b) => b - a)[0];
+  const latestEff = combinedData
+    .filter(d => d.CUSTOMER === cif && d.Effective_Date)
+    .map(d => new Date(d.Effective_Date))
+    .sort((a, b) => b - a)[0];
 
-  const oldestEff = combinedData.filter(d => d.CUSTOMER === cif && d.Effective_Date)
-    .map(d => getDate(d.Effective_Date)).sort((a,b) => a - b)[0];
+  const oldestEff = combinedData
+    .filter(d => d.CUSTOMER === cif && d.Effective_Date)
+    .map(d => new Date(d.Effective_Date))
+    .sort((a, b) => a - b)[0];
 
   [...tbody.rows].forEach(row => {
     const month = row.cells[0].innerText;
-    const match = combinedData.find(d => d.CUSTOMER === cif && d.MONTH.includes(month.slice(3)));
+    const match = combinedData.find(d =>
+      d.CUSTOMER === cif && formatMonth(d.MONTH) === month
+    );
 
     if (match) {
       row.cells[1].innerText = parseFloat(match.AMT_IN).toLocaleString();
       row.cells[2].innerText = parseFloat(match.CURRENT_OD).toLocaleString();
       row.cells[3].innerText = match.TURNOVER_RATE + '%';
-      row.cells[4].innerText = match.Effective_Date;
+      row.cells[4].innerText = formatYMD(match.Effective_Date);
 
       totalAmtIn += parseFloat(match.AMT_IN);
       totalOd += parseFloat(match.CURRENT_OD);
       totalRate += parseFloat(match.TURNOVER_RATE);
       count++;
 
-      if (match.Effective_Date === latestEff.toLocaleDateString('en-GB')) row.classList.add('newest');
-      if (match.Effective_Date === oldestEff.toLocaleDateString('en-GB')) row.classList.add('oldest');
+      if (formatYMD(match.Effective_Date) === formatYMD(latestEff)) row.classList.add('newest');
+      if (formatYMD(match.Effective_Date) === formatYMD(oldestEff)) row.classList.add('oldest');
     } else {
       row.classList.add("not-found");
       row.cells[1].innerText = row.cells[2].innerText = row.cells[3].innerText = row.cells[4].innerText = 'No Data';
@@ -488,6 +504,6 @@ function printPage() {
     jsPDF: { unit: "in", format: "a4", orientation: "portrait" }
   }).save();
 }
-</script> 
+</script>
 </body>
 </html>
