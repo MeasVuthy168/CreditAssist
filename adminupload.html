@@ -284,7 +284,7 @@ function showPreview(fileInputId, previewId) {
         return;
       }
 
-      // ✅ First column validation
+      // ✅ Validate first column
       const firstHeader = Object.keys(json[0])[0] || "";
       const expectedHeader = expectedFirstHeaders[fileInputId];
       if (expectedHeader && firstHeader !== expectedHeader) {
@@ -294,13 +294,18 @@ function showPreview(fileInputId, previewId) {
         return;
       }
 
-      // ✅ Trim to allowed columns
+      // ✅ Normalize and trim columns
       const allowed = allowedColumns[fileInputId];
       if (allowed) {
         const trimmed = json.map(row => {
           const filtered = {};
+          const normalizedRow = {};
+          Object.keys(row).forEach(k => {
+            normalizedRow[k.trim()] = row[k];
+          });
+
           for (const key of allowed) {
-            filtered[key] = row[key] || "";
+            filtered[key] = normalizedRow[key] !== undefined ? normalizedRow[key] : "";
           }
           return filtered;
         });
