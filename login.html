@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="km">
 <head>
@@ -8,6 +9,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <link rel="manifest" href="manifest.json" />
   <link rel="apple-touch-icon" href="icons/icon-192.png" />
+
   <style>
     @font-face {
       font-family: 'Krasar';
@@ -107,6 +109,7 @@
     }
   </style>
 </head>
+
 <body>
   <div id="login-loading"><div class="spinner"></div></div>
 
@@ -154,17 +157,18 @@
         const data = await res.json();
 
         if (res.ok && data.success) {
-          sessionStorage.setItem("token", data.token);
-
-          // ✅ Save as full object for notification + profile use
-          const userData = {
-            username: data.username,
-            fullname: data.fullname,
-            position: data.position,
-            phone: data.phone,
-            image: data.image
-          };
-          sessionStorage.setItem("loggedInUser", JSON.stringify(userData));
+          sessionStorage.setItem("token", data.token); // ✅ Save token here
+          sessionStorage.setItem("loggedInUser", JSON.stringify({
+  username: data.username,
+  fullname: data.fullname,
+  position: data.position,
+  phone: data.phone,
+  image: data.image
+}));
+          sessionStorage.setItem("userPosition", data.position);
+          sessionStorage.setItem("fullname", data.fullname);
+          sessionStorage.setItem("image", data.image);
+          sessionStorage.setItem("phone", data.phone);
           sessionStorage.setItem("userFullname", data.fullname);
 
           if (rememberMe) {
