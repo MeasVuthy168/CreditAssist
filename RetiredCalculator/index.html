@@ -354,8 +354,9 @@ function calculateMonthsLeft() {
 }
 
 // ✅ Notification Logic
-const username = sessionStorage.getItem("loggedInUser") || "";
-
+const user = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
+const username = user.username || "";
+  
 async function checkNotification() {
   try {
     const res = await fetch("https://secure-backend-tzj9.onrender.com/api/notifications/status");
