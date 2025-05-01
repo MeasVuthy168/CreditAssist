@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+5<!DOCTYPE html>
 <html lang="km">
 <head>
   <meta charset="UTF-8" />
@@ -310,7 +310,8 @@
         let hasNew = false;
         const readKey = `read_${username}`;
 const lastRead = data[readKey] ? new Date(data[readKey]) : null;
-
+console.log("🔎 Username:", username, "| Read key:", readKey, "| Last Read:", lastRead);
+        
         ["user", "customer", "turnover", "nbcos"].forEach(type => {
           const uploaded = data[type] && new Date(data[type]);
           if (uploaded) {
