@@ -282,7 +282,9 @@
   <button onclick="markNotificationsAsRead()">Mark as Read</button>
 </div>
   
-  <script>
+  
+  
+<script>
 // ✅ Protect page first
 const token = sessionStorage.getItem('token');
 if (!token) {
@@ -351,17 +353,8 @@ function calculateMonthsLeft() {
   }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  setMaxDateToToday();
-  calculateMonthsLeft();
-  document.getElementById("dob").addEventListener("change", calculateMonthsLeft);
-  document.getElementById("retirementAge").addEventListener("change", calculateMonthsLeft);
-  document.getElementById("currentDate").addEventListener("change", calculateMonthsLeft);
-});
-
-   // ✅ Notification Logic
-const user = JSON.parse(sessionStorage.getItem("loggedInUser"));
-const username = user?.username || "";
+// ✅ Notification Logic
+const username = sessionStorage.getItem("loggedInUser") || "";
 
 async function checkNotification() {
   try {
@@ -412,7 +405,16 @@ async function markNotificationsAsRead() {
   document.getElementById("notification-popup").style.display = "none";
 }
 
-document.addEventListener("DOMContentLoaded", checkNotification); 
+// ✅ Combined load event
+document.addEventListener("DOMContentLoaded", () => {
+  setMaxDateToToday();
+  calculateMonthsLeft();
+  checkNotification(); // <- ensure it runs
+
+  document.getElementById("dob").addEventListener("change", calculateMonthsLeft);
+  document.getElementById("retirementAge").addEventListener("change", calculateMonthsLeft);
+  document.getElementById("currentDate").addEventListener("change", calculateMonthsLeft);
+});
 </script>
 </body>
 </html>
