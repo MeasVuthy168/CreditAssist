@@ -283,73 +283,30 @@
 </div>
   
   
-  
 <script>
-// ✅ Basic session check
-const user = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
-const username = user.username || "";
-console.log("Logged in user:", username);
+// TEST NOTIFICATION (no backend call)
+document.addEventListener("DOMContentLoaded", () => {
+  // Simulate unread notification
+  document.getElementById("notif-badge").style.display = "inline-block";
 
-async function checkNotification() {
-  try {
-    const res = await fetch("https://secure-backend-tzj9.onrender.com/api/notifications/status");
-    const data = await res.json();
-    console.log("Notification status from backend:", data);
-
-    const notifList = document.getElementById("notif-list");
-    notifList.innerHTML = "";
-
-    const uploads = ['user', 'customer', 'turnover', 'nbcos'];
-    const lastReadRaw = data[`read_${username}`];
-    const lastRead = lastReadRaw ? new Date(lastReadRaw) : null;
-    console.log(`Last read timestamp for ${username}:`, lastReadRaw);
-
-    let hasNew = false;
-
-    uploads.forEach(type => {
-      const dateStr = data[type];
-      if (!dateStr) return;
-
-      const uploadedAt = new Date(dateStr);
-      const isNew = !lastRead || uploadedAt > lastRead;
-      const text = `${type.toUpperCase()} uploaded at ${uploadedAt.toLocaleString()}`;
-
-      const li = document.createElement("li");
-      li.textContent = text;
-      li.style.color = isNew ? "red" : "#555";
-      notifList.appendChild(li);
-
-      if (isNew) hasNew = true;
-    });
-
-    const badge = document.getElementById("notif-badge");
-    badge.style.display = hasNew ? "inline-block" : "none";
-    console.log("Has new notification?", hasNew);
-
-  } catch (err) {
-    console.error("Failed to load notification:", err);
-  }
-}
+  // Fill fake notifications
+  const notifList = document.getElementById("notif-list");
+  notifList.innerHTML = `
+    <li style="color:red">USER uploaded at 2025-05-01 09:00</li>
+    <li style="color:#555">CUSTOMER uploaded at 2025-04-30 16:30</li>
+  `;
+});
 
 function openNotificationPopup() {
   const popup = document.getElementById("notification-popup");
-  popup.style.display = (popup.style.display === "none") ? "block" : "none";
+  popup.style.display = popup.style.display === "none" ? "block" : "none";
 }
 
-async function markNotificationsAsRead() {
-  await fetch("https://secure-backend-tzj9.onrender.com/api/notifications/mark-read", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username })
-  });
+function markNotificationsAsRead() {
   document.getElementById("notif-badge").style.display = "none";
   document.getElementById("notification-popup").style.display = "none";
-  console.log("Marked as read for:", username);
 }
-
-document.addEventListener("DOMContentLoaded", checkNotification);
-</script>
-
+</script>  
 
 </body>
 </html>
