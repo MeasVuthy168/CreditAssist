@@ -1,11 +1,10 @@
-5<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="km">
 <head>
   <meta charset="UTF-8" />
   <title>ការគណនាចំនួនខែចូលនិវត្តន៍</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="theme-color" content="#0d2d5c" />
-
   <style>
     @font-face {
       font-family: 'Krasar';
@@ -26,11 +25,9 @@
       display: flex;
       align-items: center;
       position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 1000;
+      top: 0; left: 0; right: 0;
       box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      z-index: 1000;
     }
 
     .header .back {
@@ -56,31 +53,18 @@
       border-radius: 12px;
     }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    th, td {
-      text-align: left;
-      padding: 12px 10px;
-      font-size: 16px;
-    }
-
-    th {
-      color: #ccc;
-      font-weight: bold;
-    }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { text-align: left; padding: 12px 10px; font-size: 16px; }
+    th { color: #ccc; font-weight: bold; }
 
     input[type="date"], .age-input-wrap {
       width: 100%;
-      font-size: 16px;
       background-color: #1f2733;
       color: white;
       border: 1px solid #555;
       border-radius: 6px;
       height: 44px;
-      box-sizing: border-box;
+      font-size: 16px;
     }
 
     .age-input-wrap {
@@ -95,10 +79,6 @@
       background: transparent;
       font-size: 16px;
       color: white;
-    }
-
-    .age-input-wrap input:focus {
-      outline: none;
     }
 
     .suffix {
@@ -118,11 +98,6 @@
       font-size: 18px;
       margin-top: 15px;
       color: #f0f0f0;
-    }
-
-    .highlight {
-      color: #3399ff;
-      font-weight: bold;
     }
 
     footer {
@@ -155,10 +130,7 @@
       background: none;
     }
 
-    .bottom-btn img {
-      margin-bottom: 2px;
-      pointer-events: none;
-    }
+    .bottom-btn img { margin-bottom: 2px; pointer-events: none; }
 
     #notif-badge {
       display: none;
@@ -202,13 +174,8 @@
       border-radius: 4px;
       cursor: pointer;
     }
-
-    @media print {
-      .header, .bottom-bar { display: none !important; }
-    }
   </style>
 </head>
-
 <body>
   <div class="header">
     <button class="back" onclick="location.href='../index.html'">←</button>
@@ -231,11 +198,11 @@
         </td>
       </tr>
       <tr>
-        <th>ថ្ងៃខែឆ្នាំបច្ចុប្បន្ន</th>
+        <th>ថ្ងៃបច្ចុប្បន្ន</th>
         <td><input type="date" id="currentDate"></td>
       </tr>
       <tr>
-        <th>ចំនួនខែដែលនៅសល់</th>
+        <th>ខែដែលនៅសល់</th>
         <td id="monthsLeft"></td>
       </tr>
     </table>
@@ -268,7 +235,7 @@
   <script>
     const token = sessionStorage.getItem("token");
     if (!token) {
-      alert("Session expired. Please login.");
+      alert("Session expired.");
       location.href = "../login.html";
     }
 
@@ -284,17 +251,17 @@
 
     function calculateMonthsLeft() {
       const dob = new Date(document.getElementById("dob").value);
-      const retirementAge = parseInt(document.getElementById("retirementAge").value);
-      const current = new Date(document.getElementById("currentDate").value);
-      const retirementDate = new Date(dob.setFullYear(dob.getFullYear() + retirementAge));
-      const monthsLeft = (retirementDate.getFullYear() - current.getFullYear()) * 12 + retirementDate.getMonth() - current.getMonth() - (current.getDate() > retirementDate.getDate() ? 1 : 0);
+      const age = parseInt(document.getElementById("retirementAge").value);
+      const now = new Date(document.getElementById("currentDate").value);
+      const retirement = new Date(dob.setFullYear(dob.getFullYear() + age));
+      const totalMonths = (retirement.getFullYear() - now.getFullYear()) * 12 + retirement.getMonth() - now.getMonth();
+      const adjusted = totalMonths - (now.getDate() > retirement.getDate() ? 1 : 0);
+      const years = Math.floor(adjusted / 12);
+      const months = adjusted % 12;
+      const days = Math.max(0, retirement.getDate() - now.getDate());
 
-      const years = Math.floor(monthsLeft / 12);
-      const months = monthsLeft % 12;
-      const days = Math.max(0, retirementDate.getDate() - current.getDate());
-
-      document.getElementById("monthsLeft").textContent = monthsLeft < 0 ? "បានចូលនិវត្តន៍រួចហើយ" : monthsLeft + " ខែ";
-      document.getElementById("description").innerHTML = monthsLeft < 0
+      document.getElementById("monthsLeft").textContent = adjusted < 0 ? "បានចូលនិវត្តន៍រួចហើយ" : adjusted + " ខែ";
+      document.getElementById("description").innerHTML = adjusted < 0
         ? "បានចូលនិវត្តន៍រួចហើយ"
         : `នៅសល់ <span class="highlight">${String(years).padStart(2, '0')}</span> ឆ្នាំ 
            <span class="highlight">${String(months).padStart(2, '0')}</span> ខែ 
@@ -303,30 +270,31 @@
 
     async function checkNotification() {
       try {
-        const res = await fetch("https://secure-backend-tzj9.onrender.com/api/notifications/status", { cache: "no-store" });
+        const res = await fetch("https://secure-backend-tzj9.onrender.com/api/notifications/status");
         const data = await res.json();
         const notifList = document.getElementById("notif-list");
         notifList.innerHTML = "";
+
+        const lastRead = data[`read_${username}`] ? new Date(data[`read_${username}`]) : null;
         let hasNew = false;
-        const readKey = `read_${username}`;
-const lastRead = data[readKey] ? new Date(data[readKey]) : null;
-console.log("🔎 Username:", username, "| Read key:", readKey, "| Last Read:", lastRead);
-        
+
         ["user", "customer", "turnover", "nbcos"].forEach(type => {
-          const uploaded = data[type] && new Date(data[type]);
-          if (uploaded) {
-            const isNew = !lastRead || uploaded > lastRead;
-            const li = document.createElement("li");
-            li.textContent = `${type.toUpperCase()} uploaded at ${uploaded.toLocaleString()}`;
-            li.style.color = isNew ? "red" : "#555";
-            notifList.appendChild(li);
-            if (isNew) hasNew = true;
-          }
+          const uploadedAt = data[type] ? new Date(data[type]) : null;
+          if (!uploadedAt) return;
+
+          const isNew = !lastRead || uploadedAt > lastRead;
+          const li = document.createElement("li");
+          li.textContent = `${type.toUpperCase()} uploaded: ${uploadedAt.toLocaleString()}`;
+          li.style.color = isNew ? "red" : "#555";
+          notifList.appendChild(li);
+
+          console.log(`Check ${type}: uploaded=${uploadedAt}, read=${lastRead}, isNew=${isNew}`);
+          if (isNew) hasNew = true;
         });
 
         document.getElementById("notif-badge").style.display = hasNew ? "inline-block" : "none";
       } catch (err) {
-        console.error("Notification error:", err);
+        console.error("❌ Notification fetch error:", err);
       }
     }
 
