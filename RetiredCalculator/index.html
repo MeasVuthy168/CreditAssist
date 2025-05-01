@@ -308,7 +308,8 @@
         const notifList = document.getElementById("notif-list");
         notifList.innerHTML = "";
         let hasNew = false;
-        const lastRead = data[`read_${username}`] ? new Date(data[`read_${username}`]) : null;
+        const readKey = `read_${username}`;
+const lastRead = data[readKey] ? new Date(data[readKey]) : null;
 
         ["user", "customer", "turnover", "nbcos"].forEach(type => {
           const uploaded = data[type] && new Date(data[type]);
