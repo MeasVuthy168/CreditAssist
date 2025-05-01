@@ -1,104 +1,47 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <title>Notification Debug Test</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <title>Notification API Debug</title>
   <style>
-    body { font-family: Arial, sans-serif; background: #121a25; color: white; padding: 20px; }
-    button {
-      padding: 12px 20px;
-      background: #0d2d5c;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      font-size: 16px;
-      position: relative;
-    }
-    #notif-badge {
-      position: absolute;
-      top: -6px;
-      right: -6px;
-      background: red;
-      color: white;
-      font-size: 12px;
-      padding: 2px 6px;
-      border-radius: 50%;
-      display: none;
+    body {
+      font-family: monospace;
+      background: #111;
+      color: #0f0;
+      padding: 20px;
     }
     pre {
-      background: #1e2b3a;
-      padding: 10px;
-      border-radius: 6px;
-      margin-top: 20px;
       white-space: pre-wrap;
+      background: #222;
+      padding: 10px;
+      border: 1px solid #555;
+      color: #fff;
     }
   </style>
 </head>
 <body>
+  <h2>Notification API Debug</h2>
+  <button onclick="testAPI()">Fetch Notification Status</button>
+  <pre id="output">Waiting...</pre>
 
-<h2>Notification Badge Test</h2>
-<button id="notif-btn" onclick="checkNotification()">
-  Notification <span id="notif-badge">!</span>
-</button>
+  <script>
+    async function testAPI() {
+      const output = document.getElementById('output');
+      output.textContent = "⏳ Fetching...";
+      try {
+        const res = await fetch("https://secure-backend-tzj9.onrender.com/api/notifications/status", { cache: "no-store" });
+        const text = await res.text();
 
-<pre id="log-box">Logs will appear here...</pre>
-
-<script>
-  const log = (...args) => {
-    console.log(...args);
-    document.getElementById("log-box").textContent += "\n" + args.join(" ");
-  };
-
-  const user = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
-  const username = user.username || "";
-
-  async function checkNotification() {
-    log("🧪 Checking notification status...");
-    const badge = document.getElementById("notif-badge");
-    const logBox = document.getElementById("log-box");
-    logBox.textContent = ""; // clear previous
-
-    try {
-      const res = await fetch("https://secure-backend-tzj9.onrender.com/api/notifications/status");
-      const data = await res.json();
-      log("📦 Fetched upload status:", JSON.stringify(data, null, 2));
-
-      const readTime = data[`read_${username}`] ? new Date(data[`read_${username}`]) : null;
-      log("⏱ Last read time:", readTime ? readTime.toISOString() : "None");
-
-      let hasNew = false;
-      ["user", "customer", "turnover", "nbcos"].forEach(type => {
-        const uploaded = data[type] ? new Date(data[type]) : null;
-        if (uploaded) {
-          if (!readTime || uploaded > readTime) {
-            log(`🔔 ${type.toUpperCase()} is NEW (uploaded at ${uploaded.toISOString()})`);
-            hasNew = true;
-          } else {
-            log(`✅ ${type.toUpperCase()} is OLD or already read`);
-          }
-        } else {
-          log(`⚠️ ${type.toUpperCase()} not uploaded`);
+        try {
+          const json = JSON.parse(text);
+          output.textContent = "✅ JSON parsed successfully:\n" + JSON.stringify(json, null, 2);
+        } catch (e) {
+          output.textContent = "❌ Not valid JSON:\n" + text;
         }
-      });
-
-      badge.style.display = hasNew ? "inline-block" : "none";
-      log(`\nResult: Badge ${hasNew ? "SHOWN" : "HIDDEN"}`);
-    } catch (err) {
-      log("❌ Error fetching status:", err.message);
+      } catch (err) {
+        output.textContent = "❌ Fetch error:\n" + err.message;
+      }
     }
-  }
-
-  // Run check on load
-  window.addEventListener("DOMContentLoaded", () => {
-    if (!username) {
-      log("❌ No username found in sessionStorage. Please login first.");
-    } else {
-      log("✅ Logged in as:", username);
-      checkNotification();
-    }
-  });
-</script>
-
+  </script>
 </body>
 </html>
