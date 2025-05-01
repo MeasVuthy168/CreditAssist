@@ -1,47 +1,104 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Notification API Debug</title>
+  <meta charset="UTF-8" />
+  <title>Notification Badge Test</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     body {
       font-family: monospace;
-      background: #111;
-      color: #0f0;
+      background: #121212;
+      color: #00ff00;
       padding: 20px;
     }
+    .btn {
+      background: #003366;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 5px;
+      margin-right: 10px;
+    }
+    #notif-badge {
+      background: red;
+      color: white;
+      font-size: 12px;
+      border-radius: 50%;
+      padding: 2px 6px;
+      vertical-align: top;
+      margin-left: 6px;
+    }
     pre {
-      white-space: pre-wrap;
-      background: #222;
+      background: #1e1e1e;
       padding: 10px;
-      border: 1px solid #555;
-      color: #fff;
+      border-radius: 5px;
+      white-space: pre-wrap;
+      word-break: break-word;
+      margin-top: 20px;
     }
   </style>
 </head>
 <body>
+
   <h2>Notification API Debug</h2>
-  <button onclick="testAPI()">Fetch Notification Status</button>
-  <pre id="output">Waiting...</pre>
+  <button class="btn" onclick="fetchStatus()">Fetch Notification Status</button>
+  <button class="btn" onclick="markRead()">Mark as Read</button>
+  <span id="notif-badge" style="display: none;">!</span>
+
+  <pre id="log">...</pre>
 
   <script>
-    async function testAPI() {
-      const output = document.getElementById('output');
-      output.textContent = "⏳ Fetching...";
-      try {
-        const res = await fetch("https://secure-backend-tzj9.onrender.com/api/notifications/status", { cache: "no-store" });
-        const text = await res.text();
+    const username = "10522"; // Set your test user
 
-        try {
-          const json = JSON.parse(text);
-          output.textContent = "✅ JSON parsed successfully:\n" + JSON.stringify(json, null, 2);
-        } catch (e) {
-          output.textContent = "❌ Not valid JSON:\n" + text;
-        }
+    async function fetchStatus() {
+      const log = document.getElementById("log");
+      try {
+        const res = await fetch("https://secure-backend-tzj9.onrender.com/api/notifications/status");
+        const data = await res.json();
+
+        let output = `✅ JSON parsed successfully:\n` + JSON.stringify(data, null, 2) + "\n\n";
+
+        const readTime = new Date(data[`read_${username}`]);
+        let hasNew = false;
+
+        ["user", "customer", "turnover", "nbcos"].forEach(type => {
+          const uploadTime = data[type] ? new Date(data[type]) : null;
+          if (uploadTime && (!readTime || uploadTime > readTime)) {
+            hasNew = true;
+            output += `⚠️ ${type.toUpperCase()} is NEW (uploaded at ${uploadTime.toISOString()})\n`;
+          } else {
+            output += `✅ ${type.toUpperCase()} is OLD or not uploaded\n`;
+          }
+        });
+
+        document.getElementById("notif-badge").style.display = hasNew ? "inline-block" : "none";
+        output += `\nResult: Badge ${hasNew ? "SHOWN" : "HIDDEN"}`;
+        log.textContent = output;
+
       } catch (err) {
-        output.textContent = "❌ Fetch error:\n" + err.message;
+        log.textContent = `❌ Error fetching status:\n${err}`;
       }
     }
+
+    async function markRead() {
+      const log = document.getElementById("log");
+      try {
+        const res = await fetch("https://secure-backend-tzj9.onrender.com/api/notifications/mark-read", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username })
+        });
+        const result = await res.json();
+        log.textContent = "✅ Marked as read.\n" + JSON.stringify(result, null, 2);
+        document.getElementById("notif-badge").style.display = "none";
+      } catch (err) {
+        log.textContent = `❌ Failed to mark as read:\n${err}`;
+      }
+    }
+
+    window.onload = fetchStatus;
   </script>
 </body>
 </html>
