@@ -211,37 +211,48 @@
     }
 
     async function checkNotification() {
-      console.log("🔍 Checking notification for user:", username);
-      try {
-        const res = await fetch("https://secure-backend-tzj9.onrender.com/api/notifications/status", { cache: "no-store" });
-        const data = await res.json();
-        console.log("📥 Notification data received:", data);
+  try {
+    const res = await fetch("https://secure-backend-tzj9.onrender.com/api/notifications/status", { cache: "no-store" });
+    const data = await res.json();
+    const notifList = document.getElementById("notif-list");
+    notifList.innerHTML = "";
 
-        const notifList = document.getElementById("notif-list");
-        notifList.innerHTML = "";
-        let hasNew = false;
+    const username = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}").username || "";
+    const readKey = `read_${username}`;
+    const lastRead = data[readKey] ? new Date(data[readKey]) : null;
 
-        const lastRead = data[`read_${username}`] ? new Date(data[`read_${username}`]) : null;
-        console.log("🧾 Last read time:", lastRead);
+    console.log("🔍 Username:", username);
+    console.log("🕒 Last read timestamp:", lastRead);
+    console.log("📦 Upload timestamps:", data);
 
-        ['user', 'customer', 'turnover', 'nbcos'].forEach(type => {
-          const uploaded = data[type] && new Date(data[type]);
-          if (!uploaded) return;
-          const isNew = !lastRead || uploaded > lastRead;
-          const li = document.createElement("li");
-          li.textContent = `${type.toUpperCase()} uploaded at ${uploaded.toLocaleString()}`;
-          li.style.color = isNew ? "red" : "#555";
-          notifList.appendChild(li);
-          if (isNew) hasNew = true;
-        });
+    let hasNew = false;
 
-        document.getElementById("notif-badge").style.display = hasNew ? "inline-block" : "none";
-        console.log("🔔 Badge display status:", hasNew);
+    ["user", "customer", "turnover", "nbcos"].forEach(type => {
+      const uploaded = data[type] ? new Date(data[type]) : null;
+      if (uploaded) {
+        const isNew = !lastRead || uploaded > lastRead;
+        const li = document.createElement("li");
+        li.textContent = `${type.toUpperCase()} uploaded at ${uploaded.toLocaleString()}`;
+        li.style.color = isNew ? "red" : "#555";
+        notifList.appendChild(li);
+        if (isNew) hasNew = true;
 
-      } catch (err) {
-        console.error("❌ Notification fetch error:", err);
+        console.log(`${type.toUpperCase()} is ${isNew ? 'NEW' : 'OLD'} (uploaded at ${uploaded.toISOString()})`);
       }
+    });
+
+    const badge = document.getElementById("notif-badge");
+    if (hasNew) {
+      badge.style.display = "inline-block";
+      console.log("✅ Badge SHOWN");
+    } else {
+      badge.style.display = "none";
+      console.log("✅ Badge HIDDEN");
     }
+  } catch (err) {
+    console.error("❌ Failed to check notification:", err);
+  }
+}
 
     function openNotificationPopup() {
       const popup = document.getElementById("notification-popup");
