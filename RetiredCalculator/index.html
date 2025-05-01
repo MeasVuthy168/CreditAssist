@@ -284,29 +284,151 @@
   
   
 <script>
-// TEST NOTIFICATION (no backend call)
-document.addEventListener("DOMContentLoaded", () => {
-  // Simulate unread notification
-  document.getElementById("notif-badge").style.display = "inline-block";
+// ✅ Protect page first
+const token = sessionStorage.getItem('token');
+if (!token) {
+  alert("Session expired or unauthorized access.");
+  window.location.href = "../login.html";
+}
 
-  // Fill fake notifications
-  const notifList = document.getElementById("notif-list");
-  notifList.innerHTML = `
-    <li style="color:red">USER uploaded at 2025-05-01 09:00</li>
-    <li style="color:#555">CUSTOMER uploaded at 2025-04-30 16:30</li>
-  `;
+// ✅ Auto logout setup
+const AUTO_LOGOUT_MINUTES = 1;
+let logoutTimer;
+function resetLogoutTimer() {
+  clearTimeout(logoutTimer);
+  logoutTimer = setTimeout(() => {
+    sessionStorage.clear();
+    alert("Session expired due to inactivity. Please log in again.");
+    window.location.href = "../login.html";
+  }, AUTO_LOGOUT_MINUTES * 60 * 1000);
+}
+function setupAutoLogoutEvents() {
+  ['mousemove', 'mousedown', 'keydown', 'touchstart', 'touchmove', 'scroll'].forEach(event => {
+    document.addEventListener(event, resetLogoutTimer, true);
+  });
+  resetLogoutTimer();
+}
+window.addEventListener('load', setupAutoLogoutEvents);
+
+// ✅ Retirement Calculator logic
+function setMaxDateToToday() {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, '0');
+  const day = String(today.getDate()).padStart(2, '0');
+  const maxDate = `${year}-${month}-${day}`;
+  document.getElementById("dob").setAttribute("max", maxDate);
+  document.getElementById("currentDate").setAttribute("max", maxDate);
+  document.getElementById("currentDate").value = maxDate;
+}
+
+function calculateMonthsLeft() {
+  const dobInput = document.getElementById("dob").value;
+  const retirementAge = parseInt(document.getElementById("retirementAge").value);
+  const currentDateInput = document.getElementById("currentDate").value;
+  const monthsLeftCell = document.getElementById("monthsLeft");
+  const description = document.getElementById("description");
+
+  const dob = new Date(dobInput);
+  const currentDate = new Date(currentDateInput);
+  const retirementDate = new Date(dob);
+  retirementDate.setFullYear(dob.getFullYear() + retirementAge);
+
+  let totalMonths = (retirementDate.getFullYear() - currentDate.getFullYear()) * 12 + (retirementDate.getMonth() - currentDate.getMonth());
+  if (currentDate.getDate() > retirementDate.getDate()) totalMonths--;
+
+  if (totalMonths < 0) {
+    monthsLeftCell.textContent = "បានចូលនិវត្តន៍រួចហើយ";
+    description.textContent = "បានចូលនិវត្តន៍រួចហើយ";
+  } else {
+    monthsLeftCell.textContent = totalMonths + " ខែ";
+    const years = Math.floor(totalMonths / 12);
+    const months = totalMonths % 12;
+    const days = Math.max(0, retirementDate.getDate() - currentDate.getDate());
+
+    description.innerHTML = `នៅសល់ <span class="highlight">${years.toString().padStart(2, '0')}</span> ឆ្នាំ 
+      <span class="highlight">${months.toString().padStart(2, '0')}</span> ខែ 
+      និង <span class="highlight">${days.toString().padStart(2, '0')}</span> ថ្ងៃទៀត`;
+  }
+}
+
+// ✅ Notification logic
+const user = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
+const username = user.username || "";
+
+// ✅ Debug display for username (temporary)
+document.addEventListener("DOMContentLoaded", () => {
+  const debug = document.createElement("div");
+  debug.id = "debug";
+  debug.style.position = "fixed";
+  debug.style.bottom = "70px";
+  debug.style.left = "10px";
+  debug.style.color = "yellow";
+  debug.style.fontSize = "12px";
+  debug.style.zIndex = "2000";
+  debug.textContent = "Username: " + username;
+  document.body.appendChild(debug);
 });
+
+async function checkNotification() {
+  try {
+    const res = await fetch("https://secure-backend-tzj9.onrender.com/api/notifications/status");
+    const data = await res.json();
+    const notifList = document.getElementById("notif-list");
+    notifList.innerHTML = "";
+
+    const uploads = ['user', 'customer', 'turnover', 'nbcos'];
+    const lastRead = data[`read_${username}`] ? new Date(data[`read_${username}`]) : null;
+
+    let hasNew = false;
+
+    uploads.forEach(type => {
+      const dateStr = data[type];
+      if (!dateStr) return;
+      const uploadedAt = new Date(dateStr);
+      const isNew = !lastRead || uploadedAt > lastRead;
+      const text = `${type.toUpperCase()} uploaded at ${uploadedAt.toLocaleString()}`;
+
+      const li = document.createElement("li");
+      li.textContent = text;
+      li.style.color = isNew ? "red" : "#555";
+      notifList.appendChild(li);
+
+      if (isNew) hasNew = true;
+    });
+
+    document.getElementById("notif-badge").style.display = hasNew ? "inline-block" : "none";
+
+  } catch (err) {
+    console.error("Failed to load notification:", err);
+  }
+}
 
 function openNotificationPopup() {
   const popup = document.getElementById("notification-popup");
-  popup.style.display = popup.style.display === "none" ? "block" : "none";
+  popup.style.display = (popup.style.display === "none") ? "block" : "none";
 }
 
-function markNotificationsAsRead() {
+async function markNotificationsAsRead() {
+  await fetch("https://secure-backend-tzj9.onrender.com/api/notifications/mark-read", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username })
+  });
   document.getElementById("notif-badge").style.display = "none";
   document.getElementById("notification-popup").style.display = "none";
 }
-</script>  
 
+// ✅ Initialize all
+document.addEventListener("DOMContentLoaded", () => {
+  setMaxDateToToday();
+  calculateMonthsLeft();
+  checkNotification();
+
+  document.getElementById("dob").addEventListener("change", calculateMonthsLeft);
+  document.getElementById("retirementAge").addEventListener("change", calculateMonthsLeft);
+  document.getElementById("currentDate").addEventListener("change", calculateMonthsLeft);
+});
+</script>
 </body>
 </html>
