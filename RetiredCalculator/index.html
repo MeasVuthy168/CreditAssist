@@ -1,104 +1,257 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="km">
 <head>
   <meta charset="UTF-8" />
-  <title>Notification Badge Test</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ការគណនាចំនួនខែចូលនិវត្តន៍</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#0d2d5c" />
   <style>
-    body {
-      font-family: monospace;
-      background: #121212;
-      color: #00ff00;
-      padding: 20px;
+    @font-face {
+      font-family: 'Krasar';
+      src: url('https://measvuthy168.github.io/CreditAssist/Krasar-Regular.ttf') format('truetype');
     }
-    .btn {
-      background: #003366;
+    body {
+      font-family: 'Krasar', Arial, sans-serif;
+      background-color: #1c2331;
+      color: white;
+      margin: 0;
+      padding: 0 0 70px;
+    }
+    .header {
+      background-color: #0d2d5c;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    .header .back {
+      font-size: 22px;
+      color: white;
+      background: none;
+      border: none;
+      margin-right: 12px;
+      cursor: pointer;
+    }
+    .header .title {
+      font-size: 17px;
+      font-weight: bold;
+      color: white;
+    }
+    .container {
+      max-width: 700px;
+      margin: 80px auto 0;
+      background: #2c3545;
+      padding: 20px;
+      border-radius: 12px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      text-align: left;
+      padding: 12px 10px;
+      font-size: 16px;
+    }
+    th { color: #ccc; font-weight: bold; }
+    input[type="date"], .age-input-wrap {
+      width: 100%;
+      font-size: 16px;
+      background-color: #1f2733;
+      color: white;
+      border: 1px solid #555;
+      border-radius: 6px;
+      height: 44px;
+      box-sizing: border-box;
+    }
+    input[type="date"] { padding: 10px; }
+    .age-input-wrap {
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+    }
+    .age-input-wrap input {
+      flex: 1;
+      border: none;
+      background: transparent;
+    }
+    .age-input-wrap input:focus { outline: none; }
+    .suffix { font-size: 15px; color: #ccc; white-space: nowrap; }
+    #monthsLeft { font-weight: bold; color: #3399ff; font-size: 24px; }
+    #description { text-align: center; font-size: 18px; margin-top: 15px; color: #f0f0f0; }
+    .highlight { color: #3399ff; font-weight: bold; }
+    footer { text-align: center; font-size: 14px; color: #aaa; margin-top: 40px; }
+    .bottom-bar {
+      position: fixed;
+      bottom: 0; left: 0;
+      width: 100%; height: 56px;
+      background: #0d2d5c;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+      z-index: 1000;
+    }
+    .bottom-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-size: 11px;
       color: white;
       border: none;
-      padding: 10px 16px;
-      font-size: 16px;
-      cursor: pointer;
-      border-radius: 5px;
-      margin-right: 10px;
+      background: none;
+      padding: 2px;
     }
+    .bottom-btn img { margin-bottom: 2px; pointer-events: none; }
     #notif-badge {
+      display: none;
+      position: absolute;
+      top: -4px; right: -6px;
       background: red;
       color: white;
-      font-size: 12px;
+      font-size: 10px;
+      padding: 2px 5px;
       border-radius: 50%;
-      padding: 2px 6px;
-      vertical-align: top;
-      margin-left: 6px;
     }
-    pre {
-      background: #1e1e1e;
+    #notification-popup {
+      position: fixed;
+      bottom: 60px; right: 10px;
+      background: white;
+      color: black;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
       padding: 10px;
-      border-radius: 5px;
-      white-space: pre-wrap;
-      word-break: break-word;
-      margin-top: 20px;
+      font-size: 13px;
+      display: none;
+      z-index: 2000;
+      width: 260px;
+    }
+    #notif-list {
+      list-style: none;
+      padding-left: 0;
+      margin: 10px 0;
+    }
+    #notification-popup button {
+      margin-top: 10px;
+      background: #0d2d5c;
+      color: white;
+      padding: 5px 10px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    @media print {
+      .header, .bottom-bar { display: none !important; }
     }
   </style>
 </head>
 <body>
-
-  <h2>Notification API Debug</h2>
-  <button class="btn" onclick="fetchStatus()">Fetch Notification Status</button>
-  <button class="btn" onclick="markRead()">Mark as Read</button>
-  <span id="notif-badge" style="display: none;">!</span>
-
-  <pre id="log">...</pre>
-
+  <div class="header">
+    <button class="back" onclick="window.location.href='../index.html'">←</button>
+    <div class="title">ការគណនាចំនួនខែចូលនិវត្តន៍</div>
+  </div>
+  <div class="container">
+    <table>
+      <tr><th>ថ្ងៃខែឆ្នាំកំណើត</th><td><input type="date" id="dob" value="1989-09-14"></td></tr>
+      <tr><th>អាយុចូលនិវត្តន៍</th><td><div class="age-input-wrap"><input type="number" id="retirementAge" min="0" max="100" value="55"><span class="suffix">ឆ្នាំ</span></div></td></tr>
+      <tr><th>ថ្ងៃខែឆ្នាំបច្ចុប្បន្ន</th><td><input type="date" id="currentDate"></td></tr>
+      <tr><th>ចំនួនខែដែលនៅសល់</th><td id="monthsLeft"></td></tr>
+    </table>
+    <div id="description"></div>
+    <footer>© 2025 បង្កើតដោយក្រុមការងារឥណទានសាខាស្វាយរៀង</footer>
+  </div>
+  <div class="bottom-bar">
+    <button class="bottom-btn active" onclick="window.location.href='../index.html'"><img src="../icons/Home.png" width="24" height="24" /><div>Home</div></button>
+    <button class="bottom-btn" onclick="window.location.href='../Setting/index.html'"><img src="../icons/Setting.png" width="24" height="24" /><div>Setting</div></button>
+    <button class="bottom-btn" onclick="openNotificationPopup()">
+      <div style="position: relative;">
+        <img src="../icons/Notification.png" width="24" height="24" />
+        <span id="notif-badge">!</span>
+      </div>
+      <div>Notification</div>
+    </button>
+  </div>
+  <div id="notification-popup">
+    <strong>Recent Uploads</strong>
+    <ul id="notif-list"></ul>
+    <button onclick="markNotificationsAsRead()">Mark as Read</button>
+  </div>
   <script>
-    const username = "10522"; // Set your test user
+    const user = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
+    const username = user.username || "";async function checkNotification() {
+  try {
+    const res = await fetch("https://secure-backend-tzj9.onrender.com/api/notifications/status", { cache: "no-store" });
+    const data = await res.json();
 
-    async function fetchStatus() {
-      const log = document.getElementById("log");
-      try {
-        const res = await fetch("https://secure-backend-tzj9.onrender.com/api/notifications/status");
-        const data = await res.json();
+    const notifList = document.getElementById("notif-list");
+    notifList.innerHTML = "";
 
-        let output = `✅ JSON parsed successfully:\n` + JSON.stringify(data, null, 2) + "\n\n";
+    const uploads = ['user', 'customer', 'turnover', 'nbcos'];
+    const lastReadRaw = data[`read_${username}`];
+    const lastRead = lastReadRaw ? new Date(lastReadRaw) : null;
 
-        const readTime = new Date(data[`read_${username}`]);
-        let hasNew = false;
+    let hasNew = false;
+    uploads.forEach(type => {
+      const uploaded = data[type] ? new Date(data[type]) : null;
+      if (!uploaded) return;
 
-        ["user", "customer", "turnover", "nbcos"].forEach(type => {
-          const uploadTime = data[type] ? new Date(data[type]) : null;
-          if (uploadTime && (!readTime || uploadTime > readTime)) {
-            hasNew = true;
-            output += `⚠️ ${type.toUpperCase()} is NEW (uploaded at ${uploadTime.toISOString()})\n`;
-          } else {
-            output += `✅ ${type.toUpperCase()} is OLD or not uploaded\n`;
-          }
-        });
+      const isNew = !lastRead || uploaded > lastRead;
+      const li = document.createElement("li");
+      li.textContent = `${type.toUpperCase()} uploaded at ${uploaded.toLocaleString()}`;
+      li.style.color = isNew ? "red" : "#555";
+      notifList.appendChild(li);
+      if (isNew) hasNew = true;
+    });
 
-        document.getElementById("notif-badge").style.display = hasNew ? "inline-block" : "none";
-        output += `\nResult: Badge ${hasNew ? "SHOWN" : "HIDDEN"}`;
-        log.textContent = output;
+    document.getElementById("notif-badge").style.display = hasNew ? "inline-block" : "none";
+  } catch (err) {
+    console.error("Notification load error:", err);
+  }
+}
 
-      } catch (err) {
-        log.textContent = `❌ Error fetching status:\n${err}`;
-      }
-    }
+function openNotificationPopup() {
+  const popup = document.getElementById("notification-popup");
+  popup.style.display = (popup.style.display === "none") ? "block" : "none";
+}
 
-    async function markRead() {
-      const log = document.getElementById("log");
-      try {
-        const res = await fetch("https://secure-backend-tzj9.onrender.com/api/notifications/mark-read", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ username })
-        });
-        const result = await res.json();
-        log.textContent = "✅ Marked as read.\n" + JSON.stringify(result, null, 2);
-        document.getElementById("notif-badge").style.display = "none";
-      } catch (err) {
-        log.textContent = `❌ Failed to mark as read:\n${err}`;
-      }
-    }
+async function markNotificationsAsRead() {
+  await fetch("https://secure-backend-tzj9.onrender.com/api/notifications/mark-read", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username })
+  });
+  document.getElementById("notif-badge").style.display = "none";
+  document.getElementById("notification-popup").style.display = "none";
+}
 
-    window.onload = fetchStatus;
+function calculateMonthsLeft() {
+  const dob = new Date(document.getElementById("dob").value);
+  const age = parseInt(document.getElementById("retirementAge").value);
+  const current = new Date(document.getElementById("currentDate").value);
+  const retirement = new Date(dob);
+  retirement.setFullYear(retirement.getFullYear() + age);
+  const totalMonths = (retirement.getFullYear() - current.getFullYear()) * 12 + retirement.getMonth() - current.getMonth();
+  const adjust = current.getDate() > retirement.getDate() ? 1 : 0;
+  const monthsLeft = totalMonths - adjust;
+  const years = Math.floor(monthsLeft / 12);
+  const months = monthsLeft % 12;
+  const days = Math.max(0, retirement.getDate() - current.getDate());
+  document.getElementById("monthsLeft").textContent = monthsLeft < 0 ? "បានចូលនិវត្តន៍រួចហើយ" : `${monthsLeft} ខែ`;
+  document.getElementById("description").innerHTML = monthsLeft < 0 ? "បានចូលនិវត្តន៍រួចហើយ" : `នៅសល់ <span class="highlight">${years.toString().padStart(2, '0')}</span> ឆ្នាំ <span class="highlight">${months.toString().padStart(2, '0')}</span> ខែ <span class="highlight">${days.toString().padStart(2, '0')}</span> ថ្ងៃទៀត`;
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const today = new Date().toISOString().split("T")[0];
+  document.getElementById("dob").max = today;
+  document.getElementById("currentDate").max = today;
+  document.getElementById("currentDate").value = today;
+  ["dob", "retirementAge", "currentDate"].forEach(id => document.getElementById(id).addEventListener("change", calculateMonthsLeft));
+  calculateMonthsLeft();
+  checkNotification();
+});
+
   </script>
 </body>
 </html>
