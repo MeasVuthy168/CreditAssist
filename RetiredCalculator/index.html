@@ -353,8 +353,17 @@ function calculateMonthsLeft() {
 }
 
 // ✅ Notification logic
-const user = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
-const username = user.username || "";
+let username = "";
+try {
+  const userStr = sessionStorage.getItem("loggedInUser");
+  if (userStr) {
+    const user = JSON.parse(userStr);
+    username = user.username || "";
+  }
+} catch (e) {
+  console.warn("Invalid session user:", e);
+}
+console.log("Detected username:", username);
 
 // ✅ Debug display for username (temporary)
 document.addEventListener("DOMContentLoaded", () => {
