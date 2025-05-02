@@ -208,50 +208,16 @@ function setupAutoLogoutEvents() {
 window.addEventListener('load', setupAutoLogoutEvents);
 
 
-    // ✅ old code
-    const user = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
-    const username = user.username || "";
+    <!-- ✅ Load shared notification script -->
+<script src="../notifications/checkNotification.js"></script>
 
-    async function loadNotifications() {
-  const container = document.getElementById('notificationContainer');
-  const badge = document.getElementById('notif-badge');
-  container.innerHTML = '';
-
-  try {
-    const res = await fetch("https://secure-backend-tzj9.onrender.com/api/notifications/status");
-    const data = await res.json();
-    const readTime = data[`read_${username}`] ? new Date(data[`read_${username}`]) : null;
-    let count = 0;
-
-    ['user', 'customer', 'turnover', 'nbcos'].forEach(type => {
-      const uploadedAt = data[type];
-      const fullname = data[`${type}Fullname`] || "Unknown";
-
-      if (uploadedAt) {
-        const dateObj = new Date(uploadedAt);
-        const isNew = !readTime || dateObj > readTime;
-        if (isNew) count++;
-
-        const card = document.createElement('div');
-        card.className = 'card' + (isNew ? '' : ' read');
-        card.innerHTML = `
-          <div class="card-title">${type.toUpperCase()} uploaded</div>
-          <div class="card-date">${dateObj.toLocaleString()}</div>
-          <div class="card-message">Uploaded by: ${fullname}</div>
-        `;
-        container.appendChild(card);
-      }
-    });
-
-    badge.style.display = count > 0 ? 'inline-block' : 'none';
-    badge.textContent = count > 9 ? '9+' : count;
-
-  } catch (err) {
-    container.innerHTML = '<p style="padding:12px;">Failed to load notifications.</p>';
-    console.error("Error loading notifications:", err);
-  }
-}
-
+<!-- ✅ Initialize after DOM ready -->
+<script>
+  window.addEventListener("DOMContentLoaded", () => {
+    setupAutoLogoutEvents();
+    checkNotification();
+  });
+</script>
     function toggleMenu() {
       const menu = document.getElementById("notifMenu");
       menu.style.display = menu.style.display === "block" ? "none" : "block";
