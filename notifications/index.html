@@ -129,6 +129,14 @@
       border-radius: 50%;
       font-weight: bold;
     }
+    .menu-button {
+  font-size: 24px;          /* Bigger dots */
+  background: transparent;  /* Remove gray background */
+  border: none;             /* No border */
+  color: white;             /* Dot color */
+  cursor: pointer;
+  padding: 4px;
+}
   </style>
 </head>
 <body>
@@ -136,7 +144,7 @@
   <button class="back" onclick="window.location.href='../index.html'">←</button>
   <div style="flex: 1; font-size: 17px; font-weight: bold;">ការជូនដំណឹង</div>
   <div class="notif-dropdown">
-    <button onclick="toggleMenu()">⋮</button>
+    <button class="menu-button" onclick="toggleMenu()">⋮</button>
     <div class="notif-menu" id="notifMenu">
       <button onclick="markAllAsRead()">Mark All as Read</button>
       <button onclick="clearAll()">Clear All</button>
