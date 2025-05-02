@@ -281,11 +281,12 @@ function calculateMonthsLeft() {
        <span class="highlight">${String(months).padStart(2, '0')}</span> ខែ 
        និង <span class="highlight">${String(days).padStart(2, '0')}</span> ថ្ងៃទៀត`;
 }
-
+</script> 
+  
 <!-- ✅ Load shared notification script -->
 <script src="../checkNotification.js"></script>
 
-<!-- ✅ Inline script must be separate -->
+<!-- ✅ Initialize after DOM ready -->
 <script>
   window.addEventListener("DOMContentLoaded", () => {
     setMaxDateToToday();
