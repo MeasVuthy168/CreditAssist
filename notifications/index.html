@@ -28,7 +28,6 @@
       z-index: 1000;
       box-shadow: 0 2px 5px rgba(0,0,0,0.2);
       color: white;
-      font-family: 'Krasar', Arial, sans-serif;
     }
     .header .back {
       font-size: 22px;
@@ -40,9 +39,6 @@
     }
     #notificationContainer {
       margin-top: 72px;
-    }
-    .title {
-      margin-left: 8px;
     }
     .card {
       background: white;
@@ -176,9 +172,7 @@
   </button>
 </div>
 
-<!-- ✅ JS Scripts -->
 <script>
-// ✅ Protect page
 const token = sessionStorage.getItem('token');
 if (!token) {
   alert("Session expired or unauthorized access.");
@@ -201,11 +195,8 @@ async function markAllAsRead() {
   });
   toggleMenu();
   loadNotifications();
-
   setTimeout(() => {
-    document.querySelectorAll('.card').forEach(card => {
-      card.classList.add('read');
-    });
+    document.querySelectorAll('.card').forEach(card => card.classList.add('read'));
   }, 300);
 }
 
@@ -215,7 +206,6 @@ function clearAll() {
   toggleMenu();
 }
 
-// ✅ Load notification cards
 async function loadNotifications() {
   try {
     const res = await fetch("https://secure-backend-tzj9.onrender.com/api/notifications/status");
@@ -253,7 +243,6 @@ async function loadNotifications() {
   }
 }
 
-// ✅ Auto logout
 const AUTO_LOGOUT_MINUTES = 1;
 let logoutTimer;
 function resetLogoutTimer() {
@@ -274,8 +263,12 @@ function setupAutoLogoutEvents() {
 window.addEventListener('load', () => {
   setupAutoLogoutEvents();
   loadNotifications();
+  checkNotification(); // from shared script
 });
 </script>
+
+<!-- ✅ Shared notification badge updater -->
+<script src="../notifications/checkNotification.js"></script>
 
 </body>
 </html>
