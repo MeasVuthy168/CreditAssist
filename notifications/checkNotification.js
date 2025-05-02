@@ -12,7 +12,7 @@ async function checkNotification() {
     const lastRead = lastReadRaw ? new Date(lastReadRaw) : null;
 
     const notificationMessages = {
-      user: "zzzzzzzzបានធ្វើបច្ចុប្បន្នភាពទិន្នន័យ​ភ្នាក់ងារឥណទាន",
+      user: "បានធ្វើបច្ចុប្បន្នភាពទិន្នន័យ​ភ្នាក់ងារឥណទាន",
       customer: "បានធ្វើបច្ចុប្បន្នភាពទិន្នន័យអតិថិជន",
       turnover: "បានធ្វើបច្ចុប្បន្នភាពទិន្នន័យ​ (Debit Turnover)",
       nbcos: "បានធ្វើបច្ចុប្បន្នភាពទិន្នន័យឥណទានសកម្ម​ (NBC Loan Outstanding Grid Merge)"
