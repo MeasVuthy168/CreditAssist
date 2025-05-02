@@ -533,7 +533,7 @@ function printPage() {
     const data = await res.json();
 
     const uploads = ['user', 'customer', 'turnover', 'nbcos'];
-    const lastReadRaw = data[read_${username}];
+    const lastReadRaw = data[`read_${username}`];
     const lastRead = lastReadRaw ? new Date(lastReadRaw) : null;
 
     let newCount = 0;
