@@ -191,6 +191,17 @@
         display: none !important;
       }
     }
+    .badge {
+  position: absolute;
+  top: -4px;
+  right: -8px;
+  background: red;
+  color: white;
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 50%;
+  font-weight: bold;
+}
   </style>
 </head>
 <body>
@@ -233,9 +244,13 @@
     <button class="bottom-btn" onclick="window.location.href='../Setting/index.html'">
       <img src="../icons/Setting.png" width="24" height="24" /><div>Setting</div>
     </button>
-    <button class="bottom-btn" onclick="alert('Coming soon!')">
-      <img src="../icons/Notification.png" width="24" height="24" /><div>Notification</div>
-    </button>
+    <button class="bottom-btn" onclick="window.location.href='../notifications/index.html'">
+  <div style="position: relative;">
+    <img src="../icons/Notification.png" width="24" height="24" />
+    <span id="notif-badge" class="badge" style="display: none;"></span>
+  </div>
+  <div>Notification</div>
+</button>
   </div>
 
   <!-- 🔄 Loading Spinner -->
@@ -316,6 +331,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.getElementById("searchButton").addEventListener("click", performSearch);
 });
+</script> 
+  
+<!-- ✅ Load shared notification script -->
+<script src="../notifications/checkNotification.js"></script>
+
+<!-- ✅ Initialize after DOM ready -->
+<script>
+  window.addEventListener("DOMContentLoaded", () => {
+    setupAutoLogoutEvents();
+    checkNotification();
+  });
 </script>
 </body>
 </html>
