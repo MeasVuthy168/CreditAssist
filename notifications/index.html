@@ -66,6 +66,11 @@
       font-size: 14px;
       color: #222;
     }
+    .card.read .card-title,
+    .card.read .card-date,
+    .card.read .card-message {
+      color: #999 !important; /* or any faded/gray color */
+   }
     .bottom-bar {
       position: fixed;
       bottom: 0;
@@ -138,6 +143,7 @@
   cursor: pointer;
   padding: 4px;
 }
+    
   </style>
 </head>
 <body>
@@ -263,6 +269,11 @@ window.addEventListener('load', setupAutoLogoutEvents);
       toggleMenu();
       loadNotifications();
     }
+      // ✅ mark visually as read
+  document.querySelectorAll('.card').forEach(card => {
+    card.classList.add('read');
+  });
+}
 
     function clearAll() {
       const container = document.getElementById('notificationContainer');
