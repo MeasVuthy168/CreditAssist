@@ -224,6 +224,35 @@
   </div>
 
 <script>
+
+  // ✅ Protect Page by Token
+const token = sessionStorage.getItem('token');
+if (!token) {
+  alert("Session expired or unauthorized access.");
+  window.location.href = "../login.html";
+}
+
+// ✅ Auto Logout Setup
+const AUTO_LOGOUT_MINUTES = 1;
+let logoutTimer;
+function resetLogoutTimer() {
+  clearTimeout(logoutTimer);
+  logoutTimer = setTimeout(() => {
+    sessionStorage.clear();
+    alert("Session expired due to inactivity. Please log in again.");
+    window.location.href = "../login.html";
+  }, AUTO_LOGOUT_MINUTES * 60 * 1000);
+}
+function setupAutoLogoutEvents() {
+  ['mousemove', 'mousedown', 'keydown', 'touchstart', 'touchmove', 'scroll'].forEach(event => {
+    document.addEventListener(event, resetLogoutTimer, true);
+  });
+  resetLogoutTimer();
+}
+window.addEventListener('load', setupAutoLogoutEvents);
+
+
+  // ✅ existing script
 const user = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
 const username = user.username || "";
 
