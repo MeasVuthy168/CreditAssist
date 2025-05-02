@@ -94,16 +94,17 @@
       position: relative;
     }
     .notif-menu {
-      position: absolute;
-      top: 44px;
-      right: 12px;
-      background: white;
-      border: 1px solid #ddd;
-      border-radius: 6px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      display: none;
-      z-index: 1000;
-    }
+  position: absolute;
+  top: 44px;
+  right: 12px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  display: none;
+  z-index: 1000;
+  min-width: 160px; /* <- Add this line */
+}
     .notif-menu button {
       display: block;
       padding: 10px 16px;
