@@ -18,27 +18,32 @@
       padding-bottom: 70px;
     }
     .header {
-      height: 36px;
-      background-color: #0d2d5c;
-      padding: 14px 16px;
-      display: flex;
-      align-items: center;
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 1000;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-      color: white;
-    }
-    .header .back {
-      font-size: 22px;
-      color: white;
-      background: none;
-      border: none;
-      margin-right: 12px;
-      cursor: pointer;
-    }
+  height: 36px;
+  background-color: #0d2d5c;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  color: white;
+  font-family: 'Krasar', Arial, sans-serif;
+}
+
+.header .back {
+  font-size: 22px;
+  color: white;
+  background: none;
+  border: none;
+  margin-right: 12px;
+  cursor: pointer;
+}
     #notificationContainer {
-      margin-top: 72px;
+  margin-top: 72px; /* adjust as needed */
+}
+    .title {
+      margin-left: 8px;
     }
     .card {
       background: white;
@@ -64,8 +69,8 @@
     .card.read .card-title,
     .card.read .card-date,
     .card.read .card-message {
-      color: #999 !important;
-    }
+      color: #999 !important; /* or any faded/gray color */
+   }
     .bottom-bar {
       position: fixed;
       bottom: 0;
@@ -95,17 +100,17 @@
       position: relative;
     }
     .notif-menu {
-      position: absolute;
-      top: 34px;
-      right: 12px;
-      background: white;
-      border: 1px solid #ddd;
-      border-radius: 6px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      display: none;
-      z-index: 1000;
-      min-width: 160px;
-    }
+  position: absolute;
+  top: 34px;
+  right: 12px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  display: none;
+  z-index: 1000;
+  min-width: 160px; /* <- Add this line */
+}
     .notif-menu button {
       display: block;
       padding: 10px 16px;
@@ -117,7 +122,7 @@
       cursor: pointer;
     }
     .notif-menu button:hover {
-      background: #f0f0f0;
+      background: f0f0f0;
     }
     .badge {
       position: absolute;
@@ -131,18 +136,18 @@
       font-weight: bold;
     }
     .menu-button {
-      font-size: 28px;
-      background: transparent;
-      border: none;
-      color: white;
-      cursor: pointer;
-      padding: 4px;
-    }
+  font-size: 28px;          /* Bigger dots */
+  background: transparent;  /* Remove gray background */
+  border: none;             /* No border */
+  color: white;             /* Dot color */
+  cursor: pointer;
+  padding: 4px;
+}
+    
   </style>
 </head>
 <body>
-
-<div class="header">
+  <div class="header">
   <button class="back" onclick="window.location.href='../index.html'">←</button>
   <div style="flex: 1; font-size: 17px; font-weight: bold;">ការជូនដំណឹង</div>
   <div class="notif-dropdown">
@@ -154,129 +159,132 @@
   </div>
 </div>
 
-<div id="notificationContainer"></div>
+  <div id="notificationContainer"></div>
 
-<div class="bottom-bar">
-  <button class="bottom-btn" onclick="location.href='../index.html'">
-    <img src="../icons/Home.png" width="24" height="24" /><div>Home</div>
+  <div class="bottom-bar">
+    <button class="bottom-btn" onclick="location.href='../index.html'">
+      <img src="../icons/Home.png" width="24" height="24" />
+      <div>Home</div>
+    </button>
+    <button class="bottom-btn" onclick="location.href='../Setting/index.html'">
+      <img src="../icons/Setting.png" width="24" height="24" />
+      <div>Setting</div>
+    </button>
+    <button class="bottom-btn" onclick="window.location.href='../notifications/index.html'">
+  <div style="position: relative;">
+    <img src="../icons/Notification.png" width="24" height="24" />
+    <span id="notif-badge" class="badge" style="display: none;"></span>
+  </div>
+  <div>Notification</div>
   </button>
-  <button class="bottom-btn" onclick="location.href='../Setting/index.html'">
-    <img src="../icons/Setting.png" width="24" height="24" /><div>Setting</div>
-  </button>
-  <button class="bottom-btn" onclick="window.location.href='../notifications/index.html'">
-    <div style="position: relative;">
-      <img src="../icons/Notification.png" width="24" height="24" />
-      <span id="notif-badge" class="badge" style="display: none;"></span>
-    </div>
-    <div>Notification</div>
-  </button>
-</div>
+  </div>
 
-<script>
-  // ✅ Protect Page by Token
-  const token = sessionStorage.getItem('token');
-  if (!token) {
-    alert("Session expired or unauthorized access.");
+  <script>
+
+// ✅ Protect Page by Token
+const token = sessionStorage.getItem('token');
+if (!token) {
+  alert("Session expired or unauthorized access.");
+  window.location.href = "../login.html";
+}
+
+// ✅ Auto Logout Setup
+const AUTO_LOGOUT_MINUTES = 1;
+let logoutTimer;
+function resetLogoutTimer() {
+  clearTimeout(logoutTimer);
+  logoutTimer = setTimeout(() => {
+    sessionStorage.clear();
+    alert("Session expired due to inactivity. Please log in again.");
     window.location.href = "../login.html";
-  }
+  }, AUTO_LOGOUT_MINUTES * 60 * 1000);
+}
+function setupAutoLogoutEvents() {
+  ['mousemove', 'mousedown', 'keydown', 'touchstart', 'touchmove', 'scroll'].forEach(event => {
+    document.addEventListener(event, resetLogoutTimer, true);
+  });
+  resetLogoutTimer();
+}
+window.addEventListener('load', setupAutoLogoutEvents);
 
-  const AUTO_LOGOUT_MINUTES = 1;
-  let logoutTimer;
-  function resetLogoutTimer() {
-    clearTimeout(logoutTimer);
-    logoutTimer = setTimeout(() => {
-      sessionStorage.clear();
-      alert("Session expired due to inactivity. Please log in again.");
-      window.location.href = "../login.html";
-    }, AUTO_LOGOUT_MINUTES * 60 * 1000);
-  }
-  function setupAutoLogoutEvents() {
-    ['mousemove', 'mousedown', 'keydown', 'touchstart', 'touchmove', 'scroll'].forEach(event => {
-      document.addEventListener(event, resetLogoutTimer, true);
-    });
-    resetLogoutTimer();
-  }
-  window.addEventListener('load', setupAutoLogoutEvents);
 
-  const user = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
-  const username = user.username || "";
+    // ✅ old code
+    const user = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
+    const username = user.username || "";
 
-  // ✅ Notification message mapping
-  const notificationMessages = {
-    user: "បានធ្វើបច្ចុប្បន្នភាពទិន្នន័យ​ភ្នាក់ងារឥណទាន",
-    customer: "បានធ្វើបច្ចុប្បន្នភាពទិន្នន័យអតិថិជន",
-    turnover: "បានធ្វើបច្ចុប្បន្នភាពទិន្នន័យ​ (Debit Turnover)",
-    nbcos: "បានធ្វើបច្ចុប្បន្នភាពទិន្នន័យឥណទានសកម្ម​ (NBC Loan Outstanding Grid Merge)"
-  };
+    async function loadNotifications() {
+      const container = document.getElementById('notificationContainer');
+      const badge = document.getElementById('notif-badge');
+      container.innerHTML = '';
 
-  async function loadNotifications() {
-    const container = document.getElementById('notificationContainer');
-    const badge = document.getElementById('notif-badge');
-    container.innerHTML = '';
+      try {
+        const res = await fetch("https://secure-backend-tzj9.onrender.com/api/notifications/status");
+        const data = await res.json();
+        const readTime = data[`read_${username}`] ? new Date(data[`read_${username}`]) : null;
+        let count = 0;
 
-    try {
-      const res = await fetch("https://secure-backend-tzj9.onrender.com/api/notifications/status");
-      const data = await res.json();
-      const readTime = data[`read_${username}`] ? new Date(data[`read_${username}`]) : null;
-      let count = 0;
+        ['user', 'customer', 'turnover', 'nbcos'].forEach(type => {
+          const uploadedAt = data[type];
+          const fullname = data[`${type}Fullname`] || "Unknown";
 
-      ['user', 'customer', 'turnover', 'nbcos'].forEach(type => {
-        const uploadedAt = data[type];
-        const fullname = data[`${type}_by`] || "Unknown"; // FIXED: get from _by field
-        const message = notificationMessages[type] || "បានធ្វើបច្ចុប្បន្នភាព";
+          if (uploadedAt) {
+            const dateObj = new Date(uploadedAt);
+            const isNew = !readTime || dateObj > readTime;
+            if (isNew) count++;
 
-        if (uploadedAt) {
-          const dateObj = new Date(uploadedAt);
-          const isNew = !readTime || dateObj > readTime;
-          if (isNew) count++;
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `
+              <div class="card-title">${type.toUpperCase()} uploaded</div>
+              <div class="card-date">${dateObj.toLocaleString()}</div>
+              <div class="card-message">Uploaded by: ${fullname}</div>
+            `;
+            container.appendChild(card);
+          }
+        });
 
-          const card = document.createElement('div');
-          card.className = 'card' + (isNew ? '' : ' read');
-          card.innerHTML = `
-            <div class="card-title">${type.toUpperCase()} Uploaded</div>
-            <div class="card-date">${dateObj.toLocaleString()}</div>
-            <div class="card-message">${message}</div>
-            <div class="card-message">Uploaded by: <strong>${fullname}</strong></div>
-          `;
-          container.appendChild(card);
+        if (count > 0) {
+          badge.style.display = 'inline-block';
+          badge.textContent = count;
+        } else {
+          badge.style.display = 'none';
         }
-      });
-
-      badge.style.display = count > 0 ? 'inline-block' : 'none';
-      badge.textContent = count > 9 ? '9+' : count;
-
-    } catch (err) {
-      container.innerHTML = '<p style="padding:12px;">Failed to load notifications.</p>';
-      console.error("Error loading notifications:", err);
+      } catch (err) {
+        container.innerHTML = '<p style="padding:12px;">Failed to load notifications.</p>';
+        console.error("Error loading notifications:", err);
+      }
     }
-  }
 
-  function toggleMenu() {
-    const menu = document.getElementById("notifMenu");
-    menu.style.display = menu.style.display === "block" ? "none" : "block";
-  }
+    function toggleMenu() {
+      const menu = document.getElementById("notifMenu");
+      menu.style.display = menu.style.display === "block" ? "none" : "block";
+    }
 
-  async function markAllAsRead() {
-    await fetch("https://secure-backend-tzj9.onrender.com/api/notifications/mark-read", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username })
-    });
-    toggleMenu();
-    loadNotifications();
-    setTimeout(() => {
-      document.querySelectorAll('.card').forEach(card => {
-        card.classList.add('read');
-      });
-    }, 300);
-  }
-
-  function clearAll() {
-    const container = document.getElementById('notificationContainer');
-    container.innerHTML = '';
-    document.getElementById('notif-badge').style.display = 'none';
-    toggleMenu();
-  }
-
+    async function markAllAsRead() {
+  await fetch("https://secure-backend-tzj9.onrender.com/api/notifications/mark-read", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username })
+  });
+  toggleMenu();
   loadNotifications();
-</script>
+
+  // ✅ move this code here
+  setTimeout(() => {
+    document.querySelectorAll('.card').forEach(card => {
+      card.classList.add('read');
+    });
+  }, 300); // short delay to ensure cards are loaded first
+}
+
+    function clearAll() {
+      const container = document.getElementById('notificationContainer');
+      container.innerHTML = '';
+      document.getElementById('notif-badge').style.display = 'none';
+      toggleMenu();
+    }
+
+    loadNotifications();
+  </script>
+</body>
+</html>
