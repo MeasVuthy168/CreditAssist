@@ -18,15 +18,26 @@
       padding-bottom: 70px;
     }
     .header {
-      background: #0d2d5c;
-      color: white;
-      padding: 16px;
-      font-size: 20px;
-      font-weight: bold;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
+  background-color: #0d2d5c;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  color: white;
+  font-family: 'Krasar', Arial, sans-serif;
+}
+
+.header .back {
+  font-size: 22px;
+  color: white;
+  background: none;
+  border: none;
+  margin-right: 12px;
+  cursor: pointer;
+}
     .title {
       margin-left: 8px;
     }
@@ -118,15 +129,16 @@
 </head>
 <body>
   <div class="header">
-    <span class="title">ការជូនដំណឹង</span>
-    <div class="notif-dropdown">
-      <button onclick="toggleMenu()">⋮</button>
-      <div class="notif-menu" id="notifMenu">
-        <button onclick="markAllAsRead()">Mark All as Read</button>
-        <button onclick="clearAll()">Clear All</button>
-      </div>
+  <button class="back" onclick="window.location.href='../index.html'">←</button>
+  <div style="flex: 1; font-size: 17px; font-weight: bold;">ការជូនដំណឹង</div>
+  <div class="notif-dropdown">
+    <button onclick="toggleMenu()">⋮</button>
+    <div class="notif-menu" id="notifMenu">
+      <button onclick="markAllAsRead()">Mark All as Read</button>
+      <button onclick="clearAll()">Clear All</button>
     </div>
   </div>
+</div>
 
   <div id="notificationContainer"></div>
 
