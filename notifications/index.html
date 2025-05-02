@@ -215,43 +215,60 @@
     };
 
     async function loadNotifications() {
-      const container = document.getElementById('notificationContainer');
-      const badge = document.getElementById('notif-badge');
-      container.innerHTML = '';
+  const container = document.getElementById('notificationContainer');
+  const badge = document.getElementById('notif-badge');
+  container.innerHTML = '';
 
-      try {
-        const res = await fetch("https://secure-backend-tzj9.onrender.com/api/notifications/status");
-        const data = await res.json();
-        const readTime = data[`read_${username}`] ? new Date(data[`read_${username}`]) : null;
-        let count = 0;
+  try {
+    const res = await fetch("https://secure-backend-tzj9.onrender.com/api/notifications/status");
+    const data = await res.json();
+    const readTime = data[`read_${username}`] ? new Date(data[`read_${username}`]) : null;
+    let count = 0;
 
-        ['user', 'customer', 'turnover', 'nbcos'].forEach(type => {
-          const uploadedAt = data[type];
-          const fullname = data[`${type}_by`] || "Unknown";
+    const notificationMessages = {
+      user: "បានធ្វើបច្ចុប្បន្នភាពទិន្នន័យរបស់ភ្នាក់ងារឥណទាន",
+      customer: "បានធ្វើបច្ចុប្បន្នភាពទិន្នន័យអតិថិជន",
+      turnover: "បានធ្វើបច្ចុប្បន្នភាពទិន្នន័យ​ (Debit Turnover)",
+      nbcos: "បានធ្វើបច្ចុប្បន្នភាពទិន្នន័យឥណទានសកម្ម​ (NBC Loan Outstanding Grid Merge)"
+    };
 
-          if (uploadedAt) {
-            const dateObj = new Date(uploadedAt);
-            const isNew = !readTime || dateObj > readTime;
-            if (isNew) count++;
+    ['user', 'customer', 'turnover', 'nbcos'].forEach(type => {
+      const uploadedAt = data[type];
+      const uploadedBy = data[`${type}By`] || "";
+      let fullnameDisplay = "Unknown";
 
-            const card = document.createElement('div');
-            card.className = 'card' + (isNew ? '' : ' read');
-            card.innerHTML = `
-              <div class="card-title">${notificationMessages[type]}</div>
-              <div class="card-date">${dateObj.toLocaleString()}</div>
-              <div class="card-message">Uploaded by: ${fullname}</div>
-            `;
-            container.appendChild(card);
-          }
-        });
-
-        badge.style.display = count > 0 ? 'inline-block' : 'none';
-        badge.textContent = count > 9 ? '9+' : count;
-      } catch (err) {
-        container.innerHTML = '<p style="padding:12px;">Failed to load notifications.</p>';
-        console.error("Error loading notifications:", err);
+      // Match current user
+      if (uploadedBy === username) {
+        fullnameDisplay = user.fullname || "Unknown";
+      } else {
+        // Optionally: map username to fullname here if available from backend
+        fullnameDisplay = uploadedBy || "Unknown";
       }
-    }
+
+      if (uploadedAt) {
+        const dateObj = new Date(uploadedAt);
+        const isNew = !readTime || dateObj > readTime;
+        if (isNew) count++;
+
+        const card = document.createElement('div');
+        card.className = 'card' + (isNew ? '' : ' read');
+        card.innerHTML = `
+          <div class="card-title">${notificationMessages[type]}</div>
+          <div class="card-date">${dateObj.toLocaleString()}</div>
+          <div class="card-message">Uploaded by: ${fullnameDisplay}</div>
+        `;
+        container.appendChild(card);
+      }
+    });
+
+    badge.style.display = count > 0 ? 'inline-block' : 'none';
+    badge.textContent = count > 9 ? '9+' : count;
+
+  } catch (err) {
+    container.innerHTML = '<p style="padding:12px;">Failed to load notifications.</p>';
+    console.error("Error loading notifications:", err);
+  }
+}
 
     function toggleMenu() {
       const menu = document.getElementById("notifMenu");
