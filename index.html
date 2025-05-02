@@ -390,6 +390,17 @@
 .mic-btn.listening {
   animation: micGlow 1.2s infinite;
 }
+    .badge {
+  position: absolute;
+  top: -4px;
+  right: -8px;
+  background: red;
+  color: white;
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 50%;
+  font-weight: bold;
+}
   </style>
 </head>
 <body oncontextmenu="return false;">
@@ -464,9 +475,13 @@
   <button class="bottom-btn" onclick="window.location.href='Setting/index.html'">
     <img src="icons/Setting.png" width="24" height="24" /><div>Setting</div>
   </button>
-  <button class="bottom-btn" onclick="alert('Coming soon!')">
-    <img src="icons/Notification.png" width="24" height="24" /><div>Notification</div>
-  </button>
+  <button class="bottom-btn" onclick="window.location.href='../notifications/index.html'">
+  <div style="position: relative;">
+    <img src="../icons/Notification.png" width="24" height="24" />
+    <span id="notif-badge" class="badge" style="display: none;"></span>
+  </div>
+  <div>Notification</div>
+</button>
 </div>
 
 <script>
@@ -642,6 +657,44 @@ function handleVoiceCommand(command) {
 
   if (!found) alert(`កម្មវិធី "${command}" មិនមានទេ!`);
 }
+  
+  async function checkNotification() {
+  try {
+    const user = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
+    const username = user.username || "";
+
+    const res = await fetch("https://secure-backend-tzj9.onrender.com/api/notifications/status");
+    const data = await res.json();
+
+    const uploads = ['user', 'customer', 'turnover', 'nbcos'];
+    const lastReadRaw = data[`read_${username}`];
+    const lastRead = lastReadRaw ? new Date(lastReadRaw) : null;
+
+    let newCount = 0;
+    uploads.forEach(type => {
+      const dateStr = data[type];
+      if (!dateStr) return;
+      const uploadedAt = new Date(dateStr);
+      if (!lastRead || uploadedAt > lastRead) newCount++;
+    });
+
+    const badge = document.getElementById("notif-badge");
+    if (newCount > 0) {
+      badge.textContent = newCount > 9 ? "9+" : newCount;
+      badge.style.display = "inline-block";
+    } else {
+      badge.style.display = "none";
+    }
+
+  } catch (err) {
+    console.error("Notification fetch error:", err);
+  }
+}
+  
+  window.addEventListener('load', () => {
+  setupAutoLogoutEvents();
+  checkNotification();
+});
 </script>
 </body>
 </html>
