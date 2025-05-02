@@ -1,0 +1,176 @@
+<!DOCTYPE html><html lang="km">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0d2d5c" />
+  <title>ការជូនដំណឹង</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Arial', sans-serif;
+      background: #f2f2f2;
+      color: #333;
+    }
+    .header {
+      background: #0d2d5c;
+      color: white;
+      padding: 16px;
+      font-size: 20px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .header .title {
+      margin-left: 8px;
+    }
+    .card {
+      background: white;
+      margin: 12px;
+      padding: 12px 16px;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+    .card-title {
+      font-weight: bold;
+      color: #0d2d5c;
+      font-size: 16px;
+    }
+    .card-date {
+      color: gray;
+      font-size: 13px;
+    }
+    .card-message {
+      margin-top: 4px;
+      font-size: 14px;
+      color: #222;
+    }
+    .bottom-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 56px;
+      background: #0d2d5c;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      box-shadow: 0 -2px 5px rgba(0,0,0,0.2);
+    }
+    .bottom-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: white;
+      font-size: 11px;
+      border: none;
+      background: none;
+    }
+    .bottom-btn img {
+      margin-bottom: 2px;
+    }
+    .notif-dropdown {
+      position: relative;
+    }
+    .notif-menu {
+      position: absolute;
+      top: 44px;
+      right: 12px;
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      display: none;
+      z-index: 1000;
+    }
+    .notif-menu button {
+      display: block;
+      padding: 10px 16px;
+      width: 100%;
+      background: none;
+      border: none;
+      text-align: left;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .notif-menu button:hover {
+      background: #f0f0f0;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <span class="title">ការជូនដំណឹង</span>
+    <div class="notif-dropdown">
+      <button onclick="toggleMenu()">⋮</button>
+      <div class="notif-menu" id="notifMenu">
+        <button onclick="markAllAsRead()">Mark All as Read</button>
+        <button onclick="clearAll()">Clear All</button>
+      </div>
+    </div>
+  </div>  <div id="notificationContainer"></div>  <div class="bottom-bar">
+    <button class="bottom-btn" onclick="location.href='index.html'">
+      <img src="../icons/Home.png" width="24" height="24" />
+      <div>Home</div>
+    </button>
+    <button class="bottom-btn" onclick="location.href='setting.html'">
+      <img src="../icons/Setting.png" width="24" height="24" />
+      <div>Setting</div>
+    </button>
+    <button class="bottom-btn">
+      <img src="../icons/Notification.png" width="24" height="24" />
+      <div>Notification</div>
+    </button>
+  </div><script>
+const notifications = [
+  {
+    title: "USER uploaded",
+    date: "5/2/2025",
+    message: "Uploaded by: ម៉ាស វុទ្ធី"
+  },
+  {
+    title: "TURNOVER uploaded",
+    date: "5/2/2025",
+    message: "Uploaded by: ម៉ាស វុទ្ធី"
+  },
+  {
+    title: "NBCOS uploaded",
+    date: "5/2/2025",
+    message: "Uploaded by: ម៉ាស វុទ្ធី"
+  }
+];
+
+function renderNotifications() {
+  const container = document.getElementById('notificationContainer');
+  container.innerHTML = '';
+  notifications.forEach(n => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <div class="card-title">${n.title}</div>
+      <div class="card-date">${n.date}</div>
+      <div class="card-message">${n.message}</div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+function toggleMenu() {
+  const menu = document.getElementById('notifMenu');
+  menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+}
+
+function markAllAsRead() {
+  alert("All notifications marked as read.");
+  toggleMenu();
+}
+
+function clearAll() {
+  notifications.length = 0;
+  renderNotifications();
+  toggleMenu();
+}
+
+renderNotifications();
+</script></body>
+</html>
