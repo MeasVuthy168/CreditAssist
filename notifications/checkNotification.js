@@ -11,15 +11,7 @@ async function checkNotification() {
     const lastReadRaw = data[`read_${username}`];
     const lastRead = lastReadRaw ? new Date(lastReadRaw) : null;
 
-    const notificationMessages = {
-      user: "បានធ្វើបច្ចុប្បន្នភាពទិន្នន័យ​ភ្នាក់ងារឥណទាន",
-      customer: "បានធ្វើបច្ចុប្បន្នភាពទិន្នន័យអតិថិជន",
-      turnover: "បានធ្វើបច្ចុប្បន្នភាពទិន្នន័យ​ (Debit Turnover)",
-      nbcos: "បានធ្វើបច្ចុប្បន្នភាពទិន្នន័យឥណទានសកម្ម​ (NBC Loan Outstanding Grid Merge)"
-    };
-
     let newCount = 0;
-    let messages = [];
 
     uploads.forEach(type => {
       const dateStr = data[type];
@@ -27,7 +19,6 @@ async function checkNotification() {
       const uploadedAt = new Date(dateStr);
       if (!lastRead || uploadedAt > lastRead) {
         newCount++;
-        messages.push(notificationMessages[type] || `បានធ្វើបច្ចុប្បន្នភាពទិន្នន័យ ${type}`);
       }
     });
 
@@ -40,8 +31,6 @@ async function checkNotification() {
         badge.style.display = "none";
       }
     }
-
-    return messages; // Optional: you can use this for popup display
   } catch (err) {
     console.error("Notification fetch error:", err);
   }
