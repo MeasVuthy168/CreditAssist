@@ -282,18 +282,20 @@ function calculateMonthsLeft() {
        និង <span class="highlight">${String(days).padStart(2, '0')}</span> ថ្ងៃទៀត`;
 }
 
+<!-- ✅ Load shared notification script -->
 <script src="../checkNotification.js"></script>
 
-window.addEventListener("DOMContentLoaded", () => {
-  setMaxDateToToday();
-  calculateMonthsLeft();
-  checkNotification();
+<!-- ✅ Inline script must be separate -->
+<script>
+  window.addEventListener("DOMContentLoaded", () => {
+    setMaxDateToToday();
+    calculateMonthsLeft();
+    checkNotification();
 
-  ["dob", "retirementAge", "currentDate"].forEach(id => {
-    document.getElementById(id).addEventListener("change", calculateMonthsLeft);
+    ["dob", "retirementAge", "currentDate"].forEach(id => {
+      document.getElementById(id).addEventListener("change", calculateMonthsLeft);
+    });
   });
-});
 </script>
-
 </body>
 </html>
