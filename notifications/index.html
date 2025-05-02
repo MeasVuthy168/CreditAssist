@@ -208,16 +208,6 @@ function setupAutoLogoutEvents() {
 window.addEventListener('load', setupAutoLogoutEvents);
 
 
-    <!-- ✅ Load shared notification script -->
-<script src="../notifications/checkNotification.js"></script>
-
-<!-- ✅ Initialize after DOM ready -->
-<script>
-  window.addEventListener("DOMContentLoaded", () => {
-    setupAutoLogoutEvents();
-    checkNotification();
-  });
-</script>
     function toggleMenu() {
       const menu = document.getElementById("notifMenu");
       menu.style.display = menu.style.display === "block" ? "none" : "block";
@@ -249,5 +239,16 @@ window.addEventListener('load', setupAutoLogoutEvents);
 
     loadNotifications();
   </script>
+  
+<!-- ✅ Load shared notification script -->
+<script src="../notifications/checkNotification.js"></script>
+
+<!-- ✅ Initialize after DOM ready -->
+<script>
+  window.addEventListener("DOMContentLoaded", () => {
+    setupAutoLogoutEvents();
+    checkNotification();
+  });
+</script>
 </body>
 </html>
