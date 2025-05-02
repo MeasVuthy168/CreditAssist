@@ -261,18 +261,20 @@ window.addEventListener('load', setupAutoLogoutEvents);
     }
 
     async function markAllAsRead() {
-      await fetch("https://secure-backend-tzj9.onrender.com/api/notifications/mark-read", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username })
-      });
-      toggleMenu();
-      loadNotifications();
-    }
-      // ✅ mark visually as read
-  document.querySelectorAll('.card').forEach(card => {
-    card.classList.add('read');
+  await fetch("https://secure-backend-tzj9.onrender.com/api/notifications/mark-read", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username })
   });
+  toggleMenu();
+  loadNotifications();
+
+  // ✅ move this code here
+  setTimeout(() => {
+    document.querySelectorAll('.card').forEach(card => {
+      card.classList.add('read');
+    });
+  }, 300); // short delay to ensure cards are loaded first
 }
 
     function clearAll() {
