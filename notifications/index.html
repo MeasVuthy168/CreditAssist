@@ -225,6 +225,8 @@ async function loadNotifications() {
 
     uploads.forEach(type => {
       const dateStr = data[type];
+      const uploadedBy = data[`${type}_by`] || "Unknown";
+
       if (!dateStr) return;
       const uploadedAt = new Date(dateStr);
       const isUnread = !lastRead || uploadedAt > lastRead;
@@ -235,6 +237,7 @@ async function loadNotifications() {
         <div class="card-title">${type.toUpperCase()} Uploaded</div>
         <div class="card-date">${uploadedAt.toLocaleString('en-GB')}</div>
         <div class="card-message">${typeToLabel[type]}</div>
+        <div class="card-message" style="font-size: 13px; color: #777;">Uploaded by: <strong>${uploadedBy}</strong></div>
       `;
       container.appendChild(card);
     });
@@ -242,7 +245,6 @@ async function loadNotifications() {
     console.error("Error loading notifications:", err);
   }
 }
-
 const AUTO_LOGOUT_MINUTES = 1;
 let logoutTimer;
 function resetLogoutTimer() {
