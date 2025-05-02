@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="km">
+<!DOCTYPE html>
+<html lang="km">
 <head>
   <meta charset="UTF-8" />
   <title>ការគណនាចំនួនខែចូលនិវត្តន៍</title>
@@ -8,158 +9,179 @@
     @font-face {
       font-family: 'Krasar';
       src: url('https://measvuthy168.github.io/CreditAssist/Krasar-Regular.ttf') format('truetype');
-    }body {
-  font-family: 'Krasar', Arial, sans-serif;
-  background-color: #1c2331;
-  color: white;
-  margin: 0;
-  padding-bottom: 70px;
-}
+    }
 
-.header {
-  background-color: #0d2d5c;
-  padding: 14px 16px;
-  display: flex;
-  align-items: center;
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  z-index: 1000;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-}
+    body {
+      font-family: 'Krasar', Arial, sans-serif;
+      background-color: #1c2331;
+      color: white;
+      margin: 0;
+      padding-bottom: 70px;
+    }
 
-.header .back {
-  font-size: 22px;
-  color: white;
-  background: none;
-  border: none;
-  margin-right: 12px;
-  cursor: pointer;
-}
+    .header {
+      background-color: #0d2d5c;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
 
-.header .title {
-  font-size: 17px;
-  font-weight: bold;
-  color: white;
-}
+    .header .back {
+      font-size: 22px;
+      color: white;
+      background: none;
+      border: none;
+      margin-right: 12px;
+      cursor: pointer;
+    }
 
-.container {
-  max-width: 700px;
-  margin: 80px auto 0;
-  background: #2c3545;
-  padding: 20px;
-  border-radius: 12px;
-}
+    .header .title {
+      font-size: 17px;
+      font-weight: bold;
+      color: white;
+    }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
+    .container {
+      max-width: 700px;
+      margin: 80px auto 0;
+      background: #2c3545;
+      padding: 20px;
+      border-radius: 12px;
+    }
 
-th, td {
-  text-align: left;
-  padding: 12px 10px;
-  font-size: 16px;
-}
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
 
-th {
-  color: #ccc;
-  font-weight: bold;
-}
+    th, td {
+      text-align: left;
+      padding: 12px 10px;
+      font-size: 16px;
+    }
 
-input[type="date"], .age-input-wrap {
-  width: 100%;
-  font-size: 16px;
-  background-color: #1f2733;
-  color: white;
-  border: 1px solid #555;
-  border-radius: 6px;
-  height: 44px;
-  box-sizing: border-box;
-}
+    th {
+      color: #ccc;
+      font-weight: bold;
+    }
 
-.age-input-wrap {
-  display: flex;
-  align-items: center;
-  padding: 0 10px;
-}
+    input[type="date"], .age-input-wrap {
+      width: 100%;
+      font-size: 16px;
+      background-color: #1f2733;
+      color: white;
+      border: 1px solid #555;
+      border-radius: 6px;
+      height: 44px;
+      box-sizing: border-box;
+    }
 
-.age-input-wrap input {
-  flex: 1;
-  border: none;
-  background: transparent;
-  font-size: 16px;
-  color: white;
-}
+    .age-input-wrap {
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+    }
 
-.suffix {
-  font-size: 15px;
-  color: #ccc;
-  white-space: nowrap;
-}
+    .age-input-wrap input {
+      flex: 1;
+      border: none;
+      background: transparent;
+      font-size: 16px;
+      color: white;
+    }
 
-#monthsLeft {
-  font-weight: bold;
-  color: #3399ff;
-  font-size: 24px;
-}
+    .suffix {
+      font-size: 15px;
+      color: #ccc;
+      white-space: nowrap;
+    }
 
-#description {
-  text-align: center;
-  font-size: 18px;
-  margin-top: 15px;
-  color: #f0f0f0;
-}
+    #monthsLeft {
+      font-weight: bold;
+      color: #3399ff;
+      font-size: 24px;
+    }
 
-.highlight {
-  color: #3399ff;
-  font-weight: bold;
-}
+    #description {
+      text-align: center;
+      font-size: 18px;
+      margin-top: 15px;
+      color: #f0f0f0;
+    }
 
-footer {
-  text-align: center;
-  font-size: 14px;
-  color: #aaa;
-  margin-top: 40px;
-}
+    .highlight {
+      color: #3399ff;
+      font-weight: bold;
+    }
 
-.bottom-bar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 56px;
-  background: #0d2d5c;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  z-index: 1000;
-}
+    footer {
+      text-align: center;
+      font-size: 14px;
+      color: #aaa;
+      margin-top: 40px;
+    }
 
-.bottom-btn {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-size: 11px;
-  color: white;
-  border: none;
-  background: none;
-}
+    .bottom-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 56px;
+      background: #0d2d5c;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      z-index: 1000;
+    }
 
-.bottom-btn img {
-  margin-bottom: 2px;
-  pointer-events: none;
-}
+    .bottom-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-size: 11px;
+      color: white;
+      border: none;
+      background: none;
+    }
 
-@media print {
-  .header, .bottom-bar { display: none !important; }
-}
+    .bottom-btn img {
+      margin-bottom: 2px;
+      pointer-events: none;
+    }
 
+    #notif-badge {
+      position: absolute;
+      top: -6px;
+      right: -8px;
+      background-color: red;
+      color: white;
+      font-size: 10px;
+      font-weight: bold;
+      padding: 2px 5px;
+      border-radius: 50%;
+      min-width: 18px;
+      text-align: center;
+      display: none;
+      box-shadow: 0 0 0 2px #1c2331;
+    }
+
+    @media print {
+      .header, .bottom-bar { display: none !important; }
+    }
   </style>
 </head>
-<body><div class="header">
+<body>
+
+<div class="header">
   <button class="back" onclick="window.location.href='../index.html'">←</button>
   <div class="title">ការគណនាចំនួនខែចូលនិវត្តន៍</div>
-</div><div class="container">
+</div>
+
+<div class="container">
   <table>
     <tr>
       <th>ថ្ងៃខែឆ្នាំកំណើត</th>
@@ -185,8 +207,10 @@ footer {
   </table>
   <div id="description"></div>
   <footer>© 2025 បង្កើតដោយក្រុមការងារឥណទានសាខាស្វាយរៀង</footer>
-</div><div class="bottom-bar">
-  <button class="bottom-btn active" onclick="window.location.href='../index.html'">
+</div>
+
+<div class="bottom-bar">
+  <button class="bottom-btn" onclick="window.location.href='../index.html'">
     <img src="../icons/Home.png" width="24" height="24" /><div>Home</div>
   </button>
   <button class="bottom-btn" onclick="window.location.href='../Setting/index.html'">
@@ -199,7 +223,12 @@ footer {
     </div>
     <div>Notification</div>
   </button>
-</div><script>
+</div>
+
+<script>
+const user = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
+const username = user.username || "";
+
 function setMaxDateToToday() {
   const today = new Date().toISOString().split("T")[0];
   document.getElementById("dob").max = today;
@@ -226,12 +255,46 @@ function calculateMonthsLeft() {
        និង <span class="highlight">${String(days).padStart(2, '0')}</span> ថ្ងៃទៀត`;
 }
 
+async function checkNotification() {
+  try {
+    const res = await fetch("https://secure-backend-tzj9.onrender.com/api/notifications/status");
+    const data = await res.json();
+
+    const uploads = ['user', 'customer', 'turnover', 'nbcos'];
+    const lastReadRaw = data[`read_${username}`];
+    const lastRead = lastReadRaw ? new Date(lastReadRaw) : null;
+
+    let newCount = 0;
+    uploads.forEach(type => {
+      const dateStr = data[type];
+      if (!dateStr) return;
+      const uploadedAt = new Date(dateStr);
+      if (!lastRead || uploadedAt > lastRead) newCount++;
+    });
+
+    const badge = document.getElementById("notif-badge");
+    if (newCount > 0) {
+      badge.textContent = newCount > 9 ? "9+" : newCount;
+      badge.style.display = "inline-block";
+    } else {
+      badge.style.display = "none";
+    }
+
+  } catch (err) {
+    console.error("Notification fetch error:", err);
+  }
+}
+
 window.addEventListener("DOMContentLoaded", () => {
   setMaxDateToToday();
   calculateMonthsLeft();
+  checkNotification();
+
   ["dob", "retirementAge", "currentDate"].forEach(id => {
     document.getElementById(id).addEventListener("change", calculateMonthsLeft);
   });
 });
-</script></body>
+</script>
+
+</body>
 </html>
