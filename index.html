@@ -406,17 +406,21 @@
     
    .toast-full {
   position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: #ffd700;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 92%;
+  max-width: 400px;
+  background: rgba(255, 215, 0, 0.85); /* Semi-transparent gold */
   color: #002c5f;
   z-index: 9999;
-  padding: 12px 16px;
+  padding: 16px;
   font-family: 'Krasar', sans-serif;
   display: none;
   animation: slideUp 0.4s ease;
-  box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  border-radius: 16px;
+  backdrop-filter: blur(4px);
 }
 
 .toast-content {
