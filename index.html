@@ -402,68 +402,59 @@
   font-weight: bold;
 }
 
-    
-   .toast-full {
+    #toast {
   position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: #ffd700;
-  color: #002c5f;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(10px);
+  color: white;
+  width: 92%;
+  max-width: 380px;
+  padding: 16px 20px;
+  border-radius: 18px;
+  font-family: 'Krasar', Arial, sans-serif;
+  font-size: 15px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
   z-index: 9999;
-  padding: 12px 16px;
-  font-family: 'Krasar', sans-serif;
   display: none;
-  animation: slideUp 0.4s ease;
-  box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
-}
-
-.toast-content {
+  opacity: 0;
+  transition: opacity 0.4s ease;
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 12px;
 }
 
-.toast-text {
-  flex: 1;
-}
-
-.toast-title {
-  font-weight: bold;
-  margin-bottom: 4px;
-}
-
-.toast-message {
-  font-size: 14px;
-  margin-bottom: 6px;
-}
-
-.toast-checkbox {
-  font-size: 13px;
-}
-
-.toast-actions {
+#toastActions {
   display: flex;
-  flex-direction: column;
-  gap: 6px;
+  gap: 10px;
+  justify-content: flex-end;
 }
 
-.toast-actions button {
-  background: #0d2d5c;
-  color: white;
-  border: none;
+#toast button {
   padding: 6px 12px;
-  font-size: 13px;
-  border-radius: 6px;
+  border-radius: 10px;
+  border: none;
+  font-family: 'Krasar', Arial, sans-serif;
   cursor: pointer;
 }
 
-@keyframes slideUp {
-  from { transform: translateY(100%); }
-  to { transform: translateY(0); }
+#toast .close-btn {
+  background: #444;
+  color: white;
 }
+
+#toast .view-btn {
+  background: #ffd700;
+  color: #002c5f;
+}
+
+#toast label {
+  font-size: 13px;
+  color: #ccc;
+}
+   
   </style>
 </head>
 <body oncontextmenu="return false;">
@@ -547,20 +538,12 @@
 </button>
 </div>
 
-  <div id="toast" class="toast-full">
-  <div class="toast-content">
-    <div class="toast-text">
-      <div class="toast-title">New Notification</div>
-      <div class="toast-message" id="toastMessage">You have a new update.</div>
-      <label class="toast-checkbox">
-        <input type="checkbox" id="toastNoShowAgain" />
-        Don't show again until new message
-      </label>
-    </div>
-    <div class="toast-actions">
-      <button onclick="hideToast()">Close</button>
-      <button onclick="window.location.href='notifications/index.html'">See Detail</button>
-    </div>
+  <div id="toast">
+  <div id="toastMessage">អ្នកមានការជូនដំណឹងថ្មី</div>
+  <label><input type="checkbox" id="toastNoShowAgain"> មិនបង្ហាញម្ដងទៀតរហូតមានសារថ្មី</label>
+  <div id="toastActions">
+    <button class="close-btn" onclick="hideToast()">បិទ</button>
+    <button class="view-btn" onclick="window.location.href='notifications/index.html'">មើលសារ</button>
   </div>
 </div>
     
@@ -748,25 +731,34 @@ function handleVoiceCommand(command) {
 
   // ✅ Toast Functions
   function showToast(message) {
-    const toast = document.getElementById("toast");
-    const toastMessage = document.getElementById("toastMessage");
-    const noShow = localStorage.getItem("noShowToast");
-    if (noShow === "true") return;
-    toastMessage.textContent = message;
-    toast.style.display = "block";
-  }
+  const toast = document.getElementById("toast");
+  const toastMessage = document.getElementById("toastMessage");
+  const noShow = localStorage.getItem("noShowToast");
 
-  function hideToast() {
-    const checkbox = document.getElementById("toastNoShowAgain");
-    if (checkbox.checked) {
-      localStorage.setItem("noShowToast", "true");
-    }
-    document.getElementById("toast").style.display = "none";
-  }
+  if (noShow === "true") return;
 
-  function resetToastPreference() {
-    localStorage.removeItem("noShowToast");
+  toastMessage.textContent = message;
+  toast.style.display = "flex";
+  setTimeout(() => {
+    toast.style.opacity = "1";
+  }, 100);
+}
+
+function hideToast() {
+  const checkbox = document.getElementById("toastNoShowAgain");
+  if (checkbox.checked) {
+    localStorage.setItem("noShowToast", "true");
   }
+  const toast = document.getElementById("toast");
+  toast.style.opacity = "0";
+  setTimeout(() => {
+    toast.style.display = "none";
+  }, 400);
+}
+
+function resetToastPreference() {
+  localStorage.removeItem("noShowToast");
+}
 </script>
 </body>
 </html>
