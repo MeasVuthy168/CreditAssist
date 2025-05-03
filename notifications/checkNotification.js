@@ -12,14 +12,17 @@ function showToast(message) {
   toast.style.display = "block";
 }
 
-// ✅ Hide Toast and persist preference if checkbox is checked
+// ✅ Hide Toast and persist per-user preference if checkbox is checked
 function hideToast() {
   const checkbox = document.getElementById("toastNoShowAgain");
+  const user = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
+  const username = user.username || "";
+
   if (checkbox && checkbox.checked) {
-    localStorage.setItem("noShowToast", "true");
+    localStorage.setItem(`noShowToast_${username}`, "true");
   }
   const toast = document.getElementById("toast");
-  toast.style.display = "none";
+  if (toast) toast.style.display = "none";
 }
 
 // ✅ Shared Notification Checker
@@ -28,9 +31,9 @@ async function checkNotification() {
     const user = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
     const username = user.username || "";
 
-const noShow = localStorage.getItem(`noShowToast_${username}`);
-const lastToast = localStorage.getItem(`lastToastShown_${username}`);
-    
+    const noShow = localStorage.getItem(`noShowToast_${username}`);
+    const lastToast = localStorage.getItem(`lastToastShown_${username}`);
+
     const res = await fetch("https://secure-backend-tzj9.onrender.com/api/notifications/status");
     const data = await res.json();
 
@@ -59,13 +62,10 @@ const lastToast = localStorage.getItem(`lastToastShown_${username}`);
         badge.textContent = newCount > 9 ? "9+" : newCount;
         badge.style.display = "inline-block";
 
-        const lastShown = localStorage.getItem("lastToastShown");
-        const noShow = localStorage.getItem("noShowToast");
-
-        if (noShow !== "true" || lastShown !== latestUploadTime) {
+        if (noShow !== "true" || lastToast !== latestUploadTime) {
           showToast(`អ្នកមានការជូនដំណឹងថ្មីចំនួន ${newCount}`);
-          localStorage.setItem("lastToastShown", latestUploadTime);
-          localStorage.removeItem("noShowToast"); // reset if new message
+          localStorage.setItem(`lastToastShown_${username}`, latestUploadTime);
+          localStorage.removeItem(`noShowToast_${username}`); // reset if new message
         }
       } else {
         badge.style.display = "none";
