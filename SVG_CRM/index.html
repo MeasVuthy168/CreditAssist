@@ -226,14 +226,13 @@
         <thead style="display: none;">
   <tr>
     <th>CIF</th>
-    <th>Account Name</th>
-    <th>Khmer Name</th>
-    <th>Gender</th>
-    <th>Address</th>
-    <th>Phone</th>
-    <th>Branch</th>
-    <th>CO Response</th>
-    <th>Note</th>
+    <th>ឈ្មោះឡាតាំង</th>
+    <th>ឈ្មោះខ្មែរ</th>
+    <th>ភេទ</th>
+    <th>អាស័យដ្ឋាន</th>
+    <th>សាខា</th>
+    <th>ភ្នាក់ងារតំបន់</th>
+    <th>មុខរបរ/មុខងារ</th>
   </tr>
 </thead>
         <tbody></tbody>
@@ -331,7 +330,6 @@ document.addEventListener("DOMContentLoaded", () => {
           <td>${item.NAME_KHMER || ''}</td>
           <td>${item.GENDER || ''}</td>
           <td>${item.ADDRESS || ''}</td>
-          <td>${item.Phone || ''}</td>
           <td>${item.Branch || ''}</td>
           <td>${item["CO Response"] || ''}</td>
           <td>${item.Note || ''}</td> 
