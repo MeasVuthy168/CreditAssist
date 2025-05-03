@@ -28,6 +28,9 @@ async function checkNotification() {
     const user = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
     const username = user.username || "";
 
+const noShow = localStorage.getItem(`noShowToast_${username}`);
+const lastToast = localStorage.getItem(`lastToastShown_${username}`);
+    
     const res = await fetch("https://secure-backend-tzj9.onrender.com/api/notifications/status");
     const data = await res.json();
 
