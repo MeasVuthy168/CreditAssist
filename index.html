@@ -401,6 +401,24 @@
   border-radius: 50%;
   font-weight: bold;
 }
+
+   #toast {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.85);
+  color: white;
+  padding: 16px 24px;
+  border-radius: 10px;
+  font-family: 'Krasar', Arial, sans-serif;
+  font-size: 16px;
+  z-index: 9999;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  display: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+} 
   </style>
 </head>
 <body oncontextmenu="return false;">
@@ -483,7 +501,8 @@
   <div>Notification</div>
 </button>
 </div>
-
+<div id="toast"></div>
+    
 <script>
 // ✅ Check Token
 const token = sessionStorage.getItem('token');
@@ -695,6 +714,23 @@ function handleVoiceCommand(command) {
   setupAutoLogoutEvents();
   checkNotification();
 });
+
+  function showToast(message, duration = 3000) {
+  const toast = document.getElementById("toast");
+  toast.textContent = message;
+  toast.style.display = "block";
+
+  setTimeout(() => {
+    toast.style.opacity = "1";
+  }, 50);
+
+  setTimeout(() => {
+    toast.style.opacity = "0";
+    setTimeout(() => {
+      toast.style.display = "none";
+    }, 400);
+  }, duration);
+}
 </script>
 </body>
 </html>
