@@ -1,19 +1,25 @@
-
 // ✅ Toast Display Function
-function showToast(message, duration = 3000) {
+function showToast(message) {
   const toast = document.getElementById("toast");
-  if (!toast) return;
+  const toastMessage = document.getElementById("toastMessage");
+  if (!toast || !toastMessage) return;
 
-  toast.textContent = message;
+  // Reset checkbox every time toast is shown
+  const checkbox = document.getElementById("toastNoShowAgain");
+  if (checkbox) checkbox.checked = false;
+
+  toastMessage.textContent = message;
   toast.style.display = "block";
-  toast.style.opacity = "1";
+}
 
-  setTimeout(() => {
-    toast.style.opacity = "0";
-    setTimeout(() => {
-      toast.style.display = "none";
-    }, 500);
-  }, duration);
+// ✅ Hide Toast and persist preference if checkbox is checked
+function hideToast() {
+  const checkbox = document.getElementById("toastNoShowAgain");
+  if (checkbox && checkbox.checked) {
+    localStorage.setItem("noShowToast", "true");
+  }
+  const toast = document.getElementById("toast");
+  toast.style.display = "none";
 }
 
 // ✅ Shared Notification Checker
@@ -30,6 +36,7 @@ async function checkNotification() {
     const lastRead = lastReadRaw ? new Date(lastReadRaw) : null;
 
     let newCount = 0;
+    let latestUploadTime = "";
 
     uploads.forEach(type => {
       const dateStr = data[type];
@@ -37,6 +44,9 @@ async function checkNotification() {
       const uploadedAt = new Date(dateStr);
       if (!lastRead || uploadedAt > lastRead) {
         newCount++;
+        if (!latestUploadTime || uploadedAt > new Date(latestUploadTime)) {
+          latestUploadTime = dateStr;
+        }
       }
     });
 
@@ -46,8 +56,14 @@ async function checkNotification() {
         badge.textContent = newCount > 9 ? "9+" : newCount;
         badge.style.display = "inline-block";
 
-        // ✅ Show toast if new notifications exist
-        showToast(`អ្នកមានការជូនដំណឹងថ្មីចំនួន ${newCount}`, 4000);
+        const lastShown = localStorage.getItem("lastToastShown");
+        const noShow = localStorage.getItem("noShowToast");
+
+        if (noShow !== "true" || lastShown !== latestUploadTime) {
+          showToast(`អ្នកមានការជូនដំណឹងថ្មីចំនួន ${newCount}`);
+          localStorage.setItem("lastToastShown", latestUploadTime);
+          localStorage.removeItem("noShowToast"); // reset if new message
+        }
       } else {
         badge.style.display = "none";
       }
