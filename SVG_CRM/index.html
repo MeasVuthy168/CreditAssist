@@ -322,9 +322,14 @@ document.addEventListener("DOMContentLoaded", () => {
       ? results.map(item => `
           <tr>
             <td>${item.CIF || ''}</td>
-            <td>${item.Name || ''}</td>
-            <td>${item.Address || ''}</td>
-            <td>${item.Phone_Number || ''}</td>
+            <td>${item.ACCOUNT_NAME || ''}</td>
+            <td>${item.NAME_KHMER || ''}</td>
+            <td>${item.GENDER || ''}</td>
+            <td>${item.ADDRESS || ''}</td>
+            <td>${item.Phone || ''}</td>
+            <td>${item.Branch || ''}</td>
+            <td>${item.CO Response || ''}</td>
+            <td>${item.Note || ''}</td> 
           </tr>`).join("")
       : "<tr><td colspan='4'>រកមិនឃើញលទ្ធផលទេ</td></tr>";
   }
