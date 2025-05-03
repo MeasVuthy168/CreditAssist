@@ -1,3 +1,21 @@
+
+// ✅ Toast Display Function
+function showToast(message, duration = 3000) {
+  const toast = document.getElementById("toast");
+  if (!toast) return;
+
+  toast.textContent = message;
+  toast.style.display = "block";
+  toast.style.opacity = "1";
+
+  setTimeout(() => {
+    toast.style.opacity = "0";
+    setTimeout(() => {
+      toast.style.display = "none";
+    }, 500);
+  }, duration);
+}
+
 // ✅ Shared Notification Checker
 async function checkNotification() {
   try {
@@ -27,6 +45,9 @@ async function checkNotification() {
       if (newCount > 0) {
         badge.textContent = newCount > 9 ? "9+" : newCount;
         badge.style.display = "inline-block";
+
+        // ✅ Show toast if new notifications exist
+        showToast(`អ្នកមានការជូនដំណឹងថ្មីចំនួន ${newCount}`, 4000);
       } else {
         badge.style.display = "none";
       }
