@@ -276,7 +276,18 @@ function showPreview(fileInputId, previewId) {
       const workbook = XLSX.read(data, { type: 'array' });
       const firstSheetName = workbook.SheetNames[0];
       const sheet = workbook.Sheets[firstSheetName];
-      const json = XLSX.utils.sheet_to_json(sheet, { defval: "" });
+      let json = XLSX.utils.sheet_to_json(sheet, { defval: "" });
+
+// ✅ Remove duplicates for customerFile by CIF
+if (fileInputId === "customerFile") {
+  const seenCIF = new Set();
+  json = json.filter(row => {
+    const cif = (row["CIF"] || "").toString().trim();
+    if (!cif || seenCIF.has(cif)) return false;
+    seenCIF.add(cif);
+    return true;
+  });
+}
 
       if (!json || json.length === 0) {
         preview.innerHTML = '❌ No rows found.';
