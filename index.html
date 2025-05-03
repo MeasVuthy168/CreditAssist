@@ -752,22 +752,31 @@ function handleVoiceCommand(command) {
   });
 
   // ✅ Toast Functions
-  function showToast(message) {
-    const toast = document.getElementById("toast");
-    const toastMessage = document.getElementById("toastMessage");
-    const noShow = localStorage.getItem("noShowToast");
-    if (noShow === "true") return;
-    toastMessage.textContent = message;
-    toast.style.display = "block";
+  function showToast(message, uploadTime = "") {
+  const toast = document.getElementById("toast");
+  const toastMessage = document.getElementById("toastMessage");
+  const checkbox = document.getElementById("toastNoShowAgain");
+
+  // Reset checkbox every time toast is shown
+  if (checkbox) checkbox.checked = false;
+
+  toastMessage.textContent = message;
+  toast.style.display = "block";
+
+  // Save latest shown timestamp
+  if (uploadTime) {
+    localStorage.setItem("lastToastShown", uploadTime);
+    localStorage.removeItem("noShowToast");
   }
+}
 
   function hideToast() {
-    const checkbox = document.getElementById("toastNoShowAgain");
-    if (checkbox.checked) {
-      localStorage.setItem("noShowToast", "true");
-    }
-    document.getElementById("toast").style.display = "none";
+  const checkbox = document.getElementById("toastNoShowAgain");
+  if (checkbox.checked) {
+    localStorage.setItem("noShowToast", "true");
   }
+  document.getElementById("toast").style.display = "none";
+}
 
   function resetToastPreference() {
     localStorage.removeItem("noShowToast");
