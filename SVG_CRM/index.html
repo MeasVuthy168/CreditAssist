@@ -316,28 +316,29 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function displayResults(results) {
-    const resultsTable = document.querySelector("#results tbody");
-    const tableHead = document.querySelector("#results thead");
-    const resultLabel = document.getElementById("resultLabel");
+  function displayResults(results) {
+  const resultsTable = document.querySelector("#results tbody");
+  const tableHead = document.querySelector("#results thead");
+  const resultLabel = document.getElementById("resultLabel");
 
-    resultLabel.textContent = `លទ្ធផលស្វែងរក៖ ${results.length}`;
-    tableHead.style.display = results.length > 0 ? "table-header-group" : "none";
+  resultLabel.textContent = `លទ្ធផលស្វែងរក៖ ${results.length}`;
+  tableHead.style.display = results.length > 0 ? "table-header-group" : "none";
 
-    resultsTable.innerHTML = results.length > 0
-      ? results.map(item => `
-          <tr>
-            <td>${item.CIF || ''}</td>
-            <td>${item.ACCOUNT_NAME || ''}</td>
-            <td>${item.NAME_KHMER || ''}</td>
-            <td>${item.GENDER || ''}</td>
-            <td>${item.ADDRESS || ''}</td>
-            <td>${item.Phone || ''}</td>
-            <td>${item.Branch || ''}</td>
-            <td>${item.CO Response || ''}</td>
-            <td>${item.Note || ''}</td> 
-          </tr>`).join("")
-      : "<tr><td colspan='9'>រកមិនឃើញលទ្ធផលទេ</td></tr>";
-  }
+  resultsTable.innerHTML = results.length > 0
+    ? results.map(item => `
+        <tr>
+          <td>${item.CIF || ''}</td>
+          <td>${item.ACCOUNT_NAME || ''}</td>
+          <td>${item.NAME_KHMER || ''}</td>
+          <td>${item.GENDER || ''}</td>
+          <td>${item.ADDRESS || ''}</td>
+          <td>${item.Phone || ''}</td>
+          <td>${item.Branch || ''}</td>
+          <td>${item["CO Response"] || ''}</td>
+          <td>${item.Note || ''}</td> 
+        </tr>`).join("")
+    : "<tr><td colspan='9'>រកមិនឃើញលទ្ធផលទេ</td></tr>";
+}
 
   document.getElementById("searchButton").addEventListener("click", performSearch);
 });
