@@ -63,7 +63,7 @@ async function checkNotification() {
         badge.style.display = "inline-block";
 
         if (noShow !== "true" || lastToast !== latestUploadTime) {
-          showToast(`អ្នកមានការជូនដំណឹងថ្មីចំនួន ${newCount}`);
+          showToast(`លោកគ្រូអ្នកគ្រូមានការជូនដំណឹងថ្មីចំនួន ${newCount}សារ`);
           localStorage.setItem(`lastToastShown_${username}`, latestUploadTime);
           localStorage.removeItem(`noShowToast_${username}`); // reset if new message
         }
