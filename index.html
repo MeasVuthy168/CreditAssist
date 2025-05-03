@@ -784,8 +784,9 @@ function handleVoiceCommand(command) {
 }
 
   function resetToastPreference() {
-    localStorage.removeItem("noShowToast");
-  }
+  const username = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}").username || "guest";
+  localStorage.removeItem(`noShowToast_${username}`);
+}
 </script>
 </body>
 </html>
