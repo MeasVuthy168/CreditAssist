@@ -753,28 +753,33 @@ function handleVoiceCommand(command) {
 
   // ✅ Toast Functions
   function showToast(message, uploadTime = "") {
+  const user = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
+  const username = user.username || "guest";
+
   const toast = document.getElementById("toast");
   const toastMessage = document.getElementById("toastMessage");
   const checkbox = document.getElementById("toastNoShowAgain");
 
-  // Reset checkbox every time toast is shown
   if (checkbox) checkbox.checked = false;
 
   toastMessage.textContent = message;
   toast.style.display = "block";
 
-  // Save latest shown timestamp
   if (uploadTime) {
-    localStorage.setItem("lastToastShown", uploadTime);
-    localStorage.removeItem("noShowToast");
+    localStorage.setItem(`lastToastShown_${username}`, uploadTime);
+    localStorage.removeItem(`noShowToast_${username}`);
   }
 }
 
   function hideToast() {
+  const user = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
+  const username = user.username || "guest";
+
   const checkbox = document.getElementById("toastNoShowAgain");
   if (checkbox.checked) {
-    localStorage.setItem("noShowToast", "true");
+    localStorage.setItem(`noShowToast_${username}`, "true");
   }
+
   document.getElementById("toast").style.display = "none";
 }
 
