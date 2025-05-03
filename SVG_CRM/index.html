@@ -107,21 +107,25 @@
     }
 
     .table-container {
-      overflow-x: auto;
-    }
+  overflow-x: auto;
+  max-width: 100%;
+}
 
     table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 14px;
-      color: white;
-    }
+      table {
+  width: auto;
+  min-width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  color: white;
+}
 
     th, td {
-      border: 1px solid #444;
-      padding: 12px;
-      text-align: left;
-    }
+  border: 1px solid #444;
+  padding: 12px;
+  text-align: left;
+  white-space: nowrap;
+}
 
     th {
       background-color: #3d4a5a;
