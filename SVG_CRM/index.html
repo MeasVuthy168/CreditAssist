@@ -97,8 +97,8 @@
     }
 
     .container {
-  max-width: 100%;
-  margin: 160px 8px 0;
+  width: calc(100% - 16px);
+  margin: 160px auto 0;
   background: #2c3545;
   padding: 12px;
   border-radius: 12px;
@@ -212,7 +212,7 @@
   padding: 10px 20px;
   border-radius: 12px;
   margin: 10px auto;
-  max-width: 700px;
+  width: calc(100% - 16px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   font-family: 'Krasar', Arial, sans-serif;
   position: relative;
@@ -455,8 +455,8 @@ document.querySelector("#results tbody").addEventListener("click", function (e) 
     let totalOS = 0;
     let latestDisburseDate = null;
 
-    let tableHTML = `<div style="overflow-x:auto;">
-      <table style="border-collapse:collapse;width:100%;min-width:800px;font-size:13.5px;">
+    let tableHTML = `<div style="overflow-x:auto; width:100%;">
+    <table style="border-collapse:collapse;width:100%;min-width:800px;font-size:13px;">
       <thead>
         <tr>${headers.map(h => `<th style="background:#2f3c4f;color:#fff;padding:8px 10px;border:1px solid #ccc;">${h}</th>`).join('')}</tr>
       </thead><tbody>`;
