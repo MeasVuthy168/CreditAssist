@@ -372,32 +372,32 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function displayResults(results) {
-  const resultsTable = document.querySelector("#results tbody");
-  const tableHead = document.querySelector("#results thead");
-  const resultLabel = document.getElementById("resultLabel");
+    const resultsTable = document.querySelector("#results tbody");
+    const tableHead = document.querySelector("#results thead");
+    const resultLabel = document.getElementById("resultLabel");
 
-  resultLabel.textContent = `លទ្ធផលស្វែងរក៖ ${results.length}`;
-  tableHead.style.display = results.length > 0 ? "table-header-group" : "none";
+    resultLabel.textContent = `លទ្ធផលស្វែងរក៖ ${results.length}`;
+    tableHead.style.display = results.length > 0 ? "table-header-group" : "none";
 
-  resultsTable.innerHTML = results.length > 0
-    ? results.map(item => `
-        <tr>
-          <td>${item.CIF || ''}</td>
-          <td>${item.ACCOUNT_NAME || ''}</td>
-          <td>${item.NAME_KHMER || ''}</td>
-          <td>${item.GENDER || ''}</td>
-          <td>${item.ADDRESS || ''}</td>
-          <td>${item.Branch || ''}</td>
-          <td>${item["CO Response"] || ''}</td>
-          <td>${item.Note || ''}</td> 
-        </tr>`).join("")
-    : "<tr><td colspan='9'>រកមិនឃើញលទ្ធផលទេ</td></tr>";
-}
+    resultsTable.innerHTML = results.length > 0
+      ? results.map(item => `
+          <tr>
+            <td>${item.CIF || ''}</td>
+            <td>${item.ACCOUNT_NAME || ''}</td>
+            <td>${item.NAME_KHMER || ''}</td>
+            <td>${item.GENDER || ''}</td>
+            <td>${item.ADDRESS || ''}</td>
+            <td>${item.Branch || ''}</td>
+            <td>${item["CO Response"] || ''}</td>
+            <td>${item.Note || ''}</td> 
+          </tr>`).join("")
+      : "<tr><td colspan='9'>រកមិនឃើញលទ្ធផលទេ</td></tr>";
+  }
 
   document.getElementById("searchButton").addEventListener("click", performSearch);
 });
 
-  // Handle row click to fetch NBCOS data and isolate selected row
+// ✅ Handle row click to fetch NBCOS data
 document.querySelector("#results tbody").addEventListener("click", function (e) {
   const row = e.target.closest("tr");
   if (!row || !row.cells[0]) return;
@@ -405,7 +405,6 @@ document.querySelector("#results tbody").addEventListener("click", function (e) 
   const cif = row.cells[0].textContent.trim();
   if (!cif) return;
 
-  // Hide all rows except the selected one
   const allRows = document.querySelectorAll("#results tbody tr");
   allRows.forEach(r => {
     if (r !== row) {
@@ -415,7 +414,6 @@ document.querySelector("#results tbody").addEventListener("click", function (e) 
     }
   });
 
-  // Show NBCOS panel
   const detailPanel = document.getElementById("nbcosDetail");
   const content = document.getElementById("nbcosContent");
 
@@ -433,50 +431,50 @@ document.querySelector("#results tbody").addEventListener("click", function (e) 
       }
 
       const html = data.map(item => `
-  <div class="nbcos-entry">
-    <strong>LD_CIF_OS:</strong> ${item.LD_CIF_OS || ''}<br/>
-    <strong>LD_CUSTOMER_ID:</strong> ${item.LD_CUSTOMER_ID || ''}<br/>
-    <strong>CONTRACT_LD:</strong> ${item.CONTRACT_LD || ''}<br/>
-    <strong>NAME_KHMER:</strong> ${item.NAME_KHMER || ''}<br/>
-    <strong>NAME_ENG:</strong> ${item.NAME_ENG || ''}<br/>
-    <strong>LOAN_SIZE:</strong> ${item.LOAN_SIZE || ''}<br/>
-    <strong>LOAN_SIZE_USD:</strong> ${item.LOAN_SIZE_USD || ''}<br/>
-    <strong>AGGREGATE_LOAN_SIZE:</strong> ${item.AGGREGATE_LOAN_SIZE || ''}<br/>
-    <strong>OUTSTANDING:</strong> ${item.OUTSTANDING || ''}<br/>
-    <strong>OS_USD:</strong> ${item.OS_USD || ''}<br/>
-    <strong>OS_INT:</strong> ${item.OS_INT || ''}<br/>
-    <strong>RATE:</strong> ${item.RATE || ''}<br/>
-    <strong>CCY:</strong> ${item.CCY || ''}<br/>
-    <strong>DISBURSE:</strong> ${item.DISBURSE || ''}<br/>
-    <strong>MATURITY:</strong> ${item.MATURITY || ''}<br/>
-    <strong>TITLE:</strong> ${item.TITLE || ''}<br/>
-    <strong>LOAN_TERM:</strong> ${item.LOAN_TERM || ''}<br/>
-    <strong>LOAN_CYCLE:</strong> ${item.LOAN_CYCLE || ''}<br/>
-    <strong>CO:</strong> ${item.CO || ''}<br/>
-    <strong>LEGAL_NO:</strong> ${item.LEGAL_NO || ''}<br/>
-    <strong>LEGAL_TYPE:</strong> ${item.LEGAL_TYPE || ''}<br/>
-    <strong>BIRTH_DATE:</strong> ${item.BIRTH_DATE || ''}<br/>
-    <strong>CO_BORROWER:</strong> ${item.CO_BORROWER || ''}<br/>
-    <strong>GUARANTOR:</strong> ${item.GUARANTOR || ''}<br/>
-    <strong>LOAN_REFERENCE:</strong> ${item.LOAN_REFERENCE || ''}<br/>
-    <strong>PROFESSION:</strong> ${item.PROFESSION || ''}<br/>
-    <strong>NOTE:</strong> ${item.NOTE || ''}<br/>
-    <strong>Restructure Covid Date:</strong> ${item["Restructure Covid Date"] || ''}<br/>
-    <strong>MEMBER_REF_CBC:</strong> ${item.MEMBER_REF_CBC || ''}<br/>
-    <strong>Branch-OK:</strong> ${item["Branch-OK"] || ''}<br/>
-    <strong>Credit Officer:</strong> ${item["Credit Officer"] || ''}<br/>
-    <strong>Product Type:</strong> ${item["Product Type"] || ''}<br/>
-    <strong>ABCM:</strong> ${item.ABCM || ''}<br/>
-    <strong>OS by Amount:</strong> ${item["OS by Amount"] || ''}<br/>
-    <strong>GovEmplyee/FactWorker:</strong> ${item["GovEmplyee/FactWorker"] || ''}<br/>
-    <strong>Address:</strong> ${item.Address || ''}<br/>
-    <strong>UniqueCIF:</strong> ${item.UniqueCIF || ''}<br/>
-    <strong>UniqueCIF_Branch:</strong> ${item.UniqueCIF_Branch || ''}<br/>
-    <strong>UniqueCIF_CO:</strong> ${item.UniqueCIF_CO || ''}<br/>
-    <strong>Amount_Paid_Old:</strong> ${item.Amount_Paid_Old || ''}<br/>
-  </div>
-`).join("");
+        <div class="nbcos-entry">
+          <strong>LD_CIF_OS:</strong> ${item.LD_CIF_OS || ''}<br/>
+          <strong>LD_CUSTOMER_ID:</strong> ${item.LD_CUSTOMER_ID || ''}<br/>
+          <strong>CONTRACT_LD:</strong> ${item.CONTRACT_LD || ''}<br/>
+          <strong>NAME_KHMER:</strong> ${item.NAME_KHMER || ''}<br/>
+          <strong>NAME_ENG:</strong> ${item.NAME_ENG || ''}<br/>
+          <strong>LOAN_SIZE:</strong> ${item.LOAN_SIZE || ''}<br/>
+          <strong>LOAN_SIZE_USD:</strong> ${item.LOAN_SIZE_USD || ''}<br/>
+          <strong>AGGREGATE_LOAN_SIZE:</strong> ${item.AGGREGATE_LOAN_SIZE || ''}<br/>
+          <strong>OUTSTANDING:</strong> ${item.OUTSTANDING || ''}<br/>
+          <strong>OS_USD:</strong> ${item.OS_USD || ''}<br/>
+          <strong>OS_INT:</strong> ${item.OS_INT || ''}<br/>
+          <strong>RATE:</strong> ${item.RATE || ''}<br/>
+          <strong>CCY:</strong> ${item.CCY || ''}<br/>
+          <strong>DISBURSE:</strong> ${item.DISBURSE || ''}<br/>
+          <strong>MATURITY:</strong> ${item.MATURITY || ''}<br/>
+          <strong>TITLE:</strong> ${item.TITLE || ''}<br/>
+          <strong>LOAN_TERM:</strong> ${item.LOAN_TERM || ''}<br/>
+          <strong>LOAN_CYCLE:</strong> ${item.LOAN_CYCLE || ''}<br/>
+          <strong>CO:</strong> ${item.CO || ''}<br/>
+          <strong>LEGAL_NO:</strong> ${item.LEGAL_NO || ''}<br/>
+          <strong>LEGAL_TYPE:</strong> ${item.LEGAL_TYPE || ''}<br/>
+          <strong>BIRTH_DATE:</strong> ${item.BIRTH_DATE || ''}<br/>
+          <strong>CO_BORROWER:</strong> ${item.CO_BORROWER || ''}<br/>
+          <strong>GUARANTOR:</strong> ${item.GUARANTOR || ''}<br/>
+          <strong>LOAN_REFERENCE:</strong> ${item.LOAN_REFERENCE || ''}<br/>
+          <strong>PROFESSION:</strong> ${item.PROFESSION || ''}<br/>
+          <strong>NOTE:</strong> ${item.NOTE || ''}<br/>
+          <strong>Restructure Covid Date:</strong> ${item["Restructure Covid Date"] || ''}<br/>
+          <strong>MEMBER_REF_CBC:</strong> ${item.MEMBER_REF_CBC || ''}<br/>
+          <strong>Branch-OK:</strong> ${item["Branch-OK"] || ''}<br/>
+          <strong>Credit Officer:</strong> ${item["Credit Officer"] || ''}<br/>
+          <strong>Product Type:</strong> ${item["Product Type"] || ''}<br/>
+          <strong>ABCM:</strong> ${item.ABCM || ''}<br/>
+          <strong>OS by Amount:</strong> ${item["OS by Amount"] || ''}<br/>
+          <strong>GovEmplyee/FactWorker:</strong> ${item["GovEmplyee/FactWorker"] || ''}<br/>
+          <strong>Address:</strong> ${item.Address || ''}<br/>
+          <strong>UniqueCIF:</strong> ${item.UniqueCIF || ''}<br/>
+          <strong>UniqueCIF_Branch:</strong> ${item.UniqueCIF_Branch || ''}<br/>
+          <strong>UniqueCIF_CO:</strong> ${item.UniqueCIF_CO || ''}<br/>
+          <strong>Amount_Paid_Old:</strong> ${item.Amount_Paid_Old || ''}<br/>
+        </div>
       `).join("");
+
       content.innerHTML = html;
     })
     .catch(err => {
@@ -485,7 +483,7 @@ document.querySelector("#results tbody").addEventListener("click", function (e) 
     });
 });
 
-// Restore all rows and hide NBCOS panel
+// ✅ Close NBCOS Panel
 document.getElementById("closeDetailBtn").addEventListener("click", () => {
   document.getElementById("nbcosDetail").style.display = "none";
   const allRows = document.querySelectorAll("#results tbody tr");
@@ -494,7 +492,8 @@ document.getElementById("closeDetailBtn").addEventListener("click", () => {
     r.classList.remove("highlighted-row");
   });
 });
-</script> 
+</script>
+
   
 <!-- ✅ Load shared notification script -->
 <script src="../notifications/checkNotification.js"></script>
