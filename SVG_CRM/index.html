@@ -205,6 +205,44 @@
   border-radius: 50%;
   font-weight: bold;
 }
+    #nbcosDetail {
+  display: none;
+  background: #ffffff;
+  color: #002c5f;
+  padding: 16px 20px;
+  border-radius: 12px;
+  margin: 20px auto;
+  max-width: 700px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  font-family: 'Krasar', Arial, sans-serif;
+  position: relative;
+}
+
+#nbcosDetail h3 {
+  margin: 0 0 12px;
+  font-size: 16px;
+}
+
+#nbcosContent {
+  font-size: 14px;
+}
+
+.nbcos-entry {
+  border-bottom: 1px solid #ccc;
+  padding: 8px 0;
+}
+
+#closeDetailBtn {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  background: none;
+  border: none;
+  color: #002c5f;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+}
   </style>
 </head>
 <body>
@@ -264,7 +302,15 @@
   <div id="loadingOverlay">
     <div class="spinner"></div>
   </div>
+  
+<!-- NBCOS Detail Panel -->
+<div id="nbcosDetail">
+  <button id="closeDetailBtn">×</button>
+  <h3>ព័ត៌មាន NBCOS</h3>
+  <div id="nbcosContent">សូមជ្រើសរើសអតិថិជនពីតារាងខាងលើ</div>
+</div>
 
+  
   <!-- Scripts -->
 <script>
 // ✅ Check Token
@@ -342,6 +388,52 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.getElementById("searchButton").addEventListener("click", performSearch);
 });
+
+  // Handle row click to fetch NBCOS data
+document.querySelector("#results tbody").addEventListener("click", function (e) {
+  const row = e.target.closest("tr");
+  if (!row || !row.cells[0]) return;
+
+  const cif = row.cells[0].textContent.trim();
+  if (!cif) return;
+
+  const detailPanel = document.getElementById("nbcosDetail");
+  const content = document.getElementById("nbcosContent");
+
+  detailPanel.style.display = "block";
+  content.innerHTML = "<div class='spinner'></div> <span>កំពុងទាញយកទិន្នន័យ...</span>";
+
+  fetch(`https://secure-backend-tzj9.onrender.com/api/nbcos/by-cif?cif=${encodeURIComponent(cif)}`, {
+    headers: { Authorization: `Bearer ${sessionStorage.getItem("token")}` }
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (!data || data.length === 0) {
+        content.innerHTML = "គ្មានទិន្នន័យ NBCOS សម្រាប់អតិថិជននេះ។";
+        return;
+      }
+
+      const html = data.map(item => `
+        <div class="nbcos-entry">
+          <strong>CONTRACT:</strong> ${item.CONTRACT_LD || ''}<br/>
+          <strong>OUTSTANDING:</strong> ${item.OUTSTANDING || ''}<br/>
+          <strong>RATE:</strong> ${item.RATE || ''}<br/>
+          <strong>TERM:</strong> ${item.LOAN_TERM || ''}<br/>
+          <strong>MATURITY:</strong> ${item.MATURITY || ''}<br/>
+        </div>
+      `).join("");
+      content.innerHTML = html;
+    })
+    .catch(err => {
+      console.error("NBCOS error:", err);
+      content.innerHTML = "បរាជ័យក្នុងការទាញ NBCOS";
+    });
+});
+
+// Handle close button
+document.getElementById("closeDetailBtn").addEventListener("click", () => {
+  document.getElementById("nbcosDetail").style.display = "none";
+});
 </script> 
   
 <!-- ✅ Load shared notification script -->
@@ -353,6 +445,7 @@ document.addEventListener("DOMContentLoaded", () => {
     setupAutoLogoutEvents();
     checkNotification();
   });
+
 </script>
 </body>
 </html>
