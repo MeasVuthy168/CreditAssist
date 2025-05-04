@@ -374,7 +374,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.getElementById("loadingOverlay").style.display = "flex";
     fetch(`https://secure-backend-tzj9.onrender.com/api/customers/search?q=${encodeURIComponent(query)}`, {
-      headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` }
+      headers: { Authorization: `Bearer ${token}` }
     })
     .then(res => res.json())
     .then(results => {
@@ -435,7 +435,7 @@ document.querySelector("#results tbody").addEventListener("click", function (e) 
   content.innerHTML = "<div class='spinner'></div> <span>កំពុងទាញយកទិន្នន័យ...</span>";
 
   fetch(`https://secure-backend-tzj9.onrender.com/api/nbcos/by-cif?cif=${encodeURIComponent(cif)}`, {
-    headers: { Authorization: `Bearer ${sessionStorage.getItem("token")}` }
+    headers: { Authorization: `Bearer ${token}` }
   })
   .then(res => res.json())
   .then(data => {
@@ -454,7 +454,10 @@ document.querySelector("#results tbody").addEventListener("click", function (e) 
       "Product Type", "Address"
     ];
 
-    let tableHTML = `<div style="overflow-x:auto;">
+    let totalOS = 0;
+    let latestDisburseDate = null;
+
+    let tableHTML = `<div style="overflow-x:auto; margin-left:-10px; margin-right:-10px;">
     <table style="border-collapse:collapse;width:100%;min-width:1000px;font-size:14px;">
       <thead>
         <tr>${headers.map(h => `<th style="background:#2f3c4f;color:#fff;padding:8px 10px;border:1px solid #ccc;">${h}</th>`).join('')}</tr>
@@ -464,9 +467,17 @@ document.querySelector("#results tbody").addEventListener("click", function (e) 
       tableHTML += `<tr>${headers.map(key => {
         let value = item[key] || '';
         if (["DISBURSE", "MATURITY", "BIRTH_DATE"].includes(key)) {
-          value = formatDate(value);
+          const d = new Date(value);
+          if (!isNaN(d)) {
+            if (!latestDisburseDate || d > latestDisburseDate) latestDisburseDate = d;
+            value = formatDate(value);
+          }
         }
-        if (["LOAN_SIZE", "LOAN_SIZE_USD", "AGGREGATE_LOAN_SIZE", "OUTSTANDING", "OS_USD", "OS_INT", "OS by Amount", "Amount_Paid_Old"].includes(key)) {
+        if (["OS_USD"].includes(key)) {
+          const num = parseFloat(item[key]) || 0;
+          totalOS += num;
+          value = formatNumber(num);
+        } else if (["LOAN_SIZE", "LOAN_SIZE_USD", "AGGREGATE_LOAN_SIZE", "OUTSTANDING", "OS_INT", "OS by Amount", "Amount_Paid_Old"].includes(key)) {
           value = formatNumber(value);
         }
         return `<td style="padding:6px 10px;border:1px solid #ccc;white-space:nowrap;">${value}</td>`;
@@ -474,6 +485,15 @@ document.querySelector("#results tbody").addEventListener("click", function (e) 
     });
 
     tableHTML += `</tbody></table></div>`;
+
+    // Add summary below
+    tableHTML += `
+      <div style="margin-top: 12px; font-size: 14px; color: #002c5f;">
+        <div><strong>សរុបឥណទាន (OS_USD):</strong> ${formatNumber(totalOS)}</div>
+        <div><strong>ទិន្នន័យ NBC_OS គិតត្រឹម:</strong> ${latestDisburseDate ? formatDate(latestDisburseDate.toISOString()) : '-'}</div>
+      </div>
+    `;
+
     content.innerHTML = tableHTML;
   })
   .catch(err => {
@@ -492,14 +512,7 @@ document.getElementById("closeDetailBtn").addEventListener("click", () => {
   });
 });
 </script>
-
-<script src="../notifications/checkNotification.js"></script>
-<script>
-  window.addEventListener("DOMContentLoaded", () => {
-    setupAutoLogoutEvents();
-    checkNotification();
-  });
-</script> 
+  
          
 </body>
 </html>
