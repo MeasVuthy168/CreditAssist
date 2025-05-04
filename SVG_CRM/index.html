@@ -430,52 +430,41 @@ document.querySelector("#results tbody").addEventListener("click", function (e) 
         return;
       }
 
-      const html = data.map(item => `
-        <div class="nbcos-entry">
-          <strong>LD_CIF_OS:</strong> ${item.LD_CIF_OS || ''}<br/>
-          <strong>LD_CUSTOMER_ID:</strong> ${item.LD_CUSTOMER_ID || ''}<br/>
-          <strong>CONTRACT_LD:</strong> ${item.CONTRACT_LD || ''}<br/>
-          <strong>NAME_KHMER:</strong> ${item.NAME_KHMER || ''}<br/>
-          <strong>NAME_ENG:</strong> ${item.NAME_ENG || ''}<br/>
-          <strong>LOAN_SIZE:</strong> ${item.LOAN_SIZE || ''}<br/>
-          <strong>LOAN_SIZE_USD:</strong> ${item.LOAN_SIZE_USD || ''}<br/>
-          <strong>AGGREGATE_LOAN_SIZE:</strong> ${item.AGGREGATE_LOAN_SIZE || ''}<br/>
-          <strong>OUTSTANDING:</strong> ${item.OUTSTANDING || ''}<br/>
-          <strong>OS_USD:</strong> ${item.OS_USD || ''}<br/>
-          <strong>OS_INT:</strong> ${item.OS_INT || ''}<br/>
-          <strong>RATE:</strong> ${item.RATE || ''}<br/>
-          <strong>CCY:</strong> ${item.CCY || ''}<br/>
-          <strong>DISBURSE:</strong> ${item.DISBURSE || ''}<br/>
-          <strong>MATURITY:</strong> ${item.MATURITY || ''}<br/>
-          <strong>TITLE:</strong> ${item.TITLE || ''}<br/>
-          <strong>LOAN_TERM:</strong> ${item.LOAN_TERM || ''}<br/>
-          <strong>LOAN_CYCLE:</strong> ${item.LOAN_CYCLE || ''}<br/>
-          <strong>CO:</strong> ${item.CO || ''}<br/>
-          <strong>LEGAL_NO:</strong> ${item.LEGAL_NO || ''}<br/>
-          <strong>LEGAL_TYPE:</strong> ${item.LEGAL_TYPE || ''}<br/>
-          <strong>BIRTH_DATE:</strong> ${item.BIRTH_DATE || ''}<br/>
-          <strong>CO_BORROWER:</strong> ${item.CO_BORROWER || ''}<br/>
-          <strong>GUARANTOR:</strong> ${item.GUARANTOR || ''}<br/>
-          <strong>LOAN_REFERENCE:</strong> ${item.LOAN_REFERENCE || ''}<br/>
-          <strong>PROFESSION:</strong> ${item.PROFESSION || ''}<br/>
-          <strong>NOTE:</strong> ${item.NOTE || ''}<br/>
-          <strong>Restructure Covid Date:</strong> ${item["Restructure Covid Date"] || ''}<br/>
-          <strong>MEMBER_REF_CBC:</strong> ${item.MEMBER_REF_CBC || ''}<br/>
-          <strong>Branch-OK:</strong> ${item["Branch-OK"] || ''}<br/>
-          <strong>Credit Officer:</strong> ${item["Credit Officer"] || ''}<br/>
-          <strong>Product Type:</strong> ${item["Product Type"] || ''}<br/>
-          <strong>ABCM:</strong> ${item.ABCM || ''}<br/>
-          <strong>OS by Amount:</strong> ${item["OS by Amount"] || ''}<br/>
-          <strong>GovEmplyee/FactWorker:</strong> ${item["GovEmplyee/FactWorker"] || ''}<br/>
-          <strong>Address:</strong> ${item.Address || ''}<br/>
-          <strong>UniqueCIF:</strong> ${item.UniqueCIF || ''}<br/>
-          <strong>UniqueCIF_Branch:</strong> ${item.UniqueCIF_Branch || ''}<br/>
-          <strong>UniqueCIF_CO:</strong> ${item.UniqueCIF_CO || ''}<br/>
-          <strong>Amount_Paid_Old:</strong> ${item.Amount_Paid_Old || ''}<br/>
-        </div>
-      `).join("");
+      let html = `
+  <table style="width:100%; border-collapse:collapse; font-size:13px;">
+    <thead>
+      <tr style="background:#0d2d5c; color:white;">
+        <th>LD_CUSTOMER_ID</th>
+        <th>NAME_KHMER</th>
+        <th>NAME_ENG</th>
+        <th>LOAN_SIZE</th>
+        <th>OUTSTANDING</th>
+        <th>OS_USD</th>
+        <th>RATE</th>
+        <th>DISBURSE</th>
+        <th>MATURITY</th>
+      </tr>
+    </thead>
+    <tbody>
+`;
 
-      content.innerHTML = html;
+data.forEach(item => {
+  html += `
+    <tr style="background:#fff; color:#002c5f;">
+      <td>${item.LD_CUSTOMER_ID || ''}</td>
+      <td>${item.NAME_KHMER || ''}</td>
+      <td>${item.NAME_ENG || ''}</td>
+      <td>${item.LOAN_SIZE || ''}</td>
+      <td>${item.OUTSTANDING || ''}</td>
+      <td>${item.OS_USD || ''}</td>
+      <td>${item.RATE || ''}</td>
+      <td>${item.DISBURSE || ''}</td>
+      <td>${item.MATURITY || ''}</td>
+    </tr>`;
+});
+
+html += `</tbody></table>`;
+content.innerHTML = html;
     })
     .catch(err => {
       console.error("NBCOS error:", err);
