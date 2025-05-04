@@ -524,9 +524,42 @@
     });
   </script>
 
-  <!-- ✅ Load shared notification script -->
-<script src="../notifications/checkNotification.js"></script>
+  <script>
+function checkNotification() {
+  const loggedInUser = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
+  if (!loggedInUser || !loggedInUser.username) return;
 
+  fetch("https://secure-backend-tzj9.onrender.com/notifications/status", {
+    headers: { Authorization: `Bearer ${sessionStorage.getItem("token")}` }
+  })
+    .then(res => res.json())
+    .then(data => {
+      const lastSeen = JSON.parse(localStorage.getItem("notif_seen_time") || "{}");
+      let hasNew = false;
+
+      ["user", "customer", "turnover", "nbcos"].forEach(key => {
+        const newTime = new Date(data[`${key}_time`]);
+        const seenTime = new Date(lastSeen[`${key}_time`]);
+        if (!seenTime || newTime > seenTime) {
+          hasNew = true;
+        }
+      });
+
+      const badge = document.getElementById("notif-badge");
+      if (badge) {
+        badge.style.display = hasNew ? "inline-block" : "none";
+      }
+    })
+    .catch(err => {
+      console.error("Notification check failed:", err);
+    });
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+  setupAutoLogoutEvents();
+  checkNotification();
+});
+</script>
 <!-- ✅ Initialize after DOM ready -->
 <script>
   window.addEventListener("DOMContentLoaded", () => {
