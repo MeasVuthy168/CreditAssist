@@ -97,14 +97,14 @@
     }
 
     .container {
-      max-width: 700px;
-      margin: 160px auto 0;
-      background: #2c3545;
-      padding: 12px;
-      border-radius: 12px;
-      box-sizing: border-box;
-      width: 100%;
-    }
+  max-width: 100%;
+  margin: 160px 8px 0;
+  background: #2c3545;
+  padding: 12px;
+  border-radius: 12px;
+  box-sizing: border-box;
+  overflow-x: auto;
+}
 
     .table-container {
   overflow-x: auto;
@@ -112,12 +112,10 @@
 }
 
       table {
-  width: auto;
-  min-width: 100%;
+  width: 100%;
   border-collapse: collapse;
   font-size: 14px;
   color: white;
-     
 }
 
     th, td {
@@ -457,8 +455,8 @@ document.querySelector("#results tbody").addEventListener("click", function (e) 
     let totalOS = 0;
     let latestDisburseDate = null;
 
-    let tableHTML = `<div style="overflow-x:auto; margin-left:-10px; margin-right:-10px;">
-    <table style="border-collapse:collapse;width:100%;min-width:1000px;font-size:14px;">
+    let tableHTML = `<div style="overflow-x:auto;">
+      <table style="border-collapse:collapse;width:100%;min-width:800px;font-size:13.5px;">
       <thead>
         <tr>${headers.map(h => `<th style="background:#2f3c4f;color:#fff;padding:8px 10px;border:1px solid #ccc;">${h}</th>`).join('')}</tr>
       </thead><tbody>`;
@@ -486,8 +484,7 @@ document.querySelector("#results tbody").addEventListener("click", function (e) 
     } else if (["LOAN_SIZE", "LOAN_SIZE_USD", "AGGREGATE_LOAN_SIZE", "OUTSTANDING", "OS_INT", "OS by Amount", "Amount_Paid_Old"].includes(key)) {
       value = formatNumber(value);
     }
-
-    return `<td style="padding:6px 10px;border:1px solid #ccc;white-space:nowrap;">${value}</td>`;
+    return `<td style="padding:4px 6px;border:1px solid #ccc;white-space:nowrap;">${value}</td>`;
   }).join('')}</tr>`;
 });
 
