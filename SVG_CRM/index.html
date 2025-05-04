@@ -10,273 +10,313 @@
     }
   </script>
   <style>
-    @font-face {
-      font-family: 'Krasar';
-      src: url('../Krasar-Regular.ttf') format('truetype');
-    }
 
-    body {
-      font-family: 'Krasar', Arial, sans-serif;
-      background-color: #1c2331;
-      color: white;
-      margin: 0;
-      padding-bottom: 70px;
-      overflow-x: hidden;
-    }
+ /* Load custom Khmer font "Krasar" */
+@font-face {
+  font-family: 'Krasar';
+  src: url('../Krasar-Regular.ttf') format('truetype');
+}
 
-    .header-bar {
-      background-color: #0d2d5c;
-      display: flex;
-      align-items: center;
-      padding: 12px 16px;
-      position: fixed;
-      width: 100%;
-      top: 0;
-      z-index: 1000;
-    }
+/* Base body styling */
+body {
+  font-family: 'Krasar', Arial, sans-serif;
+  background-color: #1c2331; /* dark navy background */
+  color: white;
+  margin: 0;
+  padding-bottom: 70px; /* leave space for fixed bottom bar */
+  overflow-x: hidden;
+}
 
-    .back-icon {
-      font-size: 22px;
-      border: none;
-      color: white;
-      background: none;
-      margin-right: 10px;
-      cursor: pointer;
-    }
+/* Fixed top header bar */
+.header-bar {
+  background-color: #0d2d5c; /* deep blue */
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  z-index: 1000;
+}
 
-    .header-title {
-      font-size: 16px;
-    }
+/* Back arrow icon inside header */
+.back-icon {
+  font-size: 22px;
+  border: none;
+  color: white;
+  background: none;
+  margin-right: 10px;
+  cursor: pointer;
+}
 
-    .search-fixed-bar {
-      position: fixed;
-      top: 56px;
-      left: 0;
-      right: 0;
-      background: #1c2331;
-      padding: 12px 0 8px;
-      z-index: 999;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
+/* Title text inside header */
+.header-title {
+  font-size: 16px;
+}
 
-    .search-wrapper {
-      position: relative;
-      width: 100%;
-      max-width: 280px;
-    }
+/* Floating search bar below header */
+.search-fixed-bar {
+  position: fixed;
+  top: 56px;
+  left: 0;
+  right: 0;
+  background: #1c2331;
+  padding: 12px 0 8px;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
-    .search-wrapper input {
-      width: 95%;
-      padding: 10px 20px 10px 10px;
-      border-radius: 25px;
-      border: none;
-      font-size: 16px;
-      background-color: #fff;
-      color: #333;
-    }
+/* Wrapper for search input + button */
+.search-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 280px;
+}
 
-    .search-icon {
-      position: absolute;
-      right: 5px;
-      top: 50%;
-      transform: translateY(-50%);
-      border: none;
-      background: none;
-      cursor: pointer;
-      font-size: 18px;
-      color: #666;
-    }
+/* Search input box */
+.search-wrapper input {
+  width: 95%;
+  padding: 10px 20px 10px 10px;
+  border-radius: 25px;
+  border: none;
+  font-size: 16px;
+  background-color: #fff;
+  color: #333;
+}
 
-    #resultLabel {
-      margin: 10px 0 0 0;
-      color: #ccc;
-      font-size: 15px;
-    }
+/* Search icon button */
+.search-icon {
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 18px;
+  color: #666;
+}
 
-    .container {
-      max-width: 700px;
-      margin: 160px auto 0;
-      background: #ffffff;
-      padding: 10px,20px,10px;
-      border-radius: 12px;
-      box-sizing: border-box;
-      overflow-x: auto;
-    }
+/* Label showing number of results */
+#resultLabel {
+  margin: 10px 0 0 0;
+  color: #ccc;
+  font-size: 15px;
+}
 
-    .table-container {
-      overflow-x: auto;
-      max-width: 90%;
-    }
+/* Main data display container */
+.container {
+  max-width: 700px;
+  margin: 160px auto 0;
+  background: #ffffff;
+  padding: 10px,20px,10px; /* minor error: should be space-separated or a shorthand like `10px 20px` */
+  border-radius: 12px;
+  box-sizing: border-box;
+  overflow-x: auto;
+}
 
-    table {
-      width: 90%;
-      border-collapse: collapse;
-      font-size: 14px;
-      color: white;
-    }
+/* Wrapper for tables */
+.table-container {
+  overflow-x: auto;
+  max-width: 90%;
+}
 
-    th, td {
-      border: 1px solid #444;
-      padding: 10px;
-      text-align: left;
-      white-space: nowrap;
-    }
+/* Table base styling */
+table {
+  width: 90%;
+  border-collapse: collapse;
+  font-size: 14px;
+  color: white;
+}
 
-    th {
-      background-color: #3d4a5a;
-    }
+/* Cell padding and border */
+th, td {
+  border: 1px solid #444;
+  padding: 10px;
+  text-align: left;
+  white-space: nowrap;
+}
 
-    tr:nth-child(even) {
-      background-color: #1f2733;
-    }
+/* Table header style */
+th {
+  background-color: #3d4a5a;
+}
 
-    tr:nth-child(odd) {
-      background-color: #2c3545;
-    }
+/* Alternate row coloring */
+tr:nth-child(even) {
+  background-color: #1f2733;
+}
+tr:nth-child(odd) {
+  background-color: #2c3545;
+}
 
-    .bottom-bar {
-      position: fixed;
-      bottom: 0;
-      width: 100%;
-      height: 56px;
-      background: #0d2d5c;
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-    }
+/* Fixed bottom button bar */
+.bottom-bar {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 56px;
+  background: #0d2d5c;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
 
-    .bottom-btn {
-      color: white;
-      font-size: 11px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      background: none;
-      border: none;
-    }
+/* Individual buttons inside bottom bar */
+.bottom-btn {
+  color: white;
+  font-size: 11px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: none;
+  border: none;
+}
 
-    .bottom-btn img {
-      margin-bottom: 2px;
-    }
+/* Optional icon spacing inside button */
+.bottom-btn img {
+  margin-bottom: 2px;
+}
 
-    .spinner {
-      width: 32px;
-      height: 32px;
-      border: 4px solid #ffffff33;
-      border-top: 4px solid #ffd700;
-      border-radius: 50%;
-      animation: spin 0.6s linear infinite;
-    }
+/* Loading spinner animation */
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 4px solid #ffffff33;
+  border-top: 4px solid #ffd700;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
 
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
+/* Spinner animation keyframes */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
 
-    #loadingOverlay {
-      position: fixed;
-      width: 100%;
-      height: 100%;
-      top: 0;
-      left: 0;
-      background-color: rgba(0,0,0,0.5);
-      z-index: 9999;
-      display: none;
-      justify-content: center;
-      align-items: center;
-    }
+/* Overlay background during loading */
+#loadingOverlay {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background-color: rgba(0,0,0,0.5);
+  z-index: 9999;
+  display: none;
+  justify-content: center;
+  align-items: center;
+}
 
-    @media print {
-      .header-bar, .bottom-bar, #loadingOverlay, .search-fixed-bar {
-        display: none !important;
-      }
-    }
+/* Hide UI elements when printing */
+@media print {
+  .header-bar, .bottom-bar, #loadingOverlay, .search-fixed-bar {
+    display: none !important;
+  }
+}
 
-    .badge {
-      position: absolute;
-      top: -4px;
-      right: -8px;
-      background: red;
-      color: white;
-      font-size: 10px;
-      padding: 2px 6px;
-      border-radius: 50%;
-      font-weight: bold;
-    }
+/* Red badge for notification dot */
+.badge {
+  position: absolute;
+  top: -4px;
+  right: -8px;
+  background: red;
+  color: white;
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 50%;
+  font-weight: bold;
+}
 
-    #nbcosDetail {
-      display: none;
-      background: #ffffff;
-      color: #002c5f;
-      padding: 10px 20px 10px;
-      border-radius: 12px;
-      margin: 10px auto;
-      max-width: 700px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-      font-family: 'Krasar', Arial, sans-serif;
-      position: relative;
-    }
+/* NBCOS detail box */
+#nbcosDetail {
+  display: none;
+  background: #ffffff;
+  color: #002c5f;
+  padding: 10px 20px 10px;
+  border-radius: 12px;
+  margin: 10px auto;
+  max-width: 700px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  font-family: 'Krasar', Arial, sans-serif;
+  position: relative;
+}
 
-    #nbcosDetail h3 {
-      margin: 0 0 10px;
-      font-size: 16px;
-    }
+/* NBCOS section title */
+#nbcosDetail h3 {
+  margin: 0 0 10px;
+  font-size: 16px;
+}
 
-    #nbcosContent {
-      font-size: 14px;
-      overflow-x: auto;
-      max-width: 100%;
-    }
+/* NBCOS content block */
+#nbcosContent {
+  font-size: 14px;
+  overflow-x: auto;
+  max-width: 100%;
+}
 
-    .highlighted-row {
-      background-color: #ffd700 !important;
-      color: #002c5f;
-      font-weight: bold;
-    }
+/* Highlight row in yellow for attention */
+.highlighted-row {
+  background-color: #ffd700 !important;
+  color: #002c5f;
+  font-weight: bold;
+}
 
-    .nbcos-wrapper {
-      overflow-x: auto;
-      width: 100%;
-    }
+/* Horizontal scrolling wrapper for NBCOS table */
+.nbcos-wrapper {
+  overflow-x: auto;
+  width: 100%;
+}
 
-    .nbcos-table {
-      border-collapse: collapse;
-      width: 100%;
-      min-width: 800px;
-      font-size: 13px;
-    }
+/* NBCOS data table */
+.nbcos-table {
+  border-collapse: collapse;
+  width: 100%;
+  min-width: 800px;
+  font-size: 13px;
+}
 
-    .nbcos-table th {
-      background: #2f3c4f;
-      color: #fff;
-      padding: 8px 10px;
-      border: 1px solid #ccc;
-    }
+/* NBCOS table headers */
+.nbcos-table th {
+  background: #2f3c4f;
+  color: #fff;
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+}
 
-    .nbcos-table td {
-      padding: 4px 6px;
-      border: 1px solid #ccc;
-      white-space: nowrap;
-    }
+/* NBCOS table cells */
+.nbcos-table td {
+  padding: 4px 6px;
+  border: 1px solid #ccc;
+  white-space: nowrap;
+}
 
-    .nbcos-summary {
-      margin-top: 12px;
-      font-size: 14px;
-      color: #002c5f;
-    }
+/* Summary note below NBCOS table */
+.nbcos-summary {
+  margin-top: 12px;
+  font-size: 14px;
+  color: #002c5f;
+}
 
-    #closeDetailBtn {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background: none;
-      border: none;
-      color: #002c5f;
-      font-size: 18px;
-      font-weight: bold;
-      cursor: pointer;
-    }
+/* Close button for NBCOS detail box */
+#closeDetailBtn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  color: #002c5f;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+}
+ 
+    
+    
+    
+    
+    
   </style>
 </head>
 
