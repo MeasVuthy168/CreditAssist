@@ -464,25 +464,32 @@ document.querySelector("#results tbody").addEventListener("click", function (e) 
       </thead><tbody>`;
 
     data.forEach(item => {
-      tableHTML += `<tr>${headers.map(key => {
-        let value = item[key] || '';
-        if (["DISBURSE", "MATURITY", "BIRTH_DATE"].includes(key)) {
-          const d = new Date(value);
-          if (!isNaN(d)) {
-            if (!latestDisburseDate || d > latestDisburseDate) latestDisburseDate = d;
-            value = formatDate(value);
-          }
+  tableHTML += `<tr>${headers.map(key => {
+    let value = item[key] || '';
+
+    // ✅ Insert this block here
+    if (["DISBURSE", "MATURITY", "BIRTH_DATE"].includes(key)) {
+      const d = new Date(value);
+      if (!isNaN(d)) {
+        if (key === "DISBURSE" && (!latestDisburseDate || d > latestDisburseDate)) {
+          latestDisburseDate = d;
         }
-        if (["OS_USD"].includes(key)) {
-          const num = parseFloat(item[key]) || 0;
-          totalOS += num;
-          value = formatNumber(num);
-        } else if (["LOAN_SIZE", "LOAN_SIZE_USD", "AGGREGATE_LOAN_SIZE", "OUTSTANDING", "OS_INT", "OS by Amount", "Amount_Paid_Old"].includes(key)) {
-          value = formatNumber(value);
-        }
-        return `<td style="padding:6px 10px;border:1px solid #ccc;white-space:nowrap;">${value}</td>`;
-      }).join('')}</tr>`;
-    });
+        value = formatDate(value);
+      }
+    }
+
+    // Continue with formatting numbers
+    if (["OS_USD"].includes(key)) {
+      const num = parseFloat(item[key]) || 0;
+      totalOS += num;
+      value = formatNumber(num);
+    } else if (["LOAN_SIZE", "LOAN_SIZE_USD", "AGGREGATE_LOAN_SIZE", "OUTSTANDING", "OS_INT", "OS by Amount", "Amount_Paid_Old"].includes(key)) {
+      value = formatNumber(value);
+    }
+
+    return `<td style="padding:6px 10px;border:1px solid #ccc;white-space:nowrap;">${value}</td>`;
+  }).join('')}</tr>`;
+});
 
     tableHTML += `</tbody></table></div>`;
 
