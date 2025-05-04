@@ -512,7 +512,22 @@ document.getElementById("closeDetailBtn").addEventListener("click", () => {
   });
 });
 </script>
-  
+   
+<!-- ✅ Load shared notification script -->
+<script src="../notifications/checkNotification.js"></script>
+
+<!-- ✅ Initialize after DOM ready -->
+<script>
+  window.addEventListener("DOMContentLoaded", () => {
+    setMaxDateToToday();
+    calculateMonthsLeft();
+    checkNotification();
+
+    ["dob", "retirementAge", "currentDate"].forEach(id => {
+      document.getElementById(id).addEventListener("change", calculateMonthsLeft);
+    });
+  });
+</script> 
          
 </body>
 </html>
