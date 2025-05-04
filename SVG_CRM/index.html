@@ -524,5 +524,13 @@
     });
   </script>
 
-  <script src="../notifications/checkNotification.js"></script>
+  <!-- ✅ Load shared notification script -->
+<script src="../notifications/checkNotification.js"></script>
+
+<!-- ✅ Initialize after DOM ready -->
+<script>
+  window.addEventListener("DOMContentLoaded", () => {
+    setupAutoLogoutEvents();
+    checkNotification();
+  });
 </body>
