@@ -243,6 +243,11 @@
   font-weight: bold;
   cursor: pointer;
 }
+    .highlighted-row {
+  background-color: #ffd700 !important;
+  color: #002c5f;
+  font-weight: bold;
+}
   </style>
 </head>
 <body>
@@ -389,7 +394,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("searchButton").addEventListener("click", performSearch);
 });
 
-  // Handle row click to fetch NBCOS data
+  // Handle row click to fetch NBCOS data and isolate selected row
 document.querySelector("#results tbody").addEventListener("click", function (e) {
   const row = e.target.closest("tr");
   if (!row || !row.cells[0]) return;
@@ -397,6 +402,17 @@ document.querySelector("#results tbody").addEventListener("click", function (e) 
   const cif = row.cells[0].textContent.trim();
   if (!cif) return;
 
+  // Hide all rows except the selected one
+  const allRows = document.querySelectorAll("#results tbody tr");
+  allRows.forEach(r => {
+    if (r !== row) {
+      r.style.display = "none";
+    } else {
+      r.classList.add("highlighted-row");
+    }
+  });
+
+  // Show NBCOS panel
   const detailPanel = document.getElementById("nbcosDetail");
   const content = document.getElementById("nbcosContent");
 
@@ -430,9 +446,14 @@ document.querySelector("#results tbody").addEventListener("click", function (e) 
     });
 });
 
-// Handle close button
+// Restore all rows and hide NBCOS panel
 document.getElementById("closeDetailBtn").addEventListener("click", () => {
   document.getElementById("nbcosDetail").style.display = "none";
+  const allRows = document.querySelectorAll("#results tbody tr");
+  allRows.forEach(r => {
+    r.style.display = "";
+    r.classList.remove("highlighted-row");
+  });
 });
 </script> 
   
