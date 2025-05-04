@@ -233,13 +233,13 @@
 
 .nbcos-entry {
   border-bottom: 1px solid #ccc;
-  padding: 8px 0;
+  padding: 10px 0;
 }
 
 #closeDetailBtn {
   position: absolute;
   top: 10px;
-  right: 12px;
+  right: 10px;
   background: none;
   border: none;
   color: #002c5f;
@@ -263,7 +263,7 @@
   <!-- 🔍 Floating Search Bar + Result Label -->
   <div class="search-fixed-bar">
     <div class="search-wrapper">
-      <input type="text" id="searchBox" placeholder="Search by CIF, Name" />
+      <input type="text" id="searchBox" placeholder="ស្វែងរកតាមរយៈ ឈ្មោះអតិថិជន CIF ឬពាក្យគន្លិះ" />
       <button class="search-icon" id="searchButton">🔍</button>
     </div>
     <span id="resultLabel">លទ្ធផលស្វែងរក៖ 0</span>
@@ -315,7 +315,7 @@
 <!-- NBCOS Detail Panel -->
 <div id="nbcosDetail">
   <button id="closeDetailBtn">×</button>
-  <h3>ព័ត៌មាន NBCOS</h3>
+  <h3>ព័ត៌មានឥណទាន</h3>
   <div id="nbcosContent">សូមជ្រើសរើសអតិថិជនពីតារាងខាងលើ</div>
 </div>
 
@@ -368,7 +368,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function performSearch() {
     const query = document.getElementById("searchBox").value.trim();
     if (query === "") {
-      alert("សូមបញ្ចូលលេខ CIF ឬឈ្មោះ ឬលេខទូរស័ព្ទ");
+      alert("សូមបញ្ចូលពាក្យគន្លិះ");
       return;
     }
 
