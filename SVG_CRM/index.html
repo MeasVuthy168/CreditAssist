@@ -1,4 +1,6 @@
 
+<!DOCTYPE html>
+<html lang="km">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
@@ -96,33 +98,34 @@
     }
 
     .container {
-      width: calc(100% - 16px);
+      max-width: 700px;
       margin: 160px auto 0;
       background: #2c3545;
-      padding: 12px;
+      padding: 20px;
       border-radius: 12px;
       box-sizing: border-box;
-      overflow-x: auto;
+      width: 100%;
     }
 
     .table-container {
-      overflow-x: auto;
-      max-width: 100%;
-    }
+  overflow-x: auto;
+  max-width: 100%;
+}
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 14px;
-      color: white;
-    }
+      table {
+  width: auto;
+  min-width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  color: white;
+}
 
     th, td {
-      border: 1px solid #444;
-      padding: 10px;
-      text-align: left;
-      white-space: nowrap;
-    }
+  border: 1px solid #444;
+  padding: 12px;
+  text-align: left;
+  white-space: nowrap;
+}
 
     th {
       background-color: #3d4a5a;
@@ -192,128 +195,56 @@
         display: none !important;
       }
     }
-
     .badge {
-      position: absolute;
-      top: -4px;
-      right: -8px;
-      background: red;
-      color: white;
-      font-size: 10px;
-      padding: 2px 6px;
-      border-radius: 50%;
-      font-weight: bold;
-    }
-
-    #nbcosDetail {
-      display: none;
-      background: #ffffff;
-      color: #002c5f;
-      padding: 10px 20px;
-      border-radius: 12px;
-      margin: 10px auto;
-      width: calc(100% - 16px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-      font-family: 'Krasar', Arial, sans-serif;
-      position: relative;
-    }
-
-    #nbcosDetail h3 {
-      margin: 0 0 10px;
-      font-size: 16px;
-    }
-
-    #nbcosContent {
-      font-size: 14px;
-      overflow-x: auto;
-      max-width: 100%;
-    }
-
-    .highlighted-row {
-      background-color: #ffd700 !important;
-      color: #002c5f;
-      font-weight: bold;
-    }
-
-    .nbcos-wrapper {
-      overflow-x: auto;
-      width: 100%;
-    }
-
-    .nbcos-table {
-      border-collapse: collapse;
-      width: 100%;
-      min-width: 800px;
-      font-size: 13px;
-    }
-
-    .nbcos-table th {
-      background: #2f3c4f;
-      color: #fff;
-      padding: 8px 10px;
-      border: 1px solid #ccc;
-    }
-
-    .nbcos-table td {
-      padding: 4px 6px;
-      border: 1px solid #ccc;
-      white-space: nowrap;
-    }
-
-    .nbcos-summary {
-      margin-top: 12px;
-      font-size: 14px;
-      color: #002c5f;
-    }
-
-    #closeDetailBtn {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background: none;
-      border: none;
-      color: #002c5f;
-      font-size: 18px;
-      font-weight: bold;
-      cursor: pointer;
-    }
+  position: absolute;
+  top: -4px;
+  right: -8px;
+  background: red;
+  color: white;
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 50%;
+  font-weight: bold;
+}
   </style>
 </head>
-
 <body>
   <div class="header-bar">
     <button class="back-icon" onclick="window.location.href='../index.html'">←</button>
     <div class="header-title">ស្វែងរកអតិថិជន</div>
   </div>
 
+  <!-- 🔍 Floating Search Bar + Result Label -->
   <div class="search-fixed-bar">
     <div class="search-wrapper">
-      <input type="text" id="searchBox" placeholder="ស្វែងរកតាមរយៈ ឈ្មោះអតិថិជន CIF ឬពាក្យគន្លិះ" />
+      <input type="text" id="searchBox" placeholder="Search by CIF, Name" />
       <button class="search-icon" id="searchButton">🔍</button>
     </div>
     <span id="resultLabel">លទ្ធផលស្វែងរក៖ 0</span>
   </div>
 
+  <!-- 📄 Main Content -->
   <div class="container">
     <div class="table-container">
       <table id="results">
         <thead style="display: none;">
-          <tr>
-            <th>CIF</th>
-            <th>ឈ្មោះឡាតាំង</th>
-            <th>ឈ្មោះខ្មែរ</th>
-            <th>ភេទ</th>
-            <th>អាស័យដ្ឋាន</th>
-            <th>សាខា</th>
-            <th>ភ្នាក់ងារតំបន់</th>
-            <th>មុខរបរ/មុខងារ</th>
-          </tr>
-        </thead>
+  <tr>
+    <th>CIF</th>
+    <th>ឈ្មោះឡាតាំង</th>
+    <th>ឈ្មោះខ្មែរ</th>
+    <th>ភេទ</th>
+    <th>អាស័យដ្ឋាន</th>
+    <th>សាខា</th>
+    <th>ភ្នាក់ងារតំបន់</th>
+    <th>មុខរបរ/មុខងារ</th>
+  </tr>
+</thead>
         <tbody></tbody>
       </table>
     </div>
   </div>
 
+  <!-- 📱 Bottom Nav -->
   <div class="bottom-bar">
     <button class="bottom-btn" onclick="window.location.href='../index.html'">
       <img src="../icons/Home.png" width="24" height="24" /><div>Home</div>
@@ -322,249 +253,107 @@
       <img src="../icons/Setting.png" width="24" height="24" /><div>Setting</div>
     </button>
     <button class="bottom-btn" onclick="window.location.href='../notifications/index.html'">
-      <div style="position: relative;">
-        <img src="../icons/Notification.png" width="24" height="24" />
-        <span id="notif-badge" class="badge" style="display: none;"></span>
-      </div>
-      <div>Notification</div>
-    </button>
+  <div style="position: relative;">
+    <img src="../icons/Notification.png" width="24" height="24" />
+    <span id="notif-badge" class="badge" style="display: none;"></span>
+  </div>
+  <div>Notification</div>
+</button>
   </div>
 
+  <!-- 🔄 Loading Spinner -->
   <div id="loadingOverlay">
     <div class="spinner"></div>
   </div>
 
-  <div id="nbcosDetail">
-    <button id="closeDetailBtn">×</button>
-    <h3>ព័ត៌មានឥណទាន</h3>
-    <div id="nbcosContent">សូមជ្រើសរើសអតិថិជនពីតារាងខាងលើ</div>
-  </div>
-<span id="notif-badge" class="badge" style="display: none;"></span>
-  <script>
-    function formatDate(isoString) {
-      if (!isoString) return '';
-      const date = new Date(isoString);
-      if (isNaN(date)) return '';
-      return date.toLocaleDateString('en-GB');
-    }
-
-    function formatNumber(value) {
-      if (!value || isNaN(value)) return '';
-      return Number(value).toLocaleString('en-US');
-    }
-
-    const token = sessionStorage.getItem('token');
-    if (!token) {
-      alert("Session expired or unauthorized access.");
-      window.location.href = "../login.html";
-    }
-
-    const AUTO_LOGOUT_MINUTES = 1;
-    let logoutTimer;
-    function resetLogoutTimer() {
-      clearTimeout(logoutTimer);
-      logoutTimer = setTimeout(() => {
-        sessionStorage.clear();
-        alert("Session expired due to inactivity. Please log in again.");
-        window.location.href = "../login.html";
-      }, AUTO_LOGOUT_MINUTES * 60 * 1000);
-    }
-    function setupAutoLogoutEvents() {
-      ['mousemove', 'mousedown', 'keydown', 'touchstart', 'touchmove', 'scroll'].forEach(event => {
-        document.addEventListener(event, resetLogoutTimer, true);
-      });
-      resetLogoutTimer();
-    }
-    window.addEventListener('load', setupAutoLogoutEvents);
-
-    document.addEventListener("DOMContentLoaded", () => {
-      function performSearch() {
-        const query = document.getElementById("searchBox").value.trim();
-        if (query === "") {
-          alert("សូមបញ្ចូលពាក្យគន្លិះ");
-          return;
-        }
-
-        document.getElementById("loadingOverlay").style.display = "flex";
-        fetch(`https://secure-backend-tzj9.onrender.com/api/customers/search?q=${encodeURIComponent(query)}`, {
-          headers: { Authorization: `Bearer ${token}` }
-        })
-          .then(res => res.json())
-          .then(results => {
-            displayResults(results);
-            document.getElementById("loadingOverlay").style.display = "none";
-          })
-          .catch(err => {
-            alert("Search failed");
-            console.error("Search error:", err);
-            document.getElementById("loadingOverlay").style.display = "none";
-          });
-      }
-
-      function displayResults(results) {
-        const resultsTable = document.querySelector("#results tbody");
-        const tableHead = document.querySelector("#results thead");
-        const resultLabel = document.getElementById("resultLabel");
-
-        resultLabel.textContent = `លទ្ធផលស្វែងរក៖ ${results.length}`;
-        tableHead.style.display = results.length > 0 ? "table-header-group" : "none";
-
-        resultsTable.innerHTML = results.length > 0
-          ? results.map(item => `
-            <tr>
-              <td>${item.CIF || ''}</td>
-              <td>${item.ACCOUNT_NAME || ''}</td>
-              <td>${item.NAME_KHMER || ''}</td>
-              <td>${item.GENDER || ''}</td>
-              <td>${item.ADDRESS || ''}</td>
-              <td>${item.Branch || ''}</td>
-              <td>${item["CO Response"] || ''}</td>
-              <td>${item.Note || ''}</td>
-            </tr>`).join("")
-          : "<tr><td colspan='9'>រកមិនឃើញលទ្ធផលទេ</td></tr>";
-      }
-
-      document.getElementById("searchButton").addEventListener("click", performSearch);
-    });
-
-    document.querySelector("#results tbody").addEventListener("click", function (e) {
-      const row = e.target.closest("tr");
-      if (!row || !row.cells[0]) return;
-
-      const cif = row.cells[0].textContent.trim();
-      if (!cif) return;
-
-      const allRows = document.querySelectorAll("#results tbody tr");
-      allRows.forEach(r => {
-        if (r !== row) r.style.display = "none";
-        else r.classList.add("highlighted-row");
-      });
-
-      const detailPanel = document.getElementById("nbcosDetail");
-      const content = document.getElementById("nbcosContent");
-
-      detailPanel.style.display = "block";
-      content.innerHTML = "<div class='spinner'></div> <span>កំពុងទាញយកទិន្នន័យ...</span>";
-
-      fetch(`https://secure-backend-tzj9.onrender.com/api/nbcos/by-cif?cif=${encodeURIComponent(cif)}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      })
-        .then(res => res.json())
-        .then(data => {
-          if (!data || data.length === 0) {
-            content.innerHTML = "គ្មានទិន្នន័យ NBCOS សម្រាប់អតិថិជននេះ។";
-            return;
-          }
-
-          const headers = [
-            "LD_CUSTOMER_ID", "CONTRACT_LD", "NAME_KHMER", "NAME_ENG",
-            "LOAN_SIZE", "LOAN_SIZE_USD", "AGGREGATE_LOAN_SIZE", "OUTSTANDING",
-            "OS_USD", "OS_INT", "RATE", "CCY", "DISBURSE", "MATURITY",
-            "LOAN_TERM", "LOAN_CYCLE", "CO", "LEGAL_NO", "LEGAL_TYPE", "BIRTH_DATE",
-            "CO_BORROWER", "GUARANTOR", "LOAN_REFERENCE", "PROFESSION",
-            "Restructure Covid Date", "MEMBER_REF_CBC", "Branch-OK", "Credit Officer",
-            "Product Type", "Address"
-          ];
-
-          let totalOS = 0;
-          let latestDisburseDate = null;
-
-          let tableHTML = `<div class="nbcos-wrapper">
-<table class="nbcos-table">
-  <thead>
-    <tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr>
-  </thead><tbody>`;
-
-          data.forEach(item => {
-            tableHTML += `<tr>${headers.map(key => {
-              let value = item[key] || '';
-
-              if (["DISBURSE", "MATURITY", "BIRTH_DATE"].includes(key)) {
-                const d = new Date(value);
-                if (!isNaN(d)) {
-                  if (key === "DISBURSE" && (!latestDisburseDate || d > latestDisburseDate)) {
-                    latestDisburseDate = d;
-                  }
-                  value = formatDate(value);
-                }
-              }
-
-              if (["OS_USD"].includes(key)) {
-                const num = parseFloat(item[key]) || 0;
-                totalOS += num;
-                value = formatNumber(num);
-              } else if (["LOAN_SIZE", "LOAN_SIZE_USD", "AGGREGATE_LOAN_SIZE", "OUTSTANDING", "OS_INT", "OS by Amount", "Amount_Paid_Old"].includes(key)) {
-                value = formatNumber(value);
-              }
-
-              return `<td>${value}</td>`;
-            }).join('')}</tr>`;
-          });
-
-          tableHTML += `</tbody></table></div>
-<div class="nbcos-summary">
-  <div><strong>សរុបឥណទាន (OS_USD):</strong> ${formatNumber(totalOS)}</div>
-  <div><strong>ទិន្នន័យ NBC_OS គិតត្រឹម:</strong> ${latestDisburseDate ? formatDate(latestDisburseDate.toISOString()) : '-'}</div>
-</div>`;
-
-          content.innerHTML = tableHTML;
-        })
-        .catch(err => {
-          console.error("NBCOS error:", err);
-          content.innerHTML = "បរាជ័យក្នុងការទាញ NBCOS";
-        });
-    });
-
-    document.getElementById("closeDetailBtn").addEventListener("click", () => {
-      document.getElementById("nbcosDetail").style.display = "none";
-      const allRows = document.querySelectorAll("#results tbody tr");
-      allRows.forEach(r => {
-        r.style.display = "";
-        r.classList.remove("highlighted-row");
-      });
-    });
-  </script>
-
-  <script>
-function checkNotification() {
-  const loggedInUser = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
-  if (!loggedInUser || !loggedInUser.username) return;
-
-  fetch("https://secure-backend-tzj9.onrender.com/notifications/status", {
-    headers: { Authorization: `Bearer ${sessionStorage.getItem("token")}` }
-  })
-    .then(res => res.json())
-    .then(data => {
-      const lastSeen = JSON.parse(localStorage.getItem("notif_seen_time") || "{}");
-      let hasNew = false;
-
-      ["user", "customer", "turnover", "nbcos"].forEach(key => {
-        const newTime = new Date(data[`${key}_time`]);
-        const seenTime = new Date(lastSeen[`${key}_time`]);
-        if (!seenTime || newTime > seenTime) {
-          hasNew = true;
-        }
-      });
-
-      const badge = document.getElementById("notif-badge");
-      if (badge) {
-        badge.style.display = hasNew ? "inline-block" : "none";
-      }
-    })
-    .catch(err => {
-      console.error("Notification check failed:", err);
-    });
+  <!-- Scripts -->
+<script>
+// ✅ Check Token
+const token = sessionStorage.getItem('token');
+if (!token) {
+  alert("Session expired or unauthorized access.");
+  window.location.href = "../login.html";
 }
 
-window.addEventListener("DOMContentLoaded", () => {
-  setupAutoLogoutEvents();
-  checkNotification();
+// ✅ Auto Logout Timer
+const AUTO_LOGOUT_MINUTES = 1;
+let logoutTimer;
+function resetLogoutTimer() {
+  clearTimeout(logoutTimer);
+  logoutTimer = setTimeout(() => {
+    sessionStorage.clear();
+    alert("Session expired due to inactivity. Please log in again.");
+    window.location.href = "../login.html";
+  }, AUTO_LOGOUT_MINUTES * 60 * 1000);
+}
+function setupAutoLogoutEvents() {
+  ['mousemove', 'mousedown', 'keydown', 'touchstart', 'touchmove', 'scroll'].forEach(event => {
+    document.addEventListener(event, resetLogoutTimer, true);
+  });
+  resetLogoutTimer();
+}
+window.addEventListener('load', setupAutoLogoutEvents);
+
+// ✅ Search Logic
+document.addEventListener("DOMContentLoaded", () => {
+  function performSearch() {
+    const query = document.getElementById("searchBox").value.trim();
+    if (query === "") {
+      alert("សូមបញ្ចូលលេខ CIF ឬឈ្មោះ ឬលេខទូរស័ព្ទ");
+      return;
+    }
+    document.getElementById("loadingOverlay").style.display = "flex";
+    fetch(`https://secure-backend-tzj9.onrender.com/api/customers/search?q=${encodeURIComponent(query)}`, {
+      headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` }
+    })
+      .then(res => res.json())
+      .then(results => {
+        displayResults(results);
+        document.getElementById("loadingOverlay").style.display = "none";
+      })
+      .catch(err => {
+        alert("Search failed");
+        console.error("Search error:", err);
+        document.getElementById("loadingOverlay").style.display = "none";
+      });
+  }
+
+  function displayResults(results) {
+  const resultsTable = document.querySelector("#results tbody");
+  const tableHead = document.querySelector("#results thead");
+  const resultLabel = document.getElementById("resultLabel");
+
+  resultLabel.textContent = `លទ្ធផលស្វែងរក៖ ${results.length}`;
+  tableHead.style.display = results.length > 0 ? "table-header-group" : "none";
+
+  resultsTable.innerHTML = results.length > 0
+    ? results.map(item => `
+        <tr>
+          <td>${item.CIF || ''}</td>
+          <td>${item.ACCOUNT_NAME || ''}</td>
+          <td>${item.NAME_KHMER || ''}</td>
+          <td>${item.GENDER || ''}</td>
+          <td>${item.ADDRESS || ''}</td>
+          <td>${item.Branch || ''}</td>
+          <td>${item["CO Response"] || ''}</td>
+          <td>${item.Note || ''}</td> 
+        </tr>`).join("")
+    : "<tr><td colspan='9'>រកមិនឃើញលទ្ធផលទេ</td></tr>";
+}
+
+  document.getElementById("searchButton").addEventListener("click", performSearch);
 });
-</script>
+</script> 
+  
+<!-- ✅ Load shared notification script -->
+<script src="../notifications/checkNotification.js"></script>
+
 <!-- ✅ Initialize after DOM ready -->
 <script>
   window.addEventListener("DOMContentLoaded", () => {
     setupAutoLogoutEvents();
     checkNotification();
   });
+</script>
 </body>
+</html>
