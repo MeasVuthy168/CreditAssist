@@ -129,29 +129,32 @@ table {
   width: 100%;
   border-collapse: collapse;
   font-size: 14px;
-  color: white;
+  color: #000; /* Change font color to black */
   table-layout: auto;
-}
-
-/* Cell padding and border */
-th, td {
-  border: 1px solid #444;
-  padding: 10px;
-  text-align: left;
-  white-space: nowrap;
+  background-color: #fff; /* Set background to white */
 }
 
 /* Table header style */
 th {
-  background-color: #3d4a5a;
+  background-color: #f0f0f0; /* Light gray for header */
+  color: #000; /* Black text for header */
 }
 
 /* Alternate row coloring */
 tr:nth-child(even) {
-  background-color: #1f2733;
+  background-color: #fafafa; /* very light gray */
 }
 tr:nth-child(odd) {
-  background-color: #2c3545;
+  background-color: #ffffff; /* pure white */
+}
+
+/* Cell text and borders */
+th, td {
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: left;
+  white-space: nowrap;
+  color: #000; /* Ensure all text is black */
 }
 
 /* Fixed bottom button bar */
