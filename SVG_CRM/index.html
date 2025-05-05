@@ -103,7 +103,7 @@ body {
 #resultLabel {
   margin: 10px 0 0 0;
   color: #ccc;
-  font-size: 15px;
+  font-size: 14px;
 }
 
 /* Main data display container */
@@ -300,13 +300,13 @@ th, td {
 .nbcos-table th {
   background: #2f3c4f;
   color: #fff;
-  padding: 8px 10px;
+  padding: 10px;
   border: 1px solid #ccc;
 }
 
 /* NBCOS table cells */
 .nbcos-table td {
-  padding: 4px 6px;
+  padding: 10px;
   border: 1px solid #ccc;
   white-space: nowrap;
 }
@@ -506,7 +506,7 @@ th, td {
       </tr>`).join("")
     : "<tr><td colspan='9'>រកមិនឃើញលទ្ធផលទេ</td></tr>";
 
-  dataSourceLabel.textContent = results.length > 0 ? "ទិន្នន័យ​ពី:DatabaseCustomer" : "";
+  dataSourceLabel.textContent = results.length > 0 ? "⛁ទិន្នន័យ​ពី:DatabaseCustomer" : "";
 }
 
       document.getElementById("searchButton").addEventListener("click", performSearch);
@@ -537,7 +537,7 @@ th, td {
         .then(res => res.json())
         .then(data => {
           if (!data || data.length === 0) {
-            content.innerHTML = "គ្មានទិន្នន័យ NBCOS សម្រាប់អតិថិជននេះ។";
+            content.innerHTML = "គ្មានទិន្នន័យឥណទានសម្រាប់អតិថិជននេះទេ។";
             return;
           }
 
@@ -588,8 +588,8 @@ th, td {
 
           tableHTML += `</tbody></table></div>
 <div class="nbcos-summary">
-  <div><strong>សរុបឥណទាន (OS_USD):</strong> ${formatNumber(totalOS)}</div>
-  <div><strong>ទិន្នន័យ NBC_OS គិតត្រឹម:</strong> ${latestDisburseDate ? formatDate(latestDisburseDate.toISOString()) : '-'}</div>
+  <div><strong>👉សរុបឥណទាន (OS_USD):</strong> ${formatNumber(totalOS)}</div>
+  <div><strong>👉ទិន្នន័យ NBC_OS គិតត្រឹម:</strong> ${latestDisburseDate ? formatDate(latestDisburseDate.toISOString()) : '-'}</div>
 </div>`;
 
           content.innerHTML = tableHTML;
@@ -632,7 +632,7 @@ th, td {
       </tr>`).join("")
     : "<tr><td colspan='9'>រកមិនឃើញលទ្ធផលទេ</td></tr>";
 
-  dataSourceLabel.textContent = data.length > 0 ? "ទិន្នន័យ​ពី:DatabaseNBC_OS" : "";
+  dataSourceLabel.textContent = data.length > 0 ? "⛁ទិន្នន័យ​ពី:DatabaseNBC_OS" : "";
 }
   </script>
 <!-- ✅ Load shared notification script -->
