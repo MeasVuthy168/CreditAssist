@@ -331,8 +331,48 @@ th, td {
   font-weight: bold;
   cursor: pointer;
 }
- 
+
     
+ .tap-hint {
+  position: absolute;
+  top: 180px; /* adjust based on your layout */
+  left: 50%;
+  transform: translateX(-50%);
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  animation: floatUp 1.6s ease-in-out infinite;
+  z-index: 999;
+}
+
+.finger {
+  font-size: 32px;
+  animation: shake 1s ease-in-out infinite;
+}
+
+.hint-text {
+  background: #ffd700;
+  color: #002c5f;
+  font-size: 14px;
+  margin-top: 6px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-family: 'Krasar', sans-serif;
+  white-space: nowrap;
+}
+
+@keyframes floatUp {
+  0%, 100% { transform: translate(-50%, 0); }
+  50% { transform: translate(-50%, -8px); }
+}
+
+@keyframes shake {
+  0% { transform: rotate(0); }
+  25% { transform: rotate(10deg); }
+  50% { transform: rotate(-10deg); }
+  75% { transform: rotate(10deg); }
+  100% { transform: rotate(0); }
+}
     
     
     
@@ -375,6 +415,12 @@ th, td {
     </table>
   </div>
 
+
+ <div id="tapHint" class="tap-hint">
+  <div class="finger">👉</div>
+  <div class="hint-text">សូមចុចដើម្បីមើលព៌តមានឥណទាន</div>
+</div>
+    
   <div id="dataSourceLabel" class="data-source-label"></div> <!-- Source label -->
 </div>
 
@@ -506,6 +552,11 @@ th, td {
       </tr>`).join("")
     : "<tr><td colspan='9'>រកមិនឃើញលទ្ធផលទេ</td></tr>";
 
+ // ✅ Show tap hint animation     
+document.getElementById("tapHint").style.display = "flex";
+setTimeout(() => {
+  document.getElementById("tapHint").style.display = "none";
+}, 8000); // hide after 8 seconds
   dataSourceLabel.textContent = results.length > 0 ? "⛁ទិន្នន័យ​ពី:DatabaseCustomer" : "";
 }
 
@@ -632,6 +683,12 @@ th, td {
       </tr>`).join("")
     : "<tr><td colspan='9'>រកមិនឃើញលទ្ធផលទេ</td></tr>";
 
+      // ✅ Show tap hint animation     
+document.getElementById("tapHint").style.display = "flex";
+setTimeout(() => {
+  document.getElementById("tapHint").style.display = "none";
+}, 8000); // hide after 8 seconds
+      
   dataSourceLabel.textContent = data.length > 0 ? "⛁ទិន្នន័យ​ពី:DatabaseNBC_OS" : "";
 }
   </script>
