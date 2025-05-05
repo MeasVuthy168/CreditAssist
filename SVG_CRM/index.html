@@ -487,7 +487,23 @@ th, td {
     window.addEventListener('load', setupAutoLogoutEvents);
 
     document.addEventListener("DOMContentLoaded", () => {
-      
+     // ✅ Reset detail and row highlights when user types
+  document.getElementById("searchBox").addEventListener("input", () => {
+  document.getElementById("nbcosDetail").style.display = "none";
+  const allRows = document.querySelectorAll("#results tbody tr");
+  allRows.forEach(r => {
+    r.style.display = "";
+    r.classList.remove("highlighted-row");
+  });
+});
+
+// ✅ Trigger search on Enter key
+document.getElementById("searchBox").addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    document.getElementById("searchButton").click();
+  }
+}); 
       function performSearch() {
   const query = document.getElementById("searchBox").value.trim();
   if (query === "") {
