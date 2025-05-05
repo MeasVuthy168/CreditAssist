@@ -116,6 +116,21 @@ body {
   box-sizing: border-box;
   overflow-x: auto;
 }
+    /* Section title in the container */
+.section-title {
+  margin-bottom: 10px;
+  color: #002c5f;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/* Label below search results indicating data source */
+.data-source-label {
+  margin-top: 10px;
+  color: #002c5f;
+  font-size: 14px;
+  font-style: italic;
+}
 
 /* Wrapper for tables */
 .table-container {
@@ -340,24 +355,28 @@ th, td {
   </div>
 
   <div class="container">
-    <div class="table-container">
-      <table id="results">
-        <thead style="display: none;">
-          <tr>
-            <th>CIF</th>
-            <th>ឈ្មោះឡាតាំង</th>
-            <th>ឈ្មោះខ្មែរ</th>
-            <th>ភេទ</th>
-            <th>អាស័យដ្ឋាន</th>
-            <th>សាខា</th>
-            <th>ភ្នាក់ងារតំបន់</th>
-            <th>មុខរបរ/មុខងារ</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
+  <div class="section-title">ព៌តមានគណនី</div> <!-- Title -->
+  
+  <div class="table-container">
+    <table id="results">
+      <thead style="display: none;">
+        <tr>
+          <th>CIF</th>
+          <th>ឈ្មោះឡាតាំង</th>
+          <th>ឈ្មោះខ្មែរ</th>
+          <th>ភេទ</th>
+          <th>អាស័យដ្ឋាន</th>
+          <th>សាខា</th>
+          <th>ភ្នាក់ងារតំបន់</th>
+          <th>មុខរបរ/មុខងារ</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
   </div>
+
+  <div id="dataSourceLabel" class="data-source-label"></div> <!-- Source label -->
+</div>
 
   <div class="bottom-bar">
     <button class="bottom-btn" onclick="window.location.href='../index.html'">
@@ -464,28 +483,31 @@ th, td {
     });
 }
 
-      function displayResults(results) {
-        const resultsTable = document.querySelector("#results tbody");
-        const tableHead = document.querySelector("#results thead");
-        const resultLabel = document.getElementById("resultLabel");
+  function displayResults(results) {
+  const resultsTable = document.querySelector("#results tbody");
+  const tableHead = document.querySelector("#results thead");
+  const resultLabel = document.getElementById("resultLabel");
+  const dataSourceLabel = document.getElementById("dataSourceLabel");
 
-        resultLabel.textContent = `លទ្ធផលស្វែងរក៖ ${results.length}`;
-        tableHead.style.display = results.length > 0 ? "table-header-group" : "none";
+  resultLabel.textContent = `លទ្ធផលស្វែងរក៖ ${results.length}`;
+  tableHead.style.display = results.length > 0 ? "table-header-group" : "none";
 
-        resultsTable.innerHTML = results.length > 0
-          ? results.map(item => `
-            <tr>
-              <td>${item.CIF || ''}</td>
-              <td>${item.ACCOUNT_NAME || ''}</td>
-              <td>${item.NAME_KHMER || ''}</td>
-              <td>${item.GENDER || ''}</td>
-              <td>${item.ADDRESS || ''}</td>
-              <td>${item.Branch || ''}</td>
-              <td>${item["CO Response"] || ''}</td>
-              <td>${item.Note || ''}</td>
-            </tr>`).join("")
-          : "<tr><td colspan='9'>រកមិនឃើញលទ្ធផលទេ</td></tr>";
-      }
+  resultsTable.innerHTML = results.length > 0
+    ? results.map(item => `
+      <tr>
+        <td>${item.CIF || ''}</td>
+        <td>${item.ACCOUNT_NAME || ''}</td>
+        <td>${item.NAME_KHMER || ''}</td>
+        <td>${item.GENDER || ''}</td>
+        <td>${item.ADDRESS || ''}</td>
+        <td>${item.Branch || ''}</td>
+        <td>${item["CO Response"] || ''}</td>
+        <td>${item.Note || ''}</td>
+      </tr>`).join("")
+    : "<tr><td colspan='9'>រកមិនឃើញលទ្ធផលទេ</td></tr>";
+
+  dataSourceLabel.textContent = results.length > 0 ? "Data from: Customer" : "";
+}
 
       document.getElementById("searchButton").addEventListener("click", performSearch);
     });
@@ -591,6 +613,7 @@ th, td {
   const resultsTable = document.querySelector("#results tbody");
   const tableHead = document.querySelector("#results thead");
   const resultLabel = document.getElementById("resultLabel");
+  const dataSourceLabel = document.getElementById("dataSourceLabel");
 
   resultLabel.textContent = `លទ្ធផលស្វែងរក៖ ${data.length}`;
   tableHead.style.display = data.length > 0 ? "table-header-group" : "none";
@@ -608,6 +631,8 @@ th, td {
         <td>${item["GovEmplyee/FactWorker"] || ''}</td>
       </tr>`).join("")
     : "<tr><td colspan='9'>រកមិនឃើញលទ្ធផលទេ</td></tr>";
+
+  dataSourceLabel.textContent = data.length > 0 ? "Data from: NBCOS" : "";
 }
   </script>
 <!-- ✅ Load shared notification script -->
