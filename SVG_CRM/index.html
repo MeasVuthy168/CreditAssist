@@ -423,28 +423,46 @@ th, td {
     window.addEventListener('load', setupAutoLogoutEvents);
 
     document.addEventListener("DOMContentLoaded", () => {
+      
       function performSearch() {
-        const query = document.getElementById("searchBox").value.trim();
-        if (query === "") {
-          alert("សូមបញ្ចូលពាក្យគន្លិះ");
-          return;
-        }
+  const query = document.getElementById("searchBox").value.trim();
+  if (query === "") {
+    alert("សូមបញ្ចូលពាក្យគន្លិះ");
+    return;
+  }
 
-        document.getElementById("loadingOverlay").style.display = "flex";
-        fetch(`https://secure-backend-tzj9.onrender.com/api/customers/search?q=${encodeURIComponent(query)}`, {
+  document.getElementById("loadingOverlay").style.display = "flex";
+  fetch(`https://secure-backend-tzj9.onrender.com/api/customers/search?q=${encodeURIComponent(query)}`, {
+    headers: { Authorization: `Bearer ${token}` }
+  })
+    .then(res => res.json())
+    .then(results => {
+      if (results.length > 0) {
+        displayResults(results);
+        document.getElementById("loadingOverlay").style.display = "none";
+      } else {
+        // fallback to NBCOS search
+        fetch(`https://secure-backend-tzj9.onrender.com/api/nbcos/search?q=${encodeURIComponent(query)}`, {
           headers: { Authorization: `Bearer ${token}` }
         })
           .then(res => res.json())
-          .then(results => {
-            displayResults(results);
+          .then(nbcosResults => {
+            displayNBCOSAsCustomer(nbcosResults);
             document.getElementById("loadingOverlay").style.display = "none";
           })
           .catch(err => {
-            alert("Search failed");
-            console.error("Search error:", err);
+            alert("NBCOS fallback failed");
+            console.error("NBCOS search error:", err);
             document.getElementById("loadingOverlay").style.display = "none";
           });
       }
+    })
+    .catch(err => {
+      alert("Search failed");
+      console.error("Search error:", err);
+      document.getElementById("loadingOverlay").style.display = "none";
+    });
+}
 
       function displayResults(results) {
         const resultsTable = document.querySelector("#results tbody");
@@ -568,6 +586,29 @@ th, td {
         r.classList.remove("highlighted-row");
       });
     });
+
+    function displayNBCOSAsCustomer(data) {
+  const resultsTable = document.querySelector("#results tbody");
+  const tableHead = document.querySelector("#results thead");
+  const resultLabel = document.getElementById("resultLabel");
+
+  resultLabel.textContent = `លទ្ធផលស្វែងរក៖ ${data.length}`;
+  tableHead.style.display = data.length > 0 ? "table-header-group" : "none";
+
+  resultsTable.innerHTML = data.length > 0
+    ? data.map(item => `
+      <tr>
+        <td>${item.LD_CUSTOMER_ID || ''}</td>
+        <td>${item.NAME_KHMER || ''}</td>
+        <td>${item.NAME_ENG || ''}</td>
+        <td>${item.TITLE || ''}</td>
+        <td>${item.Address || ''}</td>
+        <td>${item["Branch-OK"] || ''}</td>
+        <td>${item["Credit Officer"] || ''}</td>
+        <td>${item["GovEmplyee/FactWorker"] || ''}</td>
+      </tr>`).join("")
+    : "<tr><td colspan='9'>រកមិនឃើញលទ្ធផលទេ</td></tr>";
+}
   </script>
 <!-- ✅ Load shared notification script -->
 <script src="../notifications/checkNotification.js"></script>
