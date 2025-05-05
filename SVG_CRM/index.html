@@ -127,7 +127,7 @@ body {
 /* Label below search results indicating data source */
 .data-source-label {
   margin-top: 10px;
-  color: #002c5f;
+  color: #ccc;
   font-size: 12px;
   font-style: italic;
 }
@@ -280,7 +280,6 @@ th, td {
 .highlighted-row {
   background-color: #ffd700 !important;
   color: #002c5f;
-  font-weight: bold;
 }
 
 /* Horizontal scrolling wrapper for NBCOS table */
@@ -315,7 +314,7 @@ th, td {
 /* Summary note below NBCOS table */
 .nbcos-summary {
   margin-top: 12px;
-  color: #002c5f;
+  color: #ccc;
   font-size: 12px;
   font-style: italic;
 }
@@ -507,7 +506,7 @@ th, td {
       </tr>`).join("")
     : "<tr><td colspan='9'>រកមិនឃើញលទ្ធផលទេ</td></tr>";
 
-  dataSourceLabel.textContent = results.length > 0 ? "ទិន្នន័យ​ពី:DatabaseCustomer (សូមចុចដេីម្បីមេីលព៌តមានឥណទាន)" : "";
+  dataSourceLabel.textContent = results.length > 0 ? "ទិន្នន័យ​ពី:DatabaseCustomer" : "";
 }
 
       document.getElementById("searchButton").addEventListener("click", performSearch);
@@ -633,7 +632,7 @@ th, td {
       </tr>`).join("")
     : "<tr><td colspan='9'>រកមិនឃើញលទ្ធផលទេ</td></tr>";
 
-  dataSourceLabel.textContent = data.length > 0 ? "ទិន្នន័យ​ពី:DatabaseNBC_OS (សូមចុចដេីម្បីមេីលព៌តមានឥណទាន)" : "";
+  dataSourceLabel.textContent = data.length > 0 ? "ទិន្នន័យ​ពី:DatabaseNBC_OS" : "";
 }
   </script>
 <!-- ✅ Load shared notification script -->
