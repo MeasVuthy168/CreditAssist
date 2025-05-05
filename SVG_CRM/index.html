@@ -315,8 +315,9 @@ th, td {
 /* Summary note below NBCOS table */
 .nbcos-summary {
   margin-top: 12px;
-  font-size: 14px;
   color: #002c5f;
+  font-size: 12px;
+  font-style: italic;
 }
 
 /* Close button for NBCOS detail box */
@@ -355,7 +356,7 @@ th, td {
   </div>
 
   <div class="container">
-  <div class="section-title">🏦ព៌តមានគណនី</div> <!-- Title -->
+  <div class="section-title">🏦 ព៌តមានគណនី</div> <!-- Title -->
   
   <div class="table-container">
     <table id="results">
@@ -400,7 +401,7 @@ th, td {
 
   <div id="nbcosDetail">
     <button id="closeDetailBtn">×</button>
-    <h3>💰ព័ត៌មានឥណទាន</h3>
+    <h3>💰 ព័ត៌មានឥណទាន</h3>
     <div id="nbcosContent">សូមជ្រើសរើសអតិថិជនពីតារាងខាងលើ</div>
   </div>
 <span id="notif-badge" class="badge" style="display: none;"></span>
@@ -506,7 +507,7 @@ th, td {
       </tr>`).join("")
     : "<tr><td colspan='9'>រកមិនឃើញលទ្ធផលទេ</td></tr>";
 
-  dataSourceLabel.textContent = results.length > 0 ? "Data from: Customer" : "";
+  dataSourceLabel.textContent = results.length > 0 ? "ទិន្នន័យ​ពី:DatabaseCustomer (សូមចុចដេីម្បីមេីលព៌តមានឥណទាន)" : "";
 }
 
       document.getElementById("searchButton").addEventListener("click", performSearch);
@@ -632,7 +633,7 @@ th, td {
       </tr>`).join("")
     : "<tr><td colspan='9'>រកមិនឃើញលទ្ធផលទេ</td></tr>";
 
-  dataSourceLabel.textContent = data.length > 0 ? "Data from: NBCOS" : "";
+  dataSourceLabel.textContent = data.length > 0 ? "ទិន្នន័យ​ពី:DatabaseNBC_OS (សូមចុចដេីម្បីមេីលព៌តមានឥណទាន)" : "";
 }
   </script>
 <!-- ✅ Load shared notification script -->
