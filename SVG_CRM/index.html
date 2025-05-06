@@ -550,7 +550,7 @@ th, td {
     const resultLabel = document.getElementById("resultLabel");
     const dataSourceLabel = document.getElementById("dataSourceLabel");
 
-    resultLabel.textContent = `លទ្ធផលស្វែងរក៖ ${results.length}`;
+    resultLabel.textContent = `👥លទ្ធផលស្វែងរក៖ ${results.length}CIF`;
     tableHead.style.display = results.length > 0 ? "table-header-group" : "none";
 
     resultsTable.innerHTML = results.length > 0
@@ -565,7 +565,7 @@ th, td {
           <td>${item["CO Response"] || ''}</td>
           <td>${item.Note || ''}</td>
         </tr>`).join("")
-      : "<tr><td colspan='9'>រកមិនឃើញលទ្ធផលទេ</td></tr>";
+      : "<tr><td colspan='9'>🚫រកមិនឃើញលទ្ធផលទេ</td></tr>";
 
     document.getElementById("tapHint").style.display = "flex";
     setTimeout(() => {
