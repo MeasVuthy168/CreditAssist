@@ -703,14 +703,16 @@ th, td {
       });
   });
 
-  document.getElementById("closeDetailBtn").addEventListener("click", () => {
-    document.getElementById("nbcosDetail").style.display = "none";
-    const allRows = document.querySelectorAll("#results tbody tr");
-    allRows.forEach(r => {
-      r.style.display = "";
-      r.classList.remove("highlighted-row");
-    });
+  document.getElementById("searchBox").addEventListener("input", () => {
+  document.getElementById("nbcosDetail").style.display = "none";
+  document.querySelector(".container").style.display = "none"; // hide main result container
+
+  const allRows = document.querySelectorAll("#results tbody tr");
+  allRows.forEach(r => {
+    r.style.display = "";
+    r.classList.remove("highlighted-row");
   });
+});
 
   function displayNBCOSAsCustomer(data) {
   const resultsTable = document.querySelector("#results tbody");
