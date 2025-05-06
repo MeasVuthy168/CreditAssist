@@ -372,6 +372,20 @@ th, td {
   75% { transform: rotate(10deg); }
   100% { transform: rotate(0); }
 }
+    <!-- Export Excel Button -->
+<button id="exportExcelBtn" style="
+  position: absolute;
+  bottom: 12px;
+  right: 16px;
+  background-color: #0d2d5c;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  z-index: 10;
+">Export Excel</button>
     
     
     
@@ -450,7 +464,20 @@ th, td {
     <div id="nbcosContent">សូមជ្រើសរើសអតិថិជនពីតារាងខាងលើ</div>
   </div>
 <span id="notif-badge" class="badge" style="display: none;"></span>
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+  document.getElementById("exportExcelBtn").addEventListener("click", () => {
+    const table = document.querySelector(".nbcos-table");
+    if (!table) {
+      alert("No NBCOS data to export.");
+      return;
+    }
 
+    const wb = XLSX.utils.table_to_book(table, { sheet: "NBCOS Detail" });
+    XLSX.writeFile(wb, "NBCOS_Detail.xlsx");
+  });
+</script>
 <script>
   function formatDate(isoString) {
     if (!isoString) return '';
