@@ -627,30 +627,33 @@ setTimeout(() => {
            </thead><tbody>`;
 
           data.forEach(item => {
-            tableHTML += `<tr>${headers.map(key => {
-              let value = item[key] || '';
+  tableHTML += `<tr>${headers.map(key => {
+    let value = item[key] || '';
 
-              if (["DISBURSE", "MATURITY", "BIRTH_DATE"].includes(key)) {
-                const d = new Date(value);
-                if (!isNaN(d)) {
-                  if (key === "DISBURSE" && (!latestDisburseDate || d > latestDisburseDate)) {
-                    latestDisburseDate = d;
-                  }
-                  value = formatDate(value);
-                }
-              }
+    if (["DISBURSE", "MATURITY", "BIRTH_DATE"].includes(key)) {
+      const d = new Date(value);
+      if (!isNaN(d)) {
+        if (key === "DISBURSE") {
+          // Update latestDisburseDate only if the current date is newer
+          if (!latestDisburseDate || d.getTime() > latestDisburseDate.getTime()) {
+            latestDisburseDate = d;
+          }
+        }
+        value = formatDate(value);
+      }
+    }
 
-              if (["OS_USD"].includes(key)) {
-                const num = parseFloat(item[key]) || 0;
-                totalOS += num;
-                value = formatNumber(num);
-              } else if (["LOAN_SIZE", "LOAN_SIZE_USD", "AGGREGATE_LOAN_SIZE", "OUTSTANDING", "OS_INT", "OS by Amount", "Amount_Paid_Old"].includes(key)) {
-                value = formatNumber(value);
-              }
+    if (["OS_USD"].includes(key)) {
+      const num = parseFloat(item[key]) || 0;
+      totalOS += num;
+      value = formatNumber(num);
+    } else if (["LOAN_SIZE", "LOAN_SIZE_USD", "AGGREGATE_LOAN_SIZE", "OUTSTANDING", "OS_INT", "OS by Amount", "Amount_Paid_Old"].includes(key)) {
+      value = formatNumber(value);
+    }
 
-              return `<td>${value}</td>`;
-            }).join('')}</tr>`;
-          });
+    return `<td>${value}</td>`;
+  }).join('')}</tr>`;
+});
 
           tableHTML += `</tbody></table></div>
 <div class="nbcos-summary">
