@@ -719,7 +719,7 @@ th, td {
   const dataSourceLabel = document.getElementById("dataSourceLabel");
   const tapHint = document.getElementById("tapHint");
 
-  resultLabel.textContent = `លទ្ធផលស្វែងរក៖ ${data.length}`;
+  resultLabel.textContent = `👥 លទ្ធផលស្វែងរក៖ ${data.length} CIF`;
   tableHead.style.display = data.length > 0 ? "table-header-group" : "none";
 
   resultsTable.innerHTML = data.length > 0
@@ -734,7 +734,7 @@ th, td {
         <td>${item["Credit Officer"] || ''}</td>
         <td>${item["GovEmplyee/FactWorker"] || ''}</td>
       </tr>`).join("")
-    : "<tr><td colspan='9'>រកមិនឃើញលទ្ធផលទេ</td></tr>";
+    : "<tr><td colspan='9'>🚫 រកមិនឃើញលទ្ធផលទេ</td></tr>";
 
   if (data.length > 0) {
     tapHint.style.display = "flex";
