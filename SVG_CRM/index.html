@@ -708,22 +708,26 @@ th, td {
   const query = document.getElementById("searchBox").value.trim();
   const container = document.querySelector(".container");
   const nbcosPanel = document.getElementById("nbcosDetail");
+  const resultsTable = document.querySelector("#results tbody");
+  const tableHead = document.querySelector("#results thead");
+  const resultLabel = document.getElementById("resultLabel");
+  const dataSourceLabel = document.getElementById("dataSourceLabel");
 
   nbcosPanel.style.display = "none";
 
-  // Always show container when there's any input
   if (query !== "") {
     container.style.display = "block";
+    
+    // Clear table contents and hide header
+    resultsTable.innerHTML = "";
+    tableHead.style.display = "none";
+
+    // Reset label info
+    resultLabel.textContent = "👥 លទ្ធផលស្វែងរក៖ 0";
+    dataSourceLabel.textContent = "";
   } else {
     container.style.display = "none";
   }
-
-  // Reset table rows (optional visual reset)
-  const allRows = document.querySelectorAll("#results tbody tr");
-  allRows.forEach(r => {
-    r.style.display = "";
-    r.classList.remove("highlighted-row");
-  });
 });
 
 
