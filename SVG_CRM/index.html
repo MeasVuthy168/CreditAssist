@@ -372,8 +372,7 @@ th, td {
   75% { transform: rotate(10deg); }
   100% { transform: rotate(0); }
 }
-    <!-- Export Excel Button -->
-<button id="exportExcelBtn" style="
+  .export-excel-btn {
   position: absolute;
   bottom: 12px;
   right: 16px;
@@ -385,7 +384,7 @@ th, td {
   font-size: 13px;
   cursor: pointer;
   z-index: 10;
-">Export Excel</button>
+}
     
     
     
@@ -462,6 +461,8 @@ th, td {
     <button id="closeDetailBtn">×</button>
     <h3>💰 ព័ត៌មានឥណទាន</h3>
     <div id="nbcosContent">សូមជ្រើសរើសអតិថិជនពីតារាងខាងលើ</div>
+    <!-- Export Excel Button -->
+    <button id="exportExcelBtn" class="export-excel-btn">Export Excel</button>
   </div>
 <span id="notif-badge" class="badge" style="display: none;"></span>
   
