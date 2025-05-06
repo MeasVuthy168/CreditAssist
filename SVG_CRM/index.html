@@ -434,7 +434,7 @@ th, td {
 </div>
     
   <div id="dataSourceLabel" class="data-source-label"></div> <!-- Source label -->
-  <span id="resultLabel"> 👥លទ្ធផលស្វែងរក៖ 0</span>
+  <span id="resultLabel">👥 លទ្ធផលស្វែងរក៖ 0</span>
 </div>
 
   <div class="bottom-bar">
@@ -578,7 +578,7 @@ th, td {
     const resultLabel = document.getElementById("resultLabel");
     const dataSourceLabel = document.getElementById("dataSourceLabel");
 
-    resultLabel.textContent = `👥លទ្ធផលស្វែងរក៖ ${results.length}CIF`;
+    resultLabel.textContent = `👥 លទ្ធផលស្វែងរក៖ ${results.length}CIF`;
     tableHead.style.display = results.length > 0 ? "table-header-group" : "none";
 
     resultsTable.innerHTML = results.length > 0
@@ -600,7 +600,7 @@ th, td {
       document.getElementById("tapHint").style.display = "none";
     }, 8000);
 
-    dataSourceLabel.textContent = results.length > 0 ? "⛁ទិន្នន័យ​ពី:DatabaseCustomer" : "";
+    dataSourceLabel.textContent = results.length > 0 ? "⛁ ទិន្នន័យ​ពី:DatabaseCustomer" : "";
   }
 
   document.querySelector("#results tbody").addEventListener("click", function (e) {
@@ -740,7 +740,7 @@ th, td {
       document.getElementById("tapHint").style.display = "none";
     }, 8000);
 
-    dataSourceLabel.textContent = data.length > 0 ? "⛁ទិន្នន័យ​ពី:DatabaseNBC_OS" : "";
+    dataSourceLabel.textContent = data.length > 0 ? "⛁ ទិន្នន័យ​ពី:DatabaseNBC_OS" : "";
   }
   </script>
 <!-- ✅ Load shared notification script -->
