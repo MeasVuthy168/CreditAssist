@@ -573,6 +573,7 @@ th, td {
   }
 
   function displayResults(results) {
+  document.querySelector(".container").style.display = "block"; // ✅ re-show container
   const resultsTable = document.querySelector("#results tbody");
   const tableHead = document.querySelector("#results thead");
   const resultLabel = document.getElementById("resultLabel");
@@ -705,7 +706,7 @@ th, td {
 
   document.getElementById("searchBox").addEventListener("input", () => {
   document.getElementById("nbcosDetail").style.display = "none";
-  document.getElementById("container").style.display = "none"; // hide main result container
+  document.querySelector(".container").style.display = "none"; // hide main result container
 
   const allRows = document.querySelectorAll("#results tbody tr");
   allRows.forEach(r => {
