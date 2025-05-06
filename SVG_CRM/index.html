@@ -573,7 +573,7 @@ th, td {
   }
 
   function displayResults(results) {
-  document.querySelector(".container").style.display = "block"; // ✅ re-show container
+  document.querySelector(".table-container").style.display = "block";
   const resultsTable = document.querySelector("#results tbody");
   const tableHead = document.querySelector("#results thead");
   const resultLabel = document.getElementById("resultLabel");
@@ -706,11 +706,12 @@ th, td {
 
   document.getElementById("searchBox").addEventListener("input", () => {
   const query = document.getElementById("searchBox").value.trim();
-  
+
   document.getElementById("nbcosDetail").style.display = "none";
-  
+
+  const tableWrapper = document.querySelector(".table-container");
   if (query === "") {
-    document.querySelector(".container").style.display = "none"; // hide only when input is empty
+    tableWrapper.style.display = "none"; // Hide only table if input cleared
   }
 
   const allRows = document.querySelectorAll("#results tbody tr");
