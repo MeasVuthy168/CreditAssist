@@ -706,13 +706,19 @@ th, td {
 
   document.getElementById("searchBox").addEventListener("input", () => {
   const query = document.getElementById("searchBox").value.trim();
-  
-  document.getElementById("nbcosDetail").style.display = "none";
-  
-  if (query === "") {
-    document.querySelector(".container").style.display = "none"; // hide only when input is empty
+  const container = document.querySelector(".container");
+  const nbcosPanel = document.getElementById("nbcosDetail");
+
+  nbcosPanel.style.display = "none";
+
+  // Always show container when there's any input
+  if (query !== "") {
+    container.style.display = "block";
+  } else {
+    container.style.display = "none";
   }
 
+  // Reset table rows (optional visual reset)
   const allRows = document.querySelectorAll("#results tbody tr");
   allRows.forEach(r => {
     r.style.display = "";
@@ -720,6 +726,8 @@ th, td {
   });
 });
 
+
+  
   function displayNBCOSAsCustomer(data) {
   const resultsTable = document.querySelector("#results tbody");
   const tableHead = document.querySelector("#results thead");
