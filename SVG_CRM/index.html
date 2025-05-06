@@ -598,76 +598,88 @@ setTimeout(() => {
       content.innerHTML = "<div class='spinner'></div> <span>កំពុងទាញយកទិន្នន័យ...</span>";
 
       fetch(`https://secure-backend-tzj9.onrender.com/api/nbcos/by-cif?cif=${encodeURIComponent(cif)}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      })
-        .then(res => res.json())
-        .then(data => {
-          if (!data || data.length === 0) {
-            content.innerHTML = "គ្មានទិន្នន័យឥណទានសម្រាប់អតិថិជននេះទេ។";
-            return;
-          }
+  headers: { Authorization: `Bearer ${token}` }
+})
+  .then(res => res.json())
+  .then(data => {
+    if (!data || data.length === 0) {
+      content.innerHTML = "គ្មានទិន្នន័យឥណទានសម្រាប់អតិថិជននេះទេ។";
+      return;
+    }
 
-          const headers = [
-            "CONTRACT_LD", "NAME_KHMER", "NAME_ENG",
-            "LOAN_SIZE", "LOAN_SIZE_USD", "AGGREGATE_LOAN_SIZE", "OUTSTANDING",
-            "OS_USD", "OS_INT", "RATE", "CCY", "DISBURSE", "MATURITY",
-            "LOAN_TERM", "LOAN_CYCLE", "CO", "LEGAL_NO", "LEGAL_TYPE", "BIRTH_DATE",
-            "CO_BORROWER", "GUARANTOR", "LOAN_REFERENCE", "PROFESSION",
-            "MEMBER_REF_CBC", "Branch-OK", "Credit Officer",
-            "Product Type"
-          ];
+    const headers = [
+      "CONTRACT_LD", "NAME_KHMER", "NAME_ENG",
+      "LOAN_SIZE", "LOAN_SIZE_USD", "AGGREGATE_LOAN_SIZE", "OUTSTANDING",
+      "OS_USD", "OS_INT", "RATE", "CCY", "DISBURSE", "MATURITY",
+      "LOAN_TERM", "LOAN_CYCLE", "CO", "LEGAL_NO", "LEGAL_TYPE", "BIRTH_DATE",
+      "CO_BORROWER", "GUARANTOR", "LOAN_REFERENCE", "PROFESSION",
+      "MEMBER_REF_CBC", "Branch-OK", "Credit Officer",
+      "Product Type"
+    ];
 
-          let totalOS = 0;
-          let latestDisburseDate = null;
+    let totalOS = 0;
 
-          let tableHTML = `<div class="nbcos-wrapper">
-          <table class="nbcos-table">
-           <thead>
-           <tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr>
-           </thead><tbody>`;
+    let tableHTML = `<div class="nbcos-wrapper">
+    <table class="nbcos-table">
+     <thead>
+     <tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr>
+     </thead><tbody>`;
 
-          data.forEach(item => {
-  tableHTML += `<tr>${headers.map(key => {
-    let value = item[key] || '';
+    data.forEach(item => {
+      tableHTML += `<tr>${headers.map(key => {
+        let value = item[key] || '';
 
-    if (["DISBURSE", "MATURITY", "BIRTH_DATE"].includes(key)) {
-      const d = new Date(value);
-      if (!isNaN(d)) {
-        if (key === "DISBURSE") {
-          // Update latestDisburseDate only if the current date is newer
-          if (!latestDisburseDate || d.getTime() > latestDisburseDate.getTime()) {
-            latestDisburseDate = d;
+        if (["DISBURSE", "MATURITY", "BIRTH_DATE"].includes(key)) {
+          const d = new Date(value);
+          if (!isNaN(d)) {
+            value = formatDate(value);
           }
         }
-        value = formatDate(value);
-      }
-    }
 
-    if (["OS_USD"].includes(key)) {
-      const num = parseFloat(item[key]) || 0;
-      totalOS += num;
-      value = formatNumber(num);
-    } else if (["LOAN_SIZE", "LOAN_SIZE_USD", "AGGREGATE_LOAN_SIZE", "OUTSTANDING", "OS_INT", "OS by Amount", "Amount_Paid_Old"].includes(key)) {
-      value = formatNumber(value);
-    }
+        if (["OS_USD"].includes(key)) {
+          const num = parseFloat(item[key]) || 0;
+          totalOS += num;
+          value = formatNumber(num);
+        } else if (["LOAN_SIZE", "LOAN_SIZE_USD", "AGGREGATE_LOAN_SIZE", "OUTSTANDING", "OS_INT", "OS by Amount", "Amount_Paid_Old"].includes(key)) {
+          value = formatNumber(value);
+        }
 
-    return `<td>${value}</td>`;
-  }).join('')}</tr>`;
-});
-
-          tableHTML += `</tbody></table></div>
-<div class="nbcos-summary">
-  <div><strong>✨សរុបឥណទាន (OS_USD):</strong> ${formatNumber(totalOS)}</div>
-  <div><strong>✨ទិន្នន័យ NBC_OS គិតត្រឹម:</strong> ${latestDisburseDate ? formatDate(latestDisburseDate.toISOString()) : '-'}</div>
-</div>`;
-
-          content.innerHTML = tableHTML;
-        })
-        .catch(err => {
-          console.error("NBCOS error:", err);
-          content.innerHTML = "បរាជ័យក្នុងការទាញ NBCOS";
-        });
+        return `<td>${value}</td>`;
+      }).join('')}</tr>`;
     });
+
+    tableHTML += `</tbody></table></div>`;
+    content.innerHTML = tableHTML;
+
+    // ✅ Fetch latest disburse date from entire NBCOS
+    fetch("https://secure-backend-tzj9.onrender.com/api/nbcos/latest-disburse", {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+      .then(res => res.json())
+      .then(result => {
+        const latestDisburseDate = result.latestDisburse ? new Date(result.latestDisburse) : null;
+        const summaryHTML = `
+        <div class="nbcos-summary">
+          <div><strong>✨សរុបឥណទាន (OS_USD):</strong> ${formatNumber(totalOS)}</div>
+          <div><strong>✨ទិន្នន័យ NBC_OS គិតត្រឹម:</strong> ${latestDisburseDate ? formatDate(latestDisburseDate.toISOString()) : '-'}</div>
+        </div>`;
+        content.innerHTML += summaryHTML;
+      })
+      .catch(err => {
+        console.error("Failed to fetch global latest DISBURSE:", err);
+        const summaryHTML = `
+        <div class="nbcos-summary">
+          <div><strong>✨សរុបឥណទាន (OS_USD):</strong> ${formatNumber(totalOS)}</div>
+          <div><strong>✨ទិន្នន័យ NBC_OS គិតត្រឹម:</strong> -</div>
+        </div>`;
+        content.innerHTML += summaryHTML;
+      });
+
+  })
+  .catch(err => {
+    console.error("NBCOS error:", err);
+    content.innerHTML = "បរាជ័យក្នុងការទាញ NBCOS";
+  });
 
     document.getElementById("closeDetailBtn").addEventListener("click", () => {
       document.getElementById("nbcosDetail").style.display = "none";
@@ -708,7 +720,8 @@ setTimeout(() => {
 }, 8000); // hide after 8 seconds
       
   dataSourceLabel.textContent = data.length > 0 ? "⛁ទិន្នន័យ​ពី:DatabaseNBC_OS" : "";
-}
+} 
+    
   </script>
 <!-- ✅ Load shared notification script -->
 <script src="../notifications/checkNotification.js"></script>
@@ -717,6 +730,7 @@ setTimeout(() => {
 <script>
   window.addEventListener("DOMContentLoaded", () => {
     checkNotification();
+    fetchLatestDisburseDate(); // ✅ Call here to display latest DISBURSE
   });
 </script>
 </body>
