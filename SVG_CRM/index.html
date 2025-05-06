@@ -317,11 +317,6 @@ th, td {
   font-size: 12px;
   
 }
-.global-disburse-label {
-  color: #ccc;
-  font-size: 13px;
-  margin-top: 4px;
-}
 
 /* Close button for NBCOS detail box */
 #closeDetailBtn {
@@ -452,242 +447,48 @@ th, td {
     <button id="closeDetailBtn">×</button>
     <h3>💰 ព័ត៌មានឥណទាន</h3>
     <div id="nbcosContent">សូមជ្រើសរើសអតិថិជនពីតារាងខាងលើ</div>
-<div id="latestGlobalDisburse" class="global-disburse-label"></div>
   </div>
 <span id="notif-badge" class="badge" style="display: none;"></span>
   <script>
-    function formatDate(isoString) {
-      if (!isoString) return '';
-      const date = new Date(isoString);
-      if (isNaN(date)) return '';
-      return date.toLocaleDateString('en-GB');
-    }
+<script>
+  function formatDate(isoString) {
+    if (!isoString) return '';
+    const date = new Date(isoString);
+    if (isNaN(date)) return '';
+    return date.toLocaleDateString('en-GB');
+  }
 
-    function formatNumber(value) {
-      if (!value || isNaN(value)) return '';
-      return Number(value).toLocaleString('en-US');
-    }
+  function formatNumber(value) {
+    if (!value || isNaN(value)) return '';
+    return Number(value).toLocaleString('en-US');
+  }
 
-    const token = sessionStorage.getItem('token');
-    if (!token) {
-      alert("Session expired or unauthorized access.");
+  const token = sessionStorage.getItem('token');
+  if (!token) {
+    alert("Session expired or unauthorized access.");
+    window.location.href = "../login.html";
+  }
+
+  const AUTO_LOGOUT_MINUTES = 5;
+  let logoutTimer;
+  function resetLogoutTimer() {
+    clearTimeout(logoutTimer);
+    logoutTimer = setTimeout(() => {
+      sessionStorage.clear();
+      alert("Session expired due to inactivity. Please log in again.");
       window.location.href = "../login.html";
-    }
-
-    const AUTO_LOGOUT_MINUTES = 5;
-    let logoutTimer;
-    function resetLogoutTimer() {
-      clearTimeout(logoutTimer);
-      logoutTimer = setTimeout(() => {
-        sessionStorage.clear();
-        alert("Session expired due to inactivity. Please log in again.");
-        window.location.href = "../login.html";
-      }, AUTO_LOGOUT_MINUTES * 60 * 1000);
-    }
-    function setupAutoLogoutEvents() {
-      ['mousemove', 'mousedown', 'keydown', 'touchstart', 'touchmove', 'scroll'].forEach(event => {
-        document.addEventListener(event, resetLogoutTimer, true);
-      });
-      resetLogoutTimer();
-    }
-    window.addEventListener('load', setupAutoLogoutEvents);
-
-    document.addEventListener("DOMContentLoaded", () => {
-     // ✅ Reset detail and row highlights when user types
-  document.getElementById("searchBox").addEventListener("input", () => {
-  document.getElementById("nbcosDetail").style.display = "none";
-  const allRows = document.querySelectorAll("#results tbody tr");
-  allRows.forEach(r => {
-    r.style.display = "";
-    r.classList.remove("highlighted-row");
-  });
-});
-
-// ✅ Trigger search on Enter key
-document.getElementById("searchBox").addEventListener("keydown", (e) => {
-  if (e.key === "Enter") {
-    e.preventDefault();
-    document.getElementById("searchButton").click();
+    }, AUTO_LOGOUT_MINUTES * 60 * 1000);
   }
-}); 
-      function performSearch() {
-  const query = document.getElementById("searchBox").value.trim();
-  if (query === "") {
-    alert("សូមបញ្ចូលពាក្យគន្លិះ");
-    return;
+  function setupAutoLogoutEvents() {
+    ['mousemove', 'mousedown', 'keydown', 'touchstart', 'touchmove', 'scroll'].forEach(event => {
+      document.addEventListener(event, resetLogoutTimer, true);
+    });
+    resetLogoutTimer();
   }
+  window.addEventListener('load', setupAutoLogoutEvents);
 
-  document.getElementById("loadingOverlay").style.display = "flex";
-  fetch(`https://secure-backend-tzj9.onrender.com/api/customers/search?q=${encodeURIComponent(query)}`, {
-    headers: { Authorization: `Bearer ${token}` }
-  })
-    .then(res => res.json())
-    .then(results => {
-      if (results.length > 0) {
-        displayResults(results);
-        document.getElementById("loadingOverlay").style.display = "none";
-      } else {
-        // fallback to NBCOS search
-        fetch(`https://secure-backend-tzj9.onrender.com/api/nbcos/search?q=${encodeURIComponent(query)}`, {
-          headers: { Authorization: `Bearer ${token}` }
-        })
-          .then(res => res.json())
-          .then(nbcosResults => {
-            displayNBCOSAsCustomer(nbcosResults);
-            document.getElementById("loadingOverlay").style.display = "none";
-          })
-          .catch(err => {
-            alert("NBCOS fallback failed");
-            console.error("NBCOS search error:", err);
-            document.getElementById("loadingOverlay").style.display = "none";
-          });
-      }
-    })
-    .catch(err => {
-      alert("Search failed");
-      console.error("Search error:", err);
-      document.getElementById("loadingOverlay").style.display = "none";
-    });
-}
-
-  function displayResults(results) {
-  const resultsTable = document.querySelector("#results tbody");
-  const tableHead = document.querySelector("#results thead");
-  const resultLabel = document.getElementById("resultLabel");
-  const dataSourceLabel = document.getElementById("dataSourceLabel");
-
-  resultLabel.textContent = `លទ្ធផលស្វែងរក៖ ${results.length}`;
-  tableHead.style.display = results.length > 0 ? "table-header-group" : "none";
-
-  resultsTable.innerHTML = results.length > 0
-    ? results.map(item => `
-      <tr>
-        <td>${item.CIF || ''}</td>
-        <td>${item.ACCOUNT_NAME || ''}</td>
-        <td>${item.NAME_KHMER || ''}</td>
-        <td>${item.GENDER || ''}</td>
-        <td>${item.ADDRESS || ''}</td>
-        <td>${item.Branch || ''}</td>
-        <td>${item["CO Response"] || ''}</td>
-        <td>${item.Note || ''}</td>
-      </tr>`).join("")
-    : "<tr><td colspan='9'>រកមិនឃើញលទ្ធផលទេ</td></tr>";
-
- // ✅ Show tap hint animation     
-document.getElementById("tapHint").style.display = "flex";
-setTimeout(() => {
-  document.getElementById("tapHint").style.display = "none";
-}, 8000); // hide after 8 seconds
-  dataSourceLabel.textContent = results.length > 0 ? "⛁ទិន្នន័យ​ពី:DatabaseCustomer" : "";
-}
-
-      document.getElementById("searchButton").addEventListener("click", performSearch);
-    });
-
-    document.querySelector("#results tbody").addEventListener("click", function (e) {
-      const row = e.target.closest("tr");
-      if (!row || !row.cells[0]) return;
-
-      const cif = row.cells[0].textContent.trim();
-      if (!cif) return;
-
-      const allRows = document.querySelectorAll("#results tbody tr");
-      allRows.forEach(r => {
-        if (r !== row) r.style.display = "none";
-        else r.classList.add("highlighted-row");
-      });
-
-      const detailPanel = document.getElementById("nbcosDetail");
-      const content = document.getElementById("nbcosContent");
-
-      detailPanel.style.display = "block";
-      content.innerHTML = "<div class='spinner'></div> <span>កំពុងទាញយកទិន្នន័យ...</span>";
-
-      fetch(`https://secure-backend-tzj9.onrender.com/api/nbcos/by-cif?cif=${encodeURIComponent(cif)}`, {
-  headers: { Authorization: `Bearer ${token}` }
-})
-  .then(res => res.json())
-  .then(data => {
-    if (!data || data.length === 0) {
-      content.innerHTML = "គ្មានទិន្នន័យឥណទានសម្រាប់អតិថិជននេះទេ។";
-      return;
-    }
-
-    const headers = [
-      "CONTRACT_LD", "NAME_KHMER", "NAME_ENG",
-      "LOAN_SIZE", "LOAN_SIZE_USD", "AGGREGATE_LOAN_SIZE", "OUTSTANDING",
-      "OS_USD", "OS_INT", "RATE", "CCY", "DISBURSE", "MATURITY",
-      "LOAN_TERM", "LOAN_CYCLE", "CO", "LEGAL_NO", "LEGAL_TYPE", "BIRTH_DATE",
-      "CO_BORROWER", "GUARANTOR", "LOAN_REFERENCE", "PROFESSION",
-      "MEMBER_REF_CBC", "Branch-OK", "Credit Officer",
-      "Product Type"
-    ];
-
-    let totalOS = 0;
-
-    let tableHTML = `<div class="nbcos-wrapper">
-    <table class="nbcos-table">
-     <thead>
-     <tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr>
-     </thead><tbody>`;
-
-    data.forEach(item => {
-      tableHTML += `<tr>${headers.map(key => {
-        let value = item[key] || '';
-
-        if (["DISBURSE", "MATURITY", "BIRTH_DATE"].includes(key)) {
-          const d = new Date(value);
-          if (!isNaN(d)) {
-            value = formatDate(value);
-          }
-        }
-
-        if (["OS_USD"].includes(key)) {
-          const num = parseFloat(item[key]) || 0;
-          totalOS += num;
-          value = formatNumber(num);
-        } else if (["LOAN_SIZE", "LOAN_SIZE_USD", "AGGREGATE_LOAN_SIZE", "OUTSTANDING", "OS_INT", "OS by Amount", "Amount_Paid_Old"].includes(key)) {
-          value = formatNumber(value);
-        }
-
-        return `<td>${value}</td>`;
-      }).join('')}</tr>`;
-    });
-
-    tableHTML += `</tbody></table></div>`;
-    content.innerHTML = tableHTML;
-
-    // ✅ Fetch latest disburse date from entire NBCOS
-    fetch("https://secure-backend-tzj9.onrender.com/api/nbcos/latest-disburse", {
-      headers: { Authorization: `Bearer ${token}` }
-    })
-      .then(res => res.json())
-      .then(result => {
-        const latestDisburseDate = result.latestDisburse ? new Date(result.latestDisburse) : null;
-        const summaryHTML = `
-        <div class="nbcos-summary">
-          <div><strong>✨សរុបឥណទាន (OS_USD):</strong> ${formatNumber(totalOS)}</div>
-          <div><strong>✨ទិន្នន័យ NBC_OS គិតត្រឹម:</strong> ${latestDisburseDate ? formatDate(latestDisburseDate.toISOString()) : '-'}</div>
-        </div>`;
-        content.innerHTML += summaryHTML;
-      })
-      .catch(err => {
-        console.error("Failed to fetch global latest DISBURSE:", err);
-        const summaryHTML = `
-        <div class="nbcos-summary">
-          <div><strong>✨សរុបឥណទាន (OS_USD):</strong> ${formatNumber(totalOS)}</div>
-          <div><strong>✨ទិន្នន័យ NBC_OS គិតត្រឹម:</strong> -</div>
-        </div>`;
-        content.innerHTML += summaryHTML;
-      });
-
-  })
-  .catch(err => {
-    console.error("NBCOS error:", err);
-    content.innerHTML = "បរាជ័យក្នុងការទាញ NBCOS";
-  });
-
-    document.getElementById("closeDetailBtn").addEventListener("click", () => {
+  document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("searchBox").addEventListener("input", () => {
       document.getElementById("nbcosDetail").style.display = "none";
       const allRows = document.querySelectorAll("#results tbody tr");
       allRows.forEach(r => {
@@ -696,52 +497,222 @@ setTimeout(() => {
       });
     });
 
-    function displayNBCOSAsCustomer(data) {
-  const resultsTable = document.querySelector("#results tbody");
-  const tableHead = document.querySelector("#results thead");
-  const resultLabel = document.getElementById("resultLabel");
-  const dataSourceLabel = document.getElementById("dataSourceLabel");
-
-  resultLabel.textContent = `លទ្ធផលស្វែងរក៖ ${data.length}`;
-  tableHead.style.display = data.length > 0 ? "table-header-group" : "none";
-
-  resultsTable.innerHTML = data.length > 0
-    ? data.map(item => `
-      <tr>
-        <td>${item.LD_CUSTOMER_ID || ''}</td>
-        <td>${item.NAME_KHMER || ''}</td>
-        <td>${item.NAME_ENG || ''}</td>
-        <td>${item.TITLE || ''}</td>
-        <td>${item.Address || ''}</td>
-        <td>${item["Branch-OK"] || ''}</td>
-        <td>${item["Credit Officer"] || ''}</td>
-        <td>${item["GovEmplyee/FactWorker"] || ''}</td>
-      </tr>`).join("")
-    : "<tr><td colspan='9'>រកមិនឃើញលទ្ធផលទេ</td></tr>";
-
-      // ✅ Show tap hint animation     
-document.getElementById("tapHint").style.display = "flex";
-setTimeout(() => {
-  document.getElementById("tapHint").style.display = "none";
-}, 8000); // hide after 8 seconds
-      
-  dataSourceLabel.textContent = data.length > 0 ? "⛁ទិន្នន័យ​ពី:DatabaseNBC_OS" : "";
-} 
-      function fetchLatestDisburseDate() {
-  fetch("https://secure-backend-tzj9.onrender.com/api/nbcos/latest-disburse", {
-    headers: { Authorization: `Bearer ${token}` }
-  })
-    .then(res => res.json())
-    .then(result => {
-      const latestDate = result.latestDisburse ? new Date(result.latestDisburse) : null;
-      document.getElementById("latestGlobalDisburse").textContent =
-        latestDate ? `⏰ ទិន្នន័យ NBC_OS ចុងក្រោយគេ៖ ${formatDate(latestDate.toISOString())}` : '';
-    })
-    .catch(err => {
-      console.error("Failed to fetch global disburse:", err);
+    document.getElementById("searchBox").addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        document.getElementById("searchButton").click();
+      }
     });
-}
-    
+
+    document.getElementById("searchButton").addEventListener("click", performSearch);
+  });
+
+  function performSearch() {
+    const query = document.getElementById("searchBox").value.trim();
+    if (query === "") {
+      alert("សូមបញ្ចូលពាក្យគន្លិះ");
+      return;
+    }
+
+    document.getElementById("loadingOverlay").style.display = "flex";
+    fetch(`https://secure-backend-tzj9.onrender.com/api/customers/search?q=${encodeURIComponent(query)}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+      .then(res => res.json())
+      .then(results => {
+        if (results.length > 0) {
+          displayResults(results);
+        } else {
+          fetch(`https://secure-backend-tzj9.onrender.com/api/nbcos/search?q=${encodeURIComponent(query)}`, {
+            headers: { Authorization: `Bearer ${token}` }
+          })
+            .then(res => res.json())
+            .then(nbcosResults => displayNBCOSAsCustomer(nbcosResults))
+            .catch(err => {
+              alert("NBCOS fallback failed");
+              console.error("NBCOS search error:", err);
+            });
+        }
+      })
+      .catch(err => {
+        alert("Search failed");
+        console.error("Search error:", err);
+      })
+      .finally(() => {
+        document.getElementById("loadingOverlay").style.display = "none";
+      });
+  }
+
+  function displayResults(results) {
+    const resultsTable = document.querySelector("#results tbody");
+    const tableHead = document.querySelector("#results thead");
+    const resultLabel = document.getElementById("resultLabel");
+    const dataSourceLabel = document.getElementById("dataSourceLabel");
+
+    resultLabel.textContent = `លទ្ធផលស្វែងរក៖ ${results.length}`;
+    tableHead.style.display = results.length > 0 ? "table-header-group" : "none";
+
+    resultsTable.innerHTML = results.length > 0
+      ? results.map(item => `
+        <tr>
+          <td>${item.CIF || ''}</td>
+          <td>${item.ACCOUNT_NAME || ''}</td>
+          <td>${item.NAME_KHMER || ''}</td>
+          <td>${item.GENDER || ''}</td>
+          <td>${item.ADDRESS || ''}</td>
+          <td>${item.Branch || ''}</td>
+          <td>${item["CO Response"] || ''}</td>
+          <td>${item.Note || ''}</td>
+        </tr>`).join("")
+      : "<tr><td colspan='9'>រកមិនឃើញលទ្ធផលទេ</td></tr>";
+
+    document.getElementById("tapHint").style.display = "flex";
+    setTimeout(() => {
+      document.getElementById("tapHint").style.display = "none";
+    }, 8000);
+
+    dataSourceLabel.textContent = results.length > 0 ? "⛁ទិន្នន័យ​ពី:DatabaseCustomer" : "";
+  }
+
+  document.querySelector("#results tbody").addEventListener("click", function (e) {
+    const row = e.target.closest("tr");
+    if (!row || !row.cells[0]) return;
+
+    const cif = row.cells[0].textContent.trim();
+    if (!cif) return;
+
+    const allRows = document.querySelectorAll("#results tbody tr");
+    allRows.forEach(r => {
+      if (r !== row) r.style.display = "none";
+      else r.classList.add("highlighted-row");
+    });
+
+    const detailPanel = document.getElementById("nbcosDetail");
+    const content = document.getElementById("nbcosContent");
+
+    detailPanel.style.display = "block";
+    content.innerHTML = "<div class='spinner'></div> <span>កំពុងទាញយកទិន្នន័យ...</span>";
+
+    fetch(`https://secure-backend-tzj9.onrender.com/api/nbcos/by-cif?cif=${encodeURIComponent(cif)}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (!data || data.length === 0) {
+          content.innerHTML = "គ្មានទិន្នន័យឥណទានសម្រាប់អតិថិជននេះទេ។";
+          return;
+        }
+
+        const headers = [
+          "CONTRACT_LD", "NAME_KHMER", "NAME_ENG",
+          "LOAN_SIZE", "LOAN_SIZE_USD", "AGGREGATE_LOAN_SIZE", "OUTSTANDING",
+          "OS_USD", "OS_INT", "RATE", "CCY", "DISBURSE", "MATURITY",
+          "LOAN_TERM", "LOAN_CYCLE", "CO", "LEGAL_NO", "LEGAL_TYPE", "BIRTH_DATE",
+          "CO_BORROWER", "GUARANTOR", "LOAN_REFERENCE", "PROFESSION",
+          "MEMBER_REF_CBC", "Branch-OK", "Credit Officer", "Product Type"
+        ];
+
+        let totalOS = 0;
+
+        let tableHTML = `<div class="nbcos-wrapper">
+        <table class="nbcos-table">
+         <thead>
+         <tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr>
+         </thead><tbody>`;
+
+        data.forEach(item => {
+          tableHTML += `<tr>${headers.map(key => {
+            let value = item[key] || '';
+
+            if (["DISBURSE", "MATURITY", "BIRTH_DATE"].includes(key)) {
+              const d = new Date(value);
+              if (!isNaN(d)) value = formatDate(value);
+            }
+
+            if (["OS_USD"].includes(key)) {
+              const num = parseFloat(item[key]) || 0;
+              totalOS += num;
+              value = formatNumber(num);
+            } else if (["LOAN_SIZE", "LOAN_SIZE_USD", "AGGREGATE_LOAN_SIZE", "OUTSTANDING", "OS_INT", "OS by Amount", "Amount_Paid_Old"].includes(key)) {
+              value = formatNumber(value);
+            }
+
+            return `<td>${value}</td>`;
+          }).join('')}</tr>`;
+        });
+
+        tableHTML += `</tbody></table></div>`;
+        content.innerHTML = tableHTML;
+
+        // ✅ Fetch latest DISBURSE from entire database
+        fetch("https://secure-backend-tzj9.onrender.com/api/nbcos/latest-disburse", {
+          headers: { Authorization: `Bearer ${token}` }
+        })
+          .then(res => res.json())
+          .then(result => {
+            const latestDisburseDate = result.latestDisburse ? new Date(result.latestDisburse) : null;
+            const summaryHTML = `
+              <div class="nbcos-summary">
+                <div><strong>✨សរុបឥណទាន (OS_USD):</strong> ${formatNumber(totalOS)}</div>
+                <div><strong>✨ទិន្នន័យ NBC_OS គិតត្រឹម:</strong> ${latestDisburseDate ? formatDate(latestDisburseDate.toISOString()) : '-'}</div>
+              </div>`;
+            content.innerHTML += summaryHTML;
+          })
+          .catch(err => {
+            console.error("Latest DISBURSE fetch error:", err);
+            const summaryHTML = `
+              <div class="nbcos-summary">
+                <div><strong>✨សរុបឥណទាន (OS_USD):</strong> ${formatNumber(totalOS)}</div>
+                <div><strong>✨ទិន្នន័យ NBC_OS គិតត្រឹម:</strong> -</div>
+              </div>`;
+            content.innerHTML += summaryHTML;
+          });
+      })
+      .catch(err => {
+        console.error("NBCOS fetch error:", err);
+        content.innerHTML = "បរាជ័យក្នុងការទាញ NBCOS";
+      });
+  });
+
+  document.getElementById("closeDetailBtn").addEventListener("click", () => {
+    document.getElementById("nbcosDetail").style.display = "none";
+    const allRows = document.querySelectorAll("#results tbody tr");
+    allRows.forEach(r => {
+      r.style.display = "";
+      r.classList.remove("highlighted-row");
+    });
+  });
+
+  function displayNBCOSAsCustomer(data) {
+    const resultsTable = document.querySelector("#results tbody");
+    const tableHead = document.querySelector("#results thead");
+    const resultLabel = document.getElementById("resultLabel");
+    const dataSourceLabel = document.getElementById("dataSourceLabel");
+
+    resultLabel.textContent = `លទ្ធផលស្វែងរក៖ ${data.length}`;
+    tableHead.style.display = data.length > 0 ? "table-header-group" : "none";
+
+    resultsTable.innerHTML = data.length > 0
+      ? data.map(item => `
+        <tr>
+          <td>${item.LD_CUSTOMER_ID || ''}</td>
+          <td>${item.NAME_KHMER || ''}</td>
+          <td>${item.NAME_ENG || ''}</td>
+          <td>${item.TITLE || ''}</td>
+          <td>${item.Address || ''}</td>
+          <td>${item["Branch-OK"] || ''}</td>
+          <td>${item["Credit Officer"] || ''}</td>
+          <td>${item["GovEmplyee/FactWorker"] || ''}</td>
+        </tr>`).join("")
+      : "<tr><td colspan='9'>រកមិនឃើញលទ្ធផលទេ</td></tr>";
+
+    document.getElementById("tapHint").style.display = "flex";
+    setTimeout(() => {
+      document.getElementById("tapHint").style.display = "none";
+    }, 8000);
+
+    dataSourceLabel.textContent = data.length > 0 ? "⛁ទិន្នន័យ​ពី:DatabaseNBC_OS" : "";
+  }
   </script>
 <!-- ✅ Load shared notification script -->
 <script src="../notifications/checkNotification.js"></script>
@@ -750,7 +721,6 @@ setTimeout(() => {
 <script>
   window.addEventListener("DOMContentLoaded", () => {
     checkNotification();
-    fetchLatestDisburseDate(); // ✅ Call here to display latest DISBURSE
   });
 </script>
 </body>
