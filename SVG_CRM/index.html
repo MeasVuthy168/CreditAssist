@@ -573,34 +573,34 @@ th, td {
   }
 
   function displayResults(results) {
-    const resultsTable = document.querySelector("#results tbody");
-    const tableHead = document.querySelector("#results thead");
-    const resultLabel = document.getElementById("resultLabel");
-    const dataSourceLabel = document.getElementById("dataSourceLabel");
+  const resultsTable = document.querySelector("#results tbody");
+  const tableHead = document.querySelector("#results thead");
+  const resultLabel = document.getElementById("resultLabel");
+  const dataSourceLabel = document.getElementById("dataSourceLabel");
+  const tapHint = document.getElementById("tapHint");
 
-    resultLabel.textContent = `👥 លទ្ធផលស្វែងរក៖ ${results.length}CIF`;
-    tableHead.style.display = results.length > 0 ? "table-header-group" : "none";
+  resultLabel.textContent = `👥 លទ្ធផលស្វែងរក៖ ${results.length} CIF`;
+  tableHead.style.display = results.length > 0 ? "table-header-group" : "none";
 
-    resultsTable.innerHTML = results.length > 0
-      ? results.map(item => `
-        <tr>
-          <td>${item.CIF || ''}</td>
-          <td>${item.ACCOUNT_NAME || ''}</td>
-          <td>${item.NAME_KHMER || ''}</td>
-          <td>${item.GENDER || ''}</td>
-          <td>${item.ADDRESS || ''}</td>
-          <td>${item.Branch || ''}</td>
-          <td>${item["CO Response"] || ''}</td>
-          <td>${item.Note || ''}</td>
-        </tr>`).join("")
-      : "<tr><td colspan='9'>🚫រកមិនឃើញលទ្ធផលទេ</td></tr>";
+  resultsTable.innerHTML = results.length > 0
+    ? results.map(item => `
+      <tr>
+        <td>${item.CIF || ''}</td>
+        <td>${item.ACCOUNT_NAME || ''}</td>
+        <td>${item.NAME_KHMER || ''}</td>
+        <td>${item.GENDER || ''}</td>
+        <td>${item.ADDRESS || ''}</td>
+        <td>${item.Branch || ''}</td>
+        <td>${item["CO Response"] || ''}</td>
+        <td>${item.Note || ''}</td>
+      </tr>`).join("")
+    : "<tr><td colspan='9'>🚫រកមិនឃើញលទ្ធផលទេ</td></tr>";
 
-    document.getElementById("tapHint").style.display = "flex";
-    setTimeout(() => {
-      document.getElementById("tapHint").style.display = "none";
-    }, 8000);
-
-    dataSourceLabel.textContent = results.length > 0 ? "⛁ ទិន្នន័យ​ពី:DatabaseCustomer" : "";
+  if (results.length > 0) {
+    tapHint.style.display = "flex";
+    setTimeout(() => tapHint.style.display = "none", 8000);
+  }
+  dataSourceLabel.textContent = results.length > 0 ? "⛁ ទិន្នន័យ​ពី:DatabaseCustomer" : "";
   }
 
   document.querySelector("#results tbody").addEventListener("click", function (e) {
@@ -713,35 +713,36 @@ th, td {
   });
 
   function displayNBCOSAsCustomer(data) {
-    const resultsTable = document.querySelector("#results tbody");
-    const tableHead = document.querySelector("#results thead");
-    const resultLabel = document.getElementById("resultLabel");
-    const dataSourceLabel = document.getElementById("dataSourceLabel");
+  const resultsTable = document.querySelector("#results tbody");
+  const tableHead = document.querySelector("#results thead");
+  const resultLabel = document.getElementById("resultLabel");
+  const dataSourceLabel = document.getElementById("dataSourceLabel");
+  const tapHint = document.getElementById("tapHint");
 
-    resultLabel.textContent = `លទ្ធផលស្វែងរក៖ ${data.length}`;
-    tableHead.style.display = data.length > 0 ? "table-header-group" : "none";
+  resultLabel.textContent = `លទ្ធផលស្វែងរក៖ ${data.length}`;
+  tableHead.style.display = data.length > 0 ? "table-header-group" : "none";
 
-    resultsTable.innerHTML = data.length > 0
-      ? data.map(item => `
-        <tr>
-          <td>${item.LD_CUSTOMER_ID || ''}</td>
-          <td>${item.NAME_KHMER || ''}</td>
-          <td>${item.NAME_ENG || ''}</td>
-          <td>${item.TITLE || ''}</td>
-          <td>${item.Address || ''}</td>
-          <td>${item["Branch-OK"] || ''}</td>
-          <td>${item["Credit Officer"] || ''}</td>
-          <td>${item["GovEmplyee/FactWorker"] || ''}</td>
-        </tr>`).join("")
-      : "<tr><td colspan='9'>រកមិនឃើញលទ្ធផលទេ</td></tr>";
+  resultsTable.innerHTML = data.length > 0
+    ? data.map(item => `
+      <tr>
+        <td>${item.LD_CUSTOMER_ID || ''}</td>
+        <td>${item.NAME_KHMER || ''}</td>
+        <td>${item.NAME_ENG || ''}</td>
+        <td>${item.TITLE || ''}</td>
+        <td>${item.Address || ''}</td>
+        <td>${item["Branch-OK"] || ''}</td>
+        <td>${item["Credit Officer"] || ''}</td>
+        <td>${item["GovEmplyee/FactWorker"] || ''}</td>
+      </tr>`).join("")
+    : "<tr><td colspan='9'>រកមិនឃើញលទ្ធផលទេ</td></tr>";
 
-    document.getElementById("tapHint").style.display = "flex";
-    setTimeout(() => {
-      document.getElementById("tapHint").style.display = "none";
-    }, 8000);
-
-    dataSourceLabel.textContent = data.length > 0 ? "⛁ ទិន្នន័យ​ពី:DatabaseNBC_OS" : "";
+  if (data.length > 0) {
+    tapHint.style.display = "flex";
+    setTimeout(() => tapHint.style.display = "none", 8000);
   }
+
+  dataSourceLabel.textContent = data.length > 0 ? "⛁ ទិន្នន័យ​ពី:DatabaseNBC_OS" : "";
+}
   </script>
 <!-- ✅ Load shared notification script -->
 <script src="../notifications/checkNotification.js"></script>
