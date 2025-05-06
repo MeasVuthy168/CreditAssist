@@ -705,8 +705,13 @@ th, td {
   });
 
   document.getElementById("searchBox").addEventListener("input", () => {
+  const query = document.getElementById("searchBox").value.trim();
+  
   document.getElementById("nbcosDetail").style.display = "none";
-  document.querySelector(".container").style.display = "none"; // hide main result container
+  
+  if (query === "") {
+    document.querySelector(".container").style.display = "none"; // hide only when input is empty
+  }
 
   const allRows = document.querySelectorAll("#results tbody tr");
   allRows.forEach(r => {
