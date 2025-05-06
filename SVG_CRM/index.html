@@ -721,6 +721,20 @@ setTimeout(() => {
       
   dataSourceLabel.textContent = data.length > 0 ? "⛁ទិន្នន័យ​ពី:DatabaseNBC_OS" : "";
 } 
+      function fetchLatestDisburseDate() {
+  fetch("https://secure-backend-tzj9.onrender.com/api/nbcos/latest-disburse", {
+    headers: { Authorization: `Bearer ${token}` }
+  })
+    .then(res => res.json())
+    .then(result => {
+      const latestDate = result.latestDisburse ? new Date(result.latestDisburse) : null;
+      document.getElementById("latestGlobalDisburse").textContent =
+        latestDate ? `⏰ ទិន្នន័យ NBC_OS ចុងក្រោយគេ៖ ${formatDate(latestDate.toISOString())}` : '';
+    })
+    .catch(err => {
+      console.error("Failed to fetch global disburse:", err);
+    });
+}
     
   </script>
 <!-- ✅ Load shared notification script -->
