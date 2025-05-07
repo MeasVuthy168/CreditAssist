@@ -1125,10 +1125,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    const user = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
-const selectedNBCOS = JSON.parse(sessionStorage.getItem("selectedNBCOS") || "{}");
-
-const payload = {
+  const payload = {
   ...selectedNBCOS, // includes LD_CUSTOMER_ID, NAME_KHMER, etc.
   creditRound: document.querySelector('#creditSection1 select:nth-of-type(1)').value,
   checkDate: document.querySelector('#creditSection1 input[type="date"]').value,
