@@ -10,7 +10,7 @@ document.getElementById("clearBtn").addEventListener("click", () => {
 document.getElementById("saveBtn").addEventListener("click", () => {
   const data = {
     // Section 1
-    round: document.querySelector('#creditSection1 select:nth-of-type(1)').value,
+    cycle: document.querySelector('#creditSection1 select:nth-of-type(1)').value,
     checkDate: document.querySelector('#creditSection1 input[type="date"]').value,
     repaymentStatus: document.querySelector('#creditSection1 select:nth-of-type(2)').value,
     repaymentNote: document.querySelector('#creditSection1 input[type="text"]:nth-of-type(1)').value,
