@@ -428,21 +428,24 @@ th, td {
   font-weight: bold;
 }
 
-.section1-footer {
-  text-align: right;
-  margin-top: 16px;
-}
-
+/* === Floating Button Inside Section 1 === */
 #continueToSection2Btn {
+  position: absolute;
+  bottom: 16px;
+  right: 24px;
   background-color: #0d2d5c;
   color: white;
   border: none;
-  padding: 10px 20px;
+  padding: 8px 16px;
   border-radius: 6px;
   font-size: 13px;
   cursor: pointer;
-}   
-
+  z-index: 10;
+}
+#creditSection1 {
+  position: relative;
+}
+    
     
 /* === Section 2: Physical Inspection Styles === */
 #inspectionSection2 {
@@ -604,10 +607,8 @@ th, td {
 
   <label>មូលហេតុ:</label>
   <input type="text" />
-</div>
-  <!-- ✅ Continue to Section 2 Button -->
-<div class="section1-footer">
-  <button id="continueToSection2Btn">បន្តទៅផ្នែកទី២</button>
+  <!-- ✅ Floating Button Bottom Right -->
+<button id="continueToSection2Btn">បន្តទៅផ្នែកទី២</button>
 </div>
 
 
