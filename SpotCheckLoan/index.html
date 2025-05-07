@@ -427,8 +427,23 @@ th, td {
   margin-left: 4px;
   font-weight: bold;
 }
-    
 
+.section1-footer {
+  text-align: right;
+  margin-top: 16px;
+}
+
+#continueToSection2Btn {
+  background-color: #0d2d5c;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+}   
+
+    
 /* === Section 2: Physical Inspection Styles === */
 #inspectionSection2 {
   margin: 20px auto 80px;
@@ -590,6 +605,10 @@ th, td {
   <label>មូលហេតុ:</label>
   <input type="text" />
 </div>
+  <!-- ✅ Continue to Section 2 Button -->
+<div class="section1-footer">
+  <button id="continueToSection2Btn">បន្តទៅផ្នែកទី២</button>
+</div>
 
 
 <!-- ✅ Section II - Physical Inspection -->
@@ -653,6 +672,16 @@ th, td {
     const section = document.getElementById("creditSection1");
     section.style.display = section.style.display === "none" ? "block" : "none";
     window.scrollTo({ top: section.offsetTop - 60, behavior: "smooth" });
+  });
+</script>
+<script>
+  document.getElementById("continueToSection2Btn").addEventListener("click", () => {
+    const section2 = document.getElementById("inspectionSection2");
+    section2.style.display = "block";
+    window.scrollTo({
+      top: section2.offsetTop - 60,
+      behavior: "smooth"
+    });
   });
 </script>
   
