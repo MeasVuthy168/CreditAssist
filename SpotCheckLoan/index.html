@@ -1129,13 +1129,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.getElementById("loadingOverlay").style.display = "flex";
 
-    fetch("https://secure-backend-tzj9.onrender.com/api/spotcheck/save", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${sessionStorage.getItem("token")}`
-      },
-      body: JSON.stringify(payload)
+    fetch("https://secure-backend-tzj9.onrender.com/api/spotcheck", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${sessionStorage.getItem("token")}`
+  },
+  body: JSON.stringify(payload)
     })
     .then(res => res.json())
     .then(data => {
