@@ -1060,17 +1060,37 @@ th, td {
   dataSourceLabel.textContent = data.length > 0 ? "⛁ ទិន្នន័យ​ពី:DatabaseNBC_OS" : "";
 }
   </script>
+  
+<!-- ✅ Load shared notification script -->
+<script src="../notifications/checkNotification.js"></script>
 
+<!-- ✅ Initialize after DOM ready -->
+<script>
+    window.addEventListener("DOMContentLoaded", () => {
+  checkNotification();
+  document.getElementById("closeDetailBtn").addEventListener("click", () => {
+    document.getElementById("nbcosDetail").style.display = "none";
 
-<!-- ✅ Final Save Fix HTML for Spot Check Loan -->
-<!-- Removed duplicate save button script -->
-<!-- KEEP ALL YOUR EXISTING CODE UNCHANGED ABOVE THIS COMMENT --><!-- ✅ Load Save, Clear button with validation --><script>
-const saveBtn = document.getElementById("saveBtn");
-const clearBtn = document.getElementById("clearBtn");
+    const allRows = document.querySelectorAll("#results tbody tr");
+    allRows.forEach(row => {
+      row.style.display = "";
+      row.classList.remove("highlighted-row");
+    });
+   });
+  });
+</script>
 
-if (!saveBtn || !clearBtn) {
-  console.error("❌ Save or Clear button not found.");
-} else {
+  <!-- ✅ FIXED Save + Clear logic — MOVE this to the END -->
+<script>
+window.addEventListener("DOMContentLoaded", () => {
+  const saveBtn = document.getElementById("saveBtn");
+  const clearBtn = document.getElementById("clearBtn");
+
+  if (!saveBtn || !clearBtn) {
+    console.error("❌ Save or Clear button not found.");
+    return;
+  }
+
   saveBtn.addEventListener("click", () => {
     const user = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
     const selectedNBCOS = JSON.parse(sessionStorage.getItem("selectedNBCOS") || "{}");
@@ -1148,26 +1168,7 @@ if (!saveBtn || !clearBtn) {
     document.querySelectorAll('#creditSection1 select, #inspectionSection2 select').forEach(s => s.selectedIndex = 0);
     alert("🧹 All fields cleared.");
   });
-}
-</script>
-  
-<!-- ✅ Load shared notification script -->
-<script src="../notifications/checkNotification.js"></script>
-
-<!-- ✅ Initialize after DOM ready -->
-<script>
-    window.addEventListener("DOMContentLoaded", () => {
-  checkNotification();
-  document.getElementById("closeDetailBtn").addEventListener("click", () => {
-    document.getElementById("nbcosDetail").style.display = "none";
-
-    const allRows = document.querySelectorAll("#results tbody tr");
-    allRows.forEach(row => {
-      row.style.display = "";
-      row.classList.remove("highlighted-row");
-    });
-   });
-  });
+});
 </script>
 </body>
 </html>
