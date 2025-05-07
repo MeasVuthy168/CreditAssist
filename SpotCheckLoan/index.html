@@ -492,6 +492,38 @@ th, td {
   margin-left: 4px;
   font-weight: bold;
 }
+
+/* === Save & Clear Buttons for Section 2 === */
+#inspectionSection2 .action-buttons {
+  position: relative;
+  text-align: right;
+  margin-top: 20px;
+}
+
+#clearBtn {
+  margin-right: 12px;
+  padding: 8px 16px;
+  border-radius: 6px;
+  background-color: #ccc;
+  border: none;
+  color: #002c5f;
+  font-size: 13px;
+  font-family: 'Krasar', sans-serif;
+  cursor: pointer;
+}
+
+#saveBtn {
+  padding: 8px 16px;
+  border-radius: 6px;
+  background-color: #0d2d5c;
+  border: none;
+  color: white;
+  font-size: 13px;
+  font-family: 'Krasar', sans-serif;
+  cursor: pointer;
+}
+
+    
     
   </style>
 </head>
@@ -715,6 +747,12 @@ th, td {
     <option>ឥណទានមិនមានសញ្ញាណហានិភ័យណាមួយកើតឡើងទេ ៕</option>
     <option>យោងតាមការត្រួតពិនិត្យឯកសារឥណទាន និងចុះត្រួតពិនិត្យដល់លំនៅដ្ឋាន បង្ហាញថាឥណទានមិនមានសញ្ញាណហានិភ័យណាមួយកើតឡើងទេ ៕</option>
   </select>
+
+  <!-- === Action Buttons: Save / Update and Clear === -->
+<div class="action-buttons">
+  <button id="clearBtn">Clear</button>
+  <button id="saveBtn">Save / Update</button>
+</div>
 </div>
   
 <span id="notif-badge" class="badge" style="display: none;"></span>
@@ -1023,6 +1061,8 @@ th, td {
   dataSourceLabel.textContent = data.length > 0 ? "⛁ ទិន្នន័យ​ពី:DatabaseNBC_OS" : "";
 }
   </script>
+
+<script src="./saveOrClear.js"></script>
 <!-- ✅ Load shared notification script -->
 <script src="../notifications/checkNotification.js"></script>
 
