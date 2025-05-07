@@ -487,6 +487,11 @@ th, td {
   font-family: 'Krasar', sans-serif;
   box-sizing: border-box;
 }
+#inspectionSection2 span.required {
+  color: red;
+  margin-left: 4px;
+  font-weight: bold;
+}
     
   </style>
 </head>
@@ -643,32 +648,36 @@ th, td {
   <label>បញ្ជាក់បន្ថែម</label>
   <input type="text" placeholder="..." />
 
-  <!-- ខ - ការប្រើប្រាស់ប្រាក់កម្ចី -->
-  <label>ខ - ការប្រើប្រាស់ប្រាក់កម្ចី</label>
+  <!-- ខ - ព័ត៌មានទ្រព្យដាក់ធានាឥណទាន -->
+  <label>ខ - ព័ត៌មានទ្រព្យដាក់ធានាឥណទាន</label>
 
-  <label>ប្រភេទប្រើប្រាស់ <span class="required">*</span></label>
+  <label>ប្រភេទទ្រព្យ <span class="required">*</span></label>
   <select>
     <option value="">-- ជ្រើសរើស --</option>
-    <option>ស្របគោលបំណង</option>
-    <option>មិនស្របគោលបំណង</option>
+    <option>Payroll</option>
+    <option>Clean</option>
+    <option>ដីភូមិ និងផ្ទះ</option>
+    <option>ដីភូមិ ផ្ទះ និងដីស្រែ</option>
+    <option>ដីភូមិ</option>
+    <option>ដីស្រែ</option>
+    <option>ដីភូមិ និងដីស្រែ</option>
   </select>
 
-  <label>ប្រភពប្រាក់ <span class="required">*</span></label>
+  <label>ទ្រព្យធានា<span class="required">*</span></label>
   <select>
     <option value="">-- ជ្រើសរើស --</option>
-    <option>ពីធនាគារ</option>
-    <option>ពីរោងចក្រ/អាជីវកម្ម</option>
-    <option>ផ្សេងៗ</option>
+    <option>រក្សាភាពដើម</option>
+    <option>ប្រែប្រួល</option>
   </select>
 
-  <label>លទ្ធផល <span class="required">*</span></label>
+  <label>តម្លៃទ្រព្យ<span class="required">*</span></label>
   <select>
     <option value="">-- ជ្រើសរើស --</option>
-    <option>ជោគជ័យ</option>
-    <option>មិនជោគជ័យ</option>
+    <option>អាចធានាឥណទានបាន</option>
+    <option>មិនអាចធានាឥណទានបាន</option>
   </select>
 
-  <label>បញ្ជាក់:</label>
+  <label>បញ្ជាក់បន្ថែម</label>
   <input type="text" placeholder="..." />
 </div>
   
