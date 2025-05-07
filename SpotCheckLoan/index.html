@@ -1169,19 +1169,5 @@ if (!saveBtn || !clearBtn) {
    });
   });
 </script>
-  <!-- ✅ Move this to the end of body -->
-<script>
-  window.addEventListener("DOMContentLoaded", () => {
-    const saveBtn = document.getElementById("saveBtn");
-    if (!saveBtn) {
-      alert("❌ Save button not found");
-      return;
-    }
-
-    saveBtn.addEventListener("click", () => {
-      alert("✅ Save button clicked!");
-    });
-  });
-</script>
 </body>
 </html>
