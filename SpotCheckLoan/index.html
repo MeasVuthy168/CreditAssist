@@ -1063,14 +1063,14 @@ th, td {
   </script>
 
 
-  <!-- ✅ Load Save, Clear button-->  
- <script>
+ <!-- ✅ Load Save, Clear button with validation -->
+<script>
 document.addEventListener("DOMContentLoaded", () => {
   const saveBtn = document.getElementById("saveBtn");
   const clearBtn = document.getElementById("clearBtn");
 
-  if (!saveBtn) {
-    console.error("❌ Save button not found on page.");
+  if (!saveBtn || !clearBtn) {
+    console.error("❌ Save or Clear button not found on page.");
     return;
   }
 
@@ -1078,6 +1078,11 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log("✅ Save clicked");
     const user = JSON.parse(sessionStorage.getItem("loggedInUser")) || {};
     const selectedNBCOS = JSON.parse(sessionStorage.getItem("selectedNBCOS")) || {};
+
+    if (!selectedNBCOS || !selectedNBCOS.LD_CUSTOMER_ID) {
+      alert("❌ Please select a customer row before starting the SpotCheck.");
+      return;
+    }
 
     const payload = {
       LD_CUSTOMER_ID: selectedNBCOS.LD_CUSTOMER_ID || '',
@@ -1119,6 +1124,9 @@ document.addEventListener("DOMContentLoaded", () => {
       savedBy: user.fullname || user.username || 'Unknown'
     };
 
+    // Show loading spinner
+    document.getElementById("loadingOverlay").style.display = "flex";
+
     fetch("https://secure-backend-tzj9.onrender.com/api/spotcheck/save", {
       method: "POST",
       headers: {
@@ -1134,6 +1142,9 @@ document.addEventListener("DOMContentLoaded", () => {
     .catch(err => {
       console.error("❌ Save error:", err);
       alert("❌ Save failed. Check console.");
+    })
+    .finally(() => {
+      document.getElementById("loadingOverlay").style.display = "none";
     });
   });
 
@@ -1144,6 +1155,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 </script>
+
   
 <!-- ✅ Load shared notification script -->
 <script src="../notifications/checkNotification.js"></script>
