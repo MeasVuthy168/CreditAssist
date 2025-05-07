@@ -372,7 +372,7 @@ th, td {
   75% { transform: rotate(10deg); }
   100% { transform: rotate(0); }
 }
-  .export-excel-btn {
+  .createSPbtn {
   position: absolute;
   bottom: 12px;
   right: 16px;
@@ -386,7 +386,47 @@ th, td {
   z-index: 10;
 }
     
-    
+    /* === Credit Section Styles === */
+#creditSection1 {
+  margin: 20px auto 80px;
+  background: #fff;
+  padding: 20px 24px;
+  border-radius: 12px;
+  max-width: 700px;
+  display: none;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  font-family: 'Krasar', sans-serif;
+}
+
+#creditSection1 h3 {
+  color: #002c5f;
+  margin-bottom: 16px;
+}
+
+#creditSection1 label {
+  color: #002c5f;
+  font-size: 14px;
+  display: block;
+  margin-bottom: 4px;
+}
+
+#creditSection1 input[type="text"],
+#creditSection1 input[type="date"],
+#creditSection1 select {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-family: 'Krasar', sans-serif;
+  box-sizing: border-box;
+}
+
+#creditSection1 span.required {
+  color: red;
+  margin-left: 4px;
+  font-weight: bold;
+}
     
     
   </style>
@@ -461,24 +501,67 @@ th, td {
     <button id="closeDetailBtn">×</button>
     <h3>💰 ព័ត៌មានឥណទាន</h3>
     <div id="nbcosContent">សូមជ្រើសរើសអតិថិជនពីតារាងខាងលើ</div>
-    <!-- Export Excel Button -->
-    <button id="exportExcelBtn" class="export-excel-btn">Export Excel</button>
+    <!-- createSPbtn Button -->
+    <button id="createSpotCheckBtn" class="createSPbtn">Create SpotCheck</button>
   </div>
+
+  <!-- ✅ Credit Info Form Section -->
+<div id="creditSection1">
+  <h3>I. Credit Information</h3>
+
+  <!-- ក - ព័ត៌មានគណនី -->
+  <label>ក - ព័ត៌មានគណនី</label>
+  <input type="text" placeholder="..." />
+
+  <label>ប្រភេទឥណទាន <span class="required">*</span></label>
+  <select>
+    <option value="">-- ជ្រើសរើស --</option>
+    <option>អចលនទ្រព្យ</option>
+    <option>រថយន្ត</option>
+    <option>ផ្សេងៗ</option>
+  </select>
+
+  <label>ថ្ងៃប្រគល់ឥណទាន <span class="required">*</span></label>
+  <input type="date" />
+
+  <!-- ខ - ប្រភេទសន្តិសុខ -->
+  <label>ខ - ប្រភេទសន្តិសុខ</label>
+  <label>ប្រភេទ <span class="required">*</span></label>
+  <select>
+    <option value="">-- ជ្រើសរើស --</option>
+    <option>ដី</option>
+    <option>ផ្ទះ</option>
+    <option>ផ្សេងៗ</option>
+  </select>
+
+  <label>បញ្ជាក់:</label>
+  <input type="text" />
+
+  <!-- គ - អនសញ្ញាសន្ធិសញ្ញា -->
+  <label>គ - អនសញ្ញាសន្ធិសញ្ញា</label>
+  <label>ប្រភេទ</label>
+  <select>
+    <option value="">-- ជ្រើសរើស --</option>
+    <option>មាន</option>
+    <option>គ្មាន</option>
+  </select>
+
+  <label>បញ្ជាក់:</label>
+  <input type="text" />
+</div>
+
+  
 <span id="notif-badge" class="badge" style="display: none;"></span>
   
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
-  document.getElementById("exportExcelBtn").addEventListener("click", () => {
-    const table = document.querySelector(".nbcos-table");
-    if (!table) {
-      alert("No NBCOS data to export.");
-      return;
-    }
-
-    const wb = XLSX.utils.table_to_book(table, { sheet: "NBCOS Detail" });
-    XLSX.writeFile(wb, "NBCOS_Detail.xlsx");
+  document.getElementById("createSpotCheckBtn").addEventListener("click", () => {
+    const section = document.getElementById("creditSection1");
+    section.style.display = section.style.display === "none" ? "block" : "none";
+    window.scrollTo({ top: section.offsetTop - 60, behavior: "smooth" });
   });
 </script>
+  
 <script>
   function formatDate(isoString) {
     if (!isoString) return '';
