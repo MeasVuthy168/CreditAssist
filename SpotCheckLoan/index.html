@@ -428,6 +428,41 @@ th, td {
   font-weight: bold;
 }
     
+
+/* === Section 2: Physical Inspection Styles === */
+#inspectionSection2 {
+  margin: 20px auto 80px;
+  background: #fff;
+  padding: 20px 24px;
+  border-radius: 12px;
+  max-width: 700px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  font-family: 'Krasar', sans-serif;
+  display: none; /* hidden by default */
+}
+
+#inspectionSection2 h3 {
+  color: #002c5f;
+  margin-bottom: 16px;
+}
+
+#inspectionSection2 label {
+  color: #002c5f;
+  font-size: 14px;
+  display: block;
+  margin-bottom: 4px;
+}
+
+#inspectionSection2 input[type="text"],
+#inspectionSection2 select {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-family: 'Krasar', sans-serif;
+  box-sizing: border-box;
+}
     
   </style>
 </head>
@@ -556,6 +591,59 @@ th, td {
   <input type="text" />
 </div>
 
+
+<!-- ✅ Section II - Physical Inspection -->
+<div id="inspectionSection2">
+  <h3>II. Physical Inspection on site visit</h3>
+
+  <!-- ក - ព័ត៌មានផ្ទាល់ -->
+  <label>ក - ព័ត៌មានផ្ទាល់</label>
+
+  <label>មូលប្បទានប្រាក់ <span class="required">*</span></label>
+  <input type="text" placeholder="..." />
+
+  <label>មូលប្បទានធានា <span class="required">*</span></label>
+  <input type="text" placeholder="..." />
+
+  <label>ស្ថានភាពទីតាំង</label>
+  <select>
+    <option value="">-- ជ្រើសរើស --</option>
+    <option>ល្អ</option>
+    <option>មធ្យម</option>
+    <option>អន់</option>
+  </select>
+
+  <label>បញ្ជាក់:</label>
+  <input type="text" placeholder="..." />
+
+  <!-- ខ - ការប្រើប្រាស់ប្រាក់កម្ចី -->
+  <label>ខ - ការប្រើប្រាស់ប្រាក់កម្ចី</label>
+
+  <label>ប្រភេទប្រើប្រាស់ <span class="required">*</span></label>
+  <select>
+    <option value="">-- ជ្រើសរើស --</option>
+    <option>ស្របគោលបំណង</option>
+    <option>មិនស្របគោលបំណង</option>
+  </select>
+
+  <label>ប្រភពប្រាក់ <span class="required">*</span></label>
+  <select>
+    <option value="">-- ជ្រើសរើស --</option>
+    <option>ពីធនាគារ</option>
+    <option>ពីរោងចក្រ/អាជីវកម្ម</option>
+    <option>ផ្សេងៗ</option>
+  </select>
+
+  <label>លទ្ធផល <span class="required">*</span></label>
+  <select>
+    <option value="">-- ជ្រើសរើស --</option>
+    <option>ជោគជ័យ</option>
+    <option>មិនជោគជ័យ</option>
+  </select>
+
+  <label>បញ្ជាក់:</label>
+  <input type="text" placeholder="..." />
+</div>
   
 <span id="notif-badge" class="badge" style="display: none;"></span>
   
