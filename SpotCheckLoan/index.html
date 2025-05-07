@@ -1072,7 +1072,8 @@ if (!saveBtn || !clearBtn) {
   console.error("❌ Save or Clear button not found.");
 } else {
   saveBtn.addEventListener("click", () => {
-    console.log("✅ Save clicked");
+  alert("✅ Save button clicked!");
+    });
     const user = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
     const selectedNBCOS = JSON.parse(sessionStorage.getItem("selectedNBCOS") || "{}");
 
