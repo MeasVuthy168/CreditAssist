@@ -769,8 +769,17 @@ th, td {
 
 <!-- ✅ Initialize after DOM ready -->
 <script>
-  window.addEventListener("DOMContentLoaded", () => {
-    checkNotification();
+    window.addEventListener("DOMContentLoaded", () => {
+  checkNotification();
+  document.getElementById("closeDetailBtn").addEventListener("click", () => {
+    document.getElementById("nbcosDetail").style.display = "none";
+
+    const allRows = document.querySelectorAll("#results tbody tr");
+    allRows.forEach(row => {
+      row.style.display = "";
+      row.classList.remove("highlighted-row");
+    });
+   });
   });
 </script>
 </body>
