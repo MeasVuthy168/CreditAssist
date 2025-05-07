@@ -748,11 +748,10 @@ th, td {
     <option>យោងតាមការត្រួតពិនិត្យឯកសារឥណទាន និងចុះត្រួតពិនិត្យដល់លំនៅដ្ឋាន បង្ហាញថាឥណទានមិនមានសញ្ញាណហានិភ័យណាមួយកើតឡើងទេ ៕</option>
   </select>
 <!-- === Action Buttons: Save / Update and Clear === -->
-<div class="action-buttons">
-  <button id="clearBtn">Clear</button>
-  <button id="saveBtn">Save</button>
-</div>
-  
+  <div class="action-buttons">
+    <button id="clearBtn">Clear</button>
+    <button id="saveBtn">Save</button>
+  </div>
 </div>
   
 <span id="notif-badge" class="badge" style="display: none;"></span>
@@ -1063,8 +1062,9 @@ th, td {
   </script>
 
 
- <!-- ✅ Load Save, Clear button with validation -->
-<script>
+<!-- ✅ Final Save Fix HTML for Spot Check Loan -->
+<!-- Removed duplicate save button script -->
+<!-- KEEP ALL YOUR EXISTING CODE UNCHANGED ABOVE THIS COMMENT --><!-- ✅ Load Save, Clear button with validation --><script>
 const saveBtn = document.getElementById("saveBtn");
 const clearBtn = document.getElementById("clearBtn");
 
@@ -1072,8 +1072,6 @@ if (!saveBtn || !clearBtn) {
   console.error("❌ Save or Clear button not found.");
 } else {
   saveBtn.addEventListener("click", () => {
-  alert("✅ Save button clicked!");
-    });
     const user = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
     const selectedNBCOS = JSON.parse(sessionStorage.getItem("selectedNBCOS") || "{}");
 
@@ -1152,7 +1150,6 @@ if (!saveBtn || !clearBtn) {
   });
 }
 </script>
-
   
 <!-- ✅ Load shared notification script -->
 <script src="../notifications/checkNotification.js"></script>
