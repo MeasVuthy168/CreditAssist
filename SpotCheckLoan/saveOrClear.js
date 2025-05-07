@@ -6,10 +6,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const saveBtn = document.getElementById("saveBtn");
   const clearBtn = document.getElementById("clearBtn");
 
-  if (!saveBtn || !clearBtn) {
-    console.error("❌ Save or Clear button not found in DOM.");
-    return;
-  }
+  if (!saveBtn) {
+  console.error("❌ Save button not found. Check that #inspectionSection2 is visible and loaded before binding.");
+} else {
+  saveBtn.addEventListener("click", () => {
+    // ... Save logic ...
+  });
+}
 
   // Handle Save / Update Spot Check Entry
   saveBtn.addEventListener("click", () => {
