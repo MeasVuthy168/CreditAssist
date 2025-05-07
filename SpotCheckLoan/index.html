@@ -929,6 +929,9 @@ th, td {
           content.innerHTML = "គ្មានទិន្នន័យឥណទានសម្រាប់អតិថិជននេះទេ។";
           return;
         }
+        // Save selectedNBCOS to sessionStorage
+        sessionStorage.setItem("selectedNBCOS", JSON.stringify(data[0]));
+        console.log("✅ Selected NBCOS saved to sessionStorage:", data[0]);
 
         const headers = [
           "LD_CUSTOMER_ID", "CONTRACT_LD", "NAME_KHMER", "LOAN_SIZE",
