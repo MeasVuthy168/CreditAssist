@@ -1125,8 +1125,11 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-  const payload = {
-  ...selectedNBCOS, // includes LD_CUSTOMER_ID, NAME_KHMER, etc.
+
+    
+
+const payload = {
+  ...selectedNBCOS,
   creditRound: document.querySelector('#creditSection1 select:nth-of-type(1)').value,
   checkDate: document.querySelector('#creditSection1 input[type="date"]').value,
   paymentStatus: document.querySelector('#creditSection1 select:nth-of-type(2)').value,
@@ -1150,9 +1153,13 @@ document.addEventListener("DOMContentLoaded", () => {
   sourceNote: document.querySelector('#inspectionSection2 input[placeholder="..."]:nth-of-type(6)').value,
   conclusion: document.querySelector('#inspectionSection2 select:nth-of-type(7)').value,
 
-  createdBy: user.username || '',
+  createdBy: user.username,
   createdAt: new Date().toISOString()
 };
+
+
+    
+
 
     document.getElementById("loadingOverlay").style.display = "flex";
 
