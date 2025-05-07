@@ -747,14 +747,14 @@ th, td {
     <option>ឥណទានមិនមានសញ្ញាណហានិភ័យណាមួយកើតឡើងទេ ៕</option>
     <option>យោងតាមការត្រួតពិនិត្យឯកសារឥណទាន និងចុះត្រួតពិនិត្យដល់លំនៅដ្ឋាន បង្ហាញថាឥណទានមិនមានសញ្ញាណហានិភ័យណាមួយកើតឡើងទេ ៕</option>
   </select>
-
-  
-</div>
-  <!-- === Action Buttons: Save / Update and Clear === -->
+<!-- === Action Buttons: Save / Update and Clear === -->
 <div class="action-buttons">
   <button id="clearBtn">Clear</button>
   <button id="saveBtn">Save</button>
 </div>
+  
+</div>
+  
 <span id="notif-badge" class="badge" style="display: none;"></span>
   
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -1065,22 +1065,19 @@ th, td {
 
  <!-- ✅ Load Save, Clear button with validation -->
 <script>
-document.addEventListener("DOMContentLoaded", () => {
-  const saveBtn = document.getElementById("saveBtn");
-  const clearBtn = document.getElementById("clearBtn");
+const saveBtn = document.getElementById("saveBtn");
+const clearBtn = document.getElementById("clearBtn");
 
-  if (!saveBtn || !clearBtn) {
-    console.error("❌ Save or Clear button not found on page.");
-    return;
-  }
-
+if (!saveBtn || !clearBtn) {
+  console.error("❌ Save or Clear button not found.");
+} else {
   saveBtn.addEventListener("click", () => {
     console.log("✅ Save clicked");
-    const user = JSON.parse(sessionStorage.getItem("loggedInUser")) || {};
-    const selectedNBCOS = JSON.parse(sessionStorage.getItem("selectedNBCOS")) || {};
+    const user = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
+    const selectedNBCOS = JSON.parse(sessionStorage.getItem("selectedNBCOS") || "{}");
 
     if (!selectedNBCOS || !selectedNBCOS.LD_CUSTOMER_ID) {
-      alert("❌ Please select a customer row before starting the SpotCheck.");
+      alert("❌ Please select a customer before saving.");
       return;
     }
 
@@ -1124,7 +1121,6 @@ document.addEventListener("DOMContentLoaded", () => {
       savedBy: user.fullname || user.username || 'Unknown'
     };
 
-    // Show loading spinner
     document.getElementById("loadingOverlay").style.display = "flex";
 
     fetch("https://secure-backend-tzj9.onrender.com/api/spotcheck/save", {
@@ -1141,7 +1137,7 @@ document.addEventListener("DOMContentLoaded", () => {
     })
     .catch(err => {
       console.error("❌ Save error:", err);
-      alert("❌ Save failed. Check console.");
+      alert("❌ Save failed. See console.");
     })
     .finally(() => {
       document.getElementById("loadingOverlay").style.display = "none";
@@ -1151,9 +1147,9 @@ document.addEventListener("DOMContentLoaded", () => {
   clearBtn.addEventListener("click", () => {
     document.querySelectorAll('#creditSection1 input, #inspectionSection2 input').forEach(i => i.value = '');
     document.querySelectorAll('#creditSection1 select, #inspectionSection2 select').forEach(s => s.selectedIndex = 0);
-    alert("🧹 Cleared all fields.");
+    alert("🧹 All fields cleared.");
   });
-});
+}
 </script>
 
   
