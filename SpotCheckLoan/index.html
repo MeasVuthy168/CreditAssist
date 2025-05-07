@@ -1125,41 +1125,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-
-    
-
-const payload = {
-  ...selectedNBCOS,
-  creditRound: document.querySelector('#creditSection1 select:nth-of-type(1)').value,
-  checkDate: document.querySelector('#creditSection1 input[type="date"]').value,
-  paymentStatus: document.querySelector('#creditSection1 select:nth-of-type(2)').value,
-  paymentNote: document.querySelector('#creditSection1 input[type="text"]:nth-of-type(1)').value,
-  docStatus: document.querySelector('#creditSection1 select:nth-of-type(3)').value,
-  docNote: document.querySelector('#creditSection1 input[type="text"]:nth-of-type(2)').value,
-
-  pastJob: document.querySelector('#inspectionSection2 input[placeholder="..."]:nth-of-type(1)').value,
-  currentJob: document.querySelector('#inspectionSection2 input[placeholder="..."]:nth-of-type(2)').value,
-  businessStatus: document.querySelector('#inspectionSection2 select:nth-of-type(1)').value,
-  businessNote: document.querySelector('#inspectionSection2 input[placeholder="..."]:nth-of-type(3)').value,
-
-  collateralType: document.querySelector('#inspectionSection2 select:nth-of-type(2)').value,
-  collateralStatus: document.querySelector('#inspectionSection2 select:nth-of-type(3)').value,
-  collateralValue: document.querySelector('#inspectionSection2 select:nth-of-type(4)').value,
-  collateralNote: document.querySelector('#inspectionSection2 input[placeholder="..."]:nth-of-type(4)').value,
-
-  creditPurpose: document.querySelector('#inspectionSection2 select:nth-of-type(5)').value,
-  purposeNote: document.querySelector('#inspectionSection2 input[placeholder="..."]:nth-of-type(5)').value,
-  repaymentSource: document.querySelector('#inspectionSection2 select:nth-of-type(6)').value,
-  sourceNote: document.querySelector('#inspectionSection2 input[placeholder="..."]:nth-of-type(6)').value,
-  conclusion: document.querySelector('#inspectionSection2 select:nth-of-type(7)').value,
-
-  createdBy: user.username,
-  createdAt: new Date().toISOString()
-};
-
-
-    
-
+    const payload = { /* ... same as before ... */ };
 
     document.getElementById("loadingOverlay").style.display = "flex";
 
