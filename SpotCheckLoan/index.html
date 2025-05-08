@@ -1177,7 +1177,7 @@ document.addEventListener("DOMContentLoaded", () => {
       sourceNote: document.getElementById("sourceNote").value,
       conclusion: document.getElementById("conclusion").value,
 
-      savedBy: user.fullname || user.username || "Unknown"
+      savedBy: user.username || "Unknown"
     };
 
     document.getElementById("loadingOverlay").style.display = "flex";
