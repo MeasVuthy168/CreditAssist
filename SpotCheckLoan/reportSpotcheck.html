@@ -147,21 +147,29 @@
   <div class="header-bar">
     <button class="back-icon" onclick="window.location.href='./index.html'">←</button>
     <div class="header-title">បញ្ជីត្រួតពិនិត្យឥណទាន</div>
-  </div>  <div class="filter-container">
+  </div>
+
+  <div class="filter-container">
     <input type="date" id="fromDate" />
     <input type="date" id="toDate" />
     <div class="export-buttons">
       <button onclick="exportExcel()">Export Excel</button>
       <button onclick="window.print()">Print PDF</button>
     </div>
-  </div>  <div class="search-box">
+  </div>
+
+  <div class="search-box">
     <input type="text" id="searchInput" placeholder="ស្វែងរកតាមឈ្មោះ ឬ CIF...">
-  </div>  <div class="report-table-wrapper">
+  </div>
+
+  <div class="report-table-wrapper">
     <table class="report-table" id="reportTable">
       <thead><tr id="tableHead"></tr></thead>
       <tbody id="tableBody"></tbody>
     </table>
-  </div>  <div class="bottom-bar">
+  </div>
+
+  <div class="bottom-bar">
     <button class="bottom-btn" onclick="location.href='../index.html'">
       <img src="../icons/Home.png" width="24" height="24" /><div>Home</div>
     </button>
@@ -175,98 +183,98 @@
       </div>
       <div>Notification</div>
     </button>
-  </div>  
+  </div>
 
-<script>
-  const token = sessionStorage.getItem("token");
-  const loggedUser = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
+  <script>
+    const token = sessionStorage.getItem("token");
+    const loggedUser = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
 
-  if (!token || !loggedUser.username) {
-    alert("Session expired or unauthorized. Please log in again.");
-    window.location.href = "../login.html";
-  }
+    if (!token || !loggedUser.username) {
+      alert("Session expired or unauthorized. Please log in again.");
+      window.location.href = "../login.html";
+    }
 
-  let currentData = [];
+    let currentData = [];
 
-  function fetchData() {
-    const from = document.getElementById("fromDate").value;
-    const to = document.getElementById("toDate").value;
+    function fetchData() {
+      const from = document.getElementById("fromDate").value;
+      const to = document.getElementById("toDate").value;
 
-    let url = "https://secure-backend-tzj9.onrender.com/api/spotcheck?";
-    if (from) url += `fromDate=${from}&`;
-    if (to) url += `toDate=${to}&`;
-    url += `username=${loggedUser.username}`;
+      let url = "https://secure-backend-tzj9.onrender.com/api/spotcheck?";
+      if (from) url += `fromDate=${from}&`;
+      if (to) url += `toDate=${to}&`;
+      url += `username=${loggedUser.username}`;
 
-    fetch(url, {
-      headers: { Authorization: `Bearer ${token}` }
-    })
-      .then(res => {
-        if (!res.ok) throw new Error("Failed with status " + res.status);
-        return res.json();
+      fetch(url, {
+        headers: { Authorization: `Bearer ${token}` }
       })
-      .then(data => {
-        currentData = data || [];
+        .then(res => {
+          if (!res.ok) throw new Error("Failed with status " + res.status);
+          return res.json();
+        })
+        .then(data => {
+          currentData = Array.isArray(data) ? data : [];
+          renderTable(currentData);
+        })
+        .catch(err => {
+          console.error("❌ Failed to load report:", err);
+          alert("បរាជ័យក្នុងការទាញយកទិន្នន័យ");
+        });
+    }
+
+    function renderTable(data) {
+      const thead = document.getElementById("tableHead");
+      const tbody = document.getElementById("tableBody");
+      tbody.innerHTML = "";
+      thead.innerHTML = "";
+
+      if (!Array.isArray(data) || data.length === 0 || Object.keys(data[0]).length === 0) {
+        thead.innerHTML = "<th>Message</th>";
+        tbody.innerHTML = "<tr><td>គ្មានទិន្នន័យ</td></tr>";
+        return;
+      }
+
+      const keys = Object.keys(data[0]);
+      thead.innerHTML = keys.map(k => `<th>${k}</th>`).join("");
+
+      data.forEach(row => {
+        const tr = document.createElement("tr");
+        keys.forEach(k => {
+          const td = document.createElement("td");
+          td.textContent = row[k] ?? '';
+          tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+      });
+    }
+
+    function exportExcel() {
+      const table = document.getElementById("reportTable");
+      const wb = XLSX.utils.table_to_book(table, { sheet: "Report" });
+      XLSX.writeFile(wb, "spotcheck_report.xlsx");
+    }
+
+    function handleSearch() {
+      const term = document.getElementById("searchInput").value.trim().toLowerCase();
+      if (!term) {
         renderTable(currentData);
-      })
-      .catch(err => {
-        console.error("❌ Failed to load report:", err);
-        alert("បរាជ័យក្នុងការទាញយកទិន្នន័យ");
-      });
-  }
+        return;
+      }
 
-  function renderTable(data) {
-    const thead = document.getElementById("tableHead");
-    const tbody = document.getElementById("tableBody");
-    tbody.innerHTML = "";
-    thead.innerHTML = "";
-
-    if (!Array.isArray(data) || data.length === 0) {
-      tbody.innerHTML = "<tr><td colspan='99'>គ្មានទិន្នន័យ</td></tr>";
-      return;
+      const filtered = currentData.filter(row =>
+        (row.NAME_KHMER && row.NAME_KHMER.toLowerCase().includes(term)) ||
+        (row.LD_CUSTOMER_ID && row.LD_CUSTOMER_ID.toLowerCase().includes(term))
+      );
+      renderTable(filtered);
     }
 
-    const keys = Object.keys(data[0]);
-    thead.innerHTML = keys.map(k => `<th>${k}</th>`).join("");
+    document.getElementById("fromDate").addEventListener("change", fetchData);
+    document.getElementById("toDate").addEventListener("change", fetchData);
+    document.getElementById("searchInput").addEventListener("input", handleSearch);
 
-    data.forEach(row => {
-      const tr = document.createElement("tr");
-      keys.forEach(k => {
-        const td = document.createElement("td");
-        td.textContent = row[k] ?? '';
-        tr.appendChild(td);
-      });
-      tbody.appendChild(tr);
-    });
-  }
-
-  function exportExcel() {
-    const table = document.getElementById("reportTable");
-    const wb = XLSX.utils.table_to_book(table, { sheet: "Report" });
-    XLSX.writeFile(wb, "spotcheck_report.xlsx");
-  }
-
-  function handleSearch() {
-    const term = document.getElementById("searchInput").value.trim().toLowerCase();
-    if (!term) {
-      renderTable(currentData);
-      return;
-    }
-
-    const filtered = currentData.filter(row =>
-      (row.NAME_KHMER && row.NAME_KHMER.toLowerCase().includes(term)) ||
-      (row.LD_CUSTOMER_ID && row.LD_CUSTOMER_ID.toLowerCase().includes(term))
-    );
-    renderTable(filtered);
-  }
-
-  document.getElementById("fromDate").addEventListener("change", fetchData);
-  document.getElementById("toDate").addEventListener("change", fetchData);
-  document.getElementById("searchInput").addEventListener("input", handleSearch);
-
-  window.onload = fetchData;
-</script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script src="../notifications/checkNotification.js"></script>
-  
+    window.onload = fetchData;
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="../notifications/checkNotification.js"></script>
 </body>
 </html>
