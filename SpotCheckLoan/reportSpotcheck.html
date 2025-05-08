@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="km">
+<!DOCTYPE html><html lang="km">
 <head>
   <meta charset="UTF-8" />
   <title>Spot Check Report</title>
@@ -19,29 +18,36 @@
     }
     .header-bar {
       background-color: #0d2d5c;
-      color: white;
-      font-size: 18px;
-      font-weight: bold;
-      padding: 14px 16px;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      padding: 12px 16px;
       position: fixed;
       top: 0;
       left: 0;
       right: 0;
-      z-index: 999;
+      z-index: 1000;
+    }
+    .back-icon {
+      font-size: 22px;
+      border: none;
+      color: white;
+      background: none;
+      margin-right: 10px;
+      cursor: pointer;
     }
     .header-title {
       font-size: 16px;
+      flex: 1;
+      text-align: left;
     }
     .filter-container {
       margin-top: 60px;
       padding: 10px 16px;
       background: #2a2f3d;
       display: flex;
-      gap: 10px;
       flex-wrap: wrap;
+      gap: 10px;
       justify-content: space-between;
     }
     .filter-container input {
@@ -50,13 +56,29 @@
       border: none;
       font-family: 'Krasar', sans-serif;
     }
+    .search-box {
+      margin: 10px 16px;
+    }
+    .search-box input {
+      width: 100%;
+      padding: 8px;
+      border-radius: 6px;
+      border: none;
+      font-family: 'Krasar', sans-serif;
+    }
+    .report-table-wrapper {
+      overflow-x: auto;
+      max-height: 400px;
+      overflow-y: auto;
+    }
     .report-table {
       width: 100%;
       border-collapse: collapse;
-      margin: 16px 0;
+      margin: 0;
       font-size: 13px;
       background: white;
       color: black;
+      position: relative;
     }
     .report-table th,
     .report-table td {
@@ -67,6 +89,9 @@
     .report-table th {
       background: #0d2d5c;
       color: white;
+      position: sticky;
+      top: 0;
+      z-index: 2;
     }
     .bottom-bar {
       position: fixed;
@@ -104,7 +129,7 @@
     .export-buttons {
       display: flex;
       gap: 10px;
-      margin: 10px 16px;
+      margin: 10px 0;
     }
     .export-buttons button {
       padding: 8px 14px;
@@ -118,31 +143,24 @@
   </style>
 </head>
 <body>
-
- <div class="header-bar">
-  <button class="back-icon" onclick="window.location.href='../index.html'">←</button>
-  <div class="header-title">បញ្ជីត្រួតពិនិត្យឥណទាន</div>
-</div>
- 
-  <div class="filter-container">
+  <div class="header-bar">
+    <button class="back-icon" onclick="window.location.href='../index.html'">←</button>
+    <div class="header-title">បញ្ជីត្រួតពិនិត្យឥណទាន</div>
+  </div>  <div class="filter-container">
     <input type="date" id="fromDate" />
     <input type="date" id="toDate" />
     <div class="export-buttons">
       <button onclick="exportExcel()">Export Excel</button>
       <button onclick="window.print()">Print PDF</button>
     </div>
-  </div>
-
-  <div style="overflow-x:auto;">
+  </div>  <div class="search-box">
+    <input type="text" id="searchInput" placeholder="ស្វែងរកតាមឈ្មោះ ឬ CIF...">
+  </div>  <div class="report-table-wrapper">
     <table class="report-table" id="reportTable">
-      <thead>
-        <tr id="tableHead"></tr>
-      </thead>
+      <thead><tr id="tableHead"></tr></thead>
       <tbody id="tableBody"></tbody>
     </table>
-  </div>
-
-  <div class="bottom-bar">
+  </div>  <div class="bottom-bar">
     <button class="bottom-btn" onclick="location.href='../index.html'">
       <img src="../icons/Home.png" width="24" height="24" /><div>Home</div>
     </button>
@@ -156,11 +174,11 @@
       </div>
       <div>Notification</div>
     </button>
-  </div>
-
-  <script>
+  </div>  <script>
     const token = sessionStorage.getItem("token");
     const loggedUser = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
+
+    let currentData = [];
 
     function fetchData() {
       const from = document.getElementById("fromDate").value;
@@ -175,7 +193,10 @@
         headers: { Authorization: `Bearer ${token}` }
       })
         .then(res => res.json())
-        .then(data => renderTable(data))
+        .then(data => {
+          currentData = data;
+          renderTable(data);
+        })
         .catch(err => {
           console.error("❌ Failed to load report:", err);
           alert("បរាជ័យក្នុងការទាញយកទិន្នន័យ");
@@ -213,11 +234,19 @@
       XLSX.writeFile(wb, "spotcheck_report.xlsx");
     }
 
-    window.onload = fetchData;
     document.getElementById("fromDate").addEventListener("change", fetchData);
     document.getElementById("toDate").addEventListener("change", fetchData);
-  </script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  <script src="../notifications/checkNotification.js"></script>
-</body>
+    document.getElementById("searchInput").addEventListener("input", () => {
+      const term = document.getElementById("searchInput").value.toLowerCase();
+      const filtered = currentData.filter(row => {
+        return (
+          (row.NAME_KHMER && row.NAME_KHMER.toLowerCase().includes(term)) ||
+          (row.LD_CUSTOMER_ID && row.LD_CUSTOMER_ID.toLowerCase().includes(term))
+        );
+      });
+      renderTable(filtered);
+    });
+
+    window.onload = fetchData;
+  </script>  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>  <script src="../notifications/checkNotification.js"></script></body>
 </html>
