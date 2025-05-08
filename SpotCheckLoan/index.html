@@ -609,27 +609,20 @@ th, td {
   <label>ក - ព័ត៌មានគណនី</label>
   
   <label>វដ្តត្រួតពិនិត្យឥណទាន <span class="required">*</span></label>
-  <select>
+  <select id="cycle">
     <option value="">-- ជ្រើសរើស --</option>
-    <option>1</option>
-    <option>2</option>
-    <option>3</option>
-    <option>4</option>
-    <option>5</option>
-    <option>6</option>
-    <option>7</option>
-    <option>8</option>
-    <option>9</option>
-    <option>10</option>
+    <option>1</option><option>2</option><option>3</option><option>4</option>
+    <option>5</option><option>6</option><option>7</option><option>8</option>
+    <option>9</option><option>10</option>
   </select>
 
   <label>ថ្ងៃត្រួតពិនិត្យ <span class="required">*</span></label>
-  <input type="date" />
+  <input type="date" id="checkDate" />
 
   <!-- ខ - ប្រវត្តិសងប្រាក់ -->
   <label>ខ - ប្រវត្តិសងប្រាក់</label>
   <label>ស្ថានភាព <span class="required">*</span></label>
-  <select>
+  <select id="repaymentStatus">
     <option value="">-- ជ្រើសរើស --</option>
     <option>ទៀងទាត់</option>
     <option>យឺតយ៉ាវក្នុងខែ</option>
@@ -637,122 +630,105 @@ th, td {
   </select>
 
   <label>បញ្ជាក់:</label>
-  <input type="text" />
+  <input type="text" id="repaymentNote" />
 
   <!-- គ - ឯកសារឥណទាន -->
   <label>គ - ឯកសារឥណទាន</label>
   <label>ស្ថានភាពឯកសារ<span class="required">*</span></label>
-  <select>
+  <select id="docStatus">
     <option value="">-- ជ្រើសរើស --</option>
     <option>ត្រឹមត្រូវតាមគោលកាណ៍</option>
     <option>មិនត្រឹមត្រូវតាមគោលកាណ៍</option>
   </select>
 
   <label>មូលហេតុ:</label>
-  <input type="text" />
-  <!-- ✅ Floating Button Bottom Right -->
-<button id="continueToSection2Btn">បន្តទៅផ្នែកទី២</button>
+  <input type="text" id="docNote" />
+
+  <button id="continueToSection2Btn">បន្តទៅផ្នែកទី២</button>
 </div>
 
 
 <!-- ✅ Section II - Physical Inspection -->
+
 <div id="inspectionSection2">
   <h3>II. Physical Inspection on site visit</h3>
 
   <!-- ក - ព័ត៌មានផ្ទាល់ -->
-  <label>ក - ព័ត៌មានផ្ទាល់</label>
-
   <label>មុខរបរពេលខ្ចី<span class="required">*</span></label>
-  <input type="text" placeholder="..." />
+  <input type="text" id="businessOld" />
 
   <label>មុខរបរបច្ចុប្បន្ន<span class="required">*</span></label>
-  <input type="text" placeholder="..." />
+  <input type="text" id="businessNow" />
 
   <label>ស្ថានភាពជំនួញ<span class="required">*</span></label>
-  <select>
+  <select id="businessStatus">
     <option value="">-- ជ្រើសរើស --</option>
-    <option>ដដែល</option>
-    <option>កើនឡើង</option>
-    <option>ឱនភាព</option>
-    <option>ក្ស័យធន</option>
+    <option>ដដែល</option><option>កើនឡើង</option><option>ឱនភាព</option><option>ក្ស័យធន</option>
   </select>
 
   <label>បញ្ជាក់បន្ថែម</label>
-  <input type="text" placeholder="..." />
+  <input type="text" id="businessNote" />
 
-  <!-- ខ - ព័ត៌មានទ្រព្យដាក់ធានាឥណទាន -->
-  <label>ខ - ព័ត៌មានទ្រព្យដាក់ធានាឥណទាន</label>
-
+  <!-- ខ - ព័ត៌មានទ្រព្យដាក់ធានា -->
   <label>ប្រភេទទ្រព្យ <span class="required">*</span></label>
-  <select>
+  <select id="collateralType">
     <option value="">-- ជ្រើសរើស --</option>
-    <option>Payroll</option>
-    <option>Clean</option>
-    <option>ដីភូមិ និងផ្ទះ</option>
-    <option>ដីភូមិ ផ្ទះ និងដីស្រែ</option>
-    <option>ដីភូមិ</option>
-    <option>ដីស្រែ</option>
-    <option>ដីភូមិ និងដីស្រែ</option>
+    <option>Payroll</option><option>Clean</option><option>ដីភូមិ និងផ្ទះ</option>
+    <option>ដីភូមិ ផ្ទះ និងដីស្រែ</option><option>ដីភូមិ</option>
+    <option>ដីស្រែ</option><option>ដីភូមិ និងដីស្រែ</option>
   </select>
 
   <label>ទ្រព្យធានា<span class="required">*</span></label>
-  <select>
+  <select id="collateralStatus">
     <option value="">-- ជ្រើសរើស --</option>
-    <option>រក្សាភាពដើម</option>
-    <option>ប្រែប្រួល</option>
+    <option>រក្សាភាពដើម</option><option>ប្រែប្រួល</option>
   </select>
 
   <label>តម្លៃទ្រព្យ<span class="required">*</span></label>
-  <select>
+  <select id="collateralValue">
     <option value="">-- ជ្រើសរើស --</option>
     <option>អាចធានាឥណទានបាន</option>
     <option>មិនអាចធានាឥណទានបាន</option>
   </select>
 
   <label>បញ្ជាក់បន្ថែម</label>
-  <input type="text" placeholder="..." />
+  <input type="text" id="collateralNote" />
 
   <!-- គ - សញ្ញាណហានិភ័យ -->
-  <label>គ - សញ្ញាណហានិភ័យ</label>
-
   <label>គោលបំណងប្រើប្រាស់ឥណទាន<span class="required">*</span></label>
-  <select>
+  <select id="usagePurpose">
     <option value="">-- ជ្រើសរើស --</option>
     <option>ត្រឹមត្រូវតាមការស្នើសុំ</option>
     <option>មិនត្រឹមត្រូវតាមការស្នើសុំ</option>
   </select>
+
   <label>បញ្ជាក់បន្ថែម</label>
-  <input type="text" placeholder="..." />
-  
+  <input type="text" id="usageNote" />
+
   <label>ប្រភពសំណងឥណទាន<span class="required">*</span></label>
-  <select>
+  <select id="repaymentSource">
     <option value="">-- ជ្រើសរើស --</option>
-    <option>ផ្ទាល់ខ្លួន</option>
-    <option>សាច់ញាតិ</option>
-    <option>អ្នកធានា</option>
-    <option>ធនាគារ</option>
-    <option>ស្ថាប័នហិរញ្ញវត្ថុ</option>
-    <option>មេខ្យល់</option>
-    <option>ផ្សេងៗ</option>
+    <option>ផ្ទាល់ខ្លួន</option><option>សាច់ញាតិ</option><option>អ្នកធានា</option>
+    <option>ធនាគារ</option><option>ស្ថាប័នហិរញ្ញវត្ថុ</option><option>មេខ្យល់</option><option>ផ្សេងៗ</option>
   </select>
 
   <label>បញ្ជាក់បន្ថែម</label>
-  <input type="text" placeholder="..." />
+  <input type="text" id="sourceNote" />
 
-  <!-- គ - សញ្ញាណហានិភ័យ -->
-  <label>ឃ - សន្និដ្ឋាន</label>
+  <!-- ឃ - សន្និដ្ឋាន -->
   <label>សន្និដ្ឋាន<span class="required">*</span></label>
-  <select>
+  <select id="conclusion">
     <option value="">-- ជ្រើសរើស --</option>
     <option>ឥណទានមិនមានសញ្ញាណហានិភ័យណាមួយកើតឡើងទេ ៕</option>
     <option>យោងតាមការត្រួតពិនិត្យឯកសារឥណទាន និងចុះត្រួតពិនិត្យដល់លំនៅដ្ឋាន បង្ហាញថាឥណទានមិនមានសញ្ញាណហានិភ័យណាមួយកើតឡើងទេ ៕</option>
   </select>
-<!-- === Action Buttons: Save / Update and Clear === -->
+
   <div class="action-buttons">
     <button id="clearBtn">Clear</button>
     <button id="saveBtn">Save</button>
   </div>
 </div>
+
   
 <span id="notif-badge" class="badge" style="display: none;"></span>
   
