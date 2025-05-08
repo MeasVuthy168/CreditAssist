@@ -1043,14 +1043,6 @@ th, td {
 <!-- ✅ Initialize after DOM ready -->
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-  
-  // Handle "Continue to Section 2" button
-  document.getElementById("continueToSection2Btn").addEventListener("click", () => {
-    const section2 = document.getElementById("inspectionSection2");
-    section2.style.display = "block";
-    window.scrollTo({ top: section2.offsetTop - 60, behavior: "smooth" });
-  });
-
   // Close NBCOS detail
   document.getElementById("closeDetailBtn").addEventListener("click", () => {
     document.getElementById("nbcosDetail").style.display = "none";
@@ -1058,6 +1050,13 @@ document.addEventListener("DOMContentLoaded", () => {
       row.style.display = "";
       row.classList.remove("highlighted-row");
     });
+
+  // Handle "Continue to Section 2" button
+  document.getElementById("continueToSection2Btn").addEventListener("click", () => {
+    const section2 = document.getElementById("inspectionSection2");
+    section2.style.display = "block";
+    window.scrollTo({ top: section2.offsetTop - 60, behavior: "smooth" });
+  });
 
     // Handle "Create SpotCheck" button
   document.getElementById("createSpotCheckBtn").addEventListener("click", () => {
