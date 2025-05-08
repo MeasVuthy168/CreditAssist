@@ -202,10 +202,43 @@
     window.location.href = "../login.html";
   }
 
-  debug("🔐 Token loaded");
-  debug(`👤 User: ${loggedUser.username}`);
-
   let currentData = [];
+
+  const khmerHeaders = {
+    LD_CUSTOMER_ID: "លេខអតិថិជន",
+    CONTRACT_LD: "លេខកិច្ចសន្យា",
+    NAME_KHMER: "ឈ្មោះខ្មែរ",
+    LOAN_SIZE: "ទំហំឥណទាន",
+    OS_USD: "សមតុល្យឥណទាន (USD)",
+    RATE: "អត្រាការប្រាក់",
+    CCY: "រូបិយប័ណ្ណ",
+    DISBURSE: "ថ្ងៃបញ្ចេញឥណទាន",
+    MATURITY: "ថ្ងៃបញ្ចប់",
+    LOAN_TERM: "រយៈពេលខ្ចី",
+    LOAN_CYCLE: "វដ្តខ្ចី",
+    CO: "ភ្នាក់ងារឥណទាន",
+    BranchOK: "ឈ្មោះសាខា",
+    ProductType: "ប្រភេទឥណទាន",
+    cycle: "វដ្តត្រួតពិនិត្យ",
+    checkDate: "ថ្ងៃត្រួតពិនិត្យ",
+    repaymentStatus: "ស្ថានភាព",
+    repaymentNote: "បញ្ជាក់",
+    docStatus: "ស្ថានភាពឯកសារ",
+    docNote: "មូលហេតុ",
+    businessOld: "មុខរបរពេលខ្ចី",
+    businessNow: "មុខរបរបច្ចុប្បន្ន",
+    businessStatus: "ស្ថានភាពជំនួញ",
+    businessNote: "បញ្ជាក់បន្ថែម",
+    collateralType: "ប្រភេទទ្រព្យ",
+    collateralStatus: "ស្ថានភាពទ្រព្យធានា",
+    collateralValue: "តម្លៃទ្រព្យធានា",
+    collateralNote: "បញ្ជាក់បន្ថែម",
+    usagePurpose: "គោលបំណងប្រើប្រាស់ឥណទាន",
+    usageNote: "បញ្ជាក់បន្ថែម",
+    repaymentSource: "ប្រភពសំណងឥណទាន",
+    sourceNote: "បញ្ជាក់បន្ថែម",
+    conclusion: "សន្និដ្ឋាន"
+  };
 
   function fetchData() {
     const from = document.getElementById("fromDate").value;
@@ -214,25 +247,28 @@
     let url = "https://secure-backend-tzj9.onrender.com/api/spotcheck?";
     if (from) url += `fromDate=${from}&`;
     if (to) url += `toDate=${to}&`;
-    url += `savedBy=${loggedUser.username}`;
+    url += `username=${loggedUser.username}`;
 
-    debug("📦 Fetching: " + url);
+    console.log("🔐 Token loaded");
+    console.log("🧑 User:", loggedUser.username);
+    console.log("📦 Fetching:", url);
 
     fetch(url, {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then(res => {
-        debug("🔁 Status: " + res.status);
-        if (!res.ok) throw new Error("Failed status " + res.status);
+        console.log("🔁 Status:", res.status);
+        if (!res.ok) throw new Error("Fetch failed");
         return res.json();
       })
       .then(data => {
-        debug("✅ Records: " + (data?.length || 0));
-        currentData = data;
-        renderTable(data);
+        currentData = data || [];
+        console.log("✅ Records:", currentData.length);
+        if (currentData.length === 0) console.warn("⚠️ No data to show");
+        renderTable(currentData);
       })
       .catch(err => {
-        debug("❌ Error: " + err.message);
+        console.error("❌ Fetch error:", err.message);
         alert("បរាជ័យក្នុងការទាញយកទិន្នន័យ");
       });
   }
@@ -244,13 +280,12 @@
     thead.innerHTML = "";
 
     if (!Array.isArray(data) || data.length === 0) {
-      debug("⚠️ No data to show");
-      tbody.innerHTML = "<tr><td colspan='99' style='color:#999;'>គ្មានទិន្នន័យ</td></tr>";
+      tbody.innerHTML = "<tr><td colspan='99'>⚠️ គ្មានទិន្នន័យ</td></tr>";
       return;
     }
 
-    const keys = Object.keys(data[0]);
-    thead.innerHTML = keys.map(k => `<th>${k}</th>`).join("");
+    const keys = Object.keys(data[0]).filter(k => !["_id", "__v", "createdAt", "savedBy"].includes(k));
+    thead.innerHTML = keys.map(k => `<th>${khmerHeaders[k] || k}</th>`).join("");
 
     data.forEach(row => {
       const tr = document.createElement("tr");
@@ -286,7 +321,6 @@
   document.getElementById("fromDate").addEventListener("change", fetchData);
   document.getElementById("toDate").addEventListener("change", fetchData);
   document.getElementById("searchInput").addEventListener("input", handleSearch);
-
   window.onload = fetchData;
 </script>  
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
