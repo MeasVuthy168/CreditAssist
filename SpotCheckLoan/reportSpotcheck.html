@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+  <meta charset="UTF-8" />
+  <title>Spot Check Report</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0d2d5c" />
+  <style>
+    @font-face {
+      font-family: 'Krasar';
+      src: url('../Krasar-Regular.ttf') format('truetype');
+    }
+    body {
+      margin: 0;
+      font-family: 'Krasar', Arial, sans-serif;
+      background: #1c2331;
+      color: white;
+      padding-bottom: 70px;
+    }
+    .header-bar {
+      background-color: #0d2d5c;
+      color: white;
+      font-size: 18px;
+      font-weight: bold;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 999;
+    }
+    .header-title {
+      font-size: 16px;
+    }
+    .filter-container {
+      margin-top: 60px;
+      padding: 10px 16px;
+      background: #2a2f3d;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+    .filter-container input {
+      padding: 8px;
+      border-radius: 6px;
+      border: none;
+      font-family: 'Krasar', sans-serif;
+    }
+    .report-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-size: 13px;
+      background: white;
+      color: black;
+    }
+    .report-table th,
+    .report-table td {
+      padding: 8px;
+      border: 1px solid #ccc;
+      white-space: nowrap;
+    }
+    .report-table th {
+      background: #0d2d5c;
+      color: white;
+    }
+    .bottom-bar {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      height: 56px;
+      background: #0d2d5c;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+    }
+    .bottom-btn {
+      color: white;
+      font-size: 11px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: none;
+      border: none;
+    }
+    .bottom-btn img {
+      margin-bottom: 2px;
+    }
+    .badge {
+      position: absolute;
+      top: -4px;
+      right: -8px;
+      background: red;
+      color: white;
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 50%;
+      font-weight: bold;
+    }
+    .export-buttons {
+      display: flex;
+      gap: 10px;
+      margin: 10px 16px;
+    }
+    .export-buttons button {
+      padding: 8px 14px;
+      border-radius: 6px;
+      background-color: #ffd700;
+      color: #002c5f;
+      border: none;
+      font-family: 'Krasar', sans-serif;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="header-bar">
+    <div class="header-title">របាយការណ៍ Spot Check</div>
+  </div>
+
+  <div class="filter-container">
+    <input type="date" id="fromDate" />
+    <input type="date" id="toDate" />
+    <div class="export-buttons">
+      <button onclick="exportExcel()">Export Excel</button>
+      <button onclick="window.print()">Print PDF</button>
+    </div>
+  </div>
+
+  <div style="overflow-x:auto;">
+    <table class="report-table" id="reportTable">
+      <thead>
+        <tr id="tableHead"></tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
+
+  <div class="bottom-bar">
+    <button class="bottom-btn" onclick="location.href='../index.html'">
+      <img src="../icons/Home.png" width="24" height="24" /><div>Home</div>
+    </button>
+    <button class="bottom-btn" onclick="location.href='../Setting/index.html'">
+      <img src="../icons/Setting.png" width="24" height="24" /><div>Setting</div>
+    </button>
+    <button class="bottom-btn" onclick="location.href='../notifications/index.html'">
+      <div style="position: relative;">
+        <img src="../icons/Notification.png" width="24" height="24" />
+        <span id="notif-badge" class="badge" style="display: none;">●</span>
+      </div>
+      <div>Notification</div>
+    </button>
+  </div>
+
+  <script>
+    const token = sessionStorage.getItem("token");
+    const loggedUser = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
+
+    function fetchData() {
+      const from = document.getElementById("fromDate").value;
+      const to = document.getElementById("toDate").value;
+
+      let url = "https://secure-backend-tzj9.onrender.com/api/spotcheck?";
+      if (from) url += `fromDate=${from}&`;
+      if (to) url += `toDate=${to}&`;
+      url += `username=${loggedUser.username}`;
+
+      fetch(url, {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+        .then(res => res.json())
+        .then(data => renderTable(data))
+        .catch(err => {
+          console.error("❌ Failed to load report:", err);
+          alert("បរាជ័យក្នុងការទាញយកទិន្នន័យ");
+        });
+    }
+
+    function renderTable(data) {
+      const thead = document.getElementById("tableHead");
+      const tbody = document.getElementById("tableBody");
+      tbody.innerHTML = "";
+      thead.innerHTML = "";
+
+      if (data.length === 0) {
+        tbody.innerHTML = "<tr><td colspan='99'>គ្មានទិន្នន័យ</td></tr>";
+        return;
+      }
+
+      const keys = Object.keys(data[0]);
+      thead.innerHTML = keys.map(k => `<th>${k}</th>`).join("");
+
+      data.forEach(row => {
+        const tr = document.createElement("tr");
+        keys.forEach(k => {
+          const td = document.createElement("td");
+          td.textContent = row[k] || '';
+          tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+      });
+    }
+
+    function exportExcel() {
+      const table = document.getElementById("reportTable");
+      const wb = XLSX.utils.table_to_book(table, { sheet: "Report" });
+      XLSX.writeFile(wb, "spotcheck_report.xlsx");
+    }
+
+    window.onload = fetchData;
+    document.getElementById("fromDate").addEventListener("change", fetchData);
+    document.getElementById("toDate").addEventListener("change", fetchData);
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="../notifications/checkNotification.js"></script>
+</body>
+</html>
