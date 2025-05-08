@@ -1042,22 +1042,7 @@ th, td {
 
 <!-- ✅ Initialize after DOM ready -->
 <script>
-    window.addEventListener("DOMContentLoaded", () => {
-  checkNotification();
-  document.getElementById("closeDetailBtn").addEventListener("click", () => {
-    document.getElementById("nbcosDetail").style.display = "none";
-
-    const allRows = document.querySelectorAll("#results tbody tr");
-    allRows.forEach(row => {
-      row.style.display = "";
-      row.classList.remove("highlighted-row");
-    });
-   });
-  });
-</script>
-<script>
 document.addEventListener("DOMContentLoaded", () => {
-
   // Handle "Create SpotCheck" button
   document.getElementById("createSpotCheckBtn").addEventListener("click", () => {
     const section = document.getElementById("creditSection1");
@@ -1065,24 +1050,23 @@ document.addEventListener("DOMContentLoaded", () => {
     window.scrollTo({ top: section.offsetTop - 60, behavior: "smooth" });
   });
 
-  // Handle "Continue" button
+  // Handle "Continue to Section 2" button
   document.getElementById("continueToSection2Btn").addEventListener("click", () => {
     const section2 = document.getElementById("inspectionSection2");
     section2.style.display = "block";
     window.scrollTo({ top: section2.offsetTop - 60, behavior: "smooth" });
   });
 
-  // Handle "Close Detail" button
+  // Close NBCOS detail
   document.getElementById("closeDetailBtn").addEventListener("click", () => {
     document.getElementById("nbcosDetail").style.display = "none";
-    const allRows = document.querySelectorAll("#results tbody tr");
-    allRows.forEach(row => {
+    document.querySelectorAll("#results tbody tr").forEach(row => {
       row.style.display = "";
       row.classList.remove("highlighted-row");
     });
   });
 
-  // ✅ Fix Save Button Handler
+  // Save & Clear
   const saveBtn = document.getElementById("saveBtn");
   const clearBtn = document.getElementById("clearBtn");
 
@@ -1092,7 +1076,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   saveBtn.addEventListener("click", () => {
-    alert("✅ Save button clicked"); // ← Add this to test!
     const user = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
     const selectedNBCOS = JSON.parse(sessionStorage.getItem("selectedNBCOS") || "{}");
 
@@ -1101,29 +1084,70 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    const payload = { /* ... same as before ... */ };
+    const payload = {
+      // NBCOS Data
+      LD_CUSTOMER_ID: selectedNBCOS.LD_CUSTOMER_ID || '',
+      CONTRACT_LD: selectedNBCOS.CONTRACT_LD || '',
+      NAME_KHMER: selectedNBCOS.NAME_KHMER || '',
+      LOAN_SIZE: selectedNBCOS.LOAN_SIZE || '',
+      OS_USD: selectedNBCOS.OS_USD || '',
+      RATE: selectedNBCOS.RATE || '',
+      CCY: selectedNBCOS.CCY || '',
+      DISBURSE: selectedNBCOS.DISBURSE || '',
+      MATURITY: selectedNBCOS.MATURITY || '',
+      LOAN_TERM: selectedNBCOS.LOAN_TERM || '',
+      LOAN_CYCLE: selectedNBCOS.LOAN_CYCLE || '',
+      CO: selectedNBCOS.CO || '',
+      BranchOK: selectedNBCOS["Branch-OK"] || '',
+      ProductType: selectedNBCOS["Product Type"] || '',
+
+      // Section 1
+      cycle: document.getElementById("cycle").value,
+      checkDate: document.getElementById("checkDate").value,
+      repaymentStatus: document.getElementById("repaymentStatus").value,
+      repaymentNote: document.getElementById("repaymentNote").value,
+      docStatus: document.getElementById("docStatus").value,
+      docNote: document.getElementById("docNote").value,
+
+      // Section 2
+      businessOld: document.getElementById("businessOld").value,
+      businessNow: document.getElementById("businessNow").value,
+      businessStatus: document.getElementById("businessStatus").value,
+      businessNote: document.getElementById("businessNote").value,
+      collateralType: document.getElementById("collateralType").value,
+      collateralStatus: document.getElementById("collateralStatus").value,
+      collateralValue: document.getElementById("collateralValue").value,
+      collateralNote: document.getElementById("collateralNote").value,
+      usagePurpose: document.getElementById("usagePurpose").value,
+      usageNote: document.getElementById("usageNote").value,
+      repaymentSource: document.getElementById("repaymentSource").value,
+      sourceNote: document.getElementById("sourceNote").value,
+      conclusion: document.getElementById("conclusion").value,
+
+      savedBy: user.fullname || user.username || "Unknown"
+    };
 
     document.getElementById("loadingOverlay").style.display = "flex";
 
     fetch("https://secure-backend-tzj9.onrender.com/api/spotcheck", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${sessionStorage.getItem("token")}`
-  },
-  body: JSON.stringify(payload)
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${sessionStorage.getItem("token")}`
+      },
+      body: JSON.stringify(payload)
     })
-    .then(res => res.json())
-    .then(data => {
-      alert("✅ Spot Check saved successfully!");
-    })
-    .catch(err => {
-      console.error("❌ Save error:", err);
-      alert("❌ Save failed. See console.");
-    })
-    .finally(() => {
-      document.getElementById("loadingOverlay").style.display = "none";
-    });
+      .then(res => res.json())
+      .then(data => {
+        alert("✅ Spot Check saved successfully!");
+      })
+      .catch(err => {
+        console.error("❌ Save error:", err);
+        alert("❌ Save failed. See console.");
+      })
+      .finally(() => {
+        document.getElementById("loadingOverlay").style.display = "none";
+      });
   });
 
   clearBtn.addEventListener("click", () => {
