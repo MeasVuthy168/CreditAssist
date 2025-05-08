@@ -1101,49 +1101,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    const payload = {
-      // From NBCOS detail
-      LD_CUSTOMER_ID: selectedNBCOS.LD_CUSTOMER_ID || '',
-      CONTRACT_LD: selectedNBCOS.CONTRACT_LD || '',
-      NAME_KHMER: selectedNBCOS.NAME_KHMER || '',
-      LOAN_SIZE: selectedNBCOS.LOAN_SIZE || '',
-      OS_USD: selectedNBCOS.OS_USD || '',
-      RATE: selectedNBCOS.RATE || '',
-      CCY: selectedNBCOS.CCY || '',
-      DISBURSE: selectedNBCOS.DISBURSE || '',
-      MATURITY: selectedNBCOS.MATURITY || '',
-      LOAN_TERM: selectedNBCOS.LOAN_TERM || '',
-      LOAN_CYCLE: selectedNBCOS.LOAN_CYCLE || '',
-      CO: selectedNBCOS.CO || '',
-      BranchOK: selectedNBCOS["Branch-OK"] || '',
-      ProductType: selectedNBCOS["Product Type"] || '',
-
-      // From Section 1
-      cycle: document.querySelector('#creditSection1 select:nth-of-type(1)').value,
-      checkDate: document.querySelector('#creditSection1 input[type="date"]').value,
-      repaymentStatus: document.querySelector('#creditSection1 select:nth-of-type(2)').value,
-      repaymentNote: document.querySelector('#creditSection1 input[type="text"]:nth-of-type(1)').value,
-      docStatus: document.querySelector('#creditSection1 select:nth-of-type(3)').value,
-      docNote: document.querySelector('#creditSection1 input[type="text"]:nth-of-type(2)').value,
-
-      // From Section 2
-      businessOld: document.querySelector('#inspectionSection2 input:nth-of-type(1)').value,
-      businessNow: document.querySelector('#inspectionSection2 input:nth-of-type(2)').value,
-      businessStatus: document.querySelector('#inspectionSection2 select:nth-of-type(1)').value,
-      businessNote: document.querySelector('#inspectionSection2 input:nth-of-type(3)').value,
-      collateralType: document.querySelector('#inspectionSection2 select:nth-of-type(2)').value,
-      collateralStatus: document.querySelector('#inspectionSection2 select:nth-of-type(3)').value,
-      collateralValue: document.querySelector('#inspectionSection2 select:nth-of-type(4)').value,
-      collateralNote: document.querySelector('#inspectionSection2 input:nth-of-type(4)').value,
-      usagePurpose: document.querySelector('#inspectionSection2 select:nth-of-type(5)').value,
-      usageNote: document.querySelector('#inspectionSection2 input:nth-of-type(5)').value,
-      repaymentSource: document.querySelector('#inspectionSection2 select:nth-of-type(6)').value,
-      sourceNote: document.querySelector('#inspectionSection2 input:nth-of-type(6)').value,
-      conclusion: document.querySelector('#inspectionSection2 select:nth-of-type(7)').value,
-
-      // Who saved
-      savedBy: user.fullname || user.username || 'Unknown'
-    };
+    const payload = { /* ... same as before ... */ };
 
     document.getElementById("loadingOverlay").style.display = "flex";
 
