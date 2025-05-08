@@ -214,7 +214,7 @@
     let url = "https://secure-backend-tzj9.onrender.com/api/spotcheck?";
     if (from) url += `fromDate=${from}&`;
     if (to) url += `toDate=${to}&`;
-    url += `username=${loggedUser.username}`;
+    url += `savedBy=${loggedUser.username}`;
 
     debug("📦 Fetching: " + url);
 
