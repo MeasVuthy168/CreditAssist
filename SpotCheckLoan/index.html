@@ -1042,9 +1042,15 @@ th, td {
 
 <!-- ✅ Initialize after DOM ready -->
 <script>
-  document.addEventListener("DOMContentLoaded", () => {
-  
-    // Handle "Continue to Section 2" button
+document.addEventListener("DOMContentLoaded", () => {
+  // Handle "Create SpotCheck" button
+  document.getElementById("createSpotCheckBtn").addEventListener("click", () => {
+    const section = document.getElementById("creditSection1");
+    section.style.display = section.style.display === "none" ? "block" : "none";
+    window.scrollTo({ top: section.offsetTop - 60, behavior: "smooth" });
+  });
+
+  // Handle "Continue to Section 2" button
   document.getElementById("continueToSection2Btn").addEventListener("click", () => {
     const section2 = document.getElementById("inspectionSection2");
     section2.style.display = "block";
@@ -1058,13 +1064,6 @@ th, td {
       row.style.display = "";
       row.classList.remove("highlighted-row");
     });
-  });
-  
-  // Handle "Create SpotCheck" button
-  document.getElementById("createSpotCheckBtn").addEventListener("click", () => {
-    const section = document.getElementById("creditSection1");
-    section.style.display = section.style.display === "none" ? "block" : "none";
-    window.scrollTo({ top: section.offsetTop - 60, behavior: "smooth" });
   });
 
   // Save & Clear
