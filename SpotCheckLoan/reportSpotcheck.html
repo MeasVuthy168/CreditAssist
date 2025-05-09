@@ -42,14 +42,38 @@
       flex: 1;
       text-align: left;
     }
-    .filter-container {
-      margin-top: 60px;
-      padding: 10px 16px;
-      background: #2a2f3d;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      justify-content: space-between;
+    
+
+.filter-container {
+  margin-top: 60px;
+  padding: 10px 16px;
+  background: #2a2f3d;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+.date-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.export-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+   .export-buttons button {
+      padding: 8px 14px;
+      border-radius: 6px;
+      background-color: #ffd700;
+      color: #002c5f;
+      border: none;
+      font-family: 'Krasar', sans-serif;
+      cursor: pointer;
+    }
+    
     }
     .filter-container input {
       padding: 8px;
@@ -132,20 +156,8 @@
       border-radius: 50%;
       font-weight: bold;
     }
-    .export-buttons {
-      display: flex;
-      gap: 10px;
-      margin: 10px 0;
-    }
-    .export-buttons button {
-      padding: 8px 14px;
-      border-radius: 6px;
-      background-color: #ffd700;
-      color: #002c5f;
-      border: none;
-      font-family: 'Krasar', sans-serif;
-      cursor: pointer;
-    }
+    
+    
   </style>
 </head>
 <body>
@@ -160,13 +172,15 @@
  
   
   <div class="filter-container">
+  <div class="date-group">
     <input type="date" id="fromDate" />
     <input type="date" id="toDate" />
-    <div class="export-buttons">
-      <button onclick="exportExcel()">Export Excel</button>
-      <button onclick="window.print()">Print PDF</button>
-    </div>
   </div>
+  <div class="export-buttons">
+    <button onclick="exportExcel()">Export Excel</button>
+    <button onclick="window.print()">Print PDF</button>
+  </div>
+</div>
 
   
 
