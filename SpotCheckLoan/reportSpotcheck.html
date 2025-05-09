@@ -128,12 +128,13 @@
   font-family: 'Krasar', sans-serif;
   font-size: 13px;
 }
-    .summary-label {
-  margin-top: 12px;
-  color: #ccc;
-  font-size: 12px;
+.summary-label {
+  margin-top: 8px;
+  color: #002c5f;
+  font-size: 13px;
   text-align: center;
   font-family: 'Krasar', sans-serif;
+  width: 100%;
 }
 
 
@@ -243,17 +244,16 @@
     <input type="date" id="toDate" />
   </div>
 </div>
-
   <div class="export-buttons">
     <button onclick="exportExcel()">Export Excel</button>
     <button onclick="window.print()">Print PDF</button>
     <button onclick="window.print()">Print Form</button>
   </div>
+  <div id="summaryRow" class="summary-label">ចំនួនឥណទានដែលបានត្រួតពិនិត្យសរុបមានៈ 0</div>
 </div>
 
-  
-<div id="summaryRow" class="summary-label">ចំនួនឥណទានដែលបានត្រួតពិនិត្យសរុបមានៈ 0</div>
-  <div class="report-table-wrapper">
+
+<div class="report-table-wrapper">
     <div class="report-title">📘បញ្ជីឈ្មោះអតិថិជនដែលបានត្រួតពិនិត្យរួច</div>
     <table class="report-table" id="reportTable">
 
