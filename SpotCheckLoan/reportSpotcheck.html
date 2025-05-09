@@ -149,11 +149,15 @@
   </style>
 </head>
 <body>
+  
   <div class="header-bar">
     <button class="back-icon" onclick="window.location.href='./index.html'">←</button>
     <div class="header-title">បញ្ជីត្រួតពិនិត្យឥណទាន</div>
   </div>
-
+ <div class="search-box">
+    <input type="text" id="searchInput" placeholder="ស្វែងរកតាមឈ្មោះ ឬ CIF...">
+  </div>
+  
   <div class="filter-container">
     <input type="date" id="fromDate" />
     <input type="date" id="toDate" />
@@ -163,11 +167,7 @@
     </div>
   </div>
 
-  <div class="search-box">
-    <input type="text" id="searchInput" placeholder="ស្វែងរកតាមឈ្មោះ ឬ CIF...">
-  </div>
-
-  <div id="debugBox" style="color:yellow; font-size:12px; padding:4px 16px;"></div>
+  
 
   <div class="report-table-wrapper">
     <table class="report-table" id="reportTable">
@@ -192,6 +192,8 @@
     </table>
   </div>
 
+ <div id="debugBox" style="color:yellow; font-size:12px; padding:4px 16px;"></div>
+  
   <div class="bottom-bar">
     <button class="bottom-btn" onclick="location.href='../index.html'"><img src="../icons/Home.png" width="24" height="24" /><div>Home</div></button>
     <button class="bottom-btn" onclick="location.href='../Setting/index.html'"><img src="../icons/Setting.png" width="24" height="24" /><div>Setting</div></button>
