@@ -1073,11 +1073,61 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Handle "Create SpotCheck" button
   document.getElementById("createSpotCheckBtn").addEventListener("click", () => {
-    const section = document.getElementById("creditSection1");
-    section.style.display = section.style.display === "none" ? "block" : "none";
-    window.scrollTo({ top: section.offsetTop - 60, behavior: "smooth" });
-  });
-});  
+  const section = document.getElementById("creditSection1");
+  section.style.display = "block";
+  window.scrollTo({ top: section.offsetTop - 60, behavior: "smooth" });
+
+  const selectedNBCOS = JSON.parse(sessionStorage.getItem("selectedNBCOS") || "{}");
+  const cif = selectedNBCOS?.LD_CUSTOMER_ID;
+  if (!cif) return;
+
+  fetch(`https://secure-backend-tzj9.onrender.com/api/spotcheck/by-cif?cif=${encodeURIComponent(cif)}`, {
+    headers: { Authorization: `Bearer ${token}` }
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data && data._id) {
+        // Refill section 1 and 2
+        document.getElementById("cycle").value = data.cycle || '';
+        document.getElementById("checkDate").value = data.checkDate || '';
+        document.getElementById("repaymentStatus").value = data.repaymentStatus || '';
+        document.getElementById("repaymentNote").value = data.repaymentNote || '';
+        document.getElementById("docStatus").value = data.docStatus || '';
+        document.getElementById("docNote").value = data.docNote || '';
+
+        document.getElementById("businessOld").value = data.businessOld || '';
+        document.getElementById("businessNow").value = data.businessNow || '';
+        document.getElementById("businessStatus").value = data.businessStatus || '';
+        document.getElementById("businessNote").value = data.businessNote || '';
+        document.getElementById("collateralType").value = data.collateralType || '';
+        document.getElementById("collateralStatus").value = data.collateralStatus || '';
+        document.getElementById("collateralValue").value = data.collateralValue || '';
+        document.getElementById("collateralNote").value = data.collateralNote || '';
+        document.getElementById("usagePurpose").value = data.usagePurpose || '';
+        document.getElementById("usageNote").value = data.usageNote || '';
+        document.getElementById("repaymentSource").value = data.repaymentSource || '';
+        document.getElementById("sourceNote").value = data.sourceNote || '';
+        document.getElementById("conclusion").value = data.conclusion || '';
+
+        // Show Section 2 if data exists
+        document.getElementById("inspectionSection2").style.display = "block";
+
+        // Change save button to "Update"
+        const saveBtn = document.getElementById("saveBtn");
+        saveBtn.textContent = "Update";
+        saveBtn.setAttribute("data-update-id", data._id);
+      } else {
+        resetForm();
+        document.getElementById("inspectionSection2").style.display = "none";
+        document.getElementById("saveBtn").textContent = "Save";
+        document.getElementById("saveBtn").removeAttribute("data-update-id");
+      }
+    })
+    .catch(err => {
+      console.error("❌ Error fetching existing SpotCheck:", err);
+      alert("សូមព្យាយាមម្តងទៀត");
+    });
+});
   
   // Save & Clear
   const saveBtn = document.getElementById("saveBtn");
@@ -1186,8 +1236,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.getElementById("loadingOverlay").style.display = "flex";
 
-    fetch("https://secure-backend-tzj9.onrender.com/api/spotcheck", {
-      method: "POST",
+    const updateId = saveBtn.getAttribute("data-update-id");
+const method = updateId ? "PUT" : "POST";
+const url = updateId
+  ? `https://secure-backend-tzj9.onrender.com/api/spotcheck/${updateId}`
+  : "https://secure-backend-tzj9.onrender.com/api/spotcheck`;
+
+fetch(url, {
+  method,
+  
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${sessionStorage.getItem("token")}`
@@ -1196,9 +1253,11 @@ document.addEventListener("DOMContentLoaded", () => {
     })
       .then(res => res.json())
       .then(data => {
-        alert("✅ Spot Check saved successfully!");
-        resetForm();
-      })
+  alert(updateId ? "✅ Spot Check updated successfully!" : "✅ Spot Check saved successfully!");
+  resetForm();
+  document.getElementById("saveBtn").textContent = "Save";
+  document.getElementById("saveBtn").removeAttribute("data-update-id");
+});
       .catch(err => {
         console.error("❌ Save error:", err);
         alert("❌ Save failed. See console.");
