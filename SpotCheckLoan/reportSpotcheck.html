@@ -75,12 +75,17 @@
 
 .export-buttons {
   display: flex;
+  justify-content: space-between;
+  flex: 1;
   gap: 10px;
-  flex-shrink: 0;
+  width: 100%;
+  margin-top: 10px;
 }
 
 .export-buttons button {
-  padding: 8px 14px;
+  flex: 1;
+  padding: 10px 0;
+  text-align: center;
   border-radius: 6px;
   background-color: #ffd700;
   color: #002c5f;
@@ -88,10 +93,10 @@
   font-family: 'Krasar', sans-serif;
   font-weight: bold;
   cursor: pointer;
-  white-space: nowrap;
   box-shadow: 0 2px 6px rgba(0,0,0,0.2);
   transition: background 0.3s;
 }
+
 .export-buttons button:hover {
   background-color: #ffcc00;
 }
