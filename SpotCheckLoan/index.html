@@ -1244,15 +1244,14 @@ const url = updateId
 
 fetch(url, {
   method,
-  
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${sessionStorage.getItem("token")}`
-      },
-      body: JSON.stringify(payload)
-    })
-      .then(res => res.json())
-      .then(data => {
+  headers: {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${sessionStorage.getItem("token")}`
+  },
+  body: JSON.stringify(payload)
+})
+.then(res => res.json())
+.then(data => {
   alert(updateId ? "✅ Spot Check updated successfully!" : "✅ Spot Check saved successfully!");
   resetForm();
   document.getElementById("saveBtn").textContent = "Save";
