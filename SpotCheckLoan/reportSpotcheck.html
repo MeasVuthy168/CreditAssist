@@ -132,7 +132,7 @@
   max-width: 700px;
   margin: 16px auto;
   background: white;
-  padding: 36px;
+  padding: 12px;
   border-radius: 12px;
   overflow-x: auto;
   max-height: 400px;
@@ -164,21 +164,15 @@
       z-index: 2;
       text-align: center;
     }
-
-.report-title-fixed {
+    .report-title {
   font-size: 14px;
-  color:  #0d2d5c;
+  color: #0d2d5c;
   font-weight: bold;
+  margin: 8px 0 6px 0;
+  padding: 0 8px;
   font-family: 'Krasar', sans-serif;
-  padding: 6px 16px 4px;
-  background-color: #1c2331;
-  position: sticky;
-  top: 118px; /* adjust if needed */
-  z-index: 5;
 }
 
-
-    
     .bottom-bar {
       position: fixed;
       bottom: 0;
@@ -248,10 +242,11 @@
 </div>
 
   
-<div class="report-title-fixed">📘បញ្ជីឈ្មោះអតិថិជនដែលបានត្រួតពិនិត្យរួច</div>
-<div class="report-table-wrapper">
-  <table class="report-table" id="reportTable">
-    
+
+  <div class="report-table-wrapper">
+    <div class="report-title">📘បញ្ជីឈ្មោះអតិថិជនដែលបានត្រួតពិនិត្យរួច</div>
+    <table class="report-table" id="reportTable">
+
       <thead id="tableHead">
         <tr>
           <th colspan="20">I. ព័ត៌មានឥណទាន(Credit Information)</th>
