@@ -48,39 +48,54 @@
   max-width: 700px;
   margin: 60px auto 0;
   background: #ffffff;
-  padding: 10px 20px;
+  padding: 14px 16px;
   border-radius: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
   box-sizing: border-box;
-  overflow-x: auto;
-}
-.date-group {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-.export-buttons {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
 }
 
-   .export-buttons button {
-      padding: 8px 14px;
-      border-radius: 6px;
-      background-color: #ffd700;
-      color: #002c5f;
-      border: none;
-      font-family: 'Krasar', sans-serif;
-      cursor: pointer;
-    }
+.date-group {
+  display: flex;
+  gap: 10px;
+  flex: 1;
+}
+
+.date-group input {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-family: 'Krasar', sans-serif;
+  font-size: 14px;
+  width: 100%;
+  min-width: 120px;
+}
+
+.export-buttons {
+  display: flex;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.export-buttons button {
+  padding: 8px 14px;
+  border-radius: 6px;
+  background-color: #ffd700;
+  color: #002c5f;
+  border: none;
+  font-family: 'Krasar', sans-serif;
+  font-weight: bold;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  transition: background 0.3s;
+}
+.export-buttons button:hover {
+  background-color: #ffcc00;
+}
     
-    }
-    .filter-container input {
-      padding: 8px;
-      border-radius: 6px;
-      border: none;
-      font-family: 'Krasar', sans-serif;
-    }
     .search-box {
       margin: 1px 1px 1px 1px;
     }
