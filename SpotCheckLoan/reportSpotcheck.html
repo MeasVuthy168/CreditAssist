@@ -366,7 +366,7 @@ function renderTable(data) {
   // If no data
   if (!data || data.length === 0) {
     tbody.innerHTML = "<tr><td colspan='99'>⚠️ គ្មានទិន្នន័យ</td></tr>";
-    summaryRow.textContent = "ចំនួនឥណទានដែលបានត្រួតពិនិត្យសរុបមានៈ 0";
+    summaryRow.textContent = "👥ចំនួនឥណទានដែលបានត្រួតពិនិត្យសរុបមានៈ 0";
     return;
   }
 
@@ -382,7 +382,7 @@ function renderTable(data) {
   });
 
   // Update summary count
-  summaryRow.textContent = `ចំនួនឥណទានដែលបានត្រួតពិនិត្យសរុបមានៈ ${data.length}`;
+  summaryRow.textContent = `👥ចំនួនឥណទានដែលបានត្រួតពិនិត្យសរុបមានៈ ${data.length}នាក់`;
 }
 
     
