@@ -1257,15 +1257,14 @@ fetch(url, {
   resetForm();
   document.getElementById("saveBtn").textContent = "Save";
   document.getElementById("saveBtn").removeAttribute("data-update-id");
+})
+.catch(err => {
+  console.error("❌ Save error:", err);
+  alert("❌ Save failed. See console.");
+})
+.finally(() => {
+  document.getElementById("loadingOverlay").style.display = "none";
 });
-      .catch(err => {
-        console.error("❌ Save error:", err);
-        alert("❌ Save failed. See console.");
-      })
-      .finally(() => {
-        document.getElementById("loadingOverlay").style.display = "none";
-      });
-  });
 
   clearBtn.addEventListener("click", () => {
     resetForm();
