@@ -136,6 +136,24 @@
   font-family: 'Krasar', sans-serif;
   width: 100%;
 }
+    .fixed-title-container {
+  max-width: 700px;
+  margin: 16px auto;
+  background: white;
+  border-radius: 12px;
+  box-sizing: border-box;
+  position: sticky;
+  top: 140px;
+  z-index: 999;
+  padding-bottom: 12px;
+}
+
+    .report-title {
+      font-size: 14px;
+      color: #0d2d5c;
+      font-weight: bold;
+      font-family: 'Krasar', sans-serif;
+    }
 
 
    
@@ -170,24 +188,7 @@
       text-align: center;
     }
 
-.fixed-title-container {
-  max-width: 700px;
-  margin: 16px auto;
-  background: white;
-  border-radius: 12px;
-  box-sizing: border-box;
-  position: sticky;
-  top: 140px;
-  z-index: 999;
-  padding-bottom: 12px;
-}
 
-    .report-title {
-      font-size: 14px;
-      color: #0d2d5c;
-      font-weight: bold;
-      font-family: 'Krasar', sans-serif;
-    }
     
     .bottom-bar {
       position: fixed;
@@ -260,7 +261,6 @@
 
  <div class="fixed-title-container">
   <div class="report-title">📘បញ្ជីឈ្មោះអតិថិជនដែលបានត្រួតពិនិត្យរួច</div>
-  <div class="report-table-wrapper">
     <table class="report-table" id="reportTable">
       <thead id="tableHead">
         <tr>
@@ -281,7 +281,6 @@
       </thead>
       <tbody id="tableBody"></tbody>
     </table>
-  </div>
 </div>
 
 
