@@ -128,6 +128,16 @@
   font-family: 'Krasar', sans-serif;
   font-size: 13px;
 }
+    .summary-label {
+  margin-top: 12px;
+  color: #ccc;
+  font-size: 12px;
+  text-align: center;
+  font-family: 'Krasar', sans-serif;
+}
+
+
+    
     .report-table-wrapper {
   max-width: 700px;
   margin: 16px auto;
@@ -212,7 +222,7 @@
 </head>
 <body>
   
-  <div class="header-bar">
+<div class="header-bar">
   <button class="back-icon" onclick="window.location.href='./index.html'">←</button>
   <div class="header-title">បញ្ជីត្រួតពិនិត្យឥណទាន</div>
   <div class="search-box">
@@ -222,7 +232,7 @@
 
  
   
-  <div class="filter-container">
+ <div class="filter-container">
   <div class="date-group">
   <div class="date-field">
     <label for="fromDate">កាលបរិច្ឆេទចាប់ផ្តើម</label>
@@ -239,6 +249,7 @@
     <button onclick="window.print()">Print PDF</button>
     <button onclick="window.print()">Print Form</button>
   </div>
+   <div id="summaryRow" class="summary-label">ចំនួនឥណទានដែលបានត្រួតពិនិត្យសរុបមានៈ 0</div>
 </div>
 
   
@@ -341,27 +352,41 @@
         });
     }
 
-    function renderTable(data) {
-      const tbody = document.getElementById("tableBody");
-      const labelRow = document.getElementById("tableHeadLabels");
-      tbody.innerHTML = "";
-      labelRow.innerHTML = khmerHeaders.map(h => `<th>${h}</th>`).join("");
+function renderTable(data) {
+  const tbody = document.getElementById("tableBody");
+  const labelRow = document.getElementById("tableHeadLabels");
+  const summaryRow = document.getElementById("summaryRow");
 
-      if (!data || data.length === 0) {
-        tbody.innerHTML = "<tr><td colspan='99'>⚠️ គ្មានទិន្នន័យ</td></tr>";
-        return;
-      }
+  // Clear old content
+  tbody.innerHTML = "";
+  labelRow.innerHTML = "";
 
-      data.forEach(row => {
-        const tr = document.createElement("tr");
-        dataKeys.forEach(key => {
-          const td = document.createElement("td");
-          td.textContent = row[key] || "";
-          tr.appendChild(td);
-        });
-        tbody.appendChild(tr);
-      });
-    }
+  // Insert headers
+  labelRow.innerHTML = khmerHeaders.map(h => `<th>${h}</th>`).join("");
+
+  // If no data
+  if (!data || data.length === 0) {
+    tbody.innerHTML = "<tr><td colspan='99'>⚠️ គ្មានទិន្នន័យ</td></tr>";
+    summaryRow.textContent = "ចំនួនឥណទានដែលបានត្រួតពិនិត្យសរុបមានៈ 0";
+    return;
+  }
+
+  // Loop and render rows
+  data.forEach(row => {
+    const tr = document.createElement("tr");
+    dataKeys.forEach(key => {
+      const td = document.createElement("td");
+      td.textContent = row[key] || "";
+      tr.appendChild(td);
+    });
+    tbody.appendChild(tr);
+  });
+
+  // Update summary count
+  summaryRow.textContent = `ចំនួនឥណទានដែលបានត្រួតពិនិត្យសរុបមានៈ ${data.length}`;
+}
+
+    
 
     function exportExcel() {
       const table = document.getElementById("reportTable");
