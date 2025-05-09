@@ -220,7 +220,7 @@
     (row.LD_CUSTOMER_ID || "").toLowerCase().includes(term)
   );
   renderTable(filtered);
-});
+  });
 
     
     const debug = (msg) => {
@@ -313,7 +313,7 @@
       renderTable(filtered);
     });
 
-    let currentData = [];
+  
     window.onload = () => {
       fetchData();
     };
