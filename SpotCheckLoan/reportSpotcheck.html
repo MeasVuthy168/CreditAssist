@@ -175,15 +175,26 @@
       z-index: 2;
       text-align: center;
     }
-    .report-title {
-  font-size: 14px;
-  color: #0d2d5c;
-  font-weight: bold;
-  margin: 8px 0 6px 0;
-  padding: 0 8px;
-  font-family: 'Krasar', sans-serif;
-}
 
+.fixed-title-container {
+      max-width: 700px;
+      margin: 16px auto 0;
+      background: white;
+      border-radius: 12px 12px 0 0;
+      padding: 12px 12px 0;
+      box-sizing: border-box;
+      position: sticky;
+      top: 140px;
+      z-index: 999;
+    }
+
+    .report-title {
+      font-size: 14px;
+      color: #0d2d5c;
+      font-weight: bold;
+      font-family: 'Krasar', sans-serif;
+    }
+    
     .bottom-bar {
       position: fixed;
       bottom: 0;
@@ -252,11 +263,12 @@
   <div id="summaryRow" class="summary-label">👥ចំនួនឥណទានដែលបានត្រួតពិនិត្យសរុបមានៈ 0</div>
 </div>
 
-
-<div class="report-table-wrapper">
+  <div class="fixed-title-container">
     <div class="report-title">📘បញ្ជីឈ្មោះអតិថិជនដែលបានត្រួតពិនិត្យរួច</div>
-    <table class="report-table" id="reportTable">
+  </div>
 
+ <div class="report-table-wrapper">
+    <table class="report-table" id="reportTable">
       <thead id="tableHead">
         <tr>
           <th colspan="20">I. ព័ត៌មានឥណទាន(Credit Information)</th>
