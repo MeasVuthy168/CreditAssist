@@ -158,35 +158,40 @@
 
    
     .report-table-wrapper {
-  overflow-y: auto; 
-  overflow-x: auto;
+  overflow-y: auto;
   max-height: 360px;
- }
-    .report-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 15px 15px 15px;
-      font-size: 12px;
-      background: white;
-      color: black;
-      position: relative;
-    }
-    .report-table th,
-    .report-table td {
-      padding: 12px;
-      border: 1px solid #ccc;
-      white-space: nowrap;
-      font-size: 13px;
-      -webkit-text-size-adjust: 100%;
-    }
-    .report-table th {
-      background: #0d2d5c;
-      color: white;
-      position: sticky;
-      top: 0;
-      z-index: 2;
-      text-align: center;
-    }
+  position: relative;
+  border-radius: 0 0 12px 12px;
+  border-top: none;
+}
+
+.report-table {
+  border-collapse: collapse;
+  font-size: 12px;
+  background: white;
+  color: black;
+  width: max-content;
+  min-width: 100%;
+}
+
+.report-table thead th {
+  position: sticky;
+  top: 0;
+  background: #0d2d5c;
+  color: white;
+  z-index: 2;
+  text-align: center;
+  padding: 12px;
+  border: 1px solid #ccc;
+  white-space: nowrap;
+}
+
+.report-table td {
+  padding: 12px;
+  border: 1px solid #ccc;
+  white-space: nowrap;
+  font-size: 13px;
+}
 
 
     
@@ -259,7 +264,7 @@
 </div>
 
 
- <div class="fixed-title-container">
+<div class="fixed-title-container">
   <div class="report-title">📘បញ្ជីឈ្មោះអតិថិជនដែលបានត្រួតពិនិត្យរួច</div>
   <div class="report-table-wrapper">
     <table class="report-table" id="reportTable">
@@ -284,7 +289,6 @@
     </table>
   </div>
 </div>
-
 
  <div id="debugBox" style="color:yellow; font-size:12px; padding:4px 16px;"></div>
   
