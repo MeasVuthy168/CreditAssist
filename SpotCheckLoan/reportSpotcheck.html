@@ -211,6 +211,18 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="../notifications/checkNotification.js"></script>
   <script>
+
+    let currentData = [];
+   document.getElementById("searchInput").addEventListener("input", () => {
+    const term = document.getElementById("searchInput").value.toLowerCase();
+    const filtered = currentData.filter(row =>
+    (row.NAME_KHMER || "").toLowerCase().includes(term) ||
+    (row.LD_CUSTOMER_ID || "").toLowerCase().includes(term)
+  );
+  renderTable(filtered);
+});
+
+    
     const debug = (msg) => {
       const box = document.getElementById("debugBox");
       box.innerHTML += `<div>${msg}</div>`;
