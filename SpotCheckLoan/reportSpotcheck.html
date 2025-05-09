@@ -82,8 +82,6 @@
       background: white;
       color: black;
       position: relative;
-      font-size: 12px;
-      -webkit-text-size-adjust: 100%;
     }
     .report-table th,
     .report-table td {
@@ -100,8 +98,6 @@
       top: 0;
       z-index: 2;
       text-align: center;
-      font-size: 13px;
-      -webkit-text-size-adjust: 100%; /* Prevent iOS zooming text */
     }
     .bottom-bar {
       position: fixed;
@@ -178,17 +174,17 @@
       <thead id="tableHead">
         <tr>
           <th colspan="20">I. ព័ត៌មានឥណទាន(Credit Information)</th>
-          <th colspan="12">II. ការចុះត្រួតពិនិត្យផ្ទាល់(Physical Inspection on side Visit)</th>
+          <th colspan="12">II. ការចុះត្រួតពិនិត្យផ្ទាល់</th>
           <th colspan="1">III. សន្និដ្ឋាន</th>
         </tr>
         <tr>
           <th colspan="16">ក - ព័ត៌មានអតិថិជន</th>
           <th colspan="2">ខ - ប្រវត្តិសងប្រាក់</th>
-          <th colspan="2">គ - ស្ថានភាពឯកសារឥណទាន</th>
-          <th colspan="4">ក - ព័ត៌មានមុខរបរ</th>
-          <th colspan="4">ខ - ព័ត៌មានទ្រព្យធានា</th>
+          <th colspan="2">គ - ស្ថានភាពឯកសារ</th>
+          <th colspan="4">ក - មុខរបរ</th>
+          <th colspan="4">ខ - ទ្រព្យធានា</th>
           <th colspan="4">គ - សញ្ញាណហានិភ័យ</th>
-          <th colspan="1">សន្និដ្ឋាន</th>
+          <th>សន្និដ្ឋាន</th>
         </tr>
         <tr id="tableHeadLabels"></tr>
       </thead>
@@ -211,18 +207,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="../notifications/checkNotification.js"></script>
   <script>
-
     let currentData = [];
-   document.getElementById("searchInput").addEventListener("input", () => {
-    const term = document.getElementById("searchInput").value.toLowerCase();
-    const filtered = currentData.filter(row =>
-    (row.NAME_KHMER || "").toLowerCase().includes(term) ||
-    (row.LD_CUSTOMER_ID || "").toLowerCase().includes(term)
-  );
-  renderTable(filtered);
-  });
 
-    
     const debug = (msg) => {
       const box = document.getElementById("debugBox");
       box.innerHTML += `<div>${msg}</div>`;
@@ -231,7 +217,7 @@
     const token = sessionStorage.getItem("token");
     const loggedUser = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
     if (!token || !loggedUser.username) {
-      alert("Session expired or unauthorized. Please log in again.");
+      alert("Session expired. Please log in again.");
       window.location.href = "../login.html";
     }
 
@@ -242,7 +228,7 @@
       "ស្ថានភាព", "បញ្ជាក់", "ស្ថានភាពឯកសារ", "មូលហេតុ",
       "មុខរបរពេលខ្ចី", "មុខរបរបច្ចុប្បន្ន", "ស្ថានភាពជំនួញ", "បញ្ជាក់បន្ថែម",
       "ប្រភេទទ្រព្យ", "ស្ថានភាពទ្រព្យធានា", "តម្លៃទ្រព្យធានា", "បញ្ជាក់បន្ថែម",
-      "គោលបំណងប្រើប្រាស់ឥណទាន", "បញ្ជាក់បន្ថែម","ប្រភពសំណងឥណងឥណទាន", "បញ្ជាក់បន្ថែម", "សន្និដ្ឋាន"
+      "គោលបំណងប្រើប្រាស់ឥណទាន", "បញ្ជាក់បន្ថែម", "ប្រភពសំណង", "បញ្ជាក់បន្ថែម", "សន្និដ្ឋាន"
     ];
 
     const dataKeys = [
@@ -267,7 +253,10 @@
       debug(`📦 Fetching: ${url}`);
       fetch(url, { headers: { Authorization: `Bearer ${token}` } })
         .then(res => res.json())
-        .then(data => renderTable(data || []))
+        .then(data => {
+          currentData = data || [];
+          renderTable(currentData);
+        })
         .catch(err => {
           debug("❌ Fetch error: " + err.message);
           alert("បរាជ័យក្នុងការទាញយកទិន្នន័យ");
@@ -302,8 +291,6 @@
       XLSX.writeFile(wb, "spotcheck_report.xlsx");
     }
 
-    document.getElementById("fromDate").addEventListener("change", fetchData);
-    document.getElementById("toDate").addEventListener("change", fetchData);
     document.getElementById("searchInput").addEventListener("input", () => {
       const term = document.getElementById("searchInput").value.toLowerCase();
       const filtered = currentData.filter(row =>
@@ -313,10 +300,9 @@
       renderTable(filtered);
     });
 
-  
-    window.onload = () => {
-      fetchData();
-    };
+    document.getElementById("fromDate").addEventListener("change", fetchData);
+    document.getElementById("toDate").addEventListener("change", fetchData);
+    window.onload = fetchData;
   </script>
 </body>
 </html>
