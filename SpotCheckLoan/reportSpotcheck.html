@@ -138,17 +138,11 @@
 }
 
 
-    
+   
     .report-table-wrapper {
-  max-width: 700px;
-  margin: 16px auto;
-  background: white;
-  padding: 12px;
-  border-radius: 12px;
   overflow-x: auto;
-  max-height: 400px;
   overflow-y: auto;
-  box-sizing: border-box;
+  max-height: 360px;
 }
     .report-table {
       width: 100%;
@@ -177,16 +171,16 @@
     }
 
 .fixed-title-container {
-      max-width: 700px;
-      margin: 16px auto 0;
-      background: white;
-      border-radius: 12px 12px 0 0;
-      padding: 12px 12px 0;
-      box-sizing: border-box;
-      position: sticky;
-      top: 140px;
-      z-index: 999;
-    }
+  max-width: 700px;
+  margin: 16px auto;
+  background: white;
+  border-radius: 12px;
+  box-sizing: border-box;
+  position: sticky;
+  top: 140px;
+  z-index: 999;
+  padding-bottom: 12px;
+}
 
     .report-title {
       font-size: 14px;
@@ -264,8 +258,9 @@
 </div>
 
 
-  <div class="fixed-title-container">
-        <div class="report-title">📘បញ្ជីឈ្មោះអតិថិជនដែលបានត្រួតពិនិត្យរួច</div>
+ <div class="fixed-title-container">
+  <div class="report-title">📘បញ្ជីឈ្មោះអតិថិជនដែលបានត្រួតពិនិត្យរួច</div>
+  <div class="report-table-wrapper">
     <table class="report-table" id="reportTable">
       <thead id="tableHead">
         <tr>
@@ -287,6 +282,8 @@
       <tbody id="tableBody"></tbody>
     </table>
   </div>
+</div>
+
 
  <div id="debugBox" style="color:yellow; font-size:12px; padding:4px 16px;"></div>
   
