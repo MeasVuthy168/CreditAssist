@@ -1,4 +1,4 @@
-// SpotCheckLoan/searchHandler.js
+// ✅ SpotCheckLoan/searchHandler.js
 
 export function setupSearch(token) {
   const searchBox = document.getElementById("searchBox");
@@ -6,6 +6,8 @@ export function setupSearch(token) {
 
   function performSearch() {
     const query = searchBox.value.trim();
+    console.log("Search triggered. Query:", query);
+
     if (!query) {
       alert("សូមបញ្ចូលពាក្យគន្លិះ");
       return;
@@ -16,8 +18,14 @@ export function setupSearch(token) {
     fetch(`https://secure-backend-tzj9.onrender.com/api/customers/search?q=${encodeURIComponent(query)}`, {
       headers: { Authorization: `Bearer ${token}` }
     })
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        return res.json();
+      })
       .then(data => {
+        console.log("Search results:", data);
         const resultLabel = document.getElementById("resultLabel");
         const dataSourceLabel = document.getElementById("dataSourceLabel");
         const tapHint = document.getElementById("tapHint");
