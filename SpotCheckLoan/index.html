@@ -751,10 +751,8 @@ th, td {
 <script src="../notifications/checkNotification.js"></script>
 
 <!-- ✅ Modular Logic Imports -->
-<script type="module">
-  import { setupSearch } from './searchHandler.js';
-  import { setupSaveAndClear } from './saveOrClear.js';
-  import { setupNBCOSDetail } from './nbcosHandler.js';
+<!-- ✅ Modular Logic Loader -->
+<script type="module" src="./init.js">
 
   const token = sessionStorage.getItem("token");
 
