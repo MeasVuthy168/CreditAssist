@@ -1,118 +1,156 @@
 
-// nbcosHandler.js
+// SpotCheckLoan/saveOrClear.js
 
-export function setupNBCOSDetail(token) {
-  const tableBody = document.querySelector("#results tbody");
-  const detailPanel = document.getElementById("nbcosDetail");
-  const content = document.getElementById("nbcosContent");
+export function setupSaveAndClear(token) {
+  const saveBtn = document.getElementById("saveBtn");
+  const clearBtn = document.getElementById("clearBtn");
+  const createBtn = document.getElementById("createSpotCheckBtn");
+  const continueBtn = document.getElementById("continueToSection2Btn");
 
-  function formatDate(isoString) {
-    if (!isoString) return '';
-    const date = new Date(isoString);
-    return isNaN(date) ? '' : date.toLocaleDateString('en-GB');
+  // Toggle Section 1 when clicking Create SpotCheck
+  if (createBtn) {
+    createBtn.addEventListener("click", () => {
+      const section1 = document.getElementById("creditSection1");
+      section1.style.display = section1.style.display === "none" ? "block" : "none";
+      window.scrollTo({ top: section1.offsetTop - 60, behavior: "smooth" });
+    });
   }
 
-  function formatNumber(value) {
-    return (!value || isNaN(value)) ? '' : Number(value).toLocaleString('en-US');
+  // Show Section 2 when Continue is clicked
+  if (continueBtn) {
+    continueBtn.addEventListener("click", () => {
+      const section2 = document.getElementById("inspectionSection2");
+      section2.style.display = "block";
+      window.scrollTo({ top: section2.offsetTop - 60, behavior: "smooth" });
+    });
   }
 
-  tableBody.addEventListener("click", (e) => {
-    const row = e.target.closest("tr");
-    if (!row || !row.cells[0]) return;
+  const requiredIds = [
+    "cycle", "checkDate", "repaymentStatus", "docStatus",
+    "businessOld", "businessNow", "businessStatus",
+    "collateralType", "collateralStatus", "collateralValue",
+    "usagePurpose", "repaymentSource", "conclusion"
+  ];
 
-    const cif = row.cells[0].textContent.trim();
-    if (!cif) return;
+  function validateFields() {
+    let isValid = true;
+    let firstInvalid = null;
 
-    // Highlight clicked row
-    document.querySelectorAll("#results tbody tr").forEach(r => {
-      if (r !== row) r.style.display = "none";
-      else r.classList.add("highlighted-row");
+    requiredIds.forEach(id => {
+      const field = document.getElementById(id);
+      if (field && !field.value.trim()) {
+        field.style.border = "2px solid red";
+        if (!firstInvalid) firstInvalid = field;
+        isValid = false;
+      } else if (field) {
+        field.style.border = "";
+      }
     });
 
-    detailPanel.style.display = "block";
-    content.innerHTML = "<div class='spinner'></div> <span>កំពុងទាញយកទិន្នន័យ...</span>";
+    if (!isValid && firstInvalid) {
+      firstInvalid.scrollIntoView({ behavior: "smooth", block: "center" });
+      firstInvalid.focus();
+      alert("សូមបំពេញទិន្នន័យដែលត្រូវបញ្ចូល");
+    }
 
-    fetch(`https://secure-backend-tzj9.onrender.com/api/nbcos/by-cif?cif=${encodeURIComponent(cif)}`, {
-      headers: { Authorization: `Bearer ${token}` }
-    })
-      .then(res => res.json())
-      .then(data => {
-        if (!data || data.length === 0) {
-          content.innerHTML = "គ្មានទិន្នន័យឥណទានសម្រាប់អតិថិជននេះទេ។";
-          return;
-        }
+    return isValid;
+  }
 
-        sessionStorage.setItem("selectedNBCOS", JSON.stringify(data[0]));
-        console.log("✅ Selected NBCOS saved to sessionStorage:", data[0]);
+  function resetForm() {
+    document.querySelectorAll('#creditSection1 input, #inspectionSection2 input').forEach(i => {
+      i.value = '';
+      i.style.border = '';
+    });
+    document.querySelectorAll('#creditSection1 select, #inspectionSection2 select').forEach(s => {
+      s.selectedIndex = 0;
+      s.style.border = '';
+    });
+  }
 
-        const headers = [
-          "LD_CUSTOMER_ID", "CONTRACT_LD", "NAME_KHMER", "LOAN_SIZE",
-          "OS_USD", "RATE", "CCY", "DISBURSE", "MATURITY",
-          "LOAN_TERM", "LOAN_CYCLE", "CO", "Branch-OK", "Product Type"
-        ];
+  if (saveBtn) {
+    saveBtn.addEventListener("click", () => {
+      const user = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
+      const selectedNBCOS = JSON.parse(sessionStorage.getItem("selectedNBCOS") || "{}");
 
-        let totalOS = 0;
-        let tableHTML = `<div class="nbcos-wrapper">
-        <table class="nbcos-table">
-         <thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr></thead>
-         <tbody>`;
+      if (!selectedNBCOS || !selectedNBCOS.LD_CUSTOMER_ID) {
+        alert("❌ Please select a customer before saving.");
+        return;
+      }
 
-        data.forEach(item => {
-          tableHTML += `<tr>${headers.map(key => {
-            let value = item[key] || '';
+      if (!validateFields()) return;
 
-            if (["DISBURSE", "MATURITY", "BIRTH_DATE"].includes(key)) {
-              value = formatDate(value);
-            }
+      const payload = {
+        // NBCOS Data
+        LD_CUSTOMER_ID: selectedNBCOS.LD_CUSTOMER_ID || '',
+        CONTRACT_LD: selectedNBCOS.CONTRACT_LD || '',
+        NAME_KHMER: selectedNBCOS.NAME_KHMER || '',
+        LOAN_SIZE: selectedNBCOS.LOAN_SIZE || '',
+        OS_USD: selectedNBCOS.OS_USD || '',
+        RATE: selectedNBCOS.RATE || '',
+        CCY: selectedNBCOS.CCY || '',
+        DISBURSE: selectedNBCOS.DISBURSE || '',
+        MATURITY: selectedNBCOS.MATURITY || '',
+        LOAN_TERM: selectedNBCOS.LOAN_TERM || '',
+        LOAN_CYCLE: selectedNBCOS.LOAN_CYCLE || '',
+        CO: selectedNBCOS.CO || '',
+        BranchOK: selectedNBCOS["Branch-OK"] || '',
+        ProductType: selectedNBCOS["Product Type"] || '',
 
-            if (["OS_USD"].includes(key)) {
-              const num = parseFloat(item[key]) || 0;
-              totalOS += num;
-              value = formatNumber(num);
-            } else if (["LOAN_SIZE", "LOAN_SIZE_USD", "AGGREGATE_LOAN_SIZE", "OUTSTANDING", "OS_INT", "OS by Amount", "Amount_Paid_Old"].includes(key)) {
-              value = formatNumber(value);
-            }
+        // Section 1
+        cycle: document.getElementById("cycle").value,
+        checkDate: document.getElementById("checkDate").value,
+        repaymentStatus: document.getElementById("repaymentStatus").value,
+        repaymentNote: document.getElementById("repaymentNote").value,
+        docStatus: document.getElementById("docStatus").value,
+        docNote: document.getElementById("docNote").value,
 
-            return `<td>${value}</td>`;
-          }).join('')}</tr>`;
-        });
+        // Section 2
+        businessOld: document.getElementById("businessOld").value,
+        businessNow: document.getElementById("businessNow").value,
+        businessStatus: document.getElementById("businessStatus").value,
+        businessNote: document.getElementById("businessNote").value,
+        collateralType: document.getElementById("collateralType").value,
+        collateralStatus: document.getElementById("collateralStatus").value,
+        collateralValue: document.getElementById("collateralValue").value,
+        collateralNote: document.getElementById("collateralNote").value,
+        usagePurpose: document.getElementById("usagePurpose").value,
+        usageNote: document.getElementById("usageNote").value,
+        repaymentSource: document.getElementById("repaymentSource").value,
+        sourceNote: document.getElementById("sourceNote").value,
+        conclusion: document.getElementById("conclusion").value,
 
-        tableHTML += `</tbody></table></div>`;
-        content.innerHTML = tableHTML;
+        savedBy: user.username || "Unknown"
+      };
 
-        // Fetch latest DISBURSE date
-        fetch("https://secure-backend-tzj9.onrender.com/api/nbcos/latest-disburse", {
-          headers: { Authorization: `Bearer ${token}` }
-        })
-          .then(res => res.json())
-          .then(result => {
-            const latestDisburse = result.latestDisburse ? new Date(result.latestDisburse) : null;
-            content.innerHTML += `
-              <div class="nbcos-summary">
-                <div><strong>✨សរុបឥណទាន (OS_USD):</strong> ${formatNumber(totalOS)}</div>
-                <div><strong>✨ទិន្នន័យ NBC_OS គិតត្រឹម:</strong> ${latestDisburse ? formatDate(latestDisburse.toISOString()) : '-'}</div>
-              </div>`;
-          })
-          .catch(() => {
-            content.innerHTML += `
-              <div class="nbcos-summary">
-                <div><strong>✨សរុបឥណទាន (OS_USD):</strong> ${formatNumber(totalOS)}</div>
-                <div><strong>✨ទិន្នន័យ NBC_OS គិតត្រឹម:</strong> -</div>
-              </div>`;
-          });
+      document.getElementById("loadingOverlay").style.display = "flex";
+
+      fetch("https://secure-backend-tzj9.onrender.com/api/spotcheck", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(payload)
       })
-      .catch(err => {
-        console.error("NBCOS fetch error:", err);
-        content.innerHTML = "បរាជ័យក្នុងការទាញ NBCOS";
-      });
-  });
-
-  // Close button logic
-  document.getElementById("closeDetailBtn").addEventListener("click", () => {
-    detailPanel.style.display = "none";
-    document.querySelectorAll("#results tbody tr").forEach(row => {
-      row.style.display = "";
-      row.classList.remove("highlighted-row");
+        .then(res => res.json())
+        .then(() => {
+          alert("✅ Spot Check saved successfully!");
+          resetForm();
+        })
+        .catch(err => {
+          console.error("❌ Save error:", err);
+          alert("❌ Save failed. See console.");
+        })
+        .finally(() => {
+          document.getElementById("loadingOverlay").style.display = "none";
+        });
     });
-  });
+  }
+
+  if (clearBtn) {
+    clearBtn.addEventListener("click", () => {
+      resetForm();
+      alert("🧹 All fields cleared.");
+    });
+  }
 }
