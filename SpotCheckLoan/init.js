@@ -1,6 +1,4 @@
-
-// ✅ init.js
-
+// ✅ SpotCheckLoan/init.js
 import { setupSearch } from './searchHandler.js';
 import { setupSaveAndClear } from './saveOrClear.js';
 import { setupNBCOSDetail } from './nbcosHandler.js';
