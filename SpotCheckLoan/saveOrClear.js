@@ -1,90 +1,136 @@
-// saveOrClear.js
 
-document.addEventListener("DOMContentLoaded", () => {
-  console.log("✅ saveOrClear.js loaded");
+export function validateFields(requiredIds) {
+  let isValid = true;
+  let firstInvalid = null;
 
-  const saveBtn = document.getElementById("saveBtn");
-  const clearBtn = document.getElementById("clearBtn");
+  requiredIds.forEach(id => {
+    const field = document.getElementById(id);
+    if (field && !field.value.trim()) {
+      field.style.border = "2px solid red";
+      if (!firstInvalid) firstInvalid = field;
+      isValid = false;
+    } else if (field) {
+      field.style.border = "";
+    }
+  });
 
-  if (!saveBtn) {
-  console.error("❌ Save button not found. Check that #inspectionSection2 is visible and loaded before binding.");
-} else {
-  saveBtn.addEventListener("click", () => {
-    // ... Save logic ...
+  if (!isValid && firstInvalid) {
+    firstInvalid.scrollIntoView({ behavior: "smooth", block: "center" });
+    firstInvalid.focus();
+    alert("សូមបំពេញទិន្នន័យដែលត្រូវបញ្ចូល");
+  }
+
+  return isValid;
+}
+
+export function resetForm() {
+  document.querySelectorAll('#creditSection1 input, #inspectionSection2 input').forEach(i => {
+    i.value = '';
+    i.style.border = '';
+  });
+  document.querySelectorAll('#creditSection1 select, #inspectionSection2 select').forEach(s => {
+    s.selectedIndex = 0;
+    s.style.border = '';
   });
 }
 
-  // Handle Save / Update Spot Check Entry
-  saveBtn.addEventListener("click", () => {
-    const user = JSON.parse(sessionStorage.getItem("loggedInUser")) || {};
-    const selectedNBCOS = JSON.parse(sessionStorage.getItem("selectedNBCOS")) || {};
+export function handleSave(selectedNBCOS, user, token, requiredIds) {
+  if (!selectedNBCOS || !selectedNBCOS.LD_CUSTOMER_ID) {
+    alert("❌ Please select a customer before saving.");
+    return;
+  }
 
-    const payload = {
-      // From NBCOS detail
-      LD_CUSTOMER_ID: selectedNBCOS.LD_CUSTOMER_ID || '',
-      CONTRACT_LD: selectedNBCOS.CONTRACT_LD || '',
-      NAME_KHMER: selectedNBCOS.NAME_KHMER || '',
-      LOAN_SIZE: selectedNBCOS.LOAN_SIZE || '',
-      OS_USD: selectedNBCOS.OS_USD || '',
-      RATE: selectedNBCOS.RATE || '',
-      CCY: selectedNBCOS.CCY || '',
-      DISBURSE: selectedNBCOS.DISBURSE || '',
-      MATURITY: selectedNBCOS.MATURITY || '',
-      LOAN_TERM: selectedNBCOS.LOAN_TERM || '',
-      LOAN_CYCLE: selectedNBCOS.LOAN_CYCLE || '',
-      CO: selectedNBCOS.CO || '',
-      BranchOK: selectedNBCOS["Branch-OK"] || '',
-      ProductType: selectedNBCOS["Product Type"] || '',
+  if (!validateFields(requiredIds)) return;
 
-      // From Section 1
-      cycle: document.querySelector('#creditSection1 select:nth-of-type(1)').value,
-      checkDate: document.querySelector('#creditSection1 input[type="date"]').value,
-      repaymentStatus: document.querySelector('#creditSection1 select:nth-of-type(2)').value,
-      repaymentNote: document.querySelector('#creditSection1 input[type="text"]:nth-of-type(1)').value,
-      docStatus: document.querySelector('#creditSection1 select:nth-of-type(3)').value,
-      docNote: document.querySelector('#creditSection1 input[type="text"]:nth-of-type(2)').value,
+  const payload = {
+    // === All selectedNBCOS fields ===
+    LD_CUSTOMER_ID: selectedNBCOS.LD_CUSTOMER_ID || '',
+    CONTRACT_LD: selectedNBCOS.CONTRACT_LD || '',
+    NAME_KHMER: selectedNBCOS.NAME_KHMER || '',
+    NAME_ENG: selectedNBCOS.NAME_ENG || '',
+    TITLE: selectedNBCOS.TITLE || '',
+    LOAN_SIZE: selectedNBCOS.LOAN_SIZE || '',
+    LOAN_SIZE_USD: selectedNBCOS.LOAN_SIZE_USD || '',
+    AGGREGATE_LOAN_SIZE: selectedNBCOS.AGGREGATE_LOAN_SIZE || '',
+    OUTSTANDING: selectedNBCOS.OUTSTANDING || '',
+    OS_USD: selectedNBCOS.OS_USD || '',
+    OS_INT: selectedNBCOS.OS_INT || '',
+    RATE: selectedNBCOS.RATE || '',
+    CCY: selectedNBCOS.CCY || '',
+    DISBURSE: selectedNBCOS.DISBURSE || '',
+    MATURITY: selectedNBCOS.MATURITY || '',
+    LOAN_TERM: selectedNBCOS.LOAN_TERM || '',
+    LOAN_CYCLE: selectedNBCOS.LOAN_CYCLE || '',
+    CO: selectedNBCOS.CO || '',
+    LEGAL_NO: selectedNBCOS.LEGAL_NO || '',
+    LEGAL_TYPE: selectedNBCOS.LEGAL_TYPE || '',
+    BIRTH_DATE: selectedNBCOS.BIRTH_DATE || '',
+    CO_BORROWER: selectedNBCOS.CO_BORROWER || '',
+    GUARANTOR: selectedNBCOS.GUARANTOR || '',
+    LOAN_REFERENCE: selectedNBCOS.LOAN_REFERENCE || '',
+    PROFESSION: selectedNBCOS.PROFESSION || '',
+    NOTE: selectedNBCOS.NOTE || '',
+    "Restructure Covid Date": selectedNBCOS["Restructure Covid Date"] || '',
+    MEMBER_REF_CBC: selectedNBCOS.MEMBER_REF_CBC || '',
+    BranchOK: selectedNBCOS["Branch-OK"] || '',
+    "Branch-OK": selectedNBCOS["Branch-OK"] || '',
+    "Credit Officer": selectedNBCOS["Credit Officer"] || '',
+    "Product Type": selectedNBCOS["Product Type"] || '',
+    ABCM: selectedNBCOS.ABCM || '',
+    "OS by Amount": selectedNBCOS["OS by Amount"] || '',
+    "GovEmplyee/FactWorker": selectedNBCOS["GovEmplyee/FactWorker"] || '',
+    Address: selectedNBCOS.Address || '',
+    UniqueCIF: selectedNBCOS.UniqueCIF || '',
+    UniqueCIF_Branch: selectedNBCOS.UniqueCIF_Branch || '',
+    UniqueCIF_CO: selectedNBCOS.UniqueCIF_CO || '',
+    Amount_Paid_Old: selectedNBCOS.Amount_Paid_Old || '',
 
-      // From Section 2
-      businessOld: document.querySelector('#inspectionSection2 input:nth-of-type(1)').value,
-      businessNow: document.querySelector('#inspectionSection2 input:nth-of-type(2)').value,
-      businessStatus: document.querySelector('#inspectionSection2 select:nth-of-type(1)').value,
-      businessNote: document.querySelector('#inspectionSection2 input:nth-of-type(3)').value,
-      collateralType: document.querySelector('#inspectionSection2 select:nth-of-type(2)').value,
-      collateralStatus: document.querySelector('#inspectionSection2 select:nth-of-type(3)').value,
-      collateralValue: document.querySelector('#inspectionSection2 select:nth-of-type(4)').value,
-      collateralNote: document.querySelector('#inspectionSection2 input:nth-of-type(4)').value,
-      usagePurpose: document.querySelector('#inspectionSection2 select:nth-of-type(5)').value,
-      usageNote: document.querySelector('#inspectionSection2 input:nth-of-type(5)').value,
-      repaymentSource: document.querySelector('#inspectionSection2 select:nth-of-type(6)').value,
-      sourceNote: document.querySelector('#inspectionSection2 input:nth-of-type(6)').value,
-      conclusion: document.querySelector('#inspectionSection2 select:nth-of-type(7)').value,
+    // === Section 1 fields ===
+    cycle: document.getElementById("cycle").value,
+    checkDate: document.getElementById("checkDate").value,
+    repaymentStatus: document.getElementById("repaymentStatus").value,
+    repaymentNote: document.getElementById("repaymentNote").value,
+    docStatus: document.getElementById("docStatus").value,
+    docNote: document.getElementById("docNote").value,
 
-      // Who saved
-      savedBy: user.fullname || user.username || 'Unknown'
-    };
+    // === Section 2 fields ===
+    businessOld: document.getElementById("businessOld").value,
+    businessNow: document.getElementById("businessNow").value,
+    businessStatus: document.getElementById("businessStatus").value,
+    businessNote: document.getElementById("businessNote").value,
+    collateralType: document.getElementById("collateralType").value,
+    collateralStatus: document.getElementById("collateralStatus").value,
+    collateralValue: document.getElementById("collateralValue").value,
+    collateralNote: document.getElementById("collateralNote").value,
+    usagePurpose: document.getElementById("usagePurpose").value,
+    usageNote: document.getElementById("usageNote").value,
+    repaymentSource: document.getElementById("repaymentSource").value,
+    sourceNote: document.getElementById("sourceNote").value,
+    conclusion: document.getElementById("conclusion").value,
 
-    fetch("https://secure-backend-tzj9.onrender.com/api/spotcheck/save", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${sessionStorage.getItem("token")}`
-      },
-      body: JSON.stringify(payload)
+    savedBy: user.username || "Unknown"
+  };
+
+  document.getElementById("loadingOverlay").style.display = "flex";
+
+  fetch("https://secure-backend-tzj9.onrender.com/api/spotcheck", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`
+    },
+    body: JSON.stringify(payload)
+  })
+    .then(res => res.json())
+    .then(() => {
+      alert("✅ Spot Check saved successfully!");
+      resetForm();
     })
-      .then(res => res.json())
-      .then(data => {
-        alert("✅ Spot Check saved successfully!");
-      })
-      .catch(err => {
-        console.error("❌ Failed to save:", err);
-        alert("❌ Save failed. Please try again.");
-      });
-  });
-
-  // Handle Clear Button
-  clearBtn.addEventListener("click", () => {
-    document.querySelectorAll('#creditSection1 input, #inspectionSection2 input').forEach(input => input.value = '');
-    document.querySelectorAll('#creditSection1 select, #inspectionSection2 select').forEach(select => select.selectedIndex = 0);
-    alert("🧹 Cleared all fields.");
-  });
-});
+    .catch(err => {
+      console.error("❌ Save error:", err);
+      alert("❌ Save failed. See console.");
+    })
+    .finally(() => {
+      document.getElementById("loadingOverlay").style.display = "none";
+    });
+}
