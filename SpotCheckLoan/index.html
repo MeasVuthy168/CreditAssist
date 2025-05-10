@@ -742,18 +742,477 @@ th, td {
   </div>
 </div>
 
+  
 <span id="notif-badge" class="badge" style="display: none;"></span>
   
-<!-- ✅ External XLSX Library -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+  document.getElementById("createSpotCheckBtn").addEventListener("click", () => {
+    const section = document.getElementById("creditSection1");
+    section.style.display = section.style.display === "none" ? "block" : "none";
+    window.scrollTo({ top: section.offsetTop - 60, behavior: "smooth" });
+  });
+</script>
+<script>
+  document.getElementById("continueToSection2Btn").addEventListener("click", () => {
+    const section2 = document.getElementById("inspectionSection2");
+    section2.style.display = "block";
+    window.scrollTo({
+      top: section2.offsetTop - 60,
+      behavior: "smooth"
+    });
+  });
+</script>
+  
+<script>
+  function formatDate(isoString) {
+    if (!isoString) return '';
+    const date = new Date(isoString);
+    if (isNaN(date)) return '';
+    return date.toLocaleDateString('en-GB');
+  }
 
-<!-- ✅ Notification badge script -->
+  function formatNumber(value) {
+    if (!value || isNaN(value)) return '';
+    return Number(value).toLocaleString('en-US');
+  }
+
+  const token = sessionStorage.getItem('token');
+  if (!token) {
+    alert("Session expired or unauthorized access.");
+    window.location.href = "../login.html";
+  }
+
+  const AUTO_LOGOUT_MINUTES = 5;
+  let logoutTimer;
+  function resetLogoutTimer() {
+    clearTimeout(logoutTimer);
+    logoutTimer = setTimeout(() => {
+      sessionStorage.clear();
+      alert("Session expired due to inactivity. Please log in again.");
+      window.location.href = "../login.html";
+    }, AUTO_LOGOUT_MINUTES * 60 * 1000);
+  }
+  function setupAutoLogoutEvents() {
+    ['mousemove', 'mousedown', 'keydown', 'touchstart', 'touchmove', 'scroll'].forEach(event => {
+      document.addEventListener(event, resetLogoutTimer, true);
+    });
+    resetLogoutTimer();
+  }
+  window.addEventListener('load', setupAutoLogoutEvents);
+
+  document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("searchBox").addEventListener("input", () => {
+      document.getElementById("nbcosDetail").style.display = "none";
+      const allRows = document.querySelectorAll("#results tbody tr");
+      allRows.forEach(r => {
+        r.style.display = "";
+        r.classList.remove("highlighted-row");
+      });
+    });
+
+    document.getElementById("searchBox").addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        document.getElementById("searchButton").click();
+      }
+    });
+
+    document.getElementById("searchButton").addEventListener("click", performSearch);
+  });
+
+  function performSearch() {
+    const query = document.getElementById("searchBox").value.trim();
+    if (query === "") {
+      alert("សូមបញ្ចូលពាក្យគន្លិះ");
+      return;
+    }
+
+    document.getElementById("loadingOverlay").style.display = "flex";
+    fetch(`https://secure-backend-tzj9.onrender.com/api/customers/search?q=${encodeURIComponent(query)}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+      .then(res => res.json())
+      .then(results => {
+        if (results.length > 0) {
+          displayResults(results);
+        } else {
+          fetch(`https://secure-backend-tzj9.onrender.com/api/nbcos/search?q=${encodeURIComponent(query)}`, {
+            headers: { Authorization: `Bearer ${token}` }
+          })
+            .then(res => res.json())
+            .then(nbcosResults => displayNBCOSAsCustomer(nbcosResults))
+            .catch(err => {
+              alert("NBCOS fallback failed");
+              console.error("NBCOS search error:", err);
+            });
+        }
+      })
+      .catch(err => {
+        alert("Search failed");
+        console.error("Search error:", err);
+      })
+      .finally(() => {
+        document.getElementById("loadingOverlay").style.display = "none";
+      });
+  }
+
+  function displayResults(results) {
+  document.querySelector(".container").style.display = "block"; // ✅ re-show container
+  const resultsTable = document.querySelector("#results tbody");
+  const tableHead = document.querySelector("#results thead");
+  const resultLabel = document.getElementById("resultLabel");
+  const dataSourceLabel = document.getElementById("dataSourceLabel");
+  const tapHint = document.getElementById("tapHint");
+
+  resultLabel.textContent = `👥 លទ្ធផលស្វែងរក៖ ${results.length} CIF`;
+  tableHead.style.display = results.length > 0 ? "table-header-group" : "none";
+
+  resultsTable.innerHTML = results.length > 0
+    ? results.map(item => `
+      <tr>
+        <td>${item.CIF || ''}</td>
+        <td>${item.ACCOUNT_NAME || ''}</td>
+        <td>${item.NAME_KHMER || ''}</td>
+        <td>${item.GENDER || ''}</td>
+        <td>${item.ADDRESS || ''}</td>
+        <td>${item.Branch || ''}</td>
+        <td>${item["CO Response"] || ''}</td>
+        <td>${item.Note || ''}</td>
+      </tr>`).join("")
+    : "<tr><td colspan='9'>🚫រកមិនឃើញលទ្ធផលទេ</td></tr>";
+
+  if (results.length > 0) {
+    tapHint.style.display = "flex";
+    setTimeout(() => tapHint.style.display = "none", 8000);
+  }
+  dataSourceLabel.textContent = results.length > 0 ? "⛁ ទិន្នន័យ​ពី:DatabaseCustomer" : "";
+  }
+
+  document.querySelector("#results tbody").addEventListener("click", function (e) {
+    const row = e.target.closest("tr");
+    if (!row || !row.cells[0]) return;
+
+    const cif = row.cells[0].textContent.trim();
+    if (!cif) return;
+
+    const allRows = document.querySelectorAll("#results tbody tr");
+    allRows.forEach(r => {
+      if (r !== row) r.style.display = "none";
+      else r.classList.add("highlighted-row");
+    });
+
+    const detailPanel = document.getElementById("nbcosDetail");
+    const content = document.getElementById("nbcosContent");
+
+    detailPanel.style.display = "block";
+    content.innerHTML = "<div class='spinner'></div> <span>កំពុងទាញយកទិន្នន័យ...</span>";
+
+    fetch(`https://secure-backend-tzj9.onrender.com/api/nbcos/by-cif?cif=${encodeURIComponent(cif)}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (!data || data.length === 0) {
+          content.innerHTML = "គ្មានទិន្នន័យឥណទានសម្រាប់អតិថិជននេះទេ។";
+          return;
+        }
+        // Save selectedNBCOS to sessionStorage
+        sessionStorage.setItem("selectedNBCOS", JSON.stringify(data[0]));
+        console.log("✅ Selected NBCOS saved to sessionStorage:", data[0]);
+
+        const headers = [
+          "LD_CUSTOMER_ID", "CONTRACT_LD", "NAME_KHMER", "LOAN_SIZE",
+          "OS_USD", "RATE", "CCY", "DISBURSE", "MATURITY",
+          "LOAN_TERM", "LOAN_CYCLE", "CO", "Branch-OK", "Product Type"
+        ];
+
+        let totalOS = 0;
+
+        let tableHTML = `<div class="nbcos-wrapper">
+        <table class="nbcos-table">
+         <thead>
+         <tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr>
+         </thead><tbody>`;
+
+        data.forEach(item => {
+          tableHTML += `<tr>${headers.map(key => {
+            let value = item[key] || '';
+
+            if (["DISBURSE", "MATURITY", "BIRTH_DATE"].includes(key)) {
+              const d = new Date(value);
+              if (!isNaN(d)) value = formatDate(value);
+            }
+
+            if (["OS_USD"].includes(key)) {
+              const num = parseFloat(item[key]) || 0;
+              totalOS += num;
+              value = formatNumber(num);
+            } else if (["LOAN_SIZE", "LOAN_SIZE_USD", "AGGREGATE_LOAN_SIZE", "OUTSTANDING", "OS_INT", "OS by Amount", "Amount_Paid_Old"].includes(key)) {
+              value = formatNumber(value);
+            }
+
+            return `<td>${value}</td>`;
+          }).join('')}</tr>`;
+        });
+
+        tableHTML += `</tbody></table></div>`;
+        content.innerHTML = tableHTML;
+
+        // ✅ Fetch latest DISBURSE from entire database
+        fetch("https://secure-backend-tzj9.onrender.com/api/nbcos/latest-disburse", {
+          headers: { Authorization: `Bearer ${token}` }
+        })
+          .then(res => res.json())
+          .then(result => {
+            const latestDisburseDate = result.latestDisburse ? new Date(result.latestDisburse) : null;
+            const summaryHTML = `
+              <div class="nbcos-summary">
+                <div><strong>✨សរុបឥណទាន (OS_USD):</strong> ${formatNumber(totalOS)}</div>
+                <div><strong>✨ទិន្នន័យ NBC_OS គិតត្រឹម:</strong> ${latestDisburseDate ? formatDate(latestDisburseDate.toISOString()) : '-'}</div>
+              </div>`;
+            content.innerHTML += summaryHTML;
+          })
+          .catch(err => {
+            console.error("Latest DISBURSE fetch error:", err);
+            const summaryHTML = `
+              <div class="nbcos-summary">
+                <div><strong>✨សរុបឥណទាន (OS_USD):</strong> ${formatNumber(totalOS)}</div>
+                <div><strong>✨ទិន្នន័យ NBC_OS គិតត្រឹម:</strong> -</div>
+              </div>`;
+            content.innerHTML += summaryHTML;
+          });
+      })
+      .catch(err => {
+        console.error("NBCOS fetch error:", err);
+        content.innerHTML = "បរាជ័យក្នុងការទាញ NBCOS";
+      });
+  });
+
+  document.getElementById("searchBox").addEventListener("input", () => {
+  const query = document.getElementById("searchBox").value.trim();
+  const container = document.querySelector(".container");
+  const nbcosPanel = document.getElementById("nbcosDetail");
+  const resultsTable = document.querySelector("#results tbody");
+  const tableHead = document.querySelector("#results thead");
+  const resultLabel = document.getElementById("resultLabel");
+  const dataSourceLabel = document.getElementById("dataSourceLabel");
+
+  nbcosPanel.style.display = "none";
+
+  if (query !== "") {
+    container.style.display = "block";
+    
+    // Clear table contents and hide header
+    resultsTable.innerHTML = "";
+    tableHead.style.display = "none";
+
+    // Reset label info
+    resultLabel.textContent = "👥 លទ្ធផលស្វែងរក៖ 0";
+    dataSourceLabel.textContent = "";
+  } else {
+    container.style.display = "none";
+  }
+});
+
+
+  
+  function displayNBCOSAsCustomer(data) {
+  const resultsTable = document.querySelector("#results tbody");
+  const tableHead = document.querySelector("#results thead");
+  const resultLabel = document.getElementById("resultLabel");
+  const dataSourceLabel = document.getElementById("dataSourceLabel");
+  const tapHint = document.getElementById("tapHint");
+
+  resultLabel.textContent = `👥 លទ្ធផលស្វែងរក៖ ${data.length} CIF`;
+  tableHead.style.display = data.length > 0 ? "table-header-group" : "none";
+
+  resultsTable.innerHTML = data.length > 0
+    ? data.map(item => `
+      <tr>
+        <td>${item.LD_CUSTOMER_ID || ''}</td>
+        <td>${item.NAME_KHMER || ''}</td>
+        <td>${item.NAME_ENG || ''}</td>
+        <td>${item.TITLE || ''}</td>
+        <td>${item.Address || ''}</td>
+        <td>${item["Branch-OK"] || ''}</td>
+        <td>${item["Credit Officer"] || ''}</td>
+        <td>${item["GovEmplyee/FactWorker"] || ''}</td>
+      </tr>`).join("")
+    : "<tr><td colspan='9'>🚫 រកមិនឃើញលទ្ធផលទេ</td></tr>";
+
+  if (data.length > 0) {
+    tapHint.style.display = "flex";
+    setTimeout(() => tapHint.style.display = "none", 8000);
+  }
+
+  dataSourceLabel.textContent = data.length > 0 ? "⛁ ទិន្នន័យ​ពី:DatabaseNBC_OS" : "";
+}
+  </script>
+  
+<!-- ✅ Load shared notification script -->
 <script src="../notifications/checkNotification.js"></script>
 
-<!-- ✅ Modular Logic Loader -->
-<script type="module">
-  import './init.js';
-</script>
+<!-- ✅ Initialize after DOM ready -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  // Close NBCOS detail
+  document.getElementById("closeDetailBtn").addEventListener("click", () => {
+    document.getElementById("nbcosDetail").style.display = "none";
+    document.querySelectorAll("#results tbody tr").forEach(row => {
+      row.style.display = "";
+      row.classList.remove("highlighted-row");
+    });
 
+  // Handle "Continue to Section 2" button
+  document.getElementById("continueToSection2Btn").addEventListener("click", () => {
+    const section2 = document.getElementById("inspectionSection2");
+    section2.style.display = "block";
+    window.scrollTo({ top: section2.offsetTop - 60, behavior: "smooth" });
+  });
+
+    // Handle "Create SpotCheck" button
+  document.getElementById("createSpotCheckBtn").addEventListener("click", () => {
+    const section = document.getElementById("creditSection1");
+    section.style.display = section.style.display === "none" ? "block" : "none";
+    window.scrollTo({ top: section.offsetTop - 60, behavior: "smooth" });
+  });
+});  
+  
+  // Save & Clear
+  const saveBtn = document.getElementById("saveBtn");
+  const clearBtn = document.getElementById("clearBtn");
+
+  if (!saveBtn || !clearBtn) {
+    console.error("❌ Save or Clear button not found.");
+    return;
+  }
+
+  const requiredIds = [
+    "cycle", "checkDate", "repaymentStatus", "docStatus",
+    "businessOld", "businessNow", "businessStatus",
+    "collateralType", "collateralStatus", "collateralValue",
+    "usagePurpose", "repaymentSource", "conclusion"
+  ];
+
+  function validateFields() {
+    let isValid = true;
+    let firstInvalid = null;
+
+    requiredIds.forEach(id => {
+      const field = document.getElementById(id);
+      if (field && !field.value.trim()) {
+        field.style.border = "2px solid red";
+        if (!firstInvalid) firstInvalid = field;
+        isValid = false;
+      } else if (field) {
+        field.style.border = "";
+      }
+    });
+
+    if (!isValid && firstInvalid) {
+      firstInvalid.scrollIntoView({ behavior: "smooth", block: "center" });
+      firstInvalid.focus();
+      alert("សូមបំពេញទិន្នន័យដែលត្រូវបញ្ចូល");
+    }
+
+    return isValid;
+  }
+
+  function resetForm() {
+    document.querySelectorAll('#creditSection1 input, #inspectionSection2 input').forEach(i => {
+      i.value = '';
+      i.style.border = '';
+    });
+    document.querySelectorAll('#creditSection1 select, #inspectionSection2 select').forEach(s => {
+      s.selectedIndex = 0;
+      s.style.border = '';
+    });
+  }
+
+  saveBtn.addEventListener("click", () => {
+    const user = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
+    const selectedNBCOS = JSON.parse(sessionStorage.getItem("selectedNBCOS") || "{}");
+
+    if (!selectedNBCOS || !selectedNBCOS.LD_CUSTOMER_ID) {
+      alert("❌ Please select a customer before saving.");
+      return;
+    }
+
+    if (!validateFields()) return;
+
+    const payload = {
+      // NBCOS Data
+      LD_CUSTOMER_ID: selectedNBCOS.LD_CUSTOMER_ID || '',
+      CONTRACT_LD: selectedNBCOS.CONTRACT_LD || '',
+      NAME_KHMER: selectedNBCOS.NAME_KHMER || '',
+      LOAN_SIZE: selectedNBCOS.LOAN_SIZE || '',
+      OS_USD: selectedNBCOS.OS_USD || '',
+      RATE: selectedNBCOS.RATE || '',
+      CCY: selectedNBCOS.CCY || '',
+      DISBURSE: selectedNBCOS.DISBURSE || '',
+      MATURITY: selectedNBCOS.MATURITY || '',
+      LOAN_TERM: selectedNBCOS.LOAN_TERM || '',
+      LOAN_CYCLE: selectedNBCOS.LOAN_CYCLE || '',
+      CO: selectedNBCOS.CO || '',
+      BranchOK: selectedNBCOS["Branch-OK"] || '',
+      ProductType: selectedNBCOS["Product Type"] || '',
+
+      // Section 1
+      cycle: document.getElementById("cycle").value,
+      checkDate: document.getElementById("checkDate").value,
+      repaymentStatus: document.getElementById("repaymentStatus").value,
+      repaymentNote: document.getElementById("repaymentNote").value,
+      docStatus: document.getElementById("docStatus").value,
+      docNote: document.getElementById("docNote").value,
+
+      // Section 2
+      businessOld: document.getElementById("businessOld").value,
+      businessNow: document.getElementById("businessNow").value,
+      businessStatus: document.getElementById("businessStatus").value,
+      businessNote: document.getElementById("businessNote").value,
+      collateralType: document.getElementById("collateralType").value,
+      collateralStatus: document.getElementById("collateralStatus").value,
+      collateralValue: document.getElementById("collateralValue").value,
+      collateralNote: document.getElementById("collateralNote").value,
+      usagePurpose: document.getElementById("usagePurpose").value,
+      usageNote: document.getElementById("usageNote").value,
+      repaymentSource: document.getElementById("repaymentSource").value,
+      sourceNote: document.getElementById("sourceNote").value,
+      conclusion: document.getElementById("conclusion").value,
+
+      savedBy: user.username || "Unknown"
+    };
+
+    document.getElementById("loadingOverlay").style.display = "flex";
+
+    fetch("https://secure-backend-tzj9.onrender.com/api/spotcheck", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${sessionStorage.getItem("token")}`
+      },
+      body: JSON.stringify(payload)
+    })
+      .then(res => res.json())
+      .then(data => {
+        alert("✅ Spot Check saved successfully!");
+        resetForm();
+      })
+      .catch(err => {
+        console.error("❌ Save error:", err);
+        alert("❌ Save failed. See console.");
+      })
+      .finally(() => {
+        document.getElementById("loadingOverlay").style.display = "none";
+      });
+  });
+
+  clearBtn.addEventListener("click", () => {
+    resetForm();
+    alert("🧹 All fields cleared.");
+  });
+});
+</script>
 </body>
 </html>
