@@ -1,3 +1,6 @@
+
+// ✅ init.js
+
 import { setupSearch } from './searchHandler.js';
 import { setupSaveAndClear } from './saveOrClear.js';
 import { setupNBCOSDetail } from './nbcosHandler.js';
@@ -8,39 +11,34 @@ if (!token) {
   alert("Session expired or unauthorized access.");
   window.location.href = "../login.html";
 } else {
-  window.addEventListener("DOMContentLoaded", () => {
-    setupSearch(token);
-    setupSaveAndClear(token);
-    setupNBCOSDetail(token);
-    setupCreateSpotCheckButton();
-    setupAutoLogout();
-  });
+  setupSearch(token);
+  setupSaveAndClear(token);
+  setupNBCOSDetail(token);
+  setupCreateSpotCheckButton();
+  setupAutoLogoutEvents();
 }
 
 function setupCreateSpotCheckButton() {
   const btn = document.getElementById("createSpotCheckBtn");
-  if (!btn) return;
-  btn.addEventListener("click", () => {
-    const section = document.getElementById("creditSection1");
-    if (section) {
+  if (btn) {
+    btn.addEventListener("click", () => {
+      const section = document.getElementById("creditSection1");
       section.style.display = section.style.display === "none" ? "block" : "none";
       window.scrollTo({ top: section.offsetTop - 60, behavior: "smooth" });
-    }
-  });
+    });
+  }
 
   const contBtn = document.getElementById("continueToSection2Btn");
   if (contBtn) {
     contBtn.addEventListener("click", () => {
       const section2 = document.getElementById("inspectionSection2");
-      if (section2) {
-        section2.style.display = "block";
-        window.scrollTo({ top: section2.offsetTop - 60, behavior: "smooth" });
-      }
+      section2.style.display = "block";
+      window.scrollTo({ top: section2.offsetTop - 60, behavior: "smooth" });
     });
   }
 }
 
-function setupAutoLogout() {
+function setupAutoLogoutEvents() {
   const AUTO_LOGOUT_MINUTES = 5;
   let logoutTimer;
 
