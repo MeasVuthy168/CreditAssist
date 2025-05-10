@@ -12,8 +12,32 @@ if (!token) {
     setupSearch(token);
     setupSaveAndClear(token);
     setupNBCOSDetail(token);
+    setupCreateSpotCheckButton();
     setupAutoLogout();
   });
+}
+
+function setupCreateSpotCheckButton() {
+  const btn = document.getElementById("createSpotCheckBtn");
+  if (!btn) return;
+  btn.addEventListener("click", () => {
+    const section = document.getElementById("creditSection1");
+    if (section) {
+      section.style.display = section.style.display === "none" ? "block" : "none";
+      window.scrollTo({ top: section.offsetTop - 60, behavior: "smooth" });
+    }
+  });
+
+  const contBtn = document.getElementById("continueToSection2Btn");
+  if (contBtn) {
+    contBtn.addEventListener("click", () => {
+      const section2 = document.getElementById("inspectionSection2");
+      if (section2) {
+        section2.style.display = "block";
+        window.scrollTo({ top: section2.offsetTop - 60, behavior: "smooth" });
+      }
+    });
+  }
 }
 
 function setupAutoLogout() {
