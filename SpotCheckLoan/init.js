@@ -1,20 +1,23 @@
-// ✅ SpotCheckLoan/init.js
+// ✅ init.js
 import { setupSearch } from './searchHandler.js';
 import { setupSaveAndClear } from './saveOrClear.js';
 import { setupNBCOSDetail } from './nbcosHandler.js';
 
-const token = sessionStorage.getItem("token");
+window.addEventListener("DOMContentLoaded", () => {
+  const token = sessionStorage.getItem("token");
 
-if (!token) {
-  alert("Session expired or unauthorized access.");
-  window.location.href = "../login.html";
-} else {
+  if (!token) {
+    alert("Session expired or unauthorized access.");
+    window.location.href = "../login.html";
+    return;
+  }
+
   setupSearch(token);
   setupSaveAndClear(token);
   setupNBCOSDetail(token);
   setupCreateSpotCheckButton();
   setupAutoLogoutEvents();
-}
+});
 
 function setupCreateSpotCheckButton() {
   const btn = document.getElementById("createSpotCheckBtn");
