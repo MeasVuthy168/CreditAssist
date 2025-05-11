@@ -1272,26 +1272,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.getElementById("loadingOverlay").style.display = "flex";
 
-  const token = sessionStorage.getItem("token");
-  if (!token) {
-    alert("❌ Missing token. Please login again.");
-    window.location.href = "../login.html";
-    return;
-  }
-
   fetch(`https://secure-backend-tzj9.onrender.com/api/spotcheck?cif=${encodeURIComponent(cif)}`, {
-    headers: { Authorization: `Bearer ${token}` }
+    headers: { Authorization: `Bearer ${sessionStorage.getItem("token")}` }
   })
-    .then(res => {
-      if (!res.ok) {
-        console.error("❌ Response status:", res.status);
-        throw new Error("Failed to fetch SpotCheck record");
-      }
-      return res.json();
-    })
-    .then(data => {
-      if (Array.isArray(data) && data.length > 0) {
-        loadSpotCheckToForm(data[0]);
+    .then(res => res.json())
+    .then(records => {
+      if (records.length > 0) {
+        loadSpotCheckToForm(records[0]);
       } else {
         alert("រកមិនឃើញទិន្នន័យសម្រាប់កែប្រែ។");
       }
@@ -1304,7 +1291,7 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("loadingOverlay").style.display = "none";
     });
 }
-
+  
   function loadSpotCheckToForm(data) {
   const map = (id, value) => {
     const el = document.getElementById(id);
