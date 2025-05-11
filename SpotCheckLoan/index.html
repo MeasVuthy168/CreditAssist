@@ -1408,8 +1408,8 @@ const payload = {
   alert(`✅ Spot Check ${isUpdate ? "updated" : "saved"} successfully!`);
 
   // ✅ Add this to remember which CIF to highlight
-  sessionStorage.setItem("highlightCIF", payload.LD_CUSTOMER_ID);
-
+  sessionStorage.setItem("highlightRowId", data._id || recordId);
+    
   // ✅ Redirect to report page
   window.location.href = "reportSpotcheck.html";
 })
