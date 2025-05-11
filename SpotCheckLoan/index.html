@@ -1040,6 +1040,10 @@ function displayResults(results, source) {
   
 
   document.querySelector("#results tbody").addEventListener("click", function (e) {
+    
+    const sourceLabel = document.getElementById("dataSourceLabel").textContent;
+    if (sourceLabel.includes("DatabaseSpotCheck")) return;
+    
     const row = e.target.closest("tr");
     if (!row || !row.cells[0]) return;
 
