@@ -824,57 +824,61 @@ th, td {
 
 
   function performSearch() {
-  const query = document.getElementById("searchBox").value.trim();
-if (query === "") {
-  alert("សូមបញ្ចូលពាក្យគន្លិះ");
-  return;
-}
-
-document.getElementById("loadingOverlay").style.display = "flex";
-
-// 1. First search: SpotCheck database
-fetch(`https://secure-backend-tzj9.onrender.com/api/spotcheck/search?q=${encodeURIComponent(query)}`, {
-  headers: { Authorization: `Bearer ${token}` }
-})
-  .then(res => res.json())
-  .then(results => {
-    if (results.length > 0) {
-      displayResults(results, "SpotCheck");
-
-      // ✅ Call alert if found in SpotCheck database
-      alertOptionForSpotCheck(query); // <-- Add this here
-    } else {
-      // 2. If not found, search Customer database
-      fetch(`https://secure-backend-tzj9.onrender.com/api/customers/search?q=${encodeURIComponent(query)}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      })
-        .then(res => res.json())
-        .then(customerResults => {
-          if (customerResults.length > 0) {
-            displayResults(customerResults, "Customer");
-          } else {
-            // 3. If still not found, fallback to NBCOS
-            fetch(`https://secure-backend-tzj9.onrender.com/api/nbcos/search?q=${encodeURIComponent(query)}`, {
-              headers: { Authorization: `Bearer ${token}` }
-            })
-              .then(res => res.json())
-              .then(nbcosResults => displayNBCOSAsCustomer(nbcosResults))
-              .catch(err => {
-                alert("NBCOS fallback failed");
-                console.error("NBCOS search error:", err);
-              });
-          }
-        });
+    const query = document.getElementById("searchBox").value.trim();
+    if (query === "") {
+      alert("សូមបញ្ចូលពាក្យគន្លិះ");
+      return;
     }
-  })
-  .catch(err => {
-    alert("Search failed");
-    console.error("Search error:", err);
-  })
-  .finally(() => {
-    document.getElementById("loadingOverlay").style.display = "none";
+
+    document.getElementById("loadingOverlay").style.display = "flex";
+
+    // 1. First search: SpotCheck database
+    fetch(`https://secure-backend-tzj9.onrender.com/api/spotcheck/search?q=${encodeURIComponent(query)}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+      .then(res => res.json())
+      .then(results => {
+        if (results.length > 0) {
+          displayResults(results, "SpotCheck");
+          alertOptionForSpotCheck(query); // ✅ Ask if user wants to update
+        } else {
+          // 2. If not found, search Customer database
+          fetch(`https://secure-backend-tzj9.onrender.com/api/customers/search?q=${encodeURIComponent(query)}`, {
+            headers: { Authorization: `Bearer ${token}` }
+          })
+            .then(res => res.json())
+            .then(customerResults => {
+              if (customerResults.length > 0) {
+                displayResults(customerResults, "Customer");
+              } else {
+                // 3. If still not found, fallback to NBCOS
+                fetch(`https://secure-backend-tzj9.onrender.com/api/nbcos/search?q=${encodeURIComponent(query)}`, {
+                  headers: { Authorization: `Bearer ${token}` }
+                })
+                  .then(res => res.json())
+                  .then(nbcosResults => displayNBCOSAsCustomer(nbcosResults))
+                  .catch(err => {
+                    alert("NBCOS fallback failed");
+                    console.error("NBCOS search error:", err);
+                  });
+              }
+            });
+        }
+      })
+      .catch(err => {
+        alert("Search failed");
+        console.error("Search error:", err);
+      })
+      .finally(() => {
+        document.getElementById("loadingOverlay").style.display = "none";
+      });
+  }
+
+  // ✅ Hook to search button
+  document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("searchButton").addEventListener("click", performSearch);
   });
-  
+
 function displayResults(results, source) {
   document.querySelector(".container").style.display = "block";
   const resultsTable = document.querySelector("#results tbody");
@@ -1256,13 +1260,8 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("loadingOverlay").style.display = "none";
     });
 });
-  
-  clearBtn.addEventListener("click", () => {
-    resetForm();
-    alert("🧹 All fields cleared.");
-  });
-});
-function alertOptionForSpotCheck(cif) {
+
+  function alertOptionForSpotCheck(cif) {
   if (!confirm("លោកអ្នកបានបញ្ចូលទិន្នន័យត្រួតពិនិត្យឥណទានសម្រាប់អតិថិជននេះរួចហើយ។\n\nចង់បន្តធ្វើការកែប្រែទេ?")) {
     return;
   }
@@ -1326,8 +1325,6 @@ function alertOptionForSpotCheck(cif) {
   saveBtn.dataset.updateMode = "true";
   saveBtn.dataset.recordId = data._id; // Save record ID
 }
-
-  
 </script>
 </body>
 </html>
