@@ -1291,22 +1291,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (!validateFields()) return;
 
-    const payload = {
-      // NBCOS Data
-      LD_CUSTOMER_ID: selectedNBCOS.LD_CUSTOMER_ID || '',
-      CONTRACT_LD: selectedNBCOS.CONTRACT_LD || '',
-      NAME_KHMER: selectedNBCOS.NAME_KHMER || '',
-      LOAN_SIZE: selectedNBCOS.LOAN_SIZE || '',
-      OS_USD: selectedNBCOS.OS_USD || '',
-      RATE: selectedNBCOS.RATE || '',
-      CCY: selectedNBCOS.CCY || '',
-      DISBURSE: selectedNBCOS.DISBURSE || '',
-      MATURITY: selectedNBCOS.MATURITY || '',
-      LOAN_TERM: selectedNBCOS.LOAN_TERM || '',
-      LOAN_CYCLE: selectedNBCOS.LOAN_CYCLE || '',
-      CO: selectedNBCOS.CO || '',
-      BranchOK: selectedNBCOS["Branch-OK"] || '',
-      ProductType: selectedNBCOS["Product Type"] || '',
+    // Get latest NBCOS edits from the editable table cells
+const nbcosCells = document.querySelectorAll("#nbcosDetail .nbcos-table td");
+const keys = [
+  "LD_CUSTOMER_ID", "CONTRACT_LD", "NAME_KHMER", "LOAN_SIZE",
+  "OS_USD", "RATE", "CCY", "DISBURSE", "MATURITY",
+  "LOAN_TERM", "LOAN_CYCLE", "CO", "BranchOK", "ProductType"
+];
+const updatedNBCOS = {};
+nbcosCells.forEach((cell, index) => {
+  if (keys[index]) updatedNBCOS[keys[index]] = cell.textContent.trim();
+});
+
+const payload = {
+  ...updatedNBCOS,
 
       // Section 1
       cycle: document.getElementById("cycle").value,
