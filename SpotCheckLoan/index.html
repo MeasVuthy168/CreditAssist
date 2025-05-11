@@ -1007,7 +1007,9 @@ function displayResults(results, source) {
     ? results.map(item => {
         const row = headers.map(key => {
           if (key === "_id") {
-            return `<td><button class="load-spot-btn" data-id="${item._id}">✏️</button></td>`;
+            return item._id
+              ? `<td><button class="load-spot-btn" data-id="${item._id}">✏️</button></td>`
+              : "<td></td>";
           }
           return `<td>${item[key] || item[key.replace("BranchOK", "Branch-OK")] || ''}</td>`;
         }).join("");
