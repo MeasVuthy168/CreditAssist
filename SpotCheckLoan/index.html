@@ -845,6 +845,8 @@ function loadSpotCheckToForm(data) {
   `;
 
   nbcosContent.innerHTML = tableHTML;
+  // ✅ Hide tap hint in update mode
+  document.getElementById("tapHint").style.display = "none";
 }
 
   
