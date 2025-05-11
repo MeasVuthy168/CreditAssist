@@ -778,6 +778,8 @@ th, td {
     return Number(value).toLocaleString('en-US');
   }
 
+
+  function alertOptionForSpotCheck(cif) {
   if (!confirm("លោកអ្នកបានបញ្ចូលទិន្នន័យត្រួតពិនិត្យឥណទានសម្រាប់អតិថិជននេះរួចហើយ។\n\nចង់បន្តធ្វើការកែប្រែទេ?")) {
     return;
   }
@@ -806,7 +808,6 @@ th, td {
       document.getElementById("loadingOverlay").style.display = "none";
     });
 }
-
 
   
   const token = sessionStorage.getItem('token');
@@ -1293,7 +1294,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-  function alertOptionForSpotCheck(cif) {
+
   
   function loadSpotCheckToForm(data) {
   const map = (id, value) => {
