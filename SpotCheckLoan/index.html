@@ -1023,8 +1023,11 @@ function displayResults(results, source) {
   if (results.length > 0 && source !== "SpotCheck") {
   tapHint.style.display = "flex";
   setTimeout(() => tapHint.style.display = "none", 8000);
-}
-
+ }
+  if (source === "Customer" || source === "NBCOS") {
+    document.getElementById("createSpotCheckBtn").style.display = "block";
+  }
+  
   const sources = {
     "SpotCheck": "⛁ ទិន្នន័យ​ពី:DatabaseSpotCheck",
     "Customer": "⛁ ទិន្នន័យ​ពី:DatabaseCustomer"
@@ -1196,6 +1199,9 @@ function displayResults(results, source) {
   }
 
   dataSourceLabel.textContent = data.length > 0 ? "⛁ ទិន្នន័យ​ពី:DatabaseNBC_OS" : "";
+}
+  if (data.length > 0) {
+  document.getElementById("createSpotCheckBtn").style.display = "block";
 }
 
 
