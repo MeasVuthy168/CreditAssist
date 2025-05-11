@@ -373,27 +373,36 @@
     }
 
 function renderTable(data) {
+function renderTable(data) {
   const tbody = document.getElementById("tableBody");
   const labelRow = document.getElementById("tableHeadLabels");
   const summaryRow = document.getElementById("summaryRow");
 
+  // Clear old content
   tbody.innerHTML = "";
+  labelRow.innerHTML = "";
+
+  // Insert headers
   labelRow.innerHTML = khmerHeaders.map(h => `<th>${h}</th>`).join("");
 
+  // If no data
   if (!data || data.length === 0) {
     tbody.innerHTML = "<tr><td colspan='99'>⚠️ គ្មានទិន្នន័យ</td></tr>";
     summaryRow.textContent = "👥ចំនួនឥណទានដែលបានត្រួតពិនិត្យសរុបមានៈ 0";
     return;
   }
 
+  // Get highlighted CIF from sessionStorage
   const highlightCIF = sessionStorage.getItem("highlightCIF");
 
+  // Loop and render rows
   data.forEach(row => {
     const tr = document.createElement("tr");
 
+    // Add highlight class if CIF matches
     if (highlightCIF && row.LD_CUSTOMER_ID === highlightCIF) {
-      tr.style.backgroundColor = "#ffefc5"; // soft yellow highlight
-      setTimeout(() => sessionStorage.removeItem("highlightCIF"), 1000); // clear after use
+      tr.style.backgroundColor = "#ffff99"; // light yellow highlight
+      tr.style.fontWeight = "bold";
     }
 
     dataKeys.forEach(key => {
@@ -405,7 +414,11 @@ function renderTable(data) {
     tbody.appendChild(tr);
   });
 
+  // Update summary count
   summaryRow.textContent = `👥ចំនួនឥណទានដែលបានត្រួតពិនិត្យសរុបមានៈ ${data.length}នាក់`;
+
+  // Remove the highlight flag after rendering once
+  sessionStorage.removeItem("highlightCIF");
 }
     
 
