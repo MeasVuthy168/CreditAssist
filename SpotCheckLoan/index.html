@@ -872,7 +872,7 @@ th, td {
     });
 }
 
-  function displayResults(results, source) {
+function displayResults(results, source) {
   document.querySelector(".container").style.display = "block";
   const resultsTable = document.querySelector("#results tbody");
   const tableHead = document.querySelector("#results thead");
@@ -883,19 +883,29 @@ th, td {
   resultLabel.textContent = `👥 លទ្ធផលស្វែងរក៖ ${results.length} CIF`;
   tableHead.style.display = results.length > 0 ? "table-header-group" : "none";
 
+  let headers = [];
+  let headerLabels = [];
+
+  if (source === "SpotCheck") {
+    headers = ["LD_CUSTOMER_ID", "NAME_KHMER", "ProductType", "CO", "BranchOK", "repaymentStatus", "collateralType"];
+    headerLabels = ["CIF", "ឈ្មោះខ្មែរ", "ប្រភេទផលិតផល", "ភ្នាក់ងារ", "សាខា", "ស្ថានភាពសង", "ប្រភេទធានា"];
+  } else {
+    headers = ["CIF", "ACCOUNT_NAME", "NAME_KHMER", "GENDER", "ADDRESS", "Branch", "CO Response", "Note"];
+    headerLabels = ["CIF", "ឈ្មោះឡាតាំង", "ឈ្មោះខ្មែរ", "ភេទ", "អាស័យដ្ឋាន", "សាខា", "ភ្នាក់ងារ", "ចំណាំ"];
+  }
+
+  // Table headers
+  const theadHTML = `<tr>${headerLabels.map(label => `<th>${label}</th>`).join("")}</tr>`;
+  tableHead.innerHTML = theadHTML;
+
+  // Table rows
   resultsTable.innerHTML = results.length > 0
     ? results.map(item => `
-      <tr>
-        <td>${item.CIF || item.LD_CUSTOMER_ID || ''}</td>
-        <td>${item.ACCOUNT_NAME || item.NAME_KHMER || ''}</td>
-        <td>${item.NAME_KHMER || item.NAME_ENG || ''}</td>
-        <td>${item.GENDER || item.TITLE || ''}</td>
-        <td>${item.ADDRESS || item.Address || ''}</td>
-        <td>${item.Branch || item["Branch-OK"] || ''}</td>
-        <td>${item["CO Response"] || item["Credit Officer"] || ''}</td>
-        <td>${item.Note || item["GovEmplyee/FactWorker"] || ''}</td>
-      </tr>`).join("")
-    : "<tr><td colspan='9'>🚫រកមិនឃើញលទ្ធផលទេ</td></tr>";
+        <tr>
+          ${headers.map(key => `<td>${item[key] || ''}</td>`).join("")}
+        </tr>
+      `).join("")
+    : "<tr><td colspan='8'>🚫រកមិនឃើញលទ្ធផលទេ</td></tr>";
 
   if (results.length > 0) {
     tapHint.style.display = "flex";
@@ -909,6 +919,9 @@ th, td {
 
   dataSourceLabel.textContent = sources[source] || "";
 }
+
+
+  
 
   document.querySelector("#results tbody").addEventListener("click", function (e) {
     const row = e.target.closest("tr");
