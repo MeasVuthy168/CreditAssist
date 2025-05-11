@@ -811,13 +811,16 @@ function loadSpotCheckToForm(data) {
   document.getElementById("inspectionSection2").style.display = "block";
   window.scrollTo({ top: document.getElementById("creditSection1").offsetTop - 60, behavior: "smooth" });
 
-  // Show as Update
+ // === Update Save Button Mode ===
   const saveBtn = document.getElementById("saveBtn");
   saveBtn.textContent = "Update";
   saveBtn.dataset.updateMode = "true";
   saveBtn.dataset.recordId = data._id;
   document.getElementById("createSpotCheckBtn").style.display = "none";
 
+  // ✅ Save to sessionStorage to prevent error
+  sessionStorage.setItem("selectedNBCOS", JSON.stringify(data));
+  
   // === NBCOS Detail ===
   const nbcosDetail = document.getElementById("nbcosDetail");
   const nbcosContent = document.getElementById("nbcosContent");
