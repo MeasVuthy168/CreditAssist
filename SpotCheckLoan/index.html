@@ -1404,11 +1404,15 @@ const payload = {
    // resetForm();
   // })
       
-    .then(data => {
-    alert(`✅ Spot Check ${isUpdate ? "updated" : "saved"} successfully!`);
-    window.location.href = "reportSpotcheck.html";
-    })
+  .then(data => {
+  alert(`✅ Spot Check ${isUpdate ? "updated" : "saved"} successfully!`);
 
+  // ✅ Add this to remember which CIF to highlight
+  sessionStorage.setItem("highlightCIF", payload.LD_CUSTOMER_ID);
+
+  // ✅ Redirect to report page
+  window.location.href = "reportSpotcheck.html";
+})
       
       .catch(err => {
         console.error("❌ Save error:", err);
