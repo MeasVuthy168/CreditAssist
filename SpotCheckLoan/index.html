@@ -743,9 +743,16 @@ th, td {
 
   
 <span id="notif-badge" class="badge" style="display: none;"></span>
+
 <!-- ✅ Load shared notification script -->
 <script src="../notifications/checkNotification.js"></script>
-
+<script>
+  window.addEventListener("DOMContentLoaded", () => {
+    if (typeof checkNotification === "function") {
+      checkNotification();
+    }
+  });
+</script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
