@@ -1020,10 +1020,10 @@ function displayResults(results, source) {
       }).join("")
     : "<tr><td colspan='8'>🚫រកមិនឃើញលទ្ធផលទេ</td></tr>";
 
-  if (results.length > 0) {
-    tapHint.style.display = "flex";
-    setTimeout(() => tapHint.style.display = "none", 8000);
-  }
+  if (results.length > 0 && source !== "SpotCheck") {
+  tapHint.style.display = "flex";
+  setTimeout(() => tapHint.style.display = "none", 8000);
+}
 
   const sources = {
     "SpotCheck": "⛁ ទិន្នន័យ​ពី:DatabaseSpotCheck",
