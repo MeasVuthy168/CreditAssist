@@ -1,4 +1,5 @@
 
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
@@ -1072,41 +1073,12 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
     // Handle "Create SpotCheck" button
-  document.getElementById("createSpotCheckBtn").addEventListener("click", async () => {
-    const selected = JSON.parse(sessionStorage.getItem("selectedNBCOS") || "{}");
-    const cif = selected.LD_CUSTOMER_ID;
-
-    if (!cif) {
-      alert("សូមជ្រើសរើសអតិថិជនជាមុនសិន");
-      return;
-    }
-
-    try {
-      // Check if this CIF already exists in SpotCheck collection
-      const response = await fetch(`https://secure-backend-tzj9.onrender.com/api/spotcheck/check-cif?cif=${encodeURIComponent(cif)}`, {
-        headers: {
-          Authorization: `Bearer ${sessionStorage.getItem("token")}`
-        }
-      });
-
-      const data = await response.json();
-
-      if (data.exists) {
-        // Show confirm alert
-        const choice = confirm("លោកអ្នកបានបញ្ចូលរួចរាល់ម្តងហេីយ​។\nតេីលោកអ្នកចង់ Update ឬ Add new?");
-        if (!choice) return; // You’ll implement update flow later
-      }
-
-      // Show Section 1 form
-      const section = document.getElementById("creditSection1");
-      section.style.display = section.style.display === "none" ? "block" : "none";
-      window.scrollTo({ top: section.offsetTop - 60, behavior: "smooth" });
-
-    } catch (err) {
-      console.error("❌ Error checking CIF existence:", err);
-      alert("មានបញ្ហាក្នុងការត្រួតពិនិត្យ CIF។ សូមព្យាយាមម្តងទៀត។");
-    }
+  document.getElementById("createSpotCheckBtn").addEventListener("click", () => {
+    const section = document.getElementById("creditSection1");
+    section.style.display = section.style.display === "none" ? "block" : "none";
+    window.scrollTo({ top: section.offsetTop - 60, behavior: "smooth" });
   });
+});  
   
   // Save & Clear
   const saveBtn = document.getElementById("saveBtn");
