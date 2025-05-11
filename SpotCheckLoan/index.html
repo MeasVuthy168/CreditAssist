@@ -822,56 +822,57 @@ th, td {
     document.getElementById("searchButton").addEventListener("click", performSearch);
   });
 
-  function performSearch() {
   const query = document.getElementById("searchBox").value.trim();
-  if (query === "") {
-    alert("សូមបញ្ចូលពាក្យគន្លិះ");
-    return;
-  }
-
-  document.getElementById("loadingOverlay").style.display = "flex";
-
-  // 1. First search: SpotCheck database
-  fetch(`https://secure-backend-tzj9.onrender.com/api/spotcheck/search?q=${encodeURIComponent(query)}`, {
-    headers: { Authorization: `Bearer ${token}` }
-  })
-    .then(res => res.json())
-    .then(results => {
-      if (results.length > 0) {
-        displayResults(results, "SpotCheck");
-      } else {
-        // 2. If not found, search Customer database
-        fetch(`https://secure-backend-tzj9.onrender.com/api/customers/search?q=${encodeURIComponent(query)}`, {
-          headers: { Authorization: `Bearer ${token}` }
-        })
-          .then(res => res.json())
-          .then(customerResults => {
-            if (customerResults.length > 0) {
-              displayResults(customerResults, "Customer");
-            } else {
-              // 3. If still not found, fallback to NBCOS
-              fetch(`https://secure-backend-tzj9.onrender.com/api/nbcos/search?q=${encodeURIComponent(query)}`, {
-                headers: { Authorization: `Bearer ${token}` }
-              })
-                .then(res => res.json())
-                .then(nbcosResults => displayNBCOSAsCustomer(nbcosResults))
-                .catch(err => {
-                  alert("NBCOS fallback failed");
-                  console.error("NBCOS search error:", err);
-                });
-            }
-          });
-      }
-    })
-    .catch(err => {
-      alert("Search failed");
-      console.error("Search error:", err);
-    })
-    .finally(() => {
-      document.getElementById("loadingOverlay").style.display = "none";
-    });
+if (query === "") {
+  alert("សូមបញ្ចូលពាក្យគន្លិះ");
+  return;
 }
 
+document.getElementById("loadingOverlay").style.display = "flex";
+
+// 1. First search: SpotCheck database
+fetch(`https://secure-backend-tzj9.onrender.com/api/spotcheck/search?q=${encodeURIComponent(query)}`, {
+  headers: { Authorization: `Bearer ${token}` }
+})
+  .then(res => res.json())
+  .then(results => {
+    if (results.length > 0) {
+      displayResults(results, "SpotCheck");
+
+      // ✅ Call alert if found in SpotCheck database
+      alertOptionForSpotCheck(query); // <-- Add this here
+    } else {
+      // 2. If not found, search Customer database
+      fetch(`https://secure-backend-tzj9.onrender.com/api/customers/search?q=${encodeURIComponent(query)}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+        .then(res => res.json())
+        .then(customerResults => {
+          if (customerResults.length > 0) {
+            displayResults(customerResults, "Customer");
+          } else {
+            // 3. If still not found, fallback to NBCOS
+            fetch(`https://secure-backend-tzj9.onrender.com/api/nbcos/search?q=${encodeURIComponent(query)}`, {
+              headers: { Authorization: `Bearer ${token}` }
+            })
+              .then(res => res.json())
+              .then(nbcosResults => displayNBCOSAsCustomer(nbcosResults))
+              .catch(err => {
+                alert("NBCOS fallback failed");
+                console.error("NBCOS search error:", err);
+              });
+          }
+        });
+    }
+  })
+  .catch(err => {
+    alert("Search failed");
+    console.error("Search error:", err);
+  })
+  .finally(() => {
+    document.getElementById("loadingOverlay").style.display = "none";
+  });
+  
 function displayResults(results, source) {
   document.querySelector(".container").style.display = "block";
   const resultsTable = document.querySelector("#results tbody");
@@ -1164,89 +1165,167 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  
   saveBtn.addEventListener("click", () => {
-    const user = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
-    const selectedNBCOS = JSON.parse(sessionStorage.getItem("selectedNBCOS") || "{}");
+  const user = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
+  const selectedNBCOS = JSON.parse(sessionStorage.getItem("selectedNBCOS") || "{}");
 
-    if (!selectedNBCOS || !selectedNBCOS.LD_CUSTOMER_ID) {
-      alert("❌ Please select a customer before saving.");
-      return;
-    }
+  if (!selectedNBCOS || !selectedNBCOS.LD_CUSTOMER_ID) {
+    alert("❌ Please select a customer before saving.");
+    return;
+  }
 
-    if (!validateFields()) return;
+  if (!validateFields()) return;
 
-    const payload = {
-      // NBCOS Data
-      LD_CUSTOMER_ID: selectedNBCOS.LD_CUSTOMER_ID || '',
-      CONTRACT_LD: selectedNBCOS.CONTRACT_LD || '',
-      NAME_KHMER: selectedNBCOS.NAME_KHMER || '',
-      LOAN_SIZE: selectedNBCOS.LOAN_SIZE || '',
-      OS_USD: selectedNBCOS.OS_USD || '',
-      RATE: selectedNBCOS.RATE || '',
-      CCY: selectedNBCOS.CCY || '',
-      DISBURSE: selectedNBCOS.DISBURSE || '',
-      MATURITY: selectedNBCOS.MATURITY || '',
-      LOAN_TERM: selectedNBCOS.LOAN_TERM || '',
-      LOAN_CYCLE: selectedNBCOS.LOAN_CYCLE || '',
-      CO: selectedNBCOS.CO || '',
-      BranchOK: selectedNBCOS["Branch-OK"] || '',
-      ProductType: selectedNBCOS["Product Type"] || '',
+  const payload = {
+    // NBCOS Data
+    LD_CUSTOMER_ID: selectedNBCOS.LD_CUSTOMER_ID || '',
+    CONTRACT_LD: selectedNBCOS.CONTRACT_LD || '',
+    NAME_KHMER: selectedNBCOS.NAME_KHMER || '',
+    LOAN_SIZE: selectedNBCOS.LOAN_SIZE || '',
+    OS_USD: selectedNBCOS.OS_USD || '',
+    RATE: selectedNBCOS.RATE || '',
+    CCY: selectedNBCOS.CCY || '',
+    DISBURSE: selectedNBCOS.DISBURSE || '',
+    MATURITY: selectedNBCOS.MATURITY || '',
+    LOAN_TERM: selectedNBCOS.LOAN_TERM || '',
+    LOAN_CYCLE: selectedNBCOS.LOAN_CYCLE || '',
+    CO: selectedNBCOS.CO || '',
+    BranchOK: selectedNBCOS["Branch-OK"] || '',
+    ProductType: selectedNBCOS["Product Type"] || '',
 
-      // Section 1
-      cycle: document.getElementById("cycle").value,
-      checkDate: document.getElementById("checkDate").value,
-      repaymentStatus: document.getElementById("repaymentStatus").value,
-      repaymentNote: document.getElementById("repaymentNote").value,
-      docStatus: document.getElementById("docStatus").value,
-      docNote: document.getElementById("docNote").value,
+    // Section 1
+    cycle: document.getElementById("cycle").value,
+    checkDate: document.getElementById("checkDate").value,
+    repaymentStatus: document.getElementById("repaymentStatus").value,
+    repaymentNote: document.getElementById("repaymentNote").value,
+    docStatus: document.getElementById("docStatus").value,
+    docNote: document.getElementById("docNote").value,
 
-      // Section 2
-      businessOld: document.getElementById("businessOld").value,
-      businessNow: document.getElementById("businessNow").value,
-      businessStatus: document.getElementById("businessStatus").value,
-      businessNote: document.getElementById("businessNote").value,
-      collateralType: document.getElementById("collateralType").value,
-      collateralStatus: document.getElementById("collateralStatus").value,
-      collateralValue: document.getElementById("collateralValue").value,
-      collateralNote: document.getElementById("collateralNote").value,
-      usagePurpose: document.getElementById("usagePurpose").value,
-      usageNote: document.getElementById("usageNote").value,
-      repaymentSource: document.getElementById("repaymentSource").value,
-      sourceNote: document.getElementById("sourceNote").value,
-      conclusion: document.getElementById("conclusion").value,
+    // Section 2
+    businessOld: document.getElementById("businessOld").value,
+    businessNow: document.getElementById("businessNow").value,
+    businessStatus: document.getElementById("businessStatus").value,
+    businessNote: document.getElementById("businessNote").value,
+    collateralType: document.getElementById("collateralType").value,
+    collateralStatus: document.getElementById("collateralStatus").value,
+    collateralValue: document.getElementById("collateralValue").value,
+    collateralNote: document.getElementById("collateralNote").value,
+    usagePurpose: document.getElementById("usagePurpose").value,
+    usageNote: document.getElementById("usageNote").value,
+    repaymentSource: document.getElementById("repaymentSource").value,
+    sourceNote: document.getElementById("sourceNote").value,
+    conclusion: document.getElementById("conclusion").value,
 
-      savedBy: user.username || "Unknown"
-    };
+    savedBy: user.username || "Unknown"
+  };
 
-    document.getElementById("loadingOverlay").style.display = "flex";
+  document.getElementById("loadingOverlay").style.display = "flex";
 
-    fetch("https://secure-backend-tzj9.onrender.com/api/spotcheck", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${sessionStorage.getItem("token")}`
-      },
-      body: JSON.stringify(payload)
+  // ✅ Determine if this is update mode
+  const isUpdate = saveBtn.dataset.updateMode === "true";
+  const recordId = saveBtn.dataset.recordId;
+  const method = isUpdate ? "PUT" : "POST";
+  const url = isUpdate
+    ? `https://secure-backend-tzj9.onrender.com/api/spotcheck/${recordId}`
+    : `https://secure-backend-tzj9.onrender.com/api/spotcheck`;
+
+  fetch(url, {
+    method,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${sessionStorage.getItem("token")}`
+    },
+    body: JSON.stringify(payload)
+  })
+    .then(res => res.json())
+    .then(data => {
+      alert(`✅ Spot Check ${isUpdate ? "updated" : "saved"} successfully!`);
+      resetForm();
+      saveBtn.textContent = "Save";
+      delete saveBtn.dataset.updateMode;
+      delete saveBtn.dataset.recordId;
     })
-      .then(res => res.json())
-      .then(data => {
-        alert("✅ Spot Check saved successfully!");
-        resetForm();
-      })
-      .catch(err => {
-        console.error("❌ Save error:", err);
-        alert("❌ Save failed. See console.");
-      })
-      .finally(() => {
-        document.getElementById("loadingOverlay").style.display = "none";
-      });
-  });
-
+    .catch(err => {
+      console.error("❌ Save error:", err);
+      alert("❌ Save failed. See console.");
+    })
+    .finally(() => {
+      document.getElementById("loadingOverlay").style.display = "none";
+    });
+});
+  
   clearBtn.addEventListener("click", () => {
     resetForm();
     alert("🧹 All fields cleared.");
   });
 });
+function alertOptionForSpotCheck(cif) {
+  if (!confirm("លោកអ្នកបានបញ្ចូលទិន្នន័យត្រួតពិនិត្យឥណទានសម្រាប់អតិថិជននេះរួចហើយ។\n\nចង់បន្តធ្វើការកែប្រែទេ?")) {
+    return;
+  }
+
+  const options = confirm("ចុច OK ដើម្បី Update SpotCheck\nចុច Cancel ដើម្បីបង្កើតថ្មី");
+
+  if (options) {
+    // User chose to update
+    fetch(`https://secure-backend-tzj9.onrender.com/api/spotcheck?cif=${encodeURIComponent(cif)}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+    .then(res => res.json())
+    .then(records => {
+      if (records.length > 0) {
+        loadSpotCheckToForm(records[0]);
+      } else {
+        alert("រកមិនឃើញទិន្នន័យសម្រាប់កែប្រែ។");
+      }
+    });
+  }
+}
+
+  function loadSpotCheckToForm(data) {
+  const map = (id, value) => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.value = value || '';
+    }
+  };
+
+  // Section 1
+  map("cycle", data.cycle);
+  map("checkDate", data.checkDate);
+  map("repaymentStatus", data.repaymentStatus);
+  map("repaymentNote", data.repaymentNote);
+  map("docStatus", data.docStatus);
+  map("docNote", data.docNote);
+
+  // Section 2
+  map("businessOld", data.businessOld);
+  map("businessNow", data.businessNow);
+  map("businessStatus", data.businessStatus);
+  map("businessNote", data.businessNote);
+  map("collateralType", data.collateralType);
+  map("collateralStatus", data.collateralStatus);
+  map("collateralValue", data.collateralValue);
+  map("collateralNote", data.collateralNote);
+  map("usagePurpose", data.usagePurpose);
+  map("usageNote", data.usageNote);
+  map("repaymentSource", data.repaymentSource);
+  map("sourceNote", data.sourceNote);
+  map("conclusion", data.conclusion);
+
+  document.getElementById("creditSection1").style.display = "block";
+  document.getElementById("inspectionSection2").style.display = "block";
+  window.scrollTo({ top: document.getElementById("creditSection1").offsetTop - 60, behavior: "smooth" });
+
+  // Change button to Update
+  const saveBtn = document.getElementById("saveBtn");
+  saveBtn.textContent = "Update";
+  saveBtn.dataset.updateMode = "true";
+  saveBtn.dataset.recordId = data._id; // Save record ID
+}
+
+  
 </script>
 </body>
 </html>
