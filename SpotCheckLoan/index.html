@@ -997,8 +997,8 @@ function displayResults(results, source) {
   let headerLabels = [];
 
   if (source === "SpotCheck") {
-    headers = ["LD_CUSTOMER_ID", "NAME_KHMER", "CO", "BranchOK", "_id"];
-    headerLabels = ["CIF", "ឈ្មោះខ្មែរ", "ភ្នាក់ងារ", "សាខា", "សកម្មភាព"];
+    headers = ["LD_CUSTOMER_ID", "CONTRACT_LD", "NAME_KHMER", "checkDate", "_id"];
+    headerLabels = ["CIF", "លេខកិច្ចសន្យា", "ឈ្មោះខ្មែរ", "កាលបរិច្ឆេទត្រួតពិនិត្យ", "សកម្មភាព"];
   } else {
     headers = ["CIF", "ACCOUNT_NAME", "NAME_KHMER", "GENDER", "ADDRESS", "Branch", "CO Response", "Note"];
     headerLabels = ["CIF", "ឈ្មោះឡាតាំង", "ឈ្មោះខ្មែរ", "ភេទ", "អាស័យដ្ឋាន", "សាខា", "ភ្នាក់ងារ", "ចំណាំ"];
