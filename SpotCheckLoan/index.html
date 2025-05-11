@@ -777,8 +777,51 @@ th, td {
     if (!value || isNaN(value)) return '';
     return Number(value).toLocaleString('en-US');
   }
+  
 
+function loadSpotCheckToForm(data) {
+  const map = (id, value) => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.value = value || '';
+    }
+  };
 
+  // Section 1
+  map("cycle", data.cycle);
+  map("checkDate", data.checkDate);
+  map("repaymentStatus", data.repaymentStatus);
+  map("repaymentNote", data.repaymentNote);
+  map("docStatus", data.docStatus);
+  map("docNote", data.docNote);
+
+  // Section 2
+  map("businessOld", data.businessOld);
+  map("businessNow", data.businessNow);
+  map("businessStatus", data.businessStatus);
+  map("businessNote", data.businessNote);
+  map("collateralType", data.collateralType);
+  map("collateralStatus", data.collateralStatus);
+  map("collateralValue", data.collateralValue);
+  map("collateralNote", data.collateralNote);
+  map("usagePurpose", data.usagePurpose);
+  map("usageNote", data.usageNote);
+  map("repaymentSource", data.repaymentSource);
+  map("sourceNote", data.sourceNote);
+  map("conclusion", data.conclusion);
+
+  document.getElementById("creditSection1").style.display = "block";
+  document.getElementById("inspectionSection2").style.display = "block";
+  window.scrollTo({ top: document.getElementById("creditSection1").offsetTop - 60, behavior: "smooth" });
+
+  // Change button to Update
+  const saveBtn = document.getElementById("saveBtn");
+  saveBtn.textContent = "Update";
+  saveBtn.dataset.updateMode = "true";
+  saveBtn.dataset.recordId = data._id; // Save record ID
+}
+
+  
   function alertOptionForSpotCheck(cif) {
   if (!confirm("លោកអ្នកបានបញ្ចូលទិន្នន័យត្រួតពិនិត្យឥណទានសម្រាប់អតិថិជននេះរួចហើយ។\n\nចង់បន្តធ្វើការកែប្រែទេ?")) {
     return;
@@ -1296,47 +1339,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   
-  function loadSpotCheckToForm(data) {
-  const map = (id, value) => {
-    const el = document.getElementById(id);
-    if (el) {
-      el.value = value || '';
-    }
-  };
-
-  // Section 1
-  map("cycle", data.cycle);
-  map("checkDate", data.checkDate);
-  map("repaymentStatus", data.repaymentStatus);
-  map("repaymentNote", data.repaymentNote);
-  map("docStatus", data.docStatus);
-  map("docNote", data.docNote);
-
-  // Section 2
-  map("businessOld", data.businessOld);
-  map("businessNow", data.businessNow);
-  map("businessStatus", data.businessStatus);
-  map("businessNote", data.businessNote);
-  map("collateralType", data.collateralType);
-  map("collateralStatus", data.collateralStatus);
-  map("collateralValue", data.collateralValue);
-  map("collateralNote", data.collateralNote);
-  map("usagePurpose", data.usagePurpose);
-  map("usageNote", data.usageNote);
-  map("repaymentSource", data.repaymentSource);
-  map("sourceNote", data.sourceNote);
-  map("conclusion", data.conclusion);
-
-  document.getElementById("creditSection1").style.display = "block";
-  document.getElementById("inspectionSection2").style.display = "block";
-  window.scrollTo({ top: document.getElementById("creditSection1").offsetTop - 60, behavior: "smooth" });
-
-  // Change button to Update
-  const saveBtn = document.getElementById("saveBtn");
-  saveBtn.textContent = "Update";
-  saveBtn.dataset.updateMode = "true";
-  saveBtn.dataset.recordId = data._id; // Save record ID
-}
+  
 </script>
 </body>
 </html>
