@@ -377,35 +377,36 @@ function renderTable(data) {
   const labelRow = document.getElementById("tableHeadLabels");
   const summaryRow = document.getElementById("summaryRow");
 
-  // Clear old content
   tbody.innerHTML = "";
-  labelRow.innerHTML = "";
-
-  // Insert headers
   labelRow.innerHTML = khmerHeaders.map(h => `<th>${h}</th>`).join("");
 
-  // If no data
   if (!data || data.length === 0) {
     tbody.innerHTML = "<tr><td colspan='99'>⚠️ គ្មានទិន្នន័យ</td></tr>";
     summaryRow.textContent = "👥ចំនួនឥណទានដែលបានត្រួតពិនិត្យសរុបមានៈ 0";
     return;
   }
 
-  // Loop and render rows
+  const highlightCIF = sessionStorage.getItem("highlightCIF");
+
   data.forEach(row => {
     const tr = document.createElement("tr");
+
+    if (highlightCIF && row.LD_CUSTOMER_ID === highlightCIF) {
+      tr.style.backgroundColor = "#ffefc5"; // soft yellow highlight
+      setTimeout(() => sessionStorage.removeItem("highlightCIF"), 1000); // clear after use
+    }
+
     dataKeys.forEach(key => {
       const td = document.createElement("td");
       td.textContent = row[key] || "";
       tr.appendChild(td);
     });
+
     tbody.appendChild(tr);
   });
 
-  // Update summary count
   summaryRow.textContent = `👥ចំនួនឥណទានដែលបានត្រួតពិនិត្យសរុបមានៈ ${data.length}នាក់`;
 }
-
     
 
     function exportExcel() {
