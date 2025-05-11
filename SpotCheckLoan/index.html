@@ -1396,15 +1396,15 @@ const payload = {
       body: JSON.stringify(payload)
     })
       .then(res => res.json())
-   .then(data => {
-   alert(`✅ Spot Check ${isUpdate ? "updated" : "saved"} successfully!`);
-    resetForm();
-   })
+   //.then(data => {
+  // alert(`✅ Spot Check ${isUpdate ? "updated" : "saved"} successfully!`);
+   // resetForm();
+  // })
       
-    // .then(data => {
-    // alert(`✅ Spot Check ${isUpdate ? "updated" : "saved"} successfully!`);
-    // window.location.href = "reportSpotcheck.html";
-    // })
+    .then(data => {
+    alert(`✅ Spot Check ${isUpdate ? "updated" : "saved"} successfully!`);
+    window.location.href = "reportSpotcheck.html";
+    })
 
       
       .catch(err => {
