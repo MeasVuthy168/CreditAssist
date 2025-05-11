@@ -1306,7 +1306,7 @@ document.addEventListener("DOMContentLoaded", () => {
       s.style.border = '';
     });
   }
-
+  clearBtn.addEventListener("click", resetForm);
   
   saveBtn.addEventListener("click", () => {
   const user = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
