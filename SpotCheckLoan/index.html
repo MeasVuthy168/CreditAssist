@@ -1043,40 +1043,67 @@ function displayResults(results, source) {
   const isEditBtn = e.target.closest(".load-spot-btn");
   const sourceLabel = document.getElementById("dataSourceLabel").textContent;
 
-  // ✅ Disable row click only if from SpotCheck AND not the edit button
-  if (sourceLabel.includes("DatabaseSpotCheck") && !isEditBtn) return;
+  // ✅ If edit button was clicked, handle it and exit
+  if (isEditBtn) {
+    const recordId = isEditBtn.dataset.id;
+    if (!recordId) return;
 
+    document.getElementById("loadingOverlay").style.display = "flex";
+    fetch(`https://secure-backend-tzj9.onrender.com/api/spotcheck/${recordId}`, {
+      headers: { Authorization: `Bearer ${sessionStorage.getItem("token")}` }
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (!data || !data._id) return alert("❌ Cannot load record.");
+        loadSpotCheckToForm(data);
+      })
+      .catch(err => {
+        console.error("❌ Failed to load SpotCheck record", err);
+        alert("❌ Failed to load record.");
+      })
+      .finally(() => {
+        document.getElementById("loadingOverlay").style.display = "none";
+      });
+
+    return; // ✅ Exit so row click logic does not run
+  }
+
+  // ✅ Disable row click if from SpotCheck
+  if (sourceLabel.includes("DatabaseSpotCheck")) return;
+
+  // Normal row click logic to show NBCOS
   const row = e.target.closest("tr");
   if (!row || !row.cells[0]) return;
 
   const cif = row.cells[0].textContent.trim();
   if (!cif) return;
-    
 
-    const allRows = document.querySelectorAll("#results tbody tr");
-    allRows.forEach(r => {
-      if (r !== row) r.style.display = "none";
-      else r.classList.add("highlighted-row");
-    });
+  const allRows = document.querySelectorAll("#results tbody tr");
+  allRows.forEach(r => {
+    if (r !== row) r.style.display = "none";
+    else r.classList.add("highlighted-row");
+  });
 
-    const detailPanel = document.getElementById("nbcosDetail");
-    const content = document.getElementById("nbcosContent");
+  const detailPanel = document.getElementById("nbcosDetail");
+  const content = document.getElementById("nbcosContent");
 
-    detailPanel.style.display = "block";
-    content.innerHTML = "<div class='spinner'></div> <span>កំពុងទាញយកទិន្នន័យ...</span>";
+  detailPanel.style.display = "block";
+  content.innerHTML = "<div class='spinner'></div> <span>កំពុងទាញយកទិន្នន័យ...</span>";
 
-    fetch(`https://secure-backend-tzj9.onrender.com/api/nbcos/by-cif?cif=${encodeURIComponent(cif)}`, {
-      headers: { Authorization: `Bearer ${token}` }
-    })
-      .then(res => res.json())
-      .then(data => {
-        if (!data || data.length === 0) {
-          content.innerHTML = "គ្មានទិន្នន័យឥណទានសម្រាប់អតិថិជននេះទេ។";
-          return;
-        }
-        // Save selectedNBCOS to sessionStorage
-        sessionStorage.setItem("selectedNBCOS", JSON.stringify(data[0]));
-        console.log("✅ Selected NBCOS saved to sessionStorage:", data[0]);
+  fetch(`https://secure-backend-tzj9.onrender.com/api/nbcos/by-cif?cif=${encodeURIComponent(cif)}`, {
+    headers: { Authorization: `Bearer ${sessionStorage.getItem("token")}` }
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (!data || data.length === 0) {
+        content.innerHTML = "គ្មានទិន្នន័យឥណទានសម្រាប់អតិថិជននេះទេ។";
+        return;
+      }
+
+      sessionStorage.setItem("selectedNBCOS", JSON.stringify(data[0]));
+      console.log("✅ Selected NBCOS saved to sessionStorage:", data[0]);
+
+      // ...NBCOS table rendering logic
 
         const headers = [
           "LD_CUSTOMER_ID", "CONTRACT_LD", "NAME_KHMER", "LOAN_SIZE",
