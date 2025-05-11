@@ -1262,32 +1262,42 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
   function alertOptionForSpotCheck(cif) {
-  const proceed = confirm("លោកអ្នកបានបញ្ចូលទិន្នន័យត្រួតពិនិត្យឥណទានសម្រាប់អតិថិជននេះរួចហើយ។\n\nចង់បន្តធ្វើការកែប្រែទេ?");
-  if (!proceed) return;
+  if (!confirm("លោកអ្នកបានបញ្ចូលទិន្នន័យត្រួតពិនិត្យឥណទានសម្រាប់អតិថិជននេះរួចហើយ។\n\nចង់បន្តធ្វើការកែប្រែទេ?")) {
+    return;
+  }
 
-  const options = confirm("ចុច OK ដើម្បី Update SpotCheck\nចុច Cancel ដើម្បីបង្កើតថ្មី");
-  if (!options) return;
+  const wantsUpdate = confirm("ចុច OK ដើម្បី Update SpotCheck\nចុច Cancel ដើម្បីបង្កើតថ្មី");
+  if (!wantsUpdate) return;
 
-  // ✅ Add loading overlay
   document.getElementById("loadingOverlay").style.display = "flex";
+
+  const token = sessionStorage.getItem("token");
+  if (!token) {
+    alert("❌ Missing token. Please login again.");
+    window.location.href = "../login.html";
+    return;
+  }
 
   fetch(`https://secure-backend-tzj9.onrender.com/api/spotcheck?cif=${encodeURIComponent(cif)}`, {
     headers: { Authorization: `Bearer ${token}` }
   })
     .then(res => {
-      if (!res.ok) throw new Error("Failed to fetch SpotCheck data");
+      if (!res.ok) {
+        console.error("❌ Response status:", res.status);
+        throw new Error("Failed to fetch SpotCheck record");
+      }
       return res.json();
     })
-    .then(records => {
-      if (records.length > 0) {
-        loadSpotCheckToForm(records[0]);
+    .then(data => {
+      if (Array.isArray(data) && data.length > 0) {
+        loadSpotCheckToForm(data[0]);
       } else {
         alert("រកមិនឃើញទិន្នន័យសម្រាប់កែប្រែ។");
       }
     })
     .catch(err => {
-      alert("❌ Cannot load SpotCheck data. See console.");
-      console.error("SpotCheck fetch error:", err);
+      alert("❌ Cannot load SpotCheck data.");
+      console.error("❌ SpotCheck fetch error:", err.message);
     })
     .finally(() => {
       document.getElementById("loadingOverlay").style.display = "none";
