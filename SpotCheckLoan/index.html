@@ -522,16 +522,29 @@ th, td {
   cursor: pointer;
 }
 
-  .report-btn {
-  background: #ffd700;
-  color: #002c5f;
+  .report-icon-btn {
+  background: none;
   border: none;
-  padding: 6px 12px;
-  border-radius: 6px;
-  font-size: 13px;
-  font-family: 'Krasar', sans-serif;
   cursor: pointer;
-}  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 4px;
+  margin-left: auto;
+  margin-right: 4px;
+}
+
+.report-icon-btn img {
+  width: 28px;
+  height: 28px;
+}
+
+.icon-label {
+  font-size: 11px;
+  color: white;
+  font-family: 'Krasar', sans-serif;
+  margin-top: 2px;
+}
     
   </style>
 </head>
@@ -539,7 +552,10 @@ th, td {
 <div class="header-bar">
   <button class="back-icon" onclick="window.location.href='../index.html'">←</button>
   <div class="header-title" style="flex: 1;">ការត្រួតពិនិត្យឥណទាន</div>
-  <button class="report-btn" onclick="window.location.href='reportSpotcheck.html'">📒Report</button>
+  <button class="report-icon-btn" onclick="window.location.href='reportSpotcheck.html'">
+  <img src="../icons/Report.png" alt="Report" />
+  <div class="icon-label">Report</div>
+  </button>
 </div>
 
   <div class="search-fixed-bar">
