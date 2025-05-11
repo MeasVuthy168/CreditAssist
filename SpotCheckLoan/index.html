@@ -865,10 +865,11 @@ th, td {
             });
         }
       })
-      .catch(err => {
-        alert("Search failed");
-        console.error("Search error:", err);
-      })
+      .catch(async err => {
+  const message = err?.message || "Unknown error";
+  alert(`Search failed: ${message}`);
+  console.error("❌ Full search error:", err);
+})
       .finally(() => {
         document.getElementById("loadingOverlay").style.display = "none";
       });
