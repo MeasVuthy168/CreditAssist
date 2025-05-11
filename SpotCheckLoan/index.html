@@ -816,6 +816,7 @@ function loadSpotCheckToForm(data) {
   saveBtn.textContent = "Update";
   saveBtn.dataset.updateMode = "true";
   saveBtn.dataset.recordId = data._id;
+  document.getElementById("createSpotCheckBtn").style.display = "none";
 
   // === NBCOS Detail ===
   const nbcosDetail = document.getElementById("nbcosDetail");
@@ -1276,6 +1277,8 @@ document.addEventListener("DOMContentLoaded", () => {
     saveBtn.textContent = "Save";
     delete saveBtn.dataset.updateMode;
     delete saveBtn.dataset.recordId;
+     // ✅ Show Create SpotCheck button again
+  document.getElementById("createSpotCheckBtn").style.display = "block";
   }
 
   clearBtn.addEventListener("click", resetForm);
