@@ -523,22 +523,25 @@ th, td {
 }
 
   .report-icon-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  margin-left: auto;
-  margin-right: 12px;  /* increase spacing from right edge */
+  margin-right: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
   height: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
 }
 
 .report-icon-btn img {
-  width: 24px;
-  height: 24px;
-  display: block;
+  width: 36px;
+  height: 36px;
+  filter: drop-shadow(0 0 2px #ffd700); /* subtle glow */
+  transition: transform 0.2s;
+}
+
+.report-icon-btn:hover img {
+  transform: scale(1.1); /* hover zoom */
 }
 
     
@@ -548,8 +551,8 @@ th, td {
 <div class="header-bar">
   <button class="back-icon" onclick="window.location.href='../index.html'">←</button>
   <div class="header-title" style="flex: 1;">ការត្រួតពិនិត្យឥណទាន</div>
-  <button class="report-icon-btn" onclick="window.location.href='reportSpotcheck.html'">
-  <img src="../icons/Report.png" alt="Report" />
+  <button class="report-icon-btn" onclick="window.location.href='reportSpotcheck.html'" title="បញ្ជីរបាយការណ៍">
+  <img src="../icons/Report.png" alt="Report Icon" />
   </button>
 </div>
 
