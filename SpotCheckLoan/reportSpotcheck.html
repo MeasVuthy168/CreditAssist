@@ -381,7 +381,7 @@ function renderTable(data) {
   tbody.innerHTML = "";
   labelRow.innerHTML = "";
 
-  // Insert headers
+  // Add header labels
   labelRow.innerHTML = khmerHeaders.map(h => `<th>${h}</th>`).join("");
 
   // If no data
@@ -391,19 +391,19 @@ function renderTable(data) {
     return;
   }
 
-  // Get highlighted CIF from sessionStorage
-  const highlightCIF = sessionStorage.getItem("highlightCIF");
+  const highlightId = sessionStorage.getItem("highlightRowId");
 
-  // Loop and render rows
+  // Loop through data rows
   data.forEach(row => {
     const tr = document.createElement("tr");
 
-    // Add highlight class if CIF matches
-    if (highlightCIF && row.LD_CUSTOMER_ID === highlightCIF) {
-      tr.style.backgroundColor = "#ffff99"; // light yellow highlight
+    // Highlight the row if its _id matches the stored highlight ID
+    if (highlightId && row._id === highlightId) {
+      tr.style.backgroundColor = "#ffff99";
       tr.style.fontWeight = "bold";
     }
 
+    // Create table cells
     dataKeys.forEach(key => {
       const td = document.createElement("td");
       td.textContent = row[key] || "";
@@ -416,10 +416,9 @@ function renderTable(data) {
   // Update summary count
   summaryRow.textContent = `👥ចំនួនឥណទានដែលបានត្រួតពិនិត្យសរុបមានៈ ${data.length}នាក់`;
 
-  // Remove the highlight flag after rendering once
-  sessionStorage.removeItem("highlightCIF");
+  // Clear highlight after rendering
+  sessionStorage.removeItem("highlightRowId");
 }
-    
 
     function exportExcel() {
       const table = document.getElementById("reportTable");
