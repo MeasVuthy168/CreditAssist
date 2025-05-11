@@ -1040,15 +1040,18 @@ function displayResults(results, source) {
   
 
   document.querySelector("#results tbody").addEventListener("click", function (e) {
-    
-    const sourceLabel = document.getElementById("dataSourceLabel").textContent;
-    if (sourceLabel.includes("DatabaseSpotCheck")) return;
-    
-    const row = e.target.closest("tr");
-    if (!row || !row.cells[0]) return;
+  const isEditBtn = e.target.closest(".load-spot-btn");
+  const sourceLabel = document.getElementById("dataSourceLabel").textContent;
 
-    const cif = row.cells[0].textContent.trim();
-    if (!cif) return;
+  // ✅ Disable row click only if from SpotCheck AND not the edit button
+  if (sourceLabel.includes("DatabaseSpotCheck") && !isEditBtn) return;
+
+  const row = e.target.closest("tr");
+  if (!row || !row.cells[0]) return;
+
+  const cif = row.cells[0].textContent.trim();
+  if (!cif) return;
+    
 
     const allRows = document.querySelectorAll("#results tbody tr");
     allRows.forEach(r => {
