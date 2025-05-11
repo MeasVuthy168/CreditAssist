@@ -823,43 +823,58 @@ th, td {
   });
 
   function performSearch() {
-    const query = document.getElementById("searchBox").value.trim();
-    if (query === "") {
-      alert("សូមបញ្ចូលពាក្យគន្លិះ");
-      return;
-    }
-
-    document.getElementById("loadingOverlay").style.display = "flex";
-    fetch(`https://secure-backend-tzj9.onrender.com/api/customers/search?q=${encodeURIComponent(query)}`, {
-      headers: { Authorization: `Bearer ${token}` }
-    })
-      .then(res => res.json())
-      .then(results => {
-        if (results.length > 0) {
-          displayResults(results);
-        } else {
-          fetch(`https://secure-backend-tzj9.onrender.com/api/nbcos/search?q=${encodeURIComponent(query)}`, {
-            headers: { Authorization: `Bearer ${token}` }
-          })
-            .then(res => res.json())
-            .then(nbcosResults => displayNBCOSAsCustomer(nbcosResults))
-            .catch(err => {
-              alert("NBCOS fallback failed");
-              console.error("NBCOS search error:", err);
-            });
-        }
-      })
-      .catch(err => {
-        alert("Search failed");
-        console.error("Search error:", err);
-      })
-      .finally(() => {
-        document.getElementById("loadingOverlay").style.display = "none";
-      });
+  const query = document.getElementById("searchBox").value.trim();
+  if (query === "") {
+    alert("សូមបញ្ចូលពាក្យគន្លិះ");
+    return;
   }
 
+  document.getElementById("loadingOverlay").style.display = "flex";
+
+  // 1. First search: SpotCheck database
+  fetch(`https://secure-backend-tzj9.onrender.com/api/spotcheck/search?q=${encodeURIComponent(query)}`, {
+    headers: { Authorization: `Bearer ${token}` }
+  })
+    .then(res => res.json())
+    .then(results => {
+      if (results.length > 0) {
+        displayResults(results, "SpotCheck");
+      } else {
+        // 2. If not found, search Customer database
+        fetch(`https://secure-backend-tzj9.onrender.com/api/customers/search?q=${encodeURIComponent(query)}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        })
+          .then(res => res.json())
+          .then(customerResults => {
+            if (customerResults.length > 0) {
+              displayResults(customerResults, "Customer");
+            } else {
+              // 3. If still not found, fallback to NBCOS
+              fetch(`https://secure-backend-tzj9.onrender.com/api/nbcos/search?q=${encodeURIComponent(query)}`, {
+                headers: { Authorization: `Bearer ${token}` }
+              })
+                .then(res => res.json())
+                .then(nbcosResults => displayNBCOSAsCustomer(nbcosResults))
+                .catch(err => {
+                  alert("NBCOS fallback failed");
+                  console.error("NBCOS search error:", err);
+                });
+            }
+          });
+      }
+    })
+    .catch(err => {
+      alert("Search failed");
+      console.error("Search error:", err);
+    })
+    .finally(() => {
+      document.getElementById("loadingOverlay").style.display = "none";
+    });
+}
+
   function displayResults(results) {
-  document.querySelector(".container").style.display = "block"; // ✅ re-show container
+  function displayResults(results, source) {
+  document.querySelector(".container").style.display = "block";
   const resultsTable = document.querySelector("#results tbody");
   const tableHead = document.querySelector("#results thead");
   const resultLabel = document.getElementById("resultLabel");
@@ -872,14 +887,14 @@ th, td {
   resultsTable.innerHTML = results.length > 0
     ? results.map(item => `
       <tr>
-        <td>${item.CIF || ''}</td>
-        <td>${item.ACCOUNT_NAME || ''}</td>
-        <td>${item.NAME_KHMER || ''}</td>
-        <td>${item.GENDER || ''}</td>
-        <td>${item.ADDRESS || ''}</td>
-        <td>${item.Branch || ''}</td>
-        <td>${item["CO Response"] || ''}</td>
-        <td>${item.Note || ''}</td>
+        <td>${item.CIF || item.LD_CUSTOMER_ID || ''}</td>
+        <td>${item.ACCOUNT_NAME || item.NAME_KHMER || ''}</td>
+        <td>${item.NAME_KHMER || item.NAME_ENG || ''}</td>
+        <td>${item.GENDER || item.TITLE || ''}</td>
+        <td>${item.ADDRESS || item.Address || ''}</td>
+        <td>${item.Branch || item["Branch-OK"] || ''}</td>
+        <td>${item["CO Response"] || item["Credit Officer"] || ''}</td>
+        <td>${item.Note || item["GovEmplyee/FactWorker"] || ''}</td>
       </tr>`).join("")
     : "<tr><td colspan='9'>🚫រកមិនឃើញលទ្ធផលទេ</td></tr>";
 
@@ -887,8 +902,14 @@ th, td {
     tapHint.style.display = "flex";
     setTimeout(() => tapHint.style.display = "none", 8000);
   }
-  dataSourceLabel.textContent = results.length > 0 ? "⛁ ទិន្នន័យ​ពី:DatabaseCustomer" : "";
-  }
+
+  const sources = {
+    "SpotCheck": "⛁ ទិន្នន័យ​ពី:DatabaseSpotCheck",
+    "Customer": "⛁ ទិន្នន័យ​ពី:DatabaseCustomer"
+  };
+
+  dataSourceLabel.textContent = sources[source] || "";
+}
 
   document.querySelector("#results tbody").addEventListener("click", function (e) {
     const row = e.target.closest("tr");
