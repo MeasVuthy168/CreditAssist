@@ -1291,22 +1291,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (!validateFields()) return;
 
+    // ✅ Extract edited NBCOS fields from nbcosDetail table
+    const nbcosTable = document.querySelector("#nbcosDetail table");
+    let editedNBCOS = {};
+    if (nbcosTable) {
+      const headers = Array.from(nbcosTable.querySelectorAll("thead th")).map(th => th.textContent.trim());
+      const cells = nbcosTable.querySelectorAll("tbody td");
+      headers.forEach((key, i) => {
+        editedNBCOS[key] = cells[i]?.textContent.trim() || '';
+      });
+    }
+
+    // ✅ Prepare full payload with section1, section2, and edited NBCOS data
     const payload = {
-      // NBCOS Data
-      LD_CUSTOMER_ID: selectedNBCOS.LD_CUSTOMER_ID || '',
-      CONTRACT_LD: selectedNBCOS.CONTRACT_LD || '',
-      NAME_KHMER: selectedNBCOS.NAME_KHMER || '',
-      LOAN_SIZE: selectedNBCOS.LOAN_SIZE || '',
-      OS_USD: selectedNBCOS.OS_USD || '',
-      RATE: selectedNBCOS.RATE || '',
-      CCY: selectedNBCOS.CCY || '',
-      DISBURSE: selectedNBCOS.DISBURSE || '',
-      MATURITY: selectedNBCOS.MATURITY || '',
-      LOAN_TERM: selectedNBCOS.LOAN_TERM || '',
-      LOAN_CYCLE: selectedNBCOS.LOAN_CYCLE || '',
-      CO: selectedNBCOS.CO || '',
-      BranchOK: selectedNBCOS["Branch-OK"] || '',
-      ProductType: selectedNBCOS["Product Type"] || '',
+      ...editedNBCOS,
 
       // Section 1
       cycle: document.getElementById("cycle").value,
@@ -1338,12 +1336,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const isUpdate = saveBtn.dataset.updateMode === "true";
     const recordId = saveBtn.dataset.recordId;
+    const method = isUpdate ? "PUT" : "POST";
     const url = isUpdate
       ? `https://secure-backend-tzj9.onrender.com/api/spotcheck/${recordId}`
       : `https://secure-backend-tzj9.onrender.com/api/spotcheck`;
 
     fetch(url, {
-      method: isUpdate ? "PUT" : "POST",
+      method,
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${sessionStorage.getItem("token")}`
@@ -1354,6 +1353,9 @@ document.addEventListener("DOMContentLoaded", () => {
       .then(data => {
         alert(`✅ Spot Check ${isUpdate ? "updated" : "saved"} successfully!`);
         resetForm();
+        saveBtn.textContent = "Save";
+        delete saveBtn.dataset.updateMode;
+        delete saveBtn.dataset.recordId;
       })
       .catch(err => {
         console.error("❌ Save error:", err);
@@ -1363,7 +1365,6 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("loadingOverlay").style.display = "none";
       });
   });
-});
-</script>  
+</script>
 </body>
 </html>
