@@ -1396,10 +1396,17 @@ const payload = {
       body: JSON.stringify(payload)
     })
       .then(res => res.json())
-      .then(data => {
-        alert(`✅ Spot Check ${isUpdate ? "updated" : "saved"} successfully!`);
-        resetForm();
-      })
+   // .then(data => {
+   // alert(`✅ Spot Check ${isUpdate ? "updated" : "saved"} successfully!`);
+   // resetForm();
+   // })
+      
+     .then(data => {
+     alert(`✅ Spot Check ${isUpdate ? "updated" : "saved"} successfully!`);
+     window.location.href = "reportSpotcheck.html";
+     })
+
+      
       .catch(err => {
         console.error("❌ Save error:", err);
         alert("❌ Save failed. See console.");
