@@ -603,6 +603,7 @@ document.getElementById("tableBody").addEventListener("click", (e) => {
 
   // Highlight selected row
   row.style.backgroundColor = "#ffd700";
+  tr.style.fontWeight = "bold";
 
   // Get CIF from clicked row
   const clickedCIF = row.cells[0].textContent.trim();
