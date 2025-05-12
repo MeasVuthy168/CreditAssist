@@ -240,9 +240,9 @@
 
     
     .container-buttons {
+  di.container-buttons {
   display: flex;
   justify-content: space-between;
-  flex: 1;
   gap: 10px;
   width: 100%;
   margin-top: 10px;
@@ -250,26 +250,33 @@
 
 .container-buttons button {
   flex: 1;
-  padding: 10px 0;
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 0;
   border-radius: 6px;
   background-color: #ffd700;
   border: none;
   cursor: pointer;
   box-shadow: 0 2px 6px rgba(0,0,0,0.2);
   transition: background 0.3s;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .container-buttons button:hover {
   background-color: #ffcc00;
 }
 
-.container-buttons button img {
+.container-buttons img {
   width: 32px;
   height: 32px;
+}
+
+.container-buttons .btn-label {
+  margin-top: 4px;
+  font-size: 12px;
+  color: #002c5f;
+  font-family: 'Krasar', sans-serif;
 }
   </style>
 </head>
@@ -297,20 +304,25 @@
   </div>
 </div>
   <div class="container-buttons">
-  <button onclick="exportExcel()" title="Export Excel">
-    <img src="../icons/excelSP.png" alt="Export Excel" width="28" height="28" />
+  <button onclick="exportExcel()" title="នាំចេញ">
+    <img src="../icons/excelSP.png" alt="Export Excel" />
+    <div class="btn-label">Export</div>
   </button>
-  <button onclick="PrintForm()" title="Print Form">
-    <img src="../icons/printSP.png" alt="Print Form" width="28" height="28" />
+  <button onclick="PrintForm()" title="បោះពុម្ព">
+    <img src="../icons/printSP.png" alt="Print Form" />
+    <div class="btn-label">Print</div>
   </button>
-  <button onclick="AddNew()" title="Add New">
-    <img src="../icons/add-newSP.png" alt="Add New" width="28" height="28" />
+  <button onclick="AddNew()" title="បង្កើតថ្មី">
+    <img src="../icons/add-newSP.png" alt="Add New" />
+    <div class="btn-label">Add</div>
   </button>
-  <button onclick="Edit()" title="Edit">
-    <img src="../icons/editSP.png" alt="Edit" width="28" height="28" />
+  <button onclick="Edit()" title="កែប្រែ">
+    <img src="../icons/editSP.png" alt="Edit" />
+    <div class="btn-label">Edit</div>
   </button>
-  <button onclick="Delete()" title="Delete">
-    <img src="../icons/deleteSP.png" alt="Delete" width="28" height="28" />
+  <button onclick="Delete()" title="លុប">
+    <img src="../icons/deleteSP.png" alt="Delete" />
+    <div class="btn-label">Delete</div>
   </button>
 </div>
   <div id="summaryRow" class="summary-label">👥ចំនួនឥណទានដែលបានត្រួតពិនិត្យសរុបមានៈ 0</div>
