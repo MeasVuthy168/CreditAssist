@@ -507,10 +507,10 @@ function renderTable(data) {
     document.getElementById("toDate").addEventListener("change", fetchData);
     window.onload = fetchData;
 
-  // Focus search bar when clicked
-    document.getElementById("searchInput").addEventListener("click", () => {
+  // Auto-focus on page load
+    window.addEventListener("load", function() {
     document.getElementById("searchInput").focus();
-   });
+  });
   </script>
 </body>
 </html>
