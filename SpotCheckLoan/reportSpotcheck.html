@@ -240,10 +240,9 @@
 
     
     .container-buttons {
-  di.container-buttons {
   display: flex;
   justify-content: space-between;
-  gap: 10px;
+  gap: 8px;
   width: 100%;
   margin-top: 10px;
 }
@@ -254,27 +253,28 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 8px 0;
-  border-radius: 6px;
+  padding: 6px 0;
+  border-radius: 8px;
   background-color: #ffd700;
-  border: none;
+  border: 1px solid #ccc;
   cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-  transition: background 0.3s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+  transition: transform 0.2s, background 0.3s;
 }
 
 .container-buttons button:hover {
   background-color: #ffcc00;
+  transform: translateY(-2px);
 }
 
 .container-buttons img {
-  width: 32px;
-  height: 32px;
+  width: 24px;
+  height: 24px;
 }
 
 .container-buttons .btn-label {
-  margin-top: 4px;
-  font-size: 12px;
+  margin-top: 3px;
+  font-size: 11px;
   color: #002c5f;
   font-family: 'Krasar', sans-serif;
 }
