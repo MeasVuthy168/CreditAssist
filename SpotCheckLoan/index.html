@@ -851,25 +851,36 @@ function loadSpotCheckToForm(data) {
   nbcosDetail.style.display = "block";
 
   const headers = [
-    "LD_CUSTOMER_ID", "CONTRACT_LD", "NAME_KHMER", "LOAN_SIZE",
-    "OS_USD", "RATE", "CCY", "DISBURSE", "MATURITY",
-    "LOAN_TERM", "LOAN_CYCLE", "CO", "BranchOK", "ProductType"
-  ];
+  "LD_CUSTOMER_ID", "CONTRACT_LD", "NAME_KHMER", "LOAN_SIZE",
+  "OS_USD", "RATE", "CCY", "DISBURSE", "MATURITY",
+  "LOAN_TERM", "LOAN_CYCLE", "CO", "BranchOK", "ProductType"
+];
 
-  const tableHTML = `
-    <div class="nbcos-wrapper">
-      <table class="nbcos-table">
-        <thead>
-          <tr>${headers.map(h => `<th>${h}</th>`).join("")}</tr>
-        </thead>
-        <tbody>
-          <tr>
-            ${headers.map(h => `<td contenteditable="true">${data[h] || data[h.replace("BranchOK", "Branch-OK")] || ''}</td>`).join("")}
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  `;
+const tableHTML = `
+  <div class="nbcos-wrapper">
+    <table class="nbcos-table">
+      <thead>
+        <tr>${headers.map(h => `<th>${h}</th>`).join("")}</tr>
+      </thead>
+      <tbody>
+        <tr>
+          ${headers.map(h => {
+            let value = data[h] || data[h.replace("BranchOK", "Branch-OK")] || '';
+
+            if (["DISBURSE", "MATURITY"].includes(h) && value) {
+              const date = new Date(value);
+              if (!isNaN(date)) {
+                value = date.toLocaleDateString('en-GB'); // Format to dd/mm/yyyy
+              }
+            }
+
+            return `<td contenteditable="true">${value}</td>`;
+          }).join("")}
+        </tr>
+      </tbody>
+    </table>
+  </div>
+`;
 
   nbcosContent.innerHTML = tableHTML;
   // ✅ Hide tap hint in update mode
