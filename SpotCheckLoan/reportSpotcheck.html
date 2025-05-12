@@ -314,7 +314,7 @@
     <img src="../icons/printSP.png" alt="Print Form" />
     <div class="btn-label">Print</div>
   </button>
-  <button onclick="AddNew()" title="បង្កើតថ្មី">
+  <button onclick="location.href='../SpotCheckLoan/index.html'" title="បង្កើតថ្មី">
     <img src="../icons/add-newSP.png" alt="Add New" />
     <div class="btn-label">Add</div>
   </button>
@@ -370,6 +370,13 @@
     </button>
   </div>
 
+
+  <script>
+  document.getElementById("searchInput").addEventListener("click", () => {
+  document.getElementById("searchInput").focus();
+  });
+ </script>
+  
  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <!-- ✅ Load shared notification script -->
 <script src="../notifications/checkNotification.js"></script>
