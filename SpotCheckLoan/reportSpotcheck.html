@@ -278,6 +278,13 @@
   color: #002c5f;
   font-family: 'Krasar', sans-serif;
 }
+.button-disabled {
+  background-color: #ccc !important;
+  color: #666 !important;
+  cursor: not-allowed !important;
+  pointer-events: none !important;
+}
+    
   </style>
 </head>
 <body>
@@ -487,10 +494,18 @@ function renderTable(data) {
   }
 
   // ✅ Always disable buttons after render
-  selectedRowId = null;
-  document.getElementById("editBtn").disabled = true;
-  document.getElementById("printBtn").disabled = true;
-  document.getElementById("deleteBtn").disabled = true;
+const deleteBtn = document.getElementById("deleteBtn");
+const editBtn = document.getElementById("editBtn");
+const printBtn = document.getElementById("printBtn");
+
+selectedRowId = null;
+editBtn.disabled = true;
+printBtn.disabled = true;
+deleteBtn.disabled = true;
+
+editBtn.classList.add("button-disabled");
+printBtn.classList.add("button-disabled");
+deleteBtn.classList.add("button-disabled");
 }
   
   function EditSelectedRow() {
@@ -582,13 +597,21 @@ document.getElementById("tableBody").addEventListener("click", (e) => {
   // Store selectedRowId as _id (if found)
   selectedRowId = matchedRecord ? matchedRecord._id : null;
 
-  // Enable or disable buttons based on result
   const isFound = !!matchedRecord;
+
+  // Enable or disable buttons based on result
   document.getElementById("editBtn").disabled = !isFound;
   document.getElementById("printBtn").disabled = !isFound;
   document.getElementById("deleteBtn").disabled = !isFound;
 
-  if (!isFound) {
+  if (isFound) {
+    document.getElementById("editBtn").classList.remove("button-disabled");
+    document.getElementById("printBtn").classList.remove("button-disabled");
+    document.getElementById("deleteBtn").classList.remove("button-disabled");
+  } else {
+    document.getElementById("editBtn").classList.add("button-disabled");
+    document.getElementById("printBtn").classList.add("button-disabled");
+    document.getElementById("deleteBtn").classList.add("button-disabled");
     alert("Record not found.");
   }
 });
