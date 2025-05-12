@@ -57,8 +57,16 @@
   flex-wrap: wrap;
   box-sizing: border-box;
   margin-bottom: 12px; /* was 24px */
+} 
+    
+.filter-title {
+  width: 100%;
+  font-size: 14px;
+  color: #002c5f;
+  margin-bottom: 6px;
+  font-weight: bold;
+  font-family: 'Krasar', sans-serif;
 }
-
 
     .date-group {
   display: flex;
@@ -301,18 +309,22 @@
  
   
  <div class="filter-container">
+  <div class="filter-title">📆 ជ្រើសរើស​តាមកាលបរិច្ឆេទ​</div>
+  
   <div class="date-group">
-  <div class="date-field">
-    <label for="fromDate">កាលបរិច្ឆេទចាប់ផ្តើម</label>
-    <input type="date" id="fromDate" />
+    <div class="date-field">
+      <label for="fromDate">ចាប់ពីថ្ងៃទី</label>
+      <input type="date" id="fromDate" />
+    </div>
+    <div class="date-field">
+      <label for="toDate">រហូតដល់ថ្ងៃទី</label>
+      <input type="date" id="toDate" />
+    </div>
   </div>
-  <div class="date-field">
-    <label for="toDate">កាលបរិច្ឆេទបញ្ចប់</label>
-    <input type="date" id="toDate" />
-  </div>
-</div>
-  <div id="summaryRow" class="summary-label">👥ចំនួនឥណទានដែលបានត្រួតពិនិត្យសរុបមានៈ 0</div>
-   
+
+  <div id="summaryRow" class="summary-label">...</div>
+  
+   <!-- Buttons here -->
   <div class="container-buttons">
   <button onclick="exportExcel()" title="នាំចេញ">
     <img src="../icons/excelSP.png" alt="Export Excel" />
@@ -339,7 +351,7 @@
 
 
 <div class="fixed-title-container">
-  <div class="report-title">📘បញ្ជីឈ្មោះអតិថិជនដែលបានត្រួតពិនិត្យរួច</div>
+  <div class="report-title">📝 បញ្ជីឈ្មោះអតិថិជនដែលបានត្រួតពិនិត្យរួច</div>
   <div class="report-table-wrapper">
     <table class="report-table" id="reportTable">
       <thead id="tableHead">
