@@ -494,7 +494,7 @@ function renderTable(data) {
 }
   
   function EditSelectedRow() {
-  if (!selectedRowId) {
+  if (!selectedRowId || selectedRowId === "") {
     alert("សូមជ្រើសរើសជួរដេកមួយសិន");
     return;
   }
@@ -523,10 +523,10 @@ function renderTable(data) {
     window.onload = fetchData;
 
 function Delete() {
-  if (!selectedRowId) {
-    alert("សូមជ្រើសរើសជួរដេកមួយសិន");
-    return;
-  }
+  if (!selectedRowId || selectedRowId === "") {
+  alert("សូមជ្រើសរើសជួរដេកមុនសិន");
+  return;
+ }
 
   const confirmDelete = confirm("តើអ្នកពិតជាចង់លុបទិន្នន័យនេះចោលមែនទេ?");
   if (!confirmDelete) return;
