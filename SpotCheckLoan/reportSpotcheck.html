@@ -545,9 +545,12 @@ function Delete() {
     return;
   }
 
-  if (!confirm("តើអ្នកប្រាកដជាចង់លុបទិន្នន័យនេះឬ?")) {
-    return;
-  }
+  const customer = currentData.find(item => item._id === selectedRowId);
+const customerName = customer ? customer.NAME_KHMER : "អតិថិជន";
+
+if (!confirm(`តើអ្នកប្រាកដជាចង់លុបទិន្នន័យរបស់អតិថិជន ${customerName} ឬ?`)) {
+  return;
+}
 
   document.getElementById("deleteBtn").disabled = true;
 
