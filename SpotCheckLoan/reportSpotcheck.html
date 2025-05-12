@@ -598,25 +598,27 @@ document.getElementById("tableBody").addEventListener("click", (e) => {
   const row = e.target.closest("tr");
   if (!row) return;
 
-  // Deselect all rows
-  document.querySelectorAll("#tableBody tr").forEach(r => r.style.backgroundColor = "");
+  // Deselect all rows (remove highlight & bold)
+  document.querySelectorAll("#tableBody tr").forEach(r => {
+    r.style.backgroundColor = "";
+    r.style.fontWeight = "normal";
+  });
 
-  // Highlight selected row
+  // Highlight and bold selected row
   row.style.backgroundColor = "#ffd700";
-
+  row.style.fontWeight = "bold";
 
   // Get CIF from clicked row
   const clickedCIF = row.cells[0].textContent.trim();
 
-  // Find the matching record in currentData
+  // Find matching record
   const matchedRecord = currentData.find(item => item.LD_CUSTOMER_ID === clickedCIF);
 
-  // Store selectedRowId as _id (if found)
+  // Store selectedRowId as _id if found
   selectedRowId = matchedRecord ? matchedRecord._id : null;
 
+  // Enable or disable buttons
   const isFound = !!matchedRecord;
-
-  // Enable or disable buttons based on result
   document.getElementById("editBtn").disabled = !isFound;
   document.getElementById("printBtn").disabled = !isFound;
   document.getElementById("deleteBtn").disabled = !isFound;
