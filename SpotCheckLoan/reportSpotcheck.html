@@ -371,11 +371,6 @@
   </div>
 
 
-  <script>
-  document.getElementById("searchInput").addEventListener("click", () => {
-  document.getElementById("searchInput").focus();
-  });
- </script>
   
  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <!-- ✅ Load shared notification script -->
@@ -511,6 +506,11 @@ function renderTable(data) {
     document.getElementById("fromDate").addEventListener("change", fetchData);
     document.getElementById("toDate").addEventListener("change", fetchData);
     window.onload = fetchData;
+
+  // Focus search bar when clicked
+    document.getElementById("searchInput").addEventListener("click", () => {
+    document.getElementById("searchInput").focus();
+   });
   </script>
 </body>
 </html>
