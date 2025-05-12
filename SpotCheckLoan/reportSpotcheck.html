@@ -523,34 +523,38 @@ function renderTable(data) {
     window.onload = fetchData;
 
 function Delete() {
+function Delete() {
   if (!selectedRowId || selectedRowId === "") {
-  alert("សូមជ្រើសរើសជួរដេកមុនសិន");
-  return;
- }
+    alert("សូមជ្រើសរើសជួរដេកមុនសិន");
+    return;
+  }
 
-  const confirmDelete = confirm("តើអ្នកពិតជាចង់លុបទិន្នន័យនេះចោលមែនទេ?");
-  if (!confirmDelete) return;
+  if (!confirm("តើអ្នកប្រាកដជាចង់លុបទិន្នន័យនេះឬ?")) {
+    return;
+  }
 
-  // Show loading
-  document.body.style.pointerEvents = "none";
-  document.body.style.opacity = "0.5";
+  document.getElementById("deleteBtn").disabled = true;
 
   fetch(`https://secure-backend-tzj9.onrender.com/api/spotcheck/${selectedRowId}`, {
-    method: "DELETE",
-    headers: { Authorization: `Bearer ${sessionStorage.getItem("token")}` }
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${sessionStorage.getItem("token")}`
+    }
   })
     .then(res => {
-      if (!res.ok) throw new Error("Failed to delete");
-      alert("លុបទិន្នន័យបានជោគជ័យ");
-      fetchData();  // Reload table data
+      if (!res.ok) throw new Error("Delete failed");
+      return res.json();
+    })
+    .then(result => {
+      alert("លុបបានជោគជ័យ!");
+      fetchData(); // Refresh table
     })
     .catch(err => {
-      console.error("❌ Delete error:", err);
-      alert("បរាជ័យក្នុងការលុបទិន្នន័យ");
+      console.error("Delete error:", err);
+      alert("បរាជ័យក្នុងការលុបទិន្នន័យ។");
     })
     .finally(() => {
-      document.body.style.pointerEvents = "auto";
-      document.body.style.opacity = "1";
+      document.getElementById("deleteBtn").disabled = false;
     });
 }
 
