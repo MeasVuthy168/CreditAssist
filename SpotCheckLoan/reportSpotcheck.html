@@ -499,9 +499,9 @@ function renderTable(data) {
     return;
   }
 
-  // Redirect to edit page with CIF in URL
+  // Corrected URL parameter to ?id=
   window.location.href = `../SpotCheckLoan/index.html?id=${selectedRowId}`;
-  }
+}
   
     function exportExcel() {
       const table = document.getElementById("reportTable");
