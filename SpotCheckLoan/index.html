@@ -849,7 +849,8 @@ function loadSpotCheckToForm(data) {
   const nbcosDetail = document.getElementById("nbcosDetail");
   const nbcosContent = document.getElementById("nbcosContent");
   nbcosDetail.style.display = "block";
-
+  nbcosDetail.style.marginTop = "80px";  // <-- Add this here
+  
   const headers = [
   "LD_CUSTOMER_ID", "CONTRACT_LD", "NAME_KHMER", "LOAN_SIZE",
   "OS_USD", "RATE", "CCY", "DISBURSE", "MATURITY",
