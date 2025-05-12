@@ -522,10 +522,42 @@ function renderTable(data) {
     document.getElementById("toDate").addEventListener("change", fetchData);
     window.onload = fetchData;
 
+function Delete() {
+  if (!selectedRowId) {
+    alert("សូមជ្រើសរើសជួរដេកមួយសិន");
+    return;
+  }
 
+  const confirmDelete = confirm("តើអ្នកពិតជាចង់លុបទិន្នន័យនេះចោលមែនទេ?");
+  if (!confirmDelete) return;
+
+  // Show loading
+  document.body.style.pointerEvents = "none";
+  document.body.style.opacity = "0.5";
+
+  fetch(`https://secure-backend-tzj9.onrender.com/api/spotcheck/${selectedRowId}`, {
+    method: "DELETE",
+    headers: { Authorization: `Bearer ${sessionStorage.getItem("token")}` }
+  })
+    .then(res => {
+      if (!res.ok) throw new Error("Failed to delete");
+      alert("លុបទិន្នន័យបានជោគជ័យ");
+      fetchData();  // Reload table data
+    })
+    .catch(err => {
+      console.error("❌ Delete error:", err);
+      alert("បរាជ័យក្នុងការលុបទិន្នន័យ");
+    })
+    .finally(() => {
+      document.body.style.pointerEvents = "auto";
+      document.body.style.opacity = "1";
+    });
+}
+
+
+  
 
 let selectedRowId = null;
-
 // Make table rows clickable
 document.getElementById("tableBody").addEventListener("click", (e) => {
   const row = e.target.closest("tr");
