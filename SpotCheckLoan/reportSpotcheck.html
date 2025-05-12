@@ -310,7 +310,7 @@
     <img src="../icons/excelSP.png" alt="Export Excel" />
     <div class="btn-label">Export</div>
   </button>
-  <button onclick="PrintForm()" title="បោះពុម្ព">
+  <button id="printBtn" onclick="PrintForm()" title="បោះពុម្ព" disabled>
     <img src="../icons/printSP.png" alt="Print Form" />
     <div class="btn-label">Print</div>
   </button>
@@ -318,11 +318,11 @@
     <img src="../icons/add-newSP.png" alt="Add New" />
     <div class="btn-label">Add</div>
   </button>
-  <button onclick="Edit()" title="កែប្រែ">
+  <button id="editBtn" onclick="EditSelectedRow()" title="កែប្រែ" disabled>
     <img src="../icons/editSP.png" alt="Edit" />
     <div class="btn-label">Edit</div>
   </button>
-  <button onclick="Delete()" title="លុប">
+  <button id="deleteBtn" onclick="Delete()" title="លុប" disabled>
     <img src="../icons/deleteSP.png" alt="Delete" />
     <div class="btn-label">Delete</div>
   </button>
@@ -487,7 +487,23 @@ function renderTable(data) {
   // Clear highlight after rendering
   sessionStorage.removeItem("highlightRowId");
 }
+ // ✅ ADD THIS HERE (INSIDE renderTable, at end)
+  selectedRowId = null;
+  document.getElementById("editBtn").disabled = true;
+  document.getElementById("printBtn").disabled = true;
+  document.getElementById("deleteBtn").disabled = true;
+}
+  
+  function EditSelectedRow() {
+  if (!selectedRowId) {
+    alert("សូមជ្រើសរើសជួរដេកមួយសិន");
+    return;
+  }
 
+  // Redirect to edit page with CIF in URL
+  window.location.href = `../SpotCheckLoan/index.html?cif=${selectedRowId}`;
+  }
+  
     function exportExcel() {
       const table = document.getElementById("reportTable");
       const wb = XLSX.utils.table_to_book(table, { sheet: "Report" });
@@ -507,6 +523,28 @@ function renderTable(data) {
     document.getElementById("toDate").addEventListener("change", fetchData);
     window.onload = fetchData;
 
-  </script>
+
+  let selectedRowId = null;
+// Make table rows clickable
+document.getElementById("tableBody").addEventListener("click", (e) => {
+  const row = e.target.closest("tr");
+  if (!row) return;
+
+  // Deselect all rows
+  document.querySelectorAll("#tableBody tr").forEach(r => r.style.backgroundColor = "");
+
+  // Highlight selected row
+  row.style.backgroundColor = "#ffd700";
+
+  // Store selected row ID (assuming CIF is in first column)
+  selectedRowId = row.cells[0].textContent.trim();
+
+  // Enable Edit, Print, Delete buttons
+  document.getElementById("editBtn").disabled = false;
+  document.getElementById("printBtn").disabled = false;
+  document.getElementById("deleteBtn").disabled = false;
+  });
+
+</script>
 </body>
 </html>
