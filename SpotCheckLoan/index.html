@@ -1457,5 +1457,44 @@ const payload = {
   });
 });
 </script>  
+
+<script>
+// === Auto load SpotCheck data for edit mode via ?id=xxx ===
+document.addEventListener("DOMContentLoaded", () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const recordId = urlParams.get('id');
+
+  if (recordId) {
+    console.log("Edit mode detected. Loading record:", recordId);
+
+    // Hide search bar & customer info
+    document.querySelector(".search-fixed-bar").style.display = "none";
+    document.querySelector(".container").style.display = "none";
+
+    // Show loading spinner
+    document.getElementById("loadingOverlay").style.display = "flex";
+
+    // Fetch SpotCheck data by ID
+    fetch(`https://secure-backend-tzj9.onrender.com/api/spotcheck/${recordId}`, {
+      headers: { Authorization: `Bearer ${sessionStorage.getItem("token")}` }
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data && data._id) {
+          loadSpotCheckToForm(data); // Existing function
+        } else {
+          alert("❌ Record not found.");
+        }
+      })
+      .catch(err => {
+        alert("❌ Failed to load SpotCheck record for editing.");
+        console.error(err);
+      })
+      .finally(() => {
+        document.getElementById("loadingOverlay").style.display = "none";
+      });
+  }
+});
+</script>
 </body>
 </html>
