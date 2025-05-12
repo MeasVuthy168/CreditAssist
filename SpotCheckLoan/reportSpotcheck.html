@@ -523,7 +523,9 @@ function renderTable(data) {
     window.onload = fetchData;
 
 
-  let selectedRowId = null;
+
+let selectedRowId = null;
+
 // Make table rows clickable
 document.getElementById("tableBody").addEventListener("click", (e) => {
   const row = e.target.closest("tr");
@@ -535,14 +537,26 @@ document.getElementById("tableBody").addEventListener("click", (e) => {
   // Highlight selected row
   row.style.backgroundColor = "#ffd700";
 
-  // Store selected row ID (assuming CIF is in first column)
-  selectedRowId = row.cells[0].textContent.trim();
+  // Get CIF from clicked row
+  const clickedCIF = row.cells[0].textContent.trim();
 
-  // Enable Edit, Print, Delete buttons
-  document.getElementById("editBtn").disabled = false;
-  document.getElementById("printBtn").disabled = false;
-  document.getElementById("deleteBtn").disabled = false;
-  });
+  // Find the matching record in currentData
+  const matchedRecord = currentData.find(item => item.LD_CUSTOMER_ID === clickedCIF);
+
+  // Store selectedRowId as _id (if found)
+  selectedRowId = matchedRecord ? matchedRecord._id : null;
+
+  // Enable or disable buttons based on result
+  const isFound = !!matchedRecord;
+  document.getElementById("editBtn").disabled = !isFound;
+  document.getElementById("printBtn").disabled = !isFound;
+  document.getElementById("deleteBtn").disabled = !isFound;
+
+  if (!isFound) {
+    alert("Record not found.");
+  }
+});
+  
 
 </script>
 </body>
