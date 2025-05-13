@@ -178,165 +178,97 @@ td {
 
   <div class="page-container">
 
-  <!-- Section I -->
-  <div class="form-section">I. ព័ត៌មានឥណទាន (Credit Information)</div>
+<!-- Section I -->
+<div class="form-section">I. ព័ត៌មានឥណទាន (Credit Information)</div>
 
-  <!-- Subsection ក -->
-  <div class="subsection-title">ក - ព័ត៌មានអតិថិជន</div>
-  <table>
-    <tr>
-      <td>ឈ្មោះអតិថិជន:</td><td>សុធា សុជាតា</td>
-      <td>លេខអតិថិជន:</td><td>1618165</td>
-      <td>ទំហំឥណទាន:</td><td>40,000,000.00</td>
-    </tr>
-    <tr>
-      <td>សមតុល្យឥណទាន:</td><td>13,333,900.00</td>
-      <td>អត្រាការប្រាក់:</td><td>13.2%</td>
-      <td>រូបិយប័ណ្ណ:</td><td>USD</td>
-    </tr>
-    <tr>
-      <td>ថ្ងៃបញ្ចេញឥណទាន:</td><td>13/05/2023</td>
-      <td>ថ្ងៃបញ្ចប់ឥណទាន:</td><td>14/05/2025</td>
-      <td>រយៈពេល:</td><td>24 ខែ</td>
-    </tr>
-    <tr>
-      <td>វដ្តខ្ចីប្រាក់:</td><td>02</td>
-      <td>ឈ្មោះសាខា:</td><td>Svay Rieng</td>
-      <td>ប្រភេទឥណទាន:</td><td>Personal Loan</td>
-    </tr>
-  </table>
+<!-- Subsection ក -->
+<div class="subsection-title">ក - ព័ត៌មានអតិថិជន</div>
+<table>
+  <tr>
+    <td>ឈ្មោះអតិថិជន:</td><td id="customerName"></td>
+    <td>លេខអតិថិជន:</td><td id="customerID"></td>
+    <td>ទំហំឥណទាន:</td><td id="loanSize"></td>
+  </tr>
+  <tr>
+    <td>សមតុល្យឥណទាន:</td><td id="osUSD"></td>
+    <td>អត្រាការប្រាក់:</td><td id="rate"></td>
+    <td>រូបិយប័ណ្ណ:</td><td id="ccy"></td>
+  </tr>
+  <tr>
+    <td>ថ្ងៃបញ្ចេញឥណទាន:</td><td id="disburse"></td>
+    <td>ថ្ងៃបញ្ចប់ឥណទាន:</td><td id="maturity"></td>
+    <td>រយៈពេល:</td><td id="loanTerm"></td>
+  </tr>
+  <tr>
+    <td>វដ្តខ្ចីប្រាក់:</td><td id="loanCycle"></td>
+    <td>ឈ្មោះសាខា:</td><td id="branchOK"></td>
+    <td>ប្រភេទឥណទាន:</td><td id="productType"></td>
+  </tr>
+</table>
 
-  <!-- Subsection ខ -->
-  <div class="subsection-title">ខ - ស្ថានភាពបង់ប្រាក់</div>
-  <table>
-    <colgroup>
-      <col style="width: 180px;">
-      <col>
-    </colgroup>
-    <tr>
-      <td>ស្ថានភាព:</td>
-      <td><input type="checkbox" checked> មិនទៀងទាត់</td>
-    </tr>
-    <tr>
-      <td>មូលហេតុ:</td>
-      <td>រង់ចាំបើកប្រាក់ខែ</td>
-    </tr>
-  </table>
+<!-- Subsection ខ -->
+<div class="subsection-title">ខ - ស្ថានភាពបង់ប្រាក់</div>
+<table>
+  <colgroup><col style="width: 180px;"><col></colgroup>
+  <tr><td>ស្ថានភាព:</td><td id="repaymentStatus"></td></tr>
+  <tr><td>មូលហេតុ:</td><td id="repaymentNote"></td></tr>
+</table>
 
-  <!-- Subsection គ -->
-  <div class="subsection-title">គ - ឯកសារឥណទាន</div>
-  <table>
-    <colgroup>
-      <col style="width: 180px;">
-      <col>
-    </colgroup>
-    <tr>
-      <td>ស្ថានភាពឯកសារ:</td>
-      <td><input type="checkbox" checked> ត្រឹមត្រូវតាមគោលការណ៍</td>
-    </tr>
-    <tr>
-      <td>មូលហេតុ:</td>
-      <td>បំពេញ Balance Sheet មិនបានត្រឹមត្រូវ</td>
-    </tr>
-  </table>
+<!-- Subsection គ -->
+<div class="subsection-title">គ - ឯកសារឥណទាន</div>
+<table>
+  <colgroup><col style="width: 180px;"><col></colgroup>
+  <tr><td>ស្ថានភាពឯកសារ:</td><td id="docStatus"></td></tr>
+  <tr><td>មូលហេតុ:</td><td id="docNote"></td></tr>
+</table>
 
-  <!-- Section II -->
-  <div class="form-section">II. ការចុះត្រួតពិនិត្យផ្ទាល់ (Physical Inspection on site visit)</div>
+<!-- Section II -->
+<div class="form-section">II. ការចុះត្រួតពិនិត្យផ្ទាល់ (Physical Inspection on site visit)</div>
 
-  <!-- Subsection ក -->
-  <div class="subsection-title">ក - ព័ត៌មានមុខរបរ</div>
-  <table>
-    <colgroup>
-      <col style="width: 180px;">
-      <col>
-    </colgroup>
-    <tr>
-      <td>មុខរបរពេលខ្ចី:</td>
-      <td>ធ្វើស្រែ</td>
-    </tr>
-    <tr>
-      <td>មុខរបរបច្ចុប្បន្ន:</td>
-      <td>រត់ម៉ូតូឌុប</td>
-    </tr>
-    <tr>
-      <td>ស្ថានភាពជំនួញ:</td>
-      <td><input type="checkbox" checked> ឱនភាព</td>
-    </tr>
-    <tr>
-      <td>បញ្ជាក់បន្ថែម:</td>
-      <td>បានផ្លាស់ប្តូរមុខរបរ</td>
-    </tr>
-  </table>
+<!-- Subsection ក -->
+<div class="subsection-title">ក - ព័ត៌មានមុខរបរ</div>
+<table>
+  <colgroup><col style="width: 180px;"><col></colgroup>
+  <tr><td>មុខរបរពេលខ្ចី:</td><td id="businessOld"></td></tr>
+  <tr><td>មុខរបរបច្ចុប្បន្ន:</td><td id="businessNow"></td></tr>
+  <tr><td>ស្ថានភាពជំនួញ:</td><td id="businessStatus"></td></tr>
+  <tr><td>បញ្ជាក់បន្ថែម:</td><td id="businessNote"></td></tr>
+</table>
 
-  <!-- Subsection ខ -->
-  <div class="subsection-title">ខ - ព័ត៌មានទ្រព្យធានា</div>
-  <table>
-    <colgroup>
-      <col style="width: 180px;">
-      <col>
-    </colgroup>
-    <tr>
-      <td>ប្រភេទទ្រព្យ:</td>
-      <td><input type="checkbox" checked> ដីភូមិ និងផ្ទះ</td>
-    </tr>
-    <tr>
-      <td>ស្ថានភាពទ្រព្យ:</td>
-      <td><input type="checkbox" checked> រក្សាភាពដើម</td>
-    </tr>
-    <tr>
-      <td>តម្លៃទ្រព្យធានា:</td>
-      <td><input type="checkbox" checked> មិនអាចធានាឥណទានបាន</td>
-    </tr>
-    <tr>
-      <td>*មូលហេតុ:</td>
-      <td>អតិថិជនលួចលក់ទ្រព្យធានា</td>
-    </tr>
-  </table>
+<!-- Subsection ខ -->
+<div class="subsection-title">ខ - ព័ត៌មានទ្រព្យធានា</div>
+<table>
+  <colgroup><col style="width: 180px;"><col></colgroup>
+  <tr><td>ប្រភេទទ្រព្យ:</td><td id="collateralType"></td></tr>
+  <tr><td>ស្ថានភាពទ្រព្យ:</td><td id="collateralStatus"></td></tr>
+  <tr><td>តម្លៃទ្រព្យធានា:</td><td id="collateralValue"></td></tr>
+  <tr><td>*មូលហេតុ:</td><td id="collateralNote"></td></tr>
+</table>
 
-  <!-- Subsection គ -->
-  <div class="subsection-title">គ - សញ្ញាណហានិភ័យ</div>
-  <table>
-    <colgroup>
-      <col style="width: 180px;">
-      <col>
-    </colgroup>
-    <tr>
-      <td>គោលបំណងប្រើប្រាស់ប្រាក់កម្ចី:</td>
-      <td><input type="checkbox" checked> ត្រឹមត្រូវតាមការស្នើសុំ</td>
-    </tr>
-    <tr>
-      <td>*បញ្ជាក់បន្ថែម:</td>
-      <td>ខ្ចីអោយគេ</td>
-    </tr>
-    <tr>
-      <td>ប្រភពសំណង:</td>
-      <td><input type="checkbox" checked> ផ្ទាល់ខ្លួន</td>
-    </tr>
-    <tr>
-      <td>បញ្ជាក់បន្ថែម:</td>
-      <td>អតិថិជនពឹងពាក់កូន</td>
-    </tr>
-  </table>
+<!-- Subsection គ -->
+<div class="subsection-title">គ - សញ្ញាណហានិភ័យ</div>
+<table>
+  <colgroup><col style="width: 180px;"><col></colgroup>
+  <tr><td>គោលបំណងប្រើប្រាស់ប្រាក់កម្ចី:</td><td id="usagePurpose"></td></tr>
+  <tr><td>*បញ្ជាក់បន្ថែម:</td><td id="usageNote"></td></tr>
+  <tr><td>ប្រភពសំណង:</td><td id="repaymentSource"></td></tr>
+  <tr><td>បញ្ជាក់បន្ថែម:</td><td id="sourceNote"></td></tr>
+</table>
 
-  <!-- Subsection ឃ -->
-  <div class="subsection-title">ឃ - សន្និដ្ឋាន</div>
-  <table>
-    <colgroup>
-      <col style="width: 180px;">
-      <col>
-    </colgroup>
-    <tr>
-      <td>សន្និដ្ឋាន:</td>
-      <td>ឥណទានមិនមានសញ្ញាណហានិភ័យ</td>
-    </tr>
-  </table>
+<!-- Subsection ឃ -->
+<div class="subsection-title">ឃ - សន្និដ្ឋាន</div>
+<table>
+  <colgroup><col style="width: 180px;"><col></colgroup>
+  <tr><td>សន្និដ្ឋាន:</td><td id="conclusion"></td></tr>
+</table>
 
-  <div class="signature-section">
-    ថ្ងៃទី ១២ ខែឧសភា ឆ្នាំ២០២៤<br>
-    អ្នកចុះត្រួតពិនិត្យ<br>
-    ហត្ថលេខា<br><br>
-    ......................
-  </div>
+<!-- Signature Section -->
+<div class="signature-section">
+  <div id="checkDate"></div>
+  អ្នកចុះត្រួតពិនិត្យ<br>
+  ហត្ថលេខា<br><br>......................
+</div>
+ 
 </div>
 </body>
 </html>
