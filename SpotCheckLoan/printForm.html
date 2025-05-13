@@ -18,120 +18,96 @@
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      margin-bottom: 20px;
+      margin-bottom: 10px;
     }
-    .left-section {
-      font-weight: bold;
-      font-size: 14px;
-    }
-    .center-section {
-      text-align: center;
-      flex: 1;
-    }
-    .center-section div {
-      margin: 2px 0;
-    }
-    .center-line {
-      border-top: 1px solid black;
-      margin: 6px auto;
-      width: 160px;
-    }
-    .right-section {
-      text-align: right;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-    }
-    .logo-ac {
-      width: 80px;
-      height: auto;
-      margin-bottom: 4px;
-    }
-    .label-small {
-      font-size: 12px;
-    }
+    .left-section { width: 25%; font-weight: bold; font-size: 14px; }
+    .center-section { text-align: center; flex: 1; font-weight: bold; }
+    .center-section .title { margin: 2px 0; }
+    .center-line { border-top: 1px solid black; margin: 4px auto; width: 160px; }
+    .right-section { width: 20%; text-align: right; }
+    .logo-ac { width: 70px; }
+    .cycle-label { font-size: 12px; margin-top: 8px; }
+    .cycle-value { border: 1px solid black; padding: 2px 10px; display: inline-block; margin-left: 5px; }
+
     .section-title {
       font-weight: bold;
+      border-top: 1px solid black;
       margin-top: 20px;
-      margin-bottom: 10px;
-      border-bottom: 1px solid black;
-      padding-bottom: 4px;
+      padding-top: 6px;
     }
-    .subsection {
-      margin: 10px 0;
-    }
-    .field-label {
-      display: inline-block;
-      width: 200px;
+    .section-subtitle {
       font-weight: bold;
+      margin: 10px 0 5px;
     }
-    .field-value {
+    .form-row {
+      display: flex;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+    .form-cell {
+      width: 25%;
+      padding: 4px;
+      font-size: 12px;
+    }
+    .form-cell span {
       display: inline-block;
-      min-width: 200px;
-      border-bottom: 1px solid #000;
+      min-width: 80px;
     }
-    .checkbox {
-      margin-left: 20px;
+    .value-box {
+      border: 1px solid #000;
+      padding: 2px 6px;
+      display: inline-block;
+      min-width: 80px;
     }
   </style>
 </head>
 <body>
 
+<!-- Header -->
 <div class="header-print">
   <div class="left-section">
     សាខាខេត្តស្វាយរៀង
   </div>
   <div class="center-section">
-    <div>ព្រះរាជាណាចក្រកម្ពុជា</div>
-    <div>ជាតិ សាសនា ព្រះមហាក្សត្រ</div>
+    <div class="title">ព្រះរាជាណាចក្រកម្ពុជា</div>
+    <div class="title">ជាតិ សាសនា ព្រះមហាក្សត្រ</div>
     <div class="center-line"></div>
-    <div>ត្រួតពិនិត្យកិច្ចការឥណទាន</div>
-    <div>(Credit Spot check)</div>
-    <div>~ ~ ~ ~ ~ ~</div>
+    <div class="title">ត្រួតពិនិត្យកិច្ចការឥណទាន</div>
+    <div class="title">(Credit Spot check)</div>
+    <div class="title">~ ~ ~ ~ ~ ~</div>
   </div>
   <div class="right-section">
     <img src="../icons/logoAC.png" alt="ACLEDA Logo" class="logo-ac" />
-    <div class="label-small">ត្រួតពិនិត្យវដ្តៈ <span id="loanCycle">N/A</span></div>
+    <div class="cycle-label">ត្រួតពិនិត្យវដ្តៈ <span class="cycle-value" id="loanCycle">N/A</span></div>
   </div>
 </div>
 
 <!-- Section I -->
 <div class="section-title">I. ព័ត៌មានឥណទាន (Credit Information)</div>
-
-<div class="subsection">
-  <div><span class="field-label">លេខអតិថិជន:</span> <span class="field-value" id="customerId"></span></div>
-  <div><span class="field-label">ទំហំឥណទាន:</span> <span class="field-value" id="loanSize"></span> USD</div>
-  <div><span class="field-label">សមតុល្យឥណទាន:</span> <span class="field-value" id="osUsd"></span> USD</div>
-  <div><span class="field-label">ប្រភេទឥណទាន:</span> <span class="field-value" id="productType"></span></div>
+<div class="form-row">
+  <div class="form-cell"><span>ទំហំឥណទាន:</span> <span class="value-box" id="loanSize">-</span></div>
+  <div class="form-cell"><span>សមតុល្យឥណទាន:</span> <span class="value-box" id="osUsd">-</span></div>
+  <div class="form-cell"><span>លេខអតិថិជន:</span> <span class="value-box" id="customerId">-</span></div>
+  <div class="form-cell"><span>ប្រភេទឥណទាន:</span> <span class="value-box" id="loanType">-</span></div>
 </div>
 
 <!-- Section II -->
-<div class="section-title">II. ការចុះត្រួតពិនិត្យផ្ទាល់ (Physical Inspection on site visit)</div>
-
-<div class="subsection">
-  <div><span class="field-label">ប្រភពសំណង:</span> <span class="field-value" id="repaymentSource"></span></div>
-  <div><span class="field-label">ស្ថានភាពឯកសារ:</span> <span class="field-value" id="docStatus"></span></div>
+<div class="section-title">II. ការចុះត្រួតពិនិត្យផ្ទាល់ (Physical Inspection)</div>
+<div class="form-row">
+  <div class="form-cell"><span>ស្ថានភាពអាជីវកម្ម:</span> <span class="value-box" id="businessStatus">-</span></div>
+  <div class="form-cell"><span>ប្រភពសំណង:</span> <span class="value-box" id="repaymentSource">-</span></div>
 </div>
 
+<!-- Print Script Placeholder -->
 <script>
-  // Example values (you will replace these with real data from URL or backend)
-  const data = {
-    loanCycle: "04",
-    customerId: "105092",
-    loanSize: "40,000.00",
-    osUsd: "13,333.00",
-    productType: "Personal Loan",
-    repaymentSource: "Payroll",
-    docStatus: "គ្រប់គ្រង",
-  };
-
-  document.getElementById("loanCycle").textContent = data.loanCycle;
-  document.getElementById("customerId").textContent = data.customerId;
-  document.getElementById("loanSize").textContent = data.loanSize;
-  document.getElementById("osUsd").textContent = data.osUsd;
-  document.getElementById("productType").textContent = data.productType;
-  document.getElementById("repaymentSource").textContent = data.repaymentSource;
-  document.getElementById("docStatus").textContent = data.docStatus;
+  const urlParams = new URLSearchParams(window.location.search);
+  document.getElementById("loanCycle").textContent = urlParams.get('cycle') || "-";
+  document.getElementById("loanSize").textContent = urlParams.get('loanSize') || "-";
+  document.getElementById("osUsd").textContent = urlParams.get('osUsd') || "-";
+  document.getElementById("customerId").textContent = urlParams.get('customerId') || "-";
+  document.getElementById("loanType").textContent = urlParams.get('loanType') || "-";
+  document.getElementById("businessStatus").textContent = urlParams.get('businessStatus') || "-";
+  document.getElementById("repaymentSource").textContent = urlParams.get('repaymentSource') || "-";
 </script>
 
 </body>
