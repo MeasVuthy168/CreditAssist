@@ -270,5 +270,53 @@ td {
 </div>
  
 </div>
+  <script>
+  
+function fillSpotCheckData(data) {
+  const mapping = {
+    customerID: data.LD_CUSTOMER_ID,
+    customerName: data.NAME_KHMER,
+    loanSize: data.LOAN_SIZE,
+    osUSD: data.OS_USD,
+    rate: data.RATE,
+    ccy: data.CCY,
+    disburse: data.DISBURSE,
+    maturity: data.MATURITY,
+    loanTerm: data.LOAN_TERM,
+    loanCycle: data.LOAN_CYCLE,
+    branchOK: data.BranchOK,
+    productType: data.ProductType,
+    repaymentStatus: data.repaymentStatus,
+    repaymentNote: data.repaymentNote,
+    docStatus: data.docStatus,
+    docNote: data.docNote,
+    businessOld: data.businessOld,
+    businessNow: data.businessNow,
+    businessStatus: data.businessStatus,
+    businessNote: data.businessNote,
+    collateralType: data.collateralType,
+    collateralStatus: data.collateralStatus,
+    collateralValue: data.collateralValue,
+    collateralNote: data.collateralNote,
+    usagePurpose: data.usagePurpose,
+    usageNote: data.usageNote,
+    repaymentSource: data.repaymentSource,
+    sourceNote: data.sourceNote,
+    conclusion: data.conclusion,
+    checkDate: data.checkDate
+  };
+
+  for (const [id, value] of Object.entries(mapping)) {
+    const element = document.getElementById(id);
+    if (element) {
+      element.innerText = value;
+    }
+  }
+}
+  // Call function on page load
+  window.onload = function() {
+    fillSpotCheckData(spotCheckData);
+  };
+</script>
 </body>
 </html>
