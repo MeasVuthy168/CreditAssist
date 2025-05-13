@@ -2,149 +2,137 @@
 <html lang="km">
 <head>
   <meta charset="UTF-8">
-  <title>Print Credit Spot Check</title>
+  <title>Print Spot Check</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     @font-face {
       font-family: 'Krasar';
       src: url('../Krasar-Regular.ttf') format('truetype');
     }
-
     body {
-      font-family: 'Krasar', Arial, sans-serif;
-      margin: 0;
-      padding: 20px;
+      font-family: 'Krasar', sans-serif;
+      margin: 20px;
       color: #000;
     }
-
+    .header-print {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 20px;
+    }
+    .left-section {
+      font-weight: bold;
+      font-size: 14px;
+    }
+    .center-section {
+      text-align: center;
+      flex: 1;
+    }
+    .center-section div {
+      margin: 2px 0;
+    }
+    .center-line {
+      border-top: 1px solid black;
+      margin: 6px auto;
+      width: 160px;
+    }
+    .right-section {
+      text-align: right;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+    .logo-ac {
+      width: 80px;
+      height: auto;
+      margin-bottom: 4px;
+    }
+    .label-small {
+      font-size: 12px;
+    }
     .section-title {
-      font-size: 18px;
       font-weight: bold;
       margin-top: 20px;
       margin-bottom: 10px;
-      border-top: 2px solid #000;
-      padding-top: 10px;
+      border-bottom: 1px solid black;
+      padding-bottom: 4px;
     }
-
-    .info-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 20px;
+    .subsection {
+      margin: 10px 0;
     }
-
-    .info-table td {
-      padding: 6px;
-      border: 1px solid #000;
-      font-size: 14px;
-    }
-
-    .checkbox-label {
+    .field-label {
       display: inline-block;
-      margin-right: 10px;
-    }
-
-    .subsection-title {
+      width: 200px;
       font-weight: bold;
-      margin-top: 15px;
-      margin-bottom: 5px;
     }
-
-    .box {
-      border: 1px solid #000;
-      padding: 10px;
-      min-height: 50px;
+    .field-value {
+      display: inline-block;
+      min-width: 200px;
+      border-bottom: 1px solid #000;
     }
-
-    .flex-row {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-    }
-
-    .flex-column {
-      flex: 1;
-    }
-
-    .print-button {
-      margin-bottom: 20px;
-    }
-
-    @media print {
-      .print-button { display: none; }
+    .checkbox {
+      margin-left: 20px;
     }
   </style>
 </head>
 <body>
 
-  <button class="print-button" onclick="window.print()">បោះពុម្ព</button>
+<div class="header-print">
+  <div class="left-section">
+    សាខាខេត្តស្វាយរៀង
+  </div>
+  <div class="center-section">
+    <div>ព្រះរាជាណាចក្រកម្ពុជា</div>
+    <div>ជាតិ សាសនា ព្រះមហាក្សត្រ</div>
+    <div class="center-line"></div>
+    <div>ត្រួតពិនិត្យកិច្ចការឥណទាន</div>
+    <div>(Credit Spot check)</div>
+    <div>~ ~ ~ ~ ~ ~</div>
+  </div>
+  <div class="right-section">
+    <img src="../icons/logoAC.png" alt="ACLEDA Logo" class="logo-ac" />
+    <div class="label-small">ត្រួតពិនិត្យវដ្តៈ <span id="loanCycle">N/A</span></div>
+  </div>
+</div>
 
-  <h2 style="text-align: center;">បែបបទត្រួតពិនិត្យឥណទាន</h2>
-  <div>លេខកិច្ចសន្យា: <span id="contractId"></span></div>
-  <div>ឈ្មោះអតិថិជន: <span id="customerName"></span></div>
+<!-- Section I -->
+<div class="section-title">I. ព័ត៌មានឥណទាន (Credit Information)</div>
 
-  <div class="section-title">I. ព័ត៌មានឥណទាន (Credit Information)</div>
+<div class="subsection">
+  <div><span class="field-label">លេខអតិថិជន:</span> <span class="field-value" id="customerId"></span></div>
+  <div><span class="field-label">ទំហំឥណទាន:</span> <span class="field-value" id="loanSize"></span> USD</div>
+  <div><span class="field-label">សមតុល្យឥណទាន:</span> <span class="field-value" id="osUsd"></span> USD</div>
+  <div><span class="field-label">ប្រភេទឥណទាន:</span> <span class="field-value" id="productType"></span></div>
+</div>
 
-  <table class="info-table">
-    <tr>
-      <td>ទំហំឥណទាន</td>
-      <td id="loanSize"></td>
-      <td>សមតុល្យឥណទាន</td>
-      <td id="osUsd"></td>
-    </tr>
-    <tr>
-      <td>លេខអតិថិជន</td>
-      <td id="customerId"></td>
-      <td>ប្រភេទឥណទាន</td>
-      <td id="productType"></td>
-    </tr>
-    <tr>
-      <td>រយៈពេលខ្ចី</td>
-      <td id="loanTerm"></td>
-      <td>អត្រាការប្រាក់</td>
-      <td id="rate"></td>
-    </tr>
-  </table>
+<!-- Section II -->
+<div class="section-title">II. ការចុះត្រួតពិនិត្យផ្ទាល់ (Physical Inspection on site visit)</div>
 
-  <div class="subsection-title">ក - ស្ថានភាពឯកសារ</div>
-  <div class="box" id="docStatus"></div>
+<div class="subsection">
+  <div><span class="field-label">ប្រភពសំណង:</span> <span class="field-value" id="repaymentSource"></span></div>
+  <div><span class="field-label">ស្ថានភាពឯកសារ:</span> <span class="field-value" id="docStatus"></span></div>
+</div>
 
-  <div class="section-title">II. ការចុះត្រួតពិនិត្យផ្ទាល់ (Physical Inspection)</div>
+<script>
+  // Example values (you will replace these with real data from URL or backend)
+  const data = {
+    loanCycle: "04",
+    customerId: "105092",
+    loanSize: "40,000.00",
+    osUsd: "13,333.00",
+    productType: "Personal Loan",
+    repaymentSource: "Payroll",
+    docStatus: "គ្រប់គ្រង",
+  };
 
-  <div class="subsection-title">ក - មុខរបរ</div>
-  <div class="box" id="businessNow"></div>
-
-  <div class="subsection-title">ខ - ទ្រព្យធានា</div>
-  <div class="box" id="collateralStatus"></div>
-
-  <div class="subsection-title">គ - សញ្ញាណហានិភ័យ</div>
-  <div class="box" id="usageNote"></div>
+  document.getElementById("loanCycle").textContent = data.loanCycle;
+  document.getElementById("customerId").textContent = data.customerId;
+  document.getElementById("loanSize").textContent = data.loanSize;
+  document.getElementById("osUsd").textContent = data.osUsd;
+  document.getElementById("productType").textContent = data.productType;
+  document.getElementById("repaymentSource").textContent = data.repaymentSource;
+  document.getElementById("docStatus").textContent = data.docStatus;
+</script>
 
 </body>
-<script>
-  const params = new URLSearchParams(window.location.search);
-  const id = params.get('id');
-
-  fetch(`https://secure-backend-tzj9.onrender.com/api/spotcheck/${id}`, {
-    headers: { Authorization: `Bearer ${sessionStorage.getItem("token")}` }
-  })
-  .then(res => res.json())
-  .then(data => {
-    document.getElementById("contractId").textContent = data.CONTRACT_LD || "";
-    document.getElementById("customerName").textContent = data.NAME_KHMER || "";
-    document.getElementById("loanSize").textContent = data.LOAN_SIZE || "";
-    document.getElementById("osUsd").textContent = data.OS_USD || "";
-    document.getElementById("customerId").textContent = data.LD_CUSTOMER_ID || "";
-    document.getElementById("productType").textContent = data.ProductType || "";
-    document.getElementById("loanTerm").textContent = data.LOAN_TERM || "";
-    document.getElementById("rate").textContent = data.RATE || "";
-    document.getElementById("docStatus").textContent = data.docStatus || "";
-    document.getElementById("businessNow").textContent = data.businessNow || "";
-    document.getElementById("collateralStatus").textContent = data.collateralStatus || "";
-    document.getElementById("usageNote").textContent = data.usageNote || "";
-  })
-  .catch(err => {
-    console.error(err);
-    alert("បរាជ័យក្នុងការទាញយកទិន្នន័យ");
-  });
-</script>
 </html>
