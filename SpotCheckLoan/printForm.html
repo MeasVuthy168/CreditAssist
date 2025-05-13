@@ -3,125 +3,148 @@
 <html lang="km">
 <head>
   <meta charset="UTF-8">
-  <title>Credit Spot Check - Print Form</title>
+  <title>Credit Spot Check Form</title>
   <style>
-    @font-face {
-      font-family: 'Krasar';
-      src: url('../Krasar-Regular.ttf') format('truetype');
-    }
     body {
-      font-family: 'Krasar', sans-serif;
-      margin: 0.9cm 0.5cm 0.9cm 0.8cm;
-    }
-    @page {
-      size: A4 portrait;
-      margin: 0.9cm 0.5cm 0.9cm 0.8cm;
+      font-family: 'Krasar', Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      width: 210mm;
+      height: 297mm;
+      box-sizing: border-box;
     }
 
     .header {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
+      margin-bottom: 10px;
     }
-    .header-left { font-size: 14px; }
-    .header-center { text-align: center; flex-grow: 1; font-size: 16px; line-height: 1.5; }
-    .header-right { text-align: right; }
-    .header-line { border-top: 2px solid black; margin: 4px 0; }
-    .cycle-label { font-size: 14px; margin-top: 4px; }
-    .emoji-divider { text-align: center; margin-top: 8px; }
 
-    h2 { font-size: 14px; border-bottom: 1px solid #000; margin-top: 20px; }
-    table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 8px; }
-    td, th { border: 1px solid #000; padding: 4px; vertical-align: top; }
-    .section-title { font-weight: bold; background: #f0f0f0; }
-
-    .conclusion-box { margin-top: 20px; border: 1px solid #000; height: 200px; padding: 8px; }
-
-    .print-btn {
-      position: fixed;
-      top: 10px;
-      right: 20px;
-      background: #ffd700;
-      border: none;
-      padding: 8px 12px;
+    .header-left {
       font-size: 14px;
-      border-radius: 6px;
-      cursor: pointer;
+    }
+
+    .header-center {
+      text-align: center;
+      flex-grow: 1;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .header-center .line {
+      margin: 4px 0;
+      border-top: 1px solid black;
+      width: 60%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .header-right {
+      text-align: right;
+    }
+
+    .header-right img {
+      width: 100px;
+    }
+
+    .header-right .input-box {
+      border: 1px solid black;
+      padding: 4px 12px;
+      font-size: 12px;
+    }
+
+    .section-title {
+      background: #f0f0f0;
+      font-weight: bold;
+      font-size: 13px;
+      padding: 4px;
+      border: 1px solid black;
+      text-align: left;
+      margin-top: 20px;
+    }
+
+    .table-bordered {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+    }
+
+    .table-bordered td, .table-bordered th {
+      border: 1px solid black;
+      padding: 4px;
+      vertical-align: top;
+    }
+
+    .table-bordered th {
+      background: #f0f0f0;
+      font-weight: bold;
+    }
+
+    .emoji-line {
+      text-align: center;
+      margin-top: 4px;
+      font-size: 16px;
+    }
+
+    @media print {
+      body {
+        margin: 0;
+        width: auto;
+        height: auto;
+      }
     }
   </style>
 </head>
 <body>
 
-<div class="header">
-  <div class="header-left">
-    សាខាខេត្តស្វាយរៀង
+  <!-- Header -->
+  <div class="header">
+    <div class="header-left">
+      សាខាខេត្តស្វាយរៀង
+    </div>
+    <div class="header-center">
+      ព្រះរាជាណាចក្រកម្ពុជា<br>
+      ជាតិ សាសនា ព្រះមហាក្សត្រ
+      <div class="line"></div>
+      ត្រួតពិនិត្យកិច្ចការឥណទាន<br>
+      (Credit Spot check)
+      <div class="emoji-line">~ ~ ~ ~ ~ ~ ~</div>
+    </div>
+    <div class="header-right">
+      <img src="../icons/LogoAC.png" alt="ACLEDA Logo"><br>
+      <div>ត្រួតពិនិត្យវដ្ត: <span class="input-box" id="loanCycle">01</span></div>
+    </div>
   </div>
-  <div class="header-center">
-    ព្រះរាជាណាចក្រកម្ពុជា<br>
-    ជាតិ សាសនា ព្រះមហាក្សត្រ
-    <div class="header-line"></div>
-    ត្រួតពិនិត្យកិច្ចការឥណទាន<br>
-    (Credit Spot check)
-    <div class="emoji-divider">~ ~ ~ ~ ~ ~</div>
-  </div>
-  <div class="header-right">
-    <img src="../icons/acleda-logo.png" alt="ACLEDA" width="100"><br>
-    <div class="cycle-label">ត្រួតពិនិត្យវដ្ត: <span id="loanCycle">__</span></div>
-  </div>
-</div>
 
-<h2>I. ព័ត៌មានឥណទាន (Credit Information)</h2>
-<table>
-  <tr class="section-title"><td colspan="6">A. ព័ត៌មានអតិថិជន</td></tr>
-  <tr>
-    <td>ឈ្មោះ</td><td id="customerName">ចំរើន សុខុម</td>
-    <td>លេខកិច្ចសន្យា</td><td id="contractNo">MG2427100001</td>
-    <td>ទំហំឥណទាន</td><td id="loanSize">40,000,000</td>
-  </tr>
-  <tr>
-    <td>សមតុល្យឥណទាន</td><td id="outstanding">13,333,900</td>
-    <td>រយៈពេលខ្ចី</td><td id="loanTerm">60 ខែ</td>
-    <td>អត្រាការប្រាក់</td><td id="interestRate">13.2%</td>
-  </tr>
-</table>
+  <!-- Section I: Credit Information -->
+  <h2 class="section-title">I. ព័ត៌មានឥណទាន (Credit Information)</h2>
+  <table class="table-bordered">
+    <tr>
+      <td>ឈ្មោះ</td><td>ចំរើន សុខុម</td>
+      <td>លេខកិច្ចសន្យា</td><td>MG2427100001</td>
+      <td>ទំហំឥណទាន</td><td>40,000,000</td>
+    </tr>
+    <tr>
+      <td>សមតុល្យឥណទាន</td><td>13,333,900</td>
+      <td>រយៈពេលខ្ចី</td><td>60 ខែ</td>
+      <td>អត្រាការប្រាក់</td><td>13.2%</td>
+    </tr>
+  </table>
 
-<h2>II. ការចុះត្រួតពិនិត្យផ្ទាល់ (Physical Inspection)</h2>
-<table>
-  <tr class="section-title"><td colspan="6">A. ស្ថានភាពជំនួញ</td></tr>
-  <tr>
-    <td>ប្រភេទ</td><td id="businessType">រោងចក្រ</td>
-    <td>មតិយោបល់</td><td colspan="3">ល្អប្រសើរ</td>
-  </tr>
-  <tr class="section-title"><td colspan="6">B. ទ្រព្យធានា</td></tr>
-  <tr>
-    <td>ប្រភេទ</td><td id="collateralType">ដី</td>
-    <td>ស្ថានភាព</td><td id="collateralStatus">ប្រើប្រាស់</td>
-    <td>តម្លៃ</td><td id="collateralValue">100,000,000</td>
-  </tr>
-</table>
-
-<h2>III. សន្និដ្ឋាន (Conclusion)</h2>
-<div class="conclusion-box" id="conclusionText">
-  ស្ថានការណ៍ឥណទានសរុបត្រូវបានវាយតម្លៃថាអាចទទួលបានការសងប្រាក់ត្រឹមត្រូវ។
-</div>
-
-<button class="print-btn" onclick="window.print()">បោះពុម្ព</button>
-
-<script>
-  const urlParams = new URLSearchParams(window.location.search);
-  document.getElementById('loanCycle').textContent = urlParams.get('cycle') || 'N/A';
-  document.getElementById('customerName').textContent = urlParams.get('name') || 'N/A';
-  document.getElementById('contractNo').textContent = urlParams.get('contract') || 'N/A';
-  document.getElementById('loanSize').textContent = urlParams.get('loanSize') || 'N/A';
-  document.getElementById('outstanding').textContent = urlParams.get('outstanding') || 'N/A';
-  document.getElementById('loanTerm').textContent = urlParams.get('loanTerm') || 'N/A';
-  document.getElementById('interestRate').textContent = urlParams.get('interest') || 'N/A';
-  document.getElementById('businessType').textContent = urlParams.get('business') || 'N/A';
-  document.getElementById('collateralType').textContent = urlParams.get('collateralType') || 'N/A';
-  document.getElementById('collateralStatus').textContent = urlParams.get('collateralStatus') || 'N/A';
-  document.getElementById('collateralValue').textContent = urlParams.get('collateralValue') || 'N/A';
-  document.getElementById('conclusionText').textContent = urlParams.get('conclusion') || 'សូមបំពេញសន្និដ្ឋាន';
-</script>
+  <!-- Section II: Physical Inspection -->
+  <h2 class="section-title">II. ការចុះត្រួតពិនិត្យផ្ទាល់ (Physical Inspection)</h2>
+  <table class="table-bordered">
+    <tr>
+      <td>ប្រភេទ</td><td>រោងចក្រ</td>
+      <td>មតិយោបល់</td><td colspan="3">ល្អប្រសើរ</td>
+    </tr>
+    <tr>
+      <td>ប្រភេទទ្រព្យ</td><td>ដី</td>
+      <td>ស្ថានភាព</td><td>ប្រើប្រាស់</td>
+      <td>តម្លៃ</td><td>100,000,000</td>
+    </tr>
+  </table>
 
 </body>
 </html>
