@@ -270,8 +270,23 @@ td {
 </div>
  
 </div>
-  <script>
   
+<script>
+async function fetchSpotCheckData(cif) {
+  try {
+    const response = await fetch(`/api/spotcheck/report?cif=${cif}`);
+    const data = await response.json();
+    if (data) {
+      fillSpotCheckData(data);
+    } else {
+      alert('No SpotCheck data found');
+    }
+  } catch (error) {
+    console.error('Error fetching SpotCheck data:', error);
+    alert('Failed to load data');
+  }
+}
+
 function fillSpotCheckData(data) {
   const mapping = {
     customerID: data.LD_CUSTOMER_ID,
@@ -313,10 +328,15 @@ function fillSpotCheckData(data) {
     }
   }
 }
-  // Call function on page load
-  window.onload = function() {
-    fillSpotCheckData(spotCheckData);
-  };
+
+function prepareAndPrint() {
+  const cif = prompt('Enter CIF to load SpotCheck Data:');
+  if (cif) {
+    fetchSpotCheckData(cif).then(() => {
+      setTimeout(() => window.print(), 300); // delay to ensure data is filled
+    });
+  }
+}
 </script>
 </body>
 </html>
