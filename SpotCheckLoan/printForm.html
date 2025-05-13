@@ -1,0 +1,308 @@
+
+<!DOCTYPE html>
+<html lang="km">
+<head>
+  <meta charset="UTF-8">
+  <title>Credit Spot Check Form</title>
+  <style>
+    @font-face {
+      font-family: 'Krasar';
+      src: url('../Krasar-Regular.ttf') format('truetype');
+    }
+
+    body {
+      font-family: 'Krasar', Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      font-size: 12px;
+    }
+  .header-container {
+  border: 2px solid transparent;
+  padding: 5px;
+  margin: 0 auto;
+  max-width: 850px; /* Adjust width as needed */
+  box-sizing: border-box;
+}
+.page-container {
+  border: 2px solid black;
+  padding: 5px;
+  margin: 0 auto;
+  max-width: 850px; /* Adjust width as needed */
+  box-sizing: border-box;
+}
+    h1, h2, h3, h4, h5, h6 {
+      font-size: 12px;
+      font-weight: normal;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      font-size: 12px;
+    }
+
+    .header-right img {
+      width: 120px;
+    }
+    
+
+    .form-section {
+  border-top: 2px solid black;
+  border-bottom: 2px solid black;
+  border-left: 2px solid black;   /* Add this */
+  border-right: 2px solid black;  /* Add this */
+  padding: 5px 0 5px 14px;
+  background: #e0e0e0;
+  font-weight: bold;
+  margin-top: 20px;
+  font-size: 12px !important;
+}
+
+    
+.subsection-title {
+  font-weight: bold;
+  margin-top: 10px;
+  font-size: 12px !important;
+  margin-left: 16px; /* Add this line to shift text right */
+}
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 6px;
+      table-layout: auto;
+    }
+
+    td {
+      border: 1px solid #333;
+      padding: 6px 10px;
+      vertical-align: top;
+    }
+
+    .checkbox {
+      margin-right: 8px;
+    }
+
+    .decor-line {
+      text-align: center;
+      font-family: monospace;
+      margin-top: 4px;
+    }
+
+    .print-button {
+      padding: 8px 20px;
+      font-size: 14px;
+      font-weight: bold;
+      background-color: #0d2d5c;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+
+    
+.signature-section {
+  margin-top: 20px; /* Reduced from 60px */
+  text-align: right;
+  font-size: 14px;
+  font-weight: bold;
+  line-height: 1.6;
+}
+    @media print {
+      .print-button {
+        display: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="header-container">
+<div class="header">
+  <div style="font-weight: bold; font-size: 13px; margin-top: 12px;">
+  សាខាខេត្តស្វាយរៀង
+  <div style="margin-top: 8px;">
+    <button class="print-button" onclick="window.print()">បោះពុម្ព (Print Form)</button>
+  </div>
+ </div>
+  <div style="text-align: center; flex: 1; font-weight: bold; font-size: 14px;">
+    ព្រះរាជាណាចក្រកម្ពុជា<br>
+    ជាតិ សាសនា ព្រះមហាក្សត្រ<br>
+    <div style="width: 80px; height: 3px; background-color: black; margin: 6px auto;"></div>
+    ត្រួតពិនិត្យកិច្ចការឥណទាន<br>
+    (Credit Spot Check)<br>
+    <div class="decor-line">~~~*~~~</div>
+  </div>
+  <div style="text-align: right; font-weight: bold; font-size: 14px;">
+    <img src="../icons/LogoAC2.PNG" alt="ACLEDA Logo" style="width: 130px;"><br>
+    ត្រួតពិនិត្យវដ្ត: <input type="text" value="01" style="width: 40px;">
+  </div>
+</div>
+</div>
+
+  
+<div class="page-container">
+  <!-- Section I -->
+  <div class="form-section">I. ព័ត៌មានឥណទាន (Credit Information)</div>
+
+  <!-- Subsection ក -->
+  <div class="subsection-title">ក - ព័ត៌មានអតិថិជន</div>
+  <table>
+    <tr>
+      <td>ឈ្មោះអតិថិជន:</td><td>សុធា សុជាតា</td>
+      <td>លេខអតិថិជន:</td><td>1618165</td>
+      <td>ទំហំឥណទាន:</td><td>40,000,000.00</td>
+    </tr>
+    <tr>
+      <td>សមតុល្យឥណទាន:</td><td>13,333,900.00</td>
+      <td>អត្រាការប្រាក់:</td><td>13.2%</td>
+      <td>រូបិយប័ណ្ណ:</td><td>USD</td>
+    </tr>
+    <tr>
+      <td>ថ្ងៃបញ្ចេញឥណទាន:</td><td>13/05/2023</td>
+      <td>ថ្ងៃបញ្ចប់ឥណទាន:</td><td>14/05/2025</td>
+      <td>រយៈពេល:</td><td>24 ខែ</td>
+    </tr>
+    <tr>
+      <td>វដ្តខ្ចីប្រាក់:</td><td>02</td>
+      <td>ឈ្មោះសាខា:</td><td>Svay Rieng</td>
+      <td>ប្រភេទឥណទាន:</td><td>Personal Loan</td>
+    </tr>
+  </table>
+  
+  <!-- Subsection ខ - ស្ថានភាពបង់ប្រាក់ -->
+<div class="subsection-title">ខ - ស្ថានភាពបង់ប្រាក់</div>
+<table>
+  <colgroup>
+    <col style="width: 180px;">
+    <col>
+  </colgroup>
+  <tr>
+    <td>ស្ថានភាព:</td>
+    <td><input type="checkbox" checked> មិនទៀងទាត់</td>
+  </tr>
+  <tr>
+    <td>មូលហេតុ:</td>
+    <td>រង់ចាំបើកប្រាក់ខែ</td>
+  </tr>
+</table>
+
+<!-- Subsection គ - ឯកសារឥណទាន -->
+<div class="subsection-title">គ - ឯកសារឥណទាន</div>
+<table>
+  <colgroup>
+    <col style="width: 180px;">
+    <col>
+  </colgroup>
+  <tr>
+    <td>ស្ថានភាពឯកសារ:</td>
+    <td><input type="checkbox" checked> ត្រឹមត្រូវតាមគោលការណ៍</td>
+  </tr>
+  <tr>
+    <td>មូលហេតុ:</td>
+    <td>បំពេញ Balance Sheet មិនបានត្រឹមត្រូវ</td>
+  </tr>
+</table>
+
+
+<!-- Section II -->
+<div class="form-section">II. ការចុះត្រួតពិនិត្យផ្ទាល់ (Physical Inspection on site visit)</div>
+
+<!-- Subsection ក - ព័ត៌មានមុខរបរ -->
+<div class="subsection-title">ក - ព័ត៌មានមុខរបរ</div>
+<table>
+  <colgroup>
+    <col style="width: 180px;">
+    <col>
+  </colgroup>
+  <tr>
+    <td>មុខរបរពេលខ្ចី:</td>
+    <td>ធ្វើស្រែ</td>
+  </tr>
+  <tr>
+    <td>មុខរបរបច្ចុប្បន្ន:</td>
+    <td>រត់ម៉ូតូឌុប</td>
+  </tr>
+  <tr>
+    <td>ស្ថានភាពជំនួញ:</td>
+    <td><input type="checkbox" checked> ឱនភាព</td>
+  </tr>
+  <tr>
+    <td>បញ្ជាក់បន្ថែម:</td>
+    <td>បានផ្លាស់ប្តូរមុខរបរ</td>
+  </tr>
+</table>
+
+<!-- Subsection ខ - ព័ត៌មានទ្រព្យធានា -->
+<div class="subsection-title">ខ - ព័ត៌មានទ្រព្យធានា</div>
+<table>
+  <colgroup>
+    <col style="width: 180px;">
+    <col>
+  </colgroup>
+  <tr>
+    <td>ប្រភេទទ្រព្យ:</td>
+    <td><input type="checkbox" checked> ដីភូមិ និងផ្ទះ</td>
+  </tr>
+  <tr>
+    <td>ស្ថានភាពទ្រព្យ:</td>
+    <td><input type="checkbox" checked> រក្សាភាពដើម</td>
+  </tr>
+  <tr>
+    <td>តម្លៃទ្រព្យធានា:</td>
+    <td><input type="checkbox" checked> មិនអាចធានាឥណទានបាន</td>
+  </tr>
+  <tr>
+    <td>*មូលហេតុ:</td>
+    <td>អតិថិជនលួចលក់ទ្រព្យធានា</td>
+  </tr>
+</table>
+
+<!-- Subsection គ - សញ្ញាណហានិភ័យ -->
+<div class="subsection-title">គ - សញ្ញាណហានិភ័យ</div>
+<table>
+  <colgroup>
+    <col style="width: 180px;">
+    <col>
+  </colgroup>
+  <tr>
+    <td>គោលបំណងប្រើប្រាស់ប្រាក់កម្ចី:</td>
+    <td><input type="checkbox" checked> ត្រឹមត្រូវតាមការស្នើសុំ</td>
+  </tr>
+  <tr>
+    <td>*បញ្ជាក់បន្ថែម:</td>
+    <td>ខ្ចីអោយគេ</td>
+  </tr>
+  <tr>
+    <td>ប្រភពសំណង:</td>
+    <td><input type="checkbox" checked> ផ្ទាល់ខ្លួន</td>
+  </tr>
+  <tr>
+    <td>បញ្ជាក់បន្ថែម:</td>
+    <td>អតិថិជនពឹងពាក់កូន</td>
+  </tr>
+</table>
+
+<!-- Subsection ឃ - សន្និដ្ឋាន -->
+<div class="subsection-title">ឃ - សន្និដ្ឋាន</div>
+<table>
+  <colgroup>
+    <col style="width: 180px;">
+    <col>
+  </colgroup>
+  <tr>
+    <td>សន្និដ្ឋាន:</td>
+    <td>ឥណទានមិនមានសញ្ញាណហានិភ័យ  Cambodia, a captivating country in Southeast Asia </td>
+  </tr>
+</table>
+  <!-- Signature Block -->
+<div class="signature-section">
+  ថ្ងៃទី ១២ ខែឧសភា ឆ្នាំ២០២៤<br>
+  អ្នកចុះត្រួតពិនិត្យ<br>
+  ហត្ថលេខា<br><br><br><br>
+  ......................
+
+</div>
+</body>
+</html>
