@@ -550,7 +550,16 @@ deleteBtn.classList.add("button-disabled");
     document.getElementById("toDate").addEventListener("change", fetchData);
     window.onload = fetchData;
 
+function PrintForm() {
+  if (!selectedRowId || selectedRowId === "") {
+    alert("សូមជ្រើសរើសជួរដេកមួយសិន");
+    return;
+  }
 
+  // Redirect to printForm.html with ?id=selectedRowId
+  window.location.href = `../SpotCheckLoan/printForm.html?id=${selectedRowId}`;
+}
+  
 function Delete() {
   if (!selectedRowId || selectedRowId === "") {
     alert("សូមជ្រើសរើសជួរដេកមុនសិន");
