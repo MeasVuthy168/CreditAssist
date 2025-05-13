@@ -39,7 +39,14 @@
     .header-right img {
       width: 120px;
     }
-
+    
+.short-divider {
+  width: 120px;
+  height: 3px;
+  background-color: black;
+  border: none;
+  margin: 6px auto;
+}
     .form-section {
   border-top: 2px solid black;
   border-bottom: 2px solid black;
@@ -113,23 +120,24 @@
   <div class="page-container">
 <!-- Header -->
 <div class="header">
-  <div style="font-weight: bold; font-size: 14px;">
+  <div class="header-left">
     សាខាខេត្តស្វាយរៀង
   </div>
-  <div style="text-align: center; flex: 1; font-weight: bold; font-size: 14px;">
+  <div class="header-center">
     ព្រះរាជាណាចក្រកម្ពុជា<br>
     ជាតិ សាសនា ព្រះមហាក្សត្រ<br>
-    <hr style="margin: 4px 0;">
+    <hr class="short-divider">
     ត្រួតពិនិត្យកិច្ចការឥណទាន<br>
-    (Credit Spot Check)<br>
+    (Credit Spot check)<br>
     <div class="decor-line">~*~*~*~*~</div>
   </div>
-  <div style="text-align: right; font-weight: bold; font-size: 14px;">
-    <img src="../icons/LogoAC2.PNG" alt="ACLEDA Logo" style="width: 130px;"><br>
-    ត្រួតពិនិត្យវដ្ត: <input type="text" value="01" style="width: 40px;">
-   </div>
+  <div class="header-right">
+    <img src="../icons/LogoAC2.PNG" alt="ACLEDA Logo">
+    <div style="margin-top: 4px;">
+      ត្រួតពិនិត្យវដ្ត: <input type="text" value="01" style="width: 40px;">
+    </div>
   </div>
- </div> 
+</div>
 
 
   
