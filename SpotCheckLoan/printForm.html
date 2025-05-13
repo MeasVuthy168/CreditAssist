@@ -1,9 +1,9 @@
+
 <!DOCTYPE html>
 <html lang="km">
 <head>
   <meta charset="UTF-8">
-  <title>Print Spot Check</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Credit Spot Check - Print Form</title>
   <style>
     @font-face {
       font-family: 'Krasar';
@@ -11,103 +11,116 @@
     }
     body {
       font-family: 'Krasar', sans-serif;
-      margin: 20px;
-      color: #000;
+      margin: 0.9cm 0.5cm 0.9cm 0.8cm;
     }
-    .header-print {
+    @page {
+      size: A4 portrait;
+      margin: 0.9cm 0.5cm 0.9cm 0.8cm;
+    }
+
+    .header {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      margin-bottom: 10px;
     }
-    .left-section { width: 25%; font-weight: bold; font-size: 14px; }
-    .center-section { text-align: center; flex: 1; font-weight: bold; }
-    .center-section .title { margin: 2px 0; }
-    .center-line { border-top: 1px solid black; margin: 4px auto; width: 160px; }
-    .right-section { width: 20%; text-align: right; }
-    .logo-ac { width: 70px; }
-    .cycle-label { font-size: 12px; margin-top: 8px; }
-    .cycle-value { border: 1px solid black; padding: 2px 10px; display: inline-block; margin-left: 5px; }
+    .header-left { font-size: 14px; }
+    .header-center { text-align: center; flex-grow: 1; font-size: 16px; line-height: 1.5; }
+    .header-right { text-align: right; }
+    .header-line { border-top: 2px solid black; margin: 4px 0; }
+    .cycle-label { font-size: 14px; margin-top: 4px; }
+    .emoji-divider { text-align: center; margin-top: 8px; }
 
-    .section-title {
-      font-weight: bold;
-      border-top: 1px solid black;
-      margin-top: 20px;
-      padding-top: 6px;
-    }
-    .section-subtitle {
-      font-weight: bold;
-      margin: 10px 0 5px;
-    }
-    .form-row {
-      display: flex;
-      flex-wrap: wrap;
-      margin-bottom: 8px;
-    }
-    .form-cell {
-      width: 25%;
-      padding: 4px;
-      font-size: 12px;
-    }
-    .form-cell span {
-      display: inline-block;
-      min-width: 80px;
-    }
-    .value-box {
-      border: 1px solid #000;
-      padding: 2px 6px;
-      display: inline-block;
-      min-width: 80px;
+    h2 { font-size: 14px; border-bottom: 1px solid #000; margin-top: 20px; }
+    table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 8px; }
+    td, th { border: 1px solid #000; padding: 4px; vertical-align: top; }
+    .section-title { font-weight: bold; background: #f0f0f0; }
+
+    .conclusion-box { margin-top: 20px; border: 1px solid #000; height: 200px; padding: 8px; }
+
+    .print-btn {
+      position: fixed;
+      top: 10px;
+      right: 20px;
+      background: #ffd700;
+      border: none;
+      padding: 8px 12px;
+      font-size: 14px;
+      border-radius: 6px;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
 
-<!-- Header -->
-<div class="header-print">
-  <div class="left-section">
+<div class="header">
+  <div class="header-left">
     សាខាខេត្តស្វាយរៀង
   </div>
-  <div class="center-section">
-    <div class="title">ព្រះរាជាណាចក្រកម្ពុជា</div>
-    <div class="title">ជាតិ សាសនា ព្រះមហាក្សត្រ</div>
-    <div class="center-line"></div>
-    <div class="title">ត្រួតពិនិត្យកិច្ចការឥណទាន</div>
-    <div class="title">(Credit Spot check)</div>
-    <div class="title">~ ~ ~ ~ ~ ~</div>
+  <div class="header-center">
+    ព្រះរាជាណាចក្រកម្ពុជា<br>
+    ជាតិ សាសនា ព្រះមហាក្សត្រ
+    <div class="header-line"></div>
+    ត្រួតពិនិត្យកិច្ចការឥណទាន<br>
+    (Credit Spot check)
+    <div class="emoji-divider">~ ~ ~ ~ ~ ~</div>
   </div>
-  <div class="right-section">
-    <img src="../icons/logoAC.png" alt="ACLEDA Logo" class="logo-ac" />
-    <div class="cycle-label">ត្រួតពិនិត្យវដ្តៈ <span class="cycle-value" id="loanCycle">N/A</span></div>
+  <div class="header-right">
+    <img src="../icons/acleda-logo.png" alt="ACLEDA" width="100"><br>
+    <div class="cycle-label">ត្រួតពិនិត្យវដ្ត: <span id="loanCycle">__</span></div>
   </div>
 </div>
 
-<!-- Section I -->
-<div class="section-title">I. ព័ត៌មានឥណទាន (Credit Information)</div>
-<div class="form-row">
-  <div class="form-cell"><span>ទំហំឥណទាន:</span> <span class="value-box" id="loanSize">-</span></div>
-  <div class="form-cell"><span>សមតុល្យឥណទាន:</span> <span class="value-box" id="osUsd">-</span></div>
-  <div class="form-cell"><span>លេខអតិថិជន:</span> <span class="value-box" id="customerId">-</span></div>
-  <div class="form-cell"><span>ប្រភេទឥណទាន:</span> <span class="value-box" id="loanType">-</span></div>
+<h2>I. ព័ត៌មានឥណទាន (Credit Information)</h2>
+<table>
+  <tr class="section-title"><td colspan="6">A. ព័ត៌មានអតិថិជន</td></tr>
+  <tr>
+    <td>ឈ្មោះ</td><td id="customerName">ចំរើន សុខុម</td>
+    <td>លេខកិច្ចសន្យា</td><td id="contractNo">MG2427100001</td>
+    <td>ទំហំឥណទាន</td><td id="loanSize">40,000,000</td>
+  </tr>
+  <tr>
+    <td>សមតុល្យឥណទាន</td><td id="outstanding">13,333,900</td>
+    <td>រយៈពេលខ្ចី</td><td id="loanTerm">60 ខែ</td>
+    <td>អត្រាការប្រាក់</td><td id="interestRate">13.2%</td>
+  </tr>
+</table>
+
+<h2>II. ការចុះត្រួតពិនិត្យផ្ទាល់ (Physical Inspection)</h2>
+<table>
+  <tr class="section-title"><td colspan="6">A. ស្ថានភាពជំនួញ</td></tr>
+  <tr>
+    <td>ប្រភេទ</td><td id="businessType">រោងចក្រ</td>
+    <td>មតិយោបល់</td><td colspan="3">ល្អប្រសើរ</td>
+  </tr>
+  <tr class="section-title"><td colspan="6">B. ទ្រព្យធានា</td></tr>
+  <tr>
+    <td>ប្រភេទ</td><td id="collateralType">ដី</td>
+    <td>ស្ថានភាព</td><td id="collateralStatus">ប្រើប្រាស់</td>
+    <td>តម្លៃ</td><td id="collateralValue">100,000,000</td>
+  </tr>
+</table>
+
+<h2>III. សន្និដ្ឋាន (Conclusion)</h2>
+<div class="conclusion-box" id="conclusionText">
+  ស្ថានការណ៍ឥណទានសរុបត្រូវបានវាយតម្លៃថាអាចទទួលបានការសងប្រាក់ត្រឹមត្រូវ។
 </div>
 
-<!-- Section II -->
-<div class="section-title">II. ការចុះត្រួតពិនិត្យផ្ទាល់ (Physical Inspection)</div>
-<div class="form-row">
-  <div class="form-cell"><span>ស្ថានភាពអាជីវកម្ម:</span> <span class="value-box" id="businessStatus">-</span></div>
-  <div class="form-cell"><span>ប្រភពសំណង:</span> <span class="value-box" id="repaymentSource">-</span></div>
-</div>
+<button class="print-btn" onclick="window.print()">បោះពុម្ព</button>
 
-<!-- Print Script Placeholder -->
 <script>
   const urlParams = new URLSearchParams(window.location.search);
-  document.getElementById("loanCycle").textContent = urlParams.get('cycle') || "-";
-  document.getElementById("loanSize").textContent = urlParams.get('loanSize') || "-";
-  document.getElementById("osUsd").textContent = urlParams.get('osUsd') || "-";
-  document.getElementById("customerId").textContent = urlParams.get('customerId') || "-";
-  document.getElementById("loanType").textContent = urlParams.get('loanType') || "-";
-  document.getElementById("businessStatus").textContent = urlParams.get('businessStatus') || "-";
-  document.getElementById("repaymentSource").textContent = urlParams.get('repaymentSource') || "-";
+  document.getElementById('loanCycle').textContent = urlParams.get('cycle') || 'N/A';
+  document.getElementById('customerName').textContent = urlParams.get('name') || 'N/A';
+  document.getElementById('contractNo').textContent = urlParams.get('contract') || 'N/A';
+  document.getElementById('loanSize').textContent = urlParams.get('loanSize') || 'N/A';
+  document.getElementById('outstanding').textContent = urlParams.get('outstanding') || 'N/A';
+  document.getElementById('loanTerm').textContent = urlParams.get('loanTerm') || 'N/A';
+  document.getElementById('interestRate').textContent = urlParams.get('interest') || 'N/A';
+  document.getElementById('businessType').textContent = urlParams.get('business') || 'N/A';
+  document.getElementById('collateralType').textContent = urlParams.get('collateralType') || 'N/A';
+  document.getElementById('collateralStatus').textContent = urlParams.get('collateralStatus') || 'N/A';
+  document.getElementById('collateralValue').textContent = urlParams.get('collateralValue') || 'N/A';
+  document.getElementById('conclusionText').textContent = urlParams.get('conclusion') || 'សូមបំពេញសន្និដ្ឋាន';
 </script>
 
 </body>
