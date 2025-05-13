@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+  <meta charset="UTF-8">
+  <title>Print Credit Spot Check</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    @font-face {
+      font-family: 'Krasar';
+      src: url('../Krasar-Regular.ttf') format('truetype');
+    }
+
+    body {
+      font-family: 'Krasar', Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      color: #000;
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: bold;
+      margin-top: 20px;
+      margin-bottom: 10px;
+      border-top: 2px solid #000;
+      padding-top: 10px;
+    }
+
+    .info-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+
+    .info-table td {
+      padding: 6px;
+      border: 1px solid #000;
+      font-size: 14px;
+    }
+
+    .checkbox-label {
+      display: inline-block;
+      margin-right: 10px;
+    }
+
+    .subsection-title {
+      font-weight: bold;
+      margin-top: 15px;
+      margin-bottom: 5px;
+    }
+
+    .box {
+      border: 1px solid #000;
+      padding: 10px;
+      min-height: 50px;
+    }
+
+    .flex-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .flex-column {
+      flex: 1;
+    }
+
+    .print-button {
+      margin-bottom: 20px;
+    }
+
+    @media print {
+      .print-button { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <button class="print-button" onclick="window.print()">បោះពុម្ព</button>
+
+  <h2 style="text-align: center;">បែបបទត្រួតពិនិត្យឥណទាន</h2>
+  <div>លេខកិច្ចសន្យា: <span id="contractId"></span></div>
+  <div>ឈ្មោះអតិថិជន: <span id="customerName"></span></div>
+
+  <div class="section-title">I. ព័ត៌មានឥណទាន (Credit Information)</div>
+
+  <table class="info-table">
+    <tr>
+      <td>ទំហំឥណទាន</td>
+      <td id="loanSize"></td>
+      <td>សមតុល្យឥណទាន</td>
+      <td id="osUsd"></td>
+    </tr>
+    <tr>
+      <td>លេខអតិថិជន</td>
+      <td id="customerId"></td>
+      <td>ប្រភេទឥណទាន</td>
+      <td id="productType"></td>
+    </tr>
+    <tr>
+      <td>រយៈពេលខ្ចី</td>
+      <td id="loanTerm"></td>
+      <td>អត្រាការប្រាក់</td>
+      <td id="rate"></td>
+    </tr>
+  </table>
+
+  <div class="subsection-title">ក - ស្ថានភាពឯកសារ</div>
+  <div class="box" id="docStatus"></div>
+
+  <div class="section-title">II. ការចុះត្រួតពិនិត្យផ្ទាល់ (Physical Inspection)</div>
+
+  <div class="subsection-title">ក - មុខរបរ</div>
+  <div class="box" id="businessNow"></div>
+
+  <div class="subsection-title">ខ - ទ្រព្យធានា</div>
+  <div class="box" id="collateralStatus"></div>
+
+  <div class="subsection-title">គ - សញ្ញាណហានិភ័យ</div>
+  <div class="box" id="usageNote"></div>
+
+</body>
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get('id');
+
+  fetch(`https://secure-backend-tzj9.onrender.com/api/spotcheck/${id}`, {
+    headers: { Authorization: `Bearer ${sessionStorage.getItem("token")}` }
+  })
+  .then(res => res.json())
+  .then(data => {
+    document.getElementById("contractId").textContent = data.CONTRACT_LD || "";
+    document.getElementById("customerName").textContent = data.NAME_KHMER || "";
+    document.getElementById("loanSize").textContent = data.LOAN_SIZE || "";
+    document.getElementById("osUsd").textContent = data.OS_USD || "";
+    document.getElementById("customerId").textContent = data.LD_CUSTOMER_ID || "";
+    document.getElementById("productType").textContent = data.ProductType || "";
+    document.getElementById("loanTerm").textContent = data.LOAN_TERM || "";
+    document.getElementById("rate").textContent = data.RATE || "";
+    document.getElementById("docStatus").textContent = data.docStatus || "";
+    document.getElementById("businessNow").textContent = data.businessNow || "";
+    document.getElementById("collateralStatus").textContent = data.collateralStatus || "";
+    document.getElementById("usageNote").textContent = data.usageNote || "";
+  })
+  .catch(err => {
+    console.error(err);
+    alert("បរាជ័យក្នុងការទាញយកទិន្នន័យ");
+  });
+</script>
+</html>
