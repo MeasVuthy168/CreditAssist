@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="km">
 <head>
@@ -9,90 +8,54 @@
       font-family: 'Krasar', Arial, sans-serif;
       margin: 0;
       padding: 20px;
-      width: 210mm;
-      height: 297mm;
-      box-sizing: border-box;
+      font-size: 12px;
     }
-
     .header {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      margin-bottom: 10px;
     }
-
     .header-left {
-      font-size: 14px;
+      font-weight: bold;
     }
-
     .header-center {
       text-align: center;
-      flex-grow: 1;
-      font-size: 14px;
-      line-height: 1.4;
+      flex: 1;
     }
-
-    .header-center .line {
-      margin: 4px 0;
-      border-top: 1px solid black;
-      width: 60%;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
     .header-right {
       text-align: right;
     }
-
     .header-right img {
-      width: 100px;
+      width: 80px;
     }
-
-    .header-right .input-box {
-      border: 1px solid black;
-      padding: 4px 12px;
-      font-size: 12px;
-    }
-
-    .section-title {
-      background: #f0f0f0;
+    .form-section {
+      border-top: 2px solid black;
+      border-bottom: 2px solid black;
+      padding: 5px 0;
+      background: #e0e0e0;
       font-weight: bold;
-      font-size: 13px;
-      padding: 4px;
-      border: 1px solid black;
-      text-align: left;
       margin-top: 20px;
     }
-
-    .table-bordered {
+    .subsection-title {
+      font-weight: bold;
+      margin-top: 10px;
+    }
+    table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 8px;
+      margin-top: 6px;
     }
-
-    .table-bordered td, .table-bordered th {
-      border: 1px solid black;
-      padding: 4px;
-      vertical-align: top;
+    td {
+      border: 1px solid #333;
+      padding: 6px 10px;
     }
-
-    .table-bordered th {
-      background: #f0f0f0;
-      font-weight: bold;
+    .checkbox {
+      margin-right: 8px;
     }
-
-    .emoji-line {
+    .decor-line {
       text-align: center;
+      font-family: monospace;
       margin-top: 4px;
-      font-size: 16px;
-    }
-
-    @media print {
-      body {
-        margin: 0;
-        width: auto;
-        height: auto;
-      }
     }
   </style>
 </head>
@@ -105,44 +68,87 @@
     </div>
     <div class="header-center">
       ព្រះរាជាណាចក្រកម្ពុជា<br>
-      ជាតិ សាសនា ព្រះមហាក្សត្រ
-      <div class="line"></div>
+      ជាតិ សាសនា ព្រះមហាក្សត្រ<br>
+      <hr>
       ត្រួតពិនិត្យកិច្ចការឥណទាន<br>
-      (Credit Spot check)
-      <div class="emoji-line">~ ~ ~ ~ ~ ~ ~</div>
+      (Credit Spot check)<br>
+      <div class="decor-line">~*~*~*~*~</div>
     </div>
     <div class="header-right">
-      <img src="../icons/LogoAC.png" alt="ACLEDA Logo"><br>
-      <div>ត្រួតពិនិត្យវដ្ត: <span class="input-box" id="loanCycle">01</span></div>
+      <img src="../icons/logo-acleda.png" alt="ACLEDA Logo"><br>
+      ត្រួតពិនិត្យវដ្ត: <input type="text" value="01" style="width: 40px;">
     </div>
   </div>
 
-  <!-- Section I: Credit Information -->
-  <h2 class="section-title">I. ព័ត៌មានឥណទាន (Credit Information)</h2>
-  <table class="table-bordered">
+  <!-- Section I -->
+  <div class="form-section">I. ព័ត៌មានឥណទាន (Credit Information)</div>
+
+  <!-- Subsection ក -->
+  <div class="subsection-title">ក - ព័ត៌មានអតិថិជន</div>
+  <table>
     <tr>
-      <td>ឈ្មោះ</td><td>ចំរើន សុខុម</td>
-      <td>លេខកិច្ចសន្យា</td><td>MG2427100001</td>
-      <td>ទំហំឥណទាន</td><td>40,000,000</td>
+      <td>ឈ្មោះ:</td><td>សុធា សុជាតា</td>
+      <td>លេខអត្តសញ្ញាណប័ណ្ណ:</td><td>1618165</td>
+      <td>ប្រភេទឥណទាន:</td><td>Personal Loan</td>
     </tr>
     <tr>
-      <td>សមតុល្យឥណទាន</td><td>13,333,900</td>
-      <td>រយៈពេលខ្ចី</td><td>60 ខែ</td>
-      <td>អត្រាការប្រាក់</td><td>13.2%</td>
+      <td>ចំនួនកម្ចីសរុប:</td><td>40,000,000.00</td>
+      <td>សមតុល្យ:</td><td>13,333,900.00</td>
+      <td>រយៈពេល:</td><td>60 ខែ</td>
+    </tr>
+    <tr>
+      <td>អត្រាការប្រាក់:</td><td>13.2 %</td>
+      <td colspan="4"></td>
     </tr>
   </table>
 
-  <!-- Section II: Physical Inspection -->
-  <h2 class="section-title">II. ការចុះត្រួតពិនិត្យផ្ទាល់ (Physical Inspection)</h2>
-  <table class="table-bordered">
+  <!-- Subsection ខ -->
+  <div class="subsection-title">ខ - ប្រវត្តិសងប្រាក់</div>
+  <table>
     <tr>
-      <td>ប្រភេទ</td><td>រោងចក្រ</td>
-      <td>មតិយោបល់</td><td colspan="3">ល្អប្រសើរ</td>
+      <td><input type="checkbox" class="checkbox" checked> ប្រវត្តិសងល្អ</td>
     </tr>
+  </table>
+
+  <!-- Subsection គ -->
+  <div class="subsection-title">គ - សភាពឯកសារ</div>
+  <table>
     <tr>
-      <td>ប្រភេទទ្រព្យ</td><td>ដី</td>
-      <td>ស្ថានភាព</td><td>ប្រើប្រាស់</td>
-      <td>តម្លៃ</td><td>100,000,000</td>
+      <td><input type="checkbox" class="checkbox" checked> ពេញលេញ</td>
+    </tr>
+  </table>
+
+  <!-- Section II -->
+  <div class="form-section">II. ការចុះត្រួតពិនិត្យផ្ទាល់ (Physical Inspection on site visit)</div>
+
+  <!-- Subsection ក -->
+  <div class="subsection-title">ក - ស្ថានភាពអាជីវកម្ម</div>
+  <table>
+    <tr>
+      <td>អាសយដ្ឋាន:</td><td>NA</td>
+      <td>ប្រភេទ:</td>
+      <td>
+        <input type="checkbox" class="checkbox" checked> ផ្ទាល់ខ្លួន
+        <input type="checkbox" class="checkbox"> គ្រួសារ
+      </td>
+    </tr>
+  </table>
+
+  <!-- Subsection ខ -->
+  <div class="subsection-title">ខ - តម្លៃទ្រព្យធានា</div>
+  <table>
+    <tr>
+      <td><input type="checkbox" class="checkbox" checked> Payroll</td>
+      <td><input type="checkbox" class="checkbox"> NA</td>
+    </tr>
+  </table>
+
+  <!-- Subsection គ -->
+  <div class="subsection-title">គ - សភាពសងប្រាក់</div>
+  <table>
+    <tr>
+      <td><input type="checkbox" class="checkbox" checked> ជៀសវាងការបង់ប្រាក់</td>
+      <td><input type="checkbox" class="checkbox"> សមត្ថភាពល្អ</td>
     </tr>
   </table>
 
