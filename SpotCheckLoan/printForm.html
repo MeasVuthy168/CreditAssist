@@ -270,73 +270,86 @@ td {
 </div>
  
 </div>
-  
+
 <script>
-async function fetchSpotCheckData(cif) {
-  try {
-    const response = await fetch(`/api/spotcheck/report?cif=${cif}`);
-    const data = await response.json();
-    if (data) {
+  async function fetchSpotCheckDataById(id) {
+    const token = sessionStorage.getItem("token");
+    if (!token) {
+      alert("Session expired. Please log in again.");
+      window.location.href = "../login.html";
+      return;
+    }
+
+    try {
+      const response = await fetch(`https://secure-backend-tzj9.onrender.com/api/spotcheck/${id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch SpotCheck data");
+      }
+
+      const data = await response.json();
       fillSpotCheckData(data);
-    } else {
-      alert('No SpotCheck data found');
-    }
-  } catch (error) {
-    console.error('Error fetching SpotCheck data:', error);
-    alert('Failed to load data');
-  }
-}
-
-function fillSpotCheckData(data) {
-  const mapping = {
-    customerID: data.LD_CUSTOMER_ID,
-    customerName: data.NAME_KHMER,
-    loanSize: data.LOAN_SIZE,
-    osUSD: data.OS_USD,
-    rate: data.RATE,
-    ccy: data.CCY,
-    disburse: data.DISBURSE,
-    maturity: data.MATURITY,
-    loanTerm: data.LOAN_TERM,
-    loanCycle: data.LOAN_CYCLE,
-    branchOK: data.BranchOK,
-    productType: data.ProductType,
-    repaymentStatus: data.repaymentStatus,
-    repaymentNote: data.repaymentNote,
-    docStatus: data.docStatus,
-    docNote: data.docNote,
-    businessOld: data.businessOld,
-    businessNow: data.businessNow,
-    businessStatus: data.businessStatus,
-    businessNote: data.businessNote,
-    collateralType: data.collateralType,
-    collateralStatus: data.collateralStatus,
-    collateralValue: data.collateralValue,
-    collateralNote: data.collateralNote,
-    usagePurpose: data.usagePurpose,
-    usageNote: data.usageNote,
-    repaymentSource: data.repaymentSource,
-    sourceNote: data.sourceNote,
-    conclusion: data.conclusion,
-    checkDate: data.checkDate
-  };
-
-  for (const [id, value] of Object.entries(mapping)) {
-    const element = document.getElementById(id);
-    if (element) {
-      element.innerText = value;
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Failed to load SpotCheck data.");
     }
   }
-}
 
-function prepareAndPrint() {
-  const cif = prompt('Enter CIF to load SpotCheck Data:');
-  if (cif) {
-    fetchSpotCheckData(cif).then(() => {
-      setTimeout(() => window.print(), 300); // delay to ensure data is filled
-    });
+  function fillSpotCheckData(data) {
+    const mapping = {
+      customerID: data.LD_CUSTOMER_ID,
+      customerName: data.NAME_KHMER,
+      loanSize: data.LOAN_SIZE,
+      osUSD: data.OS_USD,
+      rate: data.RATE,
+      ccy: data.CCY,
+      disburse: data.DISBURSE,
+      maturity: data.MATURITY,
+      loanTerm: data.LOAN_TERM,
+      loanCycle: data.LOAN_CYCLE,
+      branchOK: data.BranchOK,
+      productType: data.ProductType,
+      repaymentStatus: data.repaymentStatus,
+      repaymentNote: data.repaymentNote,
+      docStatus: data.docStatus,
+      docNote: data.docNote,
+      businessOld: data.businessOld,
+      businessNow: data.businessNow,
+      businessStatus: data.businessStatus,
+      businessNote: data.businessNote,
+      collateralType: data.collateralType,
+      collateralStatus: data.collateralStatus,
+      collateralValue: data.collateralValue,
+      collateralNote: data.collateralNote,
+      usagePurpose: data.usagePurpose,
+      usageNote: data.usageNote,
+      repaymentSource: data.repaymentSource,
+      sourceNote: data.sourceNote,
+      conclusion: data.conclusion,
+      checkDate: data.checkDate
+    };
+
+    for (const [id, value] of Object.entries(mapping)) {
+      const el = document.getElementById(id);
+      if (el) el.innerText = value;
+    }
   }
-}
+
+  // Run on page load
+  window.addEventListener("DOMContentLoaded", () => {
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("id");
+
+    if (!id) {
+      alert("Invalid URL. No ID found.");
+      return;
+    }
+
+    fetchSpotCheckDataById(id);
+  });
 </script>
+  
 </body>
 </html>
