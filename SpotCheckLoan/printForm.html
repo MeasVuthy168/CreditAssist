@@ -146,15 +146,19 @@ td {
 }
 
 .close-button {
-  position: absolute;
-  top: 10px;
-  right: 10px;
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  font-size: 36px;
+  font-weight: bold;
+  color: #0d2d5c;
   background: none;
   border: none;
-  font-size: 22px;
-  color: black;
   cursor: pointer;
+  z-index: 1100;
+  line-height: 1;
 }
+
 .close-button:hover {
   color: red;
 }
@@ -175,6 +179,8 @@ td {
           <button class="print-button" onclick="window.print()">បោះពុម្ព (Print Form)</button>
         </div>
       </div>
+  <button id="closeBtn" class="close-button">&times;</button>
+      
       <div class="header-center">
         ព្រះរាជាណាចក្រកម្ពុជា<br>
         ជាតិ សាសនា ព្រះមហាក្សត្រ<br>
@@ -186,7 +192,6 @@ td {
       <div class="header-right" style="position: relative;">
        <img src="../icons/LogoAC2.PNG" alt="ACLEDA Logo">
        <div>ត្រួតពិនិត្យវដ្ត: <input id="cycleInput" type="text" value="" style="width: 40px;"></div>
-       <button id="closeBtn" class="close-button">&times;</button>
       </div>
     </div>
   </div>
@@ -384,7 +389,7 @@ td {
 
   // Close button logic
   document.getElementById("closeBtn").addEventListener("click", () => {
-  window.location.href = "../SpotCheckLoan/report.html";
+  window.location.href = "./SpotCheckLoan/reportSpotcheck.html";
 });
   
 </script> 
