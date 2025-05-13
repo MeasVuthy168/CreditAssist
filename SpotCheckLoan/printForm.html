@@ -144,8 +144,22 @@ td {
     display: none;
   }
 }
-</style>
 
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 22px;
+  color: black;
+  cursor: pointer;
+}
+.close-button:hover {
+  color: red;
+}
+    
+</style>
 <head>
   <meta charset="UTF-8">
   <title>Credit Spot Check Form</title>
@@ -169,11 +183,10 @@ td {
         (Credit Spot Check)<br>
         <div class="decor-line">~~~*~~~</div>
       </div>
-      <div class="header-right">
-        <img src="../icons/LogoAC2.PNG" alt="ACLEDA Logo">
-        <!-- Update the input for cycle -->
-        <div>ត្រួតពិនិត្យវដ្ត: <input id="cycleInput" type="text" value="" style="width: 40px;"></div>
-
+      <div class="header-right" style="position: relative;">
+       <img src="../icons/LogoAC2.PNG" alt="ACLEDA Logo">
+       <div>ត្រួតពិនិត្យវដ្ត: <input id="cycleInput" type="text" value="" style="width: 40px;"></div>
+       <button id="closeBtn" class="close-button">&times;</button>
       </div>
     </div>
   </div>
@@ -368,7 +381,12 @@ td {
 
     fetchSpotCheckDataById(id);
   });
-</script>
+
+  // Close button logic
+  document.getElementById("closeBtn").addEventListener("click", () => {
+  window.location.href = "../SpotCheckLoan/report.html";
+});
   
+</script> 
 </body>
 </html>
