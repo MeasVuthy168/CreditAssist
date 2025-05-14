@@ -338,19 +338,27 @@ td {
       format: 'a4'
     });
 
-    // Capture the content you want to print (excluding buttons)
     const content = document.querySelector('.page-container');
 
-    // Convert HTML to canvas image
-    await html2canvas(content, { scale: 2 }).then(canvas => {
-      const imgData = canvas.toDataURL('image/png');
-      const imgProps = pdf.getImageProperties(imgData);
+    // Adjust content width to fit A4 better
+    const originalWidth = content.style.width;
+    content.style.width = '210mm'; // A4 width (optional if already correct)
+
+    await html2canvas(content, {
+      scale: 1.5, // reduce scale (1.5 is enough)
+      useCORS: true,
+      allowTaint: false
+    }).then(canvas => {
+      const imgData = canvas.toDataURL('image/jpeg', 0.85); // compress image
       const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+      pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
     });
 
-    // Get NAMEKHMER and CheckDate for filename
+    // Restore width back
+    content.style.width = originalWidth;
+
+    // Filename Spotcheck_NAMEKHMER_YYYYMMDD
     const name = document.getElementById('customerName').innerText.trim().replace(/\s+/g, '_');
     const dateText = document.getElementById('checkDate').innerText.match(/\d+/g);
     const date = dateText ? `${dateText[2]}${dateText[1]}${dateText[0].padStart(2, '0')}` : 'UnknownDate';
