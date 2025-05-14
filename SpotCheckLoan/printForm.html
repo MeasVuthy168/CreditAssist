@@ -186,6 +186,13 @@ td {
 .close-button:hover img {
   filter: brightness(0.7);  /* darker when hover */
 }
+
+  .no-border td {
+  border: none !important;
+}
+.no-border {
+  border: none !important;
+}  
     
 </style>
 <head>
@@ -223,7 +230,8 @@ td {
   </div>
 
   <div class="page-container">
-
+<table class="no-border">
+  <!-- Section I content here -->
 <!-- Section I -->
 <div class="form-section">I. ព័ត៌មានឥណទាន (Credit Information)</div>
 
@@ -267,7 +275,8 @@ td {
   <tr><td>ស្ថានភាពឯកសារ:</td><td id="docStatus"></td></tr>
   <tr><td>មូលហេតុ:</td><td id="docNote"></td></tr>
 </table>
-
+</table>
+    
 <!-- Section II -->
 <div class="form-section">II. ការចុះត្រួតពិនិត្យផ្ទាល់ (Physical Inspection on site visit)</div>
 
