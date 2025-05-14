@@ -187,7 +187,10 @@ td {
   filter: brightness(0.7);  /* darker when hover */
 }
 
-  
+.white-border-table td,
+.white-border-table th {
+  border: 1px solid white;
+}
     
 </style>
 <head>
@@ -233,7 +236,7 @@ td {
 
 <!-- Subsection ក -->
 <div class="subsection-title">ក - ព័ត៌មានអតិថិជន</div>
-<table>
+<table class="white-border-table">
   <tr>
     <td>ឈ្មោះអតិថិជន:</td><td id="customerName"></td>
     <td>លេខអតិថិជន:</td><td id="customerID"></td>
