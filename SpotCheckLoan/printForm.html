@@ -336,25 +336,27 @@ td {
 </div>
   
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
-<script>
-  function saveAsPDF() {
-  const printArea = document.getElementById('printArea');
 
+<script>
+async function saveAsPDF() {
+  const element = document.getElementById('printArea');
   const name = document.getElementById('customerName').innerText.trim().replace(/\s+/g, '_');
   const dateText = document.getElementById('checkDate').innerText.match(/\d+/g);
   const date = dateText ? `${dateText[2]}${dateText[1]}${dateText[0].padStart(2, '0')}` : 'UnknownDate';
+
   const fileName = `Spotcheck_${name}_${date}.pdf`;
 
   const opt = {
-    margin: [5, 5, 5, 5],
+    margin: [0.9, 0.5, 0.9, 0.8],  // [Top, Right, Bottom, Left] in inches
     filename: fileName,
     image: { type: 'jpeg', quality: 0.85 },
-    html2canvas: { scale: 1.5, useCORS: true, allowTaint: false },
-    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
+    jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
   };
 
-  html2pdf().set(opt).from(printArea).save();
+  await html2pdf().set(opt).from(element).save();
 }
+  
   async function fetchSpotCheckDataById(id) {
     const token = sessionStorage.getItem("token");
     if (!token) {
