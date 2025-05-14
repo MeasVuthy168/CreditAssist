@@ -205,7 +205,7 @@ td {
       <div class="header-left">
         សាខាខេត្តស្វាយរៀង
         <div class="print-button-container">
-          <button class="print-button" onclick="window.print()">បោះពុម្ព (Print Form)</button>
+          <button class="print-button" onclick="saveAsPDF()">Save as PDF</button>
         </div>
       </div>
   <button id="closeBtn" class="close-button">
@@ -325,8 +325,40 @@ td {
 </div>
  
 </div>
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script>
 
-<script>
+  async function saveAsPDF() {
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({
+      orientation: 'portrait',
+      unit: 'mm',
+      format: 'a4'
+    });
+
+    // Capture the content you want to print (excluding buttons)
+    const content = document.querySelector('.page-container');
+
+    // Convert HTML to canvas image
+    await html2canvas(content, { scale: 2 }).then(canvas => {
+      const imgData = canvas.toDataURL('image/png');
+      const imgProps = pdf.getImageProperties(imgData);
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+    });
+
+    // Get NAMEKHMER and CheckDate for filename
+    const name = document.getElementById('customerName').innerText.trim().replace(/\s+/g, '_');
+    const dateText = document.getElementById('checkDate').innerText.match(/\d+/g);
+    const date = dateText ? `${dateText[2]}${dateText[1]}${dateText[0].padStart(2, '0')}` : 'UnknownDate';
+
+    const fileName = `Spotcheck_${name}_${date}.pdf`;
+    pdf.save(fileName);
+  }
+
   async function fetchSpotCheckDataById(id) {
     const token = sessionStorage.getItem("token");
     if (!token) {
