@@ -331,6 +331,12 @@ td {
     }
   }
 
+  function formatCheckDate(dateString) {
+  if (!dateString) return "";
+  const [year, month, day] = dateString.split("-");
+  return `ថ្ងៃទី${parseInt(day)} ខែ${month} ឆ្នាំ${year}`;
+  }
+
   function fillSpotCheckData(data) {
   const mapping = {
     customerID: data.LD_CUSTOMER_ID,
@@ -368,8 +374,13 @@ td {
   // Fill text cells
   for (const [id, value] of Object.entries(mapping)) {
     const el = document.getElementById(id);
-    if (el) el.innerText = value;
+if (el) {
+  if (id === "checkDate") {
+    el.innerText = formatCheckDate(value);
+  } else {
+    el.innerText = value;
   }
+}
 
   // ✅ Fill the "ត្រួតពិនិត្យវដ្ត" input box
   const cycleInput = document.getElementById("cycleInput");
