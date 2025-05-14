@@ -164,6 +164,13 @@ td {
   .close-button {
     display: none !important;
   }
+  
+  body {
+    font-size: 10pt; /* Adjust as needed */
+  }
+  .page-container {
+    width: 100%;
+  }
 }
 
 .close-button {
@@ -328,8 +335,8 @@ td {
   
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <script>
 
+<script>
   async function saveAsPDF() {
     const { jsPDF } = window.jspdf;
     const pdf = new jsPDF({
@@ -338,25 +345,26 @@ td {
       format: 'a4'
     });
 
-    const content = document.querySelector('.page-container');
+    const printArea = document.getElementById('printArea');
 
-    // Adjust content width to fit A4 better
-    const originalWidth = content.style.width;
-    content.style.width = '210mm'; // A4 width (optional if already correct)
+    // Force width matching A4 ratio
+    const originalWidth = printArea.style.width;
+    printArea.style.width = '210mm';
 
-    await html2canvas(content, {
-      scale: 1.5, // reduce scale (1.5 is enough)
+    await html2canvas(printArea, {
+      scale: 2, // A bit higher scale for better clarity (2 is good balance)
       useCORS: true,
-      allowTaint: false
+      allowTaint: false,
+      backgroundColor: '#ffffff'
     }).then(canvas => {
-      const imgData = canvas.toDataURL('image/jpeg', 0.85); // compress image
+      const imgData = canvas.toDataURL('image/jpeg', 0.8); // compressed image
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
       pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
     });
 
-    // Restore width back
-    content.style.width = originalWidth;
+    // Reset width back
+    printArea.style.width = originalWidth;
 
     // Filename Spotcheck_NAMEKHMER_YYYYMMDD
     const name = document.getElementById('customerName').innerText.trim().replace(/\s+/g, '_');
