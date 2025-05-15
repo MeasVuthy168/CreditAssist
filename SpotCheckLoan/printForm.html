@@ -9,14 +9,20 @@
   font-family: 'Krasar';
   src: url('../Krasar-Regular.ttf') format('truetype');
 }
+  html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
 
 /* Base Styles */
 body {
   font-family: 'Krasar', Arial, sans-serif;
   margin: 0;
   padding: 5px 10px 10px 10px;
-  font-size: 13px;
-}
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: 13px; /* force fixed font size */
+}  
 
 /* Containers */
 .header-container {
@@ -350,7 +356,7 @@ async function saveAsPDF() {
   const fileName = `Spotcheck_${name}_${date}.pdf`;
 
   const opt = {
-  margin: [0.1, 0.15, 0.15, 0.2],  // Top, Right, Bottom, Left (reduced to 0.15 inch)
+  margin: [0.1, 0.1, 0.1, 0.1],  // Reduced to 0.1 inch on all sides
   filename: fileName,
   image: { type: 'jpeg', quality: 0.95 },
   html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
