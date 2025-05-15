@@ -48,7 +48,7 @@ body {
 .header-left {
   font-weight: bold;
   font-size: 13px;
-  margin-top: 20px;
+  margin-top: 15px;
 }
 
 .print-button-container {
@@ -60,7 +60,7 @@ body {
   flex: 1;
   font-weight: bold;
   font-size: 13px;
-  margin-top: 20px;
+  margin-top: 10px;
   line-height:2;
 }
 
@@ -73,7 +73,7 @@ body {
 .header-right img {
   width: 160px; /* increased size */
   height: auto;
-  margin-top: -10; /* remove top margin */
+  margin-top: 10; /* remove top margin */
   
 }
 
@@ -350,7 +350,7 @@ async function saveAsPDF() {
   const fileName = `Spotcheck_${name}_${date}.pdf`;
 
   const opt = {
-  margin: [0.1, 0.15, 0.15, 0.15],  // Top, Right, Bottom, Left (reduced to 0.15 inch)
+  margin: [1, 1.5, 1.5, 1.5],  // Top, Right, Bottom, Left (reduced to 0.15 inch)
   filename: fileName,
   image: { type: 'jpeg', quality: 0.95 },
   html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
