@@ -14,7 +14,7 @@
 body {
   font-family: 'Krasar', Arial, sans-serif;
   margin: 0;
-  padding: 20px;
+  padding: 10px 10px 20px 10px;
   font-size: 12px;
 }
 
@@ -23,6 +23,7 @@ body {
   border: 2px solid transparent;
   padding: 5px;
   margin: 0 auto;
+  margin-top: 0;
   max-width: 850px;
   box-sizing: border-box;
 }
@@ -348,7 +349,7 @@ async function saveAsPDF() {
   const fileName = `Spotcheck_${name}_${date}.pdf`;
 
   const opt = {
-    margin: [0.5, 0.3, 0.5, 0.3],  // Top, Right, Bottom, Left (inches)
+    margin: [0.2, 0.3, 0.2, 0.3],  // Top, Right, Bottom, Left (inches)
     filename: fileName,
     image: { type: 'jpeg', quality: 0.85 },
     html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
