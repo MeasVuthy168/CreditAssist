@@ -118,6 +118,11 @@
       font-weight: bold;
     }
 
+    .retired {
+      color: #ff6666 !important;
+      font-weight: bold;
+    }
+
     footer {
       text-align: center;
       font-size: 14px;
@@ -205,7 +210,6 @@
   <footer>💡គោលបំណងស្វែងរករយះពេលផ្តល់ឥណទានអោយបានត្រឹមត្រូវតាមគោលការណ៍ សម្រាប់ឥណទានប្រើប្រាស់ផ្ទាល់ខ្លួនដែលធានាដោយប្រាក់បៀវត្សរ៍ ។</footer>
 </div>
   
-<div id="notificationContainer"></div>
 <div class="bottom-bar">
   <button class="bottom-btn" onclick="location.href='../index.html'">
     <img src="../icons/Home.png" width="24" height="24" />
@@ -225,33 +229,6 @@
 </div>
 
 <script>
-// ✅ Protect Page by Token
-const token = sessionStorage.getItem('token');
-if (!token) {
-  alert("Session expired or unauthorized access.");
-  window.location.href = "../login.html";
-}
-
-// ✅ Auto Logout Setup
-const AUTO_LOGOUT_MINUTES = 10;
-let logoutTimer;
-function resetLogoutTimer() {
-  clearTimeout(logoutTimer);
-  logoutTimer = setTimeout(() => {
-    sessionStorage.clear();
-    alert("Session expired due to inactivity. Please log in again.");
-    window.location.href = "../login.html";
-  }, AUTO_LOGOUT_MINUTES * 60 * 1000);
-}
-function setupAutoLogoutEvents() {
-  ['mousemove', 'mousedown', 'keydown', 'touchstart', 'touchmove', 'scroll'].forEach(event => {
-    document.addEventListener(event, resetLogoutTimer, true);
-  });
-  resetLogoutTimer();
-}
-window.addEventListener('load', setupAutoLogoutEvents);
-
-// ✅ Initialize Dates
 function setMaxDateToToday() {
   const today = new Date().toISOString().split("T")[0];
   document.getElementById("dob").max = today;
@@ -259,7 +236,6 @@ function setMaxDateToToday() {
   document.getElementById("currentDate").value = today;
 }
 
-// ✅ Accurate Calculation of Remaining Years, Months, Days
 function calculateMonthsLeft() {
   const dob = new Date(document.getElementById("dob").value);
   const retirementAge = parseInt(document.getElementById("retirementAge").value);
@@ -268,9 +244,33 @@ function calculateMonthsLeft() {
   const retirementDate = new Date(dob);
   retirementDate.setFullYear(retirementDate.getFullYear() + retirementAge);
 
+  const description = document.getElementById("description");
+
   if (retirementDate < current) {
+    let years = current.getFullYear() - retirementDate.getFullYear();
+    let months = current.getMonth() - retirementDate.getMonth();
+    let days = current.getDate() - retirementDate.getDate();
+
+    if (days < 0) {
+      months -= 1;
+      const prevMonth = new Date(current.getFullYear(), current.getMonth(), 0);
+      days += prevMonth.getDate();
+    }
+
+    if (months < 0) {
+      years -= 1;
+      months += 12;
+    }
+
     document.getElementById("monthsLeft").textContent = "បានចូលនិវត្តន៍រួចហើយ";
-    document.getElementById("description").textContent = "បានចូលនិវត្តន៍រួចហើយ";
+
+    description.classList.add("retired");
+
+    description.innerHTML = `បានចូលនិវត្តន៍ចំនួន 
+      <span class="highlight">${String(years).padStart(2, '0')}</span> ឆ្នាំ 
+      <span class="highlight">${String(months).padStart(2, '0')}</span> ខែ 
+      និង <span class="highlight">${String(days).padStart(2, '0')}</span> ថ្ងៃ ហើយ`;
+
     return;
   }
 
@@ -293,24 +293,21 @@ function calculateMonthsLeft() {
 
   document.getElementById("monthsLeft").textContent = totalMonthsLeft + " ខែ";
 
-  document.getElementById("description").innerHTML = `នៅសល់ <span class="highlight">${String(years).padStart(2, '0')}</span> ឆ្នាំ 
+  description.classList.remove("retired");
+
+  description.innerHTML = `នៅសល់ <span class="highlight">${String(years).padStart(2, '0')}</span> ឆ្នាំ 
      <span class="highlight">${String(months).padStart(2, '0')}</span> ខែ 
      និង <span class="highlight">${String(days).padStart(2, '0')}</span> ថ្ងៃទៀត`;
 }
-</script>
 
-<script src="../notifications/checkNotification.js"></script>
+window.addEventListener("DOMContentLoaded", () => {
+  setMaxDateToToday();
+  calculateMonthsLeft();
 
-<script>
-  window.addEventListener("DOMContentLoaded", () => {
-    setMaxDateToToday();
-    calculateMonthsLeft();
-    checkNotification();
-
-    ["dob", "retirementAge", "currentDate"].forEach(id => {
-      document.getElementById(id).addEventListener("change", calculateMonthsLeft);
-    });
+  ["dob", "retirementAge", "currentDate"].forEach(id => {
+    document.getElementById(id).addEventListener("change", calculateMonthsLeft);
   });
+});
 </script>
 </body>
 </html>
