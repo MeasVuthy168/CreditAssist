@@ -158,7 +158,7 @@ td {
 .print-button {
   position: fixed;
   top: 20px;
-  left: 40px;
+  right: 40px;
   padding: 8px 20px;
   font-size: 34px;
   font-weight: bold;
@@ -189,7 +189,7 @@ td {
 .close-button {
   position: fixed;
   top: 20px;
-  right: 40px;
+  left: 40px;
   background: none;
   border: none;
   cursor: pointer;
@@ -198,8 +198,8 @@ td {
 }
 
 .close-button img {
-  width: 160px;  /* adjust size as you want */
-  height: 160px;
+  width: 60px;  /* adjust size as you want */
+  height: 60px;
   object-fit: contain;
 }
 
@@ -225,9 +225,9 @@ td {
     <div class="header">
       <div class="header-left">
         សាខាខេត្តស្វាយរៀង
-        <div class="print-button-container">
-          <button class="print-button" onclick="saveAsPDF()">Save as PDF</button>
-        </div>
+        <button id="closeBtn" class="close-button">
+        <img src="../icons/close.png" alt="Close" />
+       </button>
       </div>
       
       <div class="header-center">
@@ -242,9 +242,9 @@ td {
        <img src="../icons/LogoAC2.PNG" alt="ACLEDA Logo">
        <div>ត្រួតពិនិត្យវដ្ត: <input id="cycleInput" type="text" value="" style="width: 40px;"></div>
       
-       <button id="closeBtn" class="close-button">
-        <img src="../icons/close.png" alt="Close" />
-       </button>
+       <div class="print-button-container">
+          <button class="print-button" onclick="saveAsPDF()">Save as PDF</button>
+       </div>
       </div>
     </div>
   </div>
