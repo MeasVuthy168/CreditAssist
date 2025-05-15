@@ -228,6 +228,10 @@
   </button>
 </div>
 
+
+<!-- Load notification checker -->
+<script src="../notifications/checkNotification.js"></script>
+  
 <script>
 // Token Protection
 const token = sessionStorage.getItem('token');
@@ -331,15 +335,11 @@ function calculateMonthsLeft() {
 window.addEventListener("DOMContentLoaded", () => {
   setMaxDateToToday();
   calculateMonthsLeft();
-
+  checkNotification();
   ["dob", "retirementAge", "currentDate"].forEach(id => {
     document.getElementById(id).addEventListener("change", calculateMonthsLeft);
   });
 });
 </script>
-
-<!-- Load notification checker -->
-<script src="../notifications/checkNotification.js"></script>
-
 </body>
 </html>
