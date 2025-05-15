@@ -367,12 +367,30 @@ async function saveAsPDF() {
 
 
 
-  
+  async function fetchSpotCheckDataById(id) {
+  const token = sessionStorage.getItem("token");
+  if (!token) {
+    alert("Session expired. Please log in again.");
+    window.location.href = "../login.html";
+    return;
+  }
 
+  try {
+    const response = await fetch(`https://secure-backend-tzj9.onrender.com/api/spotcheck/${id}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
 
+    if (!response.ok) {
+      throw new Error("Failed to fetch SpotCheck data");
+    }
 
-
-
+    const data = await response.json();
+    fillSpotCheckData(data);
+  } catch (error) {
+    console.error("Error:", error);
+    alert("Failed to load SpotCheck data.");
+  }
+}
   
   function formatCheckDate(dateString) {
   if (!dateString) return "";
