@@ -350,7 +350,7 @@ async function saveAsPDF() {
   const fileName = `Spotcheck_${name}_${date}.pdf`;
 
   const opt = {
-  margin: [0.1, 0.18, 0.18, 0.18],  // Top, Right, Bottom, Left (reduced to 0.15 inch)
+  margin: [0.1, 0.3, 0.3, 0.2],  // Top, Right, Bottom, Left (reduced to 0.15 inch)
   filename: fileName,
   image: { type: 'jpeg', quality: 0.95 },
   html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
