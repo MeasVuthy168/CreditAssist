@@ -172,10 +172,8 @@ td {
   .page-container {
     width: 100%;
   }
-
     #printArea {
-  transform: scale(0.95); /* Adjust 0.90 ~ 0.95 if needed */
-  transform-origin: top left;
+    transform: scale(1); /* Normal in print view */
   }
  }
     
@@ -204,7 +202,15 @@ td {
 .white-border-table th {
   border: 1px solid white;
 }
-    
+
+.print-button, .close-button {
+  display: none !important;
+}
+
+  #printArea {
+  transform: scale(0.80); /* Shrinks content to fit */
+  transform-origin: top left;
+
 </style>
 <head>
   <meta charset="UTF-8">
@@ -353,12 +359,12 @@ async function saveAsPDF() {
   const fileName = `Spotcheck_${name}_${date}.pdf`;
 
   const opt = {
-    margin: [0.9, 0.5, 0.9, 0.8],  // Top, Right, Bottom, Left (inches)
+    margin: [0.5, 0.3, 0.5, 0.3],  // Top, Right, Bottom, Left (inches)
     filename: fileName,
     image: { type: 'jpeg', quality: 0.85 },
     html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
     jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' },
-    pagebreak: { mode: ['avoid-all', 'css', 'legacy'] } // Prevent page breaks
+    pagebreak: { mode: ['avoid-all', 'css'] }
   };
 
   await html2pdf().set(opt).from(element).save();
