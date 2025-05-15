@@ -14,7 +14,7 @@
 body {
   font-family: 'Krasar', Arial, sans-serif;
   margin: 0;
-  padding: 10px 10px 20px 10px;
+  padding: 5px 10px 10px 10px;
   font-size: 12px;
 }
 
@@ -203,7 +203,6 @@ td {
 
 
   #printArea {
-  transform: scale(0.80); /* Shrinks content to fit */
   transform-origin: top left;
   }
 </style>
@@ -349,13 +348,13 @@ async function saveAsPDF() {
   const fileName = `Spotcheck_${name}_${date}.pdf`;
 
   const opt = {
-    margin: [0.2, 0.3, 0.2, 0.3],  // Top, Right, Bottom, Left (inches)
-    filename: fileName,
-    image: { type: 'jpeg', quality: 0.85 },
-    html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
-    jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' },
-    pagebreak: { mode: ['avoid-all', 'css'] }
-  };
+  margin: [0.1, 0.3, 0.2, 0.3],  // Top, Right, Bottom, Left
+  filename: fileName,
+  image: { type: 'jpeg', quality: 0.9 },
+  html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
+  jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' },
+  pagebreak: { mode: ['avoid-all', 'css'] }
+};
 
   // Hide buttons during export
   document.querySelectorAll('.print-button, .close-button').forEach(el => el.style.display = 'none');
