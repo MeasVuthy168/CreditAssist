@@ -164,6 +164,7 @@
       border-radius: 50%;
       font-weight: bold;
     }
+
     @media print {
       .header, .bottom-bar { display: none !important; }
     }
@@ -206,26 +207,25 @@
   
 <div id="notificationContainer"></div>
 <div class="bottom-bar">
-    <button class="bottom-btn" onclick="location.href='../index.html'">
-      <img src="../icons/Home.png" width="24" height="24" />
-      <div>Home</div>
-    </button>
-    <button class="bottom-btn" onclick="location.href='../Setting/index.html'">
-      <img src="../icons/Setting.png" width="24" height="24" />
-      <div>Setting</div>
-    </button>
-    <button class="bottom-btn" onclick="window.location.href='../notifications/index.html'">
-  <div style="position: relative;">
-    <img src="../icons/Notification.png" width="24" height="24" />
-    <span id="notif-badge" class="badge" style="display: none;"></span>
-  </div>
-  <div>Notification</div>
-</button>
-  </div>
+  <button class="bottom-btn" onclick="location.href='../index.html'">
+    <img src="../icons/Home.png" width="24" height="24" />
+    <div>Home</div>
+  </button>
+  <button class="bottom-btn" onclick="location.href='../Setting/index.html'">
+    <img src="../icons/Setting.png" width="24" height="24" />
+    <div>Setting</div>
+  </button>
+  <button class="bottom-btn" onclick="window.location.href='../notifications/index.html'">
+    <div style="position: relative;">
+      <img src="../icons/Notification.png" width="24" height="24" />
+      <span id="notif-badge" class="badge" style="display: none;"></span>
+    </div>
+    <div>Notification</div>
+  </button>
+</div>
 
 <script>
-
-  // ✅ Protect Page by Token
+// ✅ Protect Page by Token
 const token = sessionStorage.getItem('token');
 if (!token) {
   alert("Session expired or unauthorized access.");
@@ -251,11 +251,7 @@ function setupAutoLogoutEvents() {
 }
 window.addEventListener('load', setupAutoLogoutEvents);
 
-
-  // ✅ existing script
-const user = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
-const username = user.username || "";
-
+// ✅ Initialize Dates
 function setMaxDateToToday() {
   const today = new Date().toISOString().split("T")[0];
   document.getElementById("dob").max = today;
@@ -263,30 +259,48 @@ function setMaxDateToToday() {
   document.getElementById("currentDate").value = today;
 }
 
+// ✅ Accurate Calculation of Remaining Years, Months, Days
 function calculateMonthsLeft() {
   const dob = new Date(document.getElementById("dob").value);
   const retirementAge = parseInt(document.getElementById("retirementAge").value);
   const current = new Date(document.getElementById("currentDate").value);
-  const retirementDate = new Date(dob.setFullYear(dob.getFullYear() + retirementAge));
-  const monthsLeft = (retirementDate.getFullYear() - current.getFullYear()) * 12 + retirementDate.getMonth() - current.getMonth() - (current.getDate() > retirementDate.getDate() ? 1 : 0);
 
-  const years = Math.floor(monthsLeft / 12);
-  const months = monthsLeft % 12;
-  const days = Math.max(0, retirementDate.getDate() - current.getDate());
+  const retirementDate = new Date(dob);
+  retirementDate.setFullYear(retirementDate.getFullYear() + retirementAge);
 
-  document.getElementById("monthsLeft").textContent = monthsLeft < 0 ? "បានចូលនិវត្តន៍រួចហើយ" : monthsLeft + " ខែ";
-  document.getElementById("description").innerHTML = monthsLeft < 0
-    ? "បានចូលនិវត្តន៍រួចហើយ"
-    : `នៅសល់ <span class="highlight">${String(years).padStart(2, '0')}</span> ឆ្នាំ 
-       <span class="highlight">${String(months).padStart(2, '0')}</span> ខែ 
-       និង <span class="highlight">${String(days).padStart(2, '0')}</span> ថ្ងៃទៀត`;
+  if (retirementDate < current) {
+    document.getElementById("monthsLeft").textContent = "បានចូលនិវត្តន៍រួចហើយ";
+    document.getElementById("description").textContent = "បានចូលនិវត្តន៍រួចហើយ";
+    return;
+  }
+
+  let years = retirementDate.getFullYear() - current.getFullYear();
+  let months = retirementDate.getMonth() - current.getMonth();
+  let days = retirementDate.getDate() - current.getDate();
+
+  if (days < 0) {
+    months -= 1;
+    const prevMonth = new Date(retirementDate.getFullYear(), retirementDate.getMonth(), 0);
+    days += prevMonth.getDate();
+  }
+
+  if (months < 0) {
+    years -= 1;
+    months += 12;
+  }
+
+  const totalMonthsLeft = years * 12 + months;
+
+  document.getElementById("monthsLeft").textContent = totalMonthsLeft + " ខែ";
+
+  document.getElementById("description").innerHTML = `នៅសល់ <span class="highlight">${String(years).padStart(2, '0')}</span> ឆ្នាំ 
+     <span class="highlight">${String(months).padStart(2, '0')}</span> ខែ 
+     និង <span class="highlight">${String(days).padStart(2, '0')}</span> ថ្ងៃទៀត`;
 }
-</script> 
-  
-<!-- ✅ Load shared notification script -->
+</script>
+
 <script src="../notifications/checkNotification.js"></script>
 
-<!-- ✅ Initialize after DOM ready -->
 <script>
   window.addEventListener("DOMContentLoaded", () => {
     setMaxDateToToday();
