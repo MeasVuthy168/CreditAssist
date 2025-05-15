@@ -22,7 +22,7 @@ body {
 .header-container {
   border: 2px solid transparent;
   padding: 10px;
-  max-width: 900px;
+  max-width: 950px;
   box-sizing: border-box;
   width: 95%;
   margin: 20px auto; /* center horizontally */
@@ -31,7 +31,7 @@ body {
 .page-container {
   border: 2px solid black;
   padding: 10px;
-  max-width: 900px;
+  max-width: 960px;
   box-sizing: border-box;
   width: 95%;
   margin: 5px auto; /* center horizontally */
@@ -350,7 +350,7 @@ async function saveAsPDF() {
   const fileName = `Spotcheck_${name}_${date}.pdf`;
 
   const opt = {
-  margin: [0.1, 1, 1, 1],  // Top, Right, Bottom, Left (reduced to 0.15 inch)
+  margin: [0.1, 0.15, 0.15, 0.2],  // Top, Right, Bottom, Left (reduced to 0.15 inch)
   filename: fileName,
   image: { type: 'jpeg', quality: 0.95 },
   html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
