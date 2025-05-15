@@ -82,6 +82,25 @@ body {
   margin-top: 10; /* remove top margin */
   
 }
+   .cycle-input-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: #0d2d5c;  
+  margin-top: 10px;
+}
+
+.cycle-input-wrapper span {
+  margin-right: 6px;
+}
+
+.cycle-input-wrapper input {
+  width: 40px;
+  text-align: center;
+  font-weight: bold;
+  font-family: 'Krasar', Arial, sans-serif;
+} 
 
 .short-divider {
   width: 60px;
@@ -253,8 +272,10 @@ td {
       </div>
       <div class="header-right" style="position: relative;">
        <img src="../icons/LogoAC2.PNG" alt="ACLEDA Logo">
-       <div>ត្រួតពិនិត្យវដ្ត: <input id="cycleInput" type="text" value="" style="width: 40px;"></div>
-      
+       <div class="cycle-input-wrapper">
+        <span>ត្រួតពិនិត្យវដ្ត:</span>
+         <input id="cycleInput" type="text" value="">
+        </div>
        <div class="print-button-container">
           <button class="print-button" onclick="saveAsPDF()">Save as PDF</button>
        </div>
