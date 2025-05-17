@@ -25,7 +25,7 @@ function hideToast() {
   if (toast) toast.style.display = "none";
 }
 
-// ✅ Shared Notification Checker
+// ✅ Shared Notification Checker with 'arreas' support
 async function checkNotification() {
   try {
     const user = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
@@ -37,7 +37,8 @@ async function checkNotification() {
     const res = await fetch("https://secure-backend-tzj9.onrender.com/api/notifications/status");
     const data = await res.json();
 
-    const uploads = ['user', 'customer', 'turnover', 'nbcos'];
+    // ✅ Include 'arreas' into the check
+    const uploads = ['user', 'customer', 'turnover', 'nbcos', 'arreas'];
     const lastReadRaw = data[`read_${username}`];
     const lastRead = lastReadRaw ? new Date(lastReadRaw) : null;
 
@@ -63,7 +64,7 @@ async function checkNotification() {
         badge.style.display = "inline-block";
 
         if (noShow !== "true" || lastToast !== latestUploadTime) {
-          showToast(`លោកគ្រូអ្នកគ្រូមានការជូនដំណឹងថ្មីចំនួន ${newCount}សារ`);
+          showToast(`លោកគ្រូអ្នកគ្រូមានការជូនដំណឹងថ្មីចំនួន ${newCount} សារ`);
           localStorage.setItem(`lastToastShown_${username}`, latestUploadTime);
           localStorage.removeItem(`noShowToast_${username}`); // reset if new message
         }
