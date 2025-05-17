@@ -173,12 +173,6 @@
   <button class="close-btn" onclick="window.location.href='index.html'">&times;</button>
 </div>
 
-<div class="admin-box" id="admin-input" style="display:none;">
-  <label class="admin-title">📩 Post Robot Message</label>
-  <textarea id="newMessage" placeholder="សរសេរសារថ្មី..." class="admin-textarea"></textarea>
-  <button class="admin-btn" onclick="postRobotMessage()">🗃️ Upload to Backend(Github)</button>
-</div>
-
 <div class="upload-box">
   <div class="upload-box-title">📄 Upload Excel Files (.xlsx)</div>
 
@@ -229,6 +223,13 @@
 
   <button class="upload-btn" onclick="uploadFiles()">🗃️ Upload to Backend(MongoDB)</button>
 </div>
+
+
+ <div class="admin-box" id="admin-input" style="display:none;">
+  <label class="admin-title">📩 Post Robot Message</label>
+  <textarea id="newMessage" placeholder="សរសេរសារថ្មី..." class="admin-textarea"></textarea>
+  <button class="admin-btn" onclick="postRobotMessage()">🗃️ Upload to Backend(Github)</button>
+</div> 
 
 <div class="log-box" id="uploadLog"></div>
 <div id="overlay"><span>កំពុងបញ្ជូនទិន្នន័យ...សូមរង់ចាំ</span></div>
