@@ -210,7 +210,8 @@
         user: "✔️បានធ្វើបច្ចុប្បន្នភាពទិន្នន័យរបស់ភ្នាក់ងារឥណទាន",
         customer: "✔️បានធ្វើបច្ចុប្បន្នភាពទិន្នន័យអតិថិជន",
         turnover: "✔️បានធ្វើបច្ចុប្បន្នភាពទិន្នន័យអត្រាប្រចាំឆ្នាំ",
-        nbcos: "✔️បានធ្វើបច្ចុប្បន្នភាពទិន្នន័យឥណទានសកម្ម (NBC)"
+        nbcos: "✔️បានធ្វើបច្ចុប្បន្នភាពទិន្នន័យឥណទានសកម្ម (NBC)",
+        arreas: "✔️បានធ្វើបច្ចុប្បន្នភាពទិន្នន័យឥណទានយឺតយ៉ាវប្រចាំថ្ងៃ (Arreas T24)"
       };
 
       try {
@@ -219,7 +220,7 @@
         const readTime = data[`read_${username}`] ? new Date(data[`read_${username}`]) : null;
         let count = 0;
 
-        ['user', 'customer', 'turnover', 'nbcos'].forEach(type => {
+        ['user', 'customer', 'turnover', 'nbcos', 'arreas'].forEach(type => {
           const uploadedAt = data[type];
           const fullname = data[`${type}Fullname`] || "Unknown";
 
