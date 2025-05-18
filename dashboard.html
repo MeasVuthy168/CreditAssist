@@ -59,22 +59,22 @@
     .card h3 {
       margin-top: 0;
     }
-    card ul {
-    padding-left: 20px;
-    margin: 8px 0;
-  }
-  .card ul li {
-    font-size: 13px; /* reduced list item font */
-    margin-bottom: 4px;
-  }
-  #debugLog {
-    background: #111;
-    color: #0f0;
-    padding: 10px;
-    font-size: 8px;
-    font-family: monospace;
-    white-space: pre-wrap;
-  }
+    .card ul {
+      padding-left: 20px;
+      margin: 8px 0;
+    }
+    .card ul li {
+      font-size: 13px;
+      margin-bottom: 4px;
+    }
+    #debugLog {
+      background: #111;
+      color: #0f0;
+      padding: 10px;
+      font-size: 8px;
+      font-family: monospace;
+      white-space: pre-wrap;
+    }
   </style>
 </head>
 <body>
@@ -120,7 +120,7 @@
   </div>
 
   <!-- Debug Log -->
- <div id="debugLog"></div>
+  <div id="debugLog"></div>
 
   <!-- Script Section -->
   <script>
@@ -225,7 +225,7 @@
         const users = await res.json();
         const detailList = document.getElementById("loginTodayDetailList");
         detailList.innerHTML = users.length
-          ? users.map(u => `<li>👤 ${u.username} (${u.fullname || ''}) at ${new Date(u.lastLogin).toLocaleTimeString()}</li>`).join('')
+          ? users.map(u => `<li>👤 ${u.username} (${u.fullname || ''}) at ${new Date(u.lastLogin).toLocaleString()}</li>`).join('')
           : "<li>No logins today</li>";
       } catch (err) {
         logDebug("❌ Failed to load login details: " + err.message);
