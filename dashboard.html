@@ -29,9 +29,6 @@
       color: white;
       text-decoration: none;
     }
-    .dashboard-left-link a:hover {
-      text-decoration: underline;
-    }
     .dashboard-title-text {
       font-size: 18px;
       font-weight: bold;
@@ -99,20 +96,20 @@
     </div>
 
     <div class="card user-activity">
-  <h3>User Activity Summary</h3>
-  <div class="activity-group">
-    <strong>🟢 Active Today:</strong>
-    <ul id="activeTodayList"></ul>
-  </div>
-  <div class="activity-group">
-    <strong>📅 Active This Week:</strong>
-    <ul id="activeWeekList"></ul>
-  </div>
-  <div class="activity-group">
-    <strong>🗓️ Active This Month:</strong>
-    <ul id="activeMonthList"></ul>
-  </div>
-</div>
+      <h3>User Activity Summary</h3>
+      <div class="activity-group">
+        <strong>🟢 Active Today:</strong>
+        <ul id="activeTodayList"></ul>
+      </div>
+      <div class="activity-group">
+        <strong>📅 Active This Week:</strong>
+        <ul id="activeWeekList"></ul>
+      </div>
+      <div class="activity-group">
+        <strong>🗓️ Active This Month:</strong>
+        <ul id="activeMonthList"></ul>
+      </div>
+    </div>
 
     <div class="card">
       <h3>⚡ Quick Links</h3>
@@ -203,50 +200,45 @@
     }
 
     async function loadUserActivity() {
-  try {
-    const res = await fetch("/api/admin/user-activity", {
-      headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` }
-    });
-    const data = await res.json();
+      try {
+        logDebug("Fetching user-activity...");
+        const res = await fetch(`${baseURL}/api/admin/user-activity`, {
+          headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` }
+        });
+        const data = await res.json();
+        logDebug("✅ Activity Users: " + data.length);
 
-    const now = new Date();
-    const todayStr = now.toISOString().split('T')[0];
+        const now = new Date();
+        const todayStr = now.toISOString().split('T')[0];
+        const startOfWeek = new Date(now);
+        startOfWeek.setDate(now.getDate() - now.getDay());
+        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
-    const startOfWeek = new Date(now);
-    startOfWeek.setDate(now.getDate() - now.getDay());
+        const todayList = document.getElementById("activeTodayList");
+        const weekList = document.getElementById("activeWeekList");
+        const monthList = document.getElementById("activeMonthList");
 
-    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+        todayList.innerHTML = '';
+        weekList.innerHTML = '';
+        monthList.innerHTML = '';
 
-    const todayList = document.getElementById("activeTodayList");
-    const weekList = document.getElementById("activeWeekList");
-    const monthList = document.getElementById("activeMonthList");
+        data.forEach(user => {
+          const lastLogin = user.lastLogin ? new Date(user.lastLogin) : null;
+          if (!lastLogin) return;
 
-    todayList.innerHTML = '';
-    weekList.innerHTML = '';
-    monthList.innerHTML = '';
+          const li = document.createElement("li");
+          li.textContent = `${user.username} (${user.fullname || ''})`;
 
-    data.forEach(user => {
-      const lastLogin = user.lastLogin ? new Date(user.lastLogin) : null;
-      if (!lastLogin) return;
+          const loginDateStr = lastLogin.toISOString().split('T')[0];
+          if (loginDateStr === todayStr) todayList.appendChild(li.cloneNode(true));
+          if (lastLogin >= startOfWeek) weekList.appendChild(li.cloneNode(true));
+          if (lastLogin >= startOfMonth) monthList.appendChild(li.cloneNode(true));
+        });
 
-      const li = document.createElement("li");
-      li.textContent = `${user.username} (${user.fullname || ''})`;
-
-      const loginDateStr = lastLogin.toISOString().split('T')[0];
-      if (loginDateStr === todayStr) {
-        todayList.appendChild(li.cloneNode(true));
+      } catch (err) {
+        logDebug("❌ User Activity Error: " + err.message);
       }
-      if (lastLogin >= startOfWeek) {
-        weekList.appendChild(li.cloneNode(true));
-      }
-      if (lastLogin >= startOfMonth) {
-        monthList.appendChild(li.cloneNode(true));
-      }
-    });
-  } catch (err) {
-    console.warn("❌ Failed to load user activity", err);
-  }
-}
+    }
   </script>
 </body>
 </html>
