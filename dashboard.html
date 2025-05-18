@@ -67,30 +67,36 @@
     .activity-group li {
       padding: 4px 0;
     }
+    #debugLog {
+      background: #111;
+      color: #0f0;
+      padding: 10px;
+      font-size: 12px;
+      font-family: monospace;
+      white-space: pre-wrap;
+    }
   </style>
 </head>
 <body>
+  <!-- Header -->
   <div class="dashboard-header">
     <div class="dashboard-left-link">
-      <a href="adminupload.html">⬅️Back</a>
+      <a href="adminupload.html">⬅️ ត្រឡប់ទៅ AdminUpload</a>
     </div>
     <div class="dashboard-title-text">Dashboard (ផ្ទាំងគ្រប់គ្រង)</div>
     <button class="close-dashboard-btn" onclick="window.location.href='index.html'">&times;</button>
   </div>
 
+  <!-- Dashboard Cards -->
   <div class="container">
     <div class="card">
       <h3>📊 Upload Summary</h3>
-      <ul id="uploadSummaryList">
-        <li>Loading...</li>
-      </ul>
+      <ul id="uploadSummaryList"><li>Loading...</li></ul>
     </div>
 
     <div class="card">
       <h3>📈 Statistics Overview</h3>
-      <ul id="statisticsList">
-        <li>Loading...</li>
-      </ul>
+      <ul id="statisticsList"><li>Loading...</li></ul>
     </div>
 
     <div class="card user-activity">
@@ -115,52 +121,49 @@
     </div>
   </div>
 
+  <!-- Debug Log -->
+  <div id="debugLog"></div>
+
+  <!-- Script Section -->
   <script>
+    function logDebug(message) {
+      const log = document.getElementById("debugLog");
+      log.textContent += `[${new Date().toLocaleTimeString()}] ${message}\n`;
+    }
+
     document.addEventListener("DOMContentLoaded", () => {
+      const token = sessionStorage.getItem("token");
+      if (!token) {
+        logDebug("❌ No token found in sessionStorage.");
+      } else {
+        logDebug("✅ Token found.");
+      }
+
       const user = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
-      if (!user.username) return location.href = "login.html";
+      if (!user.username) {
+        logDebug("❌ No user found. Redirecting to login...");
+        location.href = "login.html";
+        return;
+      }
+
+      logDebug("✅ User: " + user.username);
+
       loadUserActivity();
       loadUploadSummary();
       loadStatistics();
     });
 
-    async function loadUserActivity() {
-      try {
-        const res = await fetch("/api/admin/user-activity", {
-          headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` }
-        });
-        const data = await res.json();
-        const today = new Date().toISOString().split('T')[0];
-
-        const activeList = document.getElementById("activeUsersList");
-        const inactiveList = document.getElementById("inactiveUsersList");
-        activeList.innerHTML = "";
-        inactiveList.innerHTML = "";
-
-        data.forEach(user => {
-          const lastLoginDate = new Date(user.lastLogin || 0).toISOString().split('T')[0];
-          const li = document.createElement("li");
-          li.textContent = `${user.username} (${user.fullname || ''})`;
-          if (lastLoginDate === today) {
-            activeList.appendChild(li);
-          } else {
-            inactiveList.appendChild(li);
-          }
-        });
-      } catch (err) {
-        console.warn("Failed to load user activity", err);
-      }
-    }
-
     async function loadUploadSummary() {
       try {
+        logDebug("Fetching /api/admin/upload-timestamps...");
         const res = await fetch("/api/admin/upload-timestamps", {
           headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` }
         });
         const data = await res.json();
+        logDebug("✅ Upload Summary: " + JSON.stringify(data));
+
         const list = document.getElementById("uploadSummaryList");
         list.innerHTML = "";
-
         const keys = ["user", "customer", "turnover", "nbcos", "arreas"];
         keys.forEach(key => {
           const date = data[key];
@@ -171,16 +174,18 @@
           list.appendChild(item);
         });
       } catch (err) {
-        console.warn("Failed to load upload summary", err);
+        logDebug("❌ Upload Summary Error: " + err.message);
       }
     }
 
     async function loadStatistics() {
       try {
+        logDebug("Fetching /api/admin/stats...");
         const res = await fetch("/api/admin/stats", {
           headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` }
         });
         const stats = await res.json();
+        logDebug("✅ Statistics: " + JSON.stringify(stats));
         const list = document.getElementById("statisticsList");
         list.innerHTML = `
           <li><strong>Users:</strong> ${stats.users}</li>
@@ -189,7 +194,37 @@
           <li><strong>Arreas:</strong> ${stats.arreas}</li>
         `;
       } catch (err) {
-        console.warn("Failed to load statistics", err);
+        logDebug("❌ Statistics Error: " + err.message);
+      }
+    }
+
+    async function loadUserActivity() {
+      try {
+        logDebug("Fetching /api/admin/user-activity...");
+        const res = await fetch("/api/admin/user-activity", {
+          headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` }
+        });
+        const data = await res.json();
+        logDebug("✅ User Activity: " + JSON.stringify(data));
+
+        const today = new Date().toISOString().split('T')[0];
+        const activeList = document.getElementById("activeUsersList");
+        const inactiveList = document.getElementById("inactiveUsersList");
+        activeList.innerHTML = "";
+        inactiveList.innerHTML = "";
+
+        data.forEach(user => {
+          const lastLogin = new Date(user.lastLogin || 0).toISOString().split('T')[0];
+          const li = document.createElement("li");
+          li.textContent = `${user.username} (${user.fullname || ''})`;
+          if (lastLogin === today) {
+            activeList.appendChild(li);
+          } else {
+            inactiveList.appendChild(li);
+          }
+        });
+      } catch (err) {
+        logDebug("❌ User Activity Error: " + err.message);
       }
     }
   </script>
