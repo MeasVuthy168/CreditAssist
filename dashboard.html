@@ -29,9 +29,6 @@
       color: white;
       text-decoration: none;
     }
-    .dashboard-left-link a:hover {
-      text-decoration: underline;
-    }
     .dashboard-title-text {
       font-size: 18px;
       font-weight: bold;
@@ -67,6 +64,14 @@
       font-size: 13px;
       margin-bottom: 4px;
     }
+    .card span.clickable {
+      cursor: pointer;
+      color: #0d2d5c;
+      text-decoration: underline;
+    }
+    .hidden {
+      display: none;
+    }
     #debugLog {
       background: #111;
       color: #0f0;
@@ -78,7 +83,6 @@
   </style>
 </head>
 <body>
-  <!-- Header -->
   <div class="dashboard-header">
     <div class="dashboard-left-link">
       <a href="adminupload.html">⬅️Back</a>
@@ -87,7 +91,6 @@
     <button class="close-dashboard-btn" onclick="window.location.href='index.html'">&times;</button>
   </div>
 
-  <!-- Dashboard Cards -->
   <div class="container">
     <div class="card">
       <h3>📊 Upload Summary</h3>
@@ -102,11 +105,13 @@
     <div class="card user-activity">
       <h3>🔐 User Activity Summary</h3>
       <ul>
-        <li>🟢 Active Today: <span id="todayCount">0</span></li>
-        <li>🟢 Active This Week: <span id="weekCount">0</span></li>
-        <li>🟢 Active This Month: <span id="monthCount">0</span></li>
+        <li><span class="clickable" onclick="toggleLoginDetail('today')">🟢 Active Today:</span> <span id="todayCount">0</span></li>
+        <li><span class="clickable" onclick="toggleLoginDetail('week')">🟢 Active This Week:</span> <span id="weekCount">0</span></li>
+        <li><span class="clickable" onclick="toggleLoginDetail('month')">🟢 Active This Month:</span> <span id="monthCount">0</span></li>
       </ul>
       <ul id="loginTodayDetailList"></ul>
+      <ul id="loginThisWeekDetailList" class="hidden"></ul>
+      <ul id="loginThisMonthDetailList" class="hidden"></ul>
     </div>
 
     <div class="card">
@@ -119,117 +124,107 @@
     </div>
   </div>
 
-  <!-- Debug Log -->
   <div id="debugLog"></div>
 
-  <!-- Script Section -->
   <script>
     const baseURL = "https://secure-backend-tzj9.onrender.com";
 
     function logDebug(message) {
-      const log = document.getElementById("debugLog");
-      log.textContent += `[${new Date().toLocaleTimeString()}] ${message}\n`;
+      document.getElementById("debugLog").textContent += `[${new Date().toLocaleTimeString()}] ${message}\n`;
+    }
+
+    function toggleLoginDetail(period) {
+      document.getElementById("loginTodayDetailList").classList.add("hidden");
+      document.getElementById("loginThisWeekDetailList").classList.add("hidden");
+      document.getElementById("loginThisMonthDetailList").classList.add("hidden");
+
+      if (period === "today") {
+        document.getElementById("loginTodayDetailList").classList.remove("hidden");
+      } else if (period === "week") {
+        document.getElementById("loginThisWeekDetailList").classList.remove("hidden");
+      } else if (period === "month") {
+        document.getElementById("loginThisMonthDetailList").classList.remove("hidden");
+      }
     }
 
     document.addEventListener("DOMContentLoaded", () => {
       const token = sessionStorage.getItem("token");
-      if (!token) {
-        logDebug("❌ No token found in sessionStorage.");
-      } else {
-        logDebug("✅ Token found.");
-      }
-
-      const user = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
-      if (!user.username) {
-        logDebug("❌ No user found. Redirecting to login...");
-        location.href = "login.html";
-        return;
-      }
-
-      logDebug("✅ User: " + user.username);
+      if (!token) location.href = "login.html";
 
       loadUploadSummary();
       loadStatistics();
       loadActivitySummary();
-      loadTodayLoginDetails();
+      loadLoginDetails();
     });
 
     async function loadUploadSummary() {
-      try {
-        logDebug("Fetching upload-timestamps...");
-        const res = await fetch(`${baseURL}/api/admin/upload-timestamps`, {
-          headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` }
-        });
-        const data = await res.json();
-        logDebug("✅ Upload Summary: " + JSON.stringify(data));
-        const list = document.getElementById("uploadSummaryList");
-        list.innerHTML = "";
-        const keys = ["user", "customer", "turnover", "nbcos", "arreas"];
-        keys.forEach(key => {
-          const date = data[key];
-          const name = data[`${key}Fullname`] || "–";
-          const label = key.charAt(0).toUpperCase() + key.slice(1);
-          const item = document.createElement("li");
-          item.innerHTML = `<strong>${label}:</strong> ${date ? new Date(date).toLocaleString() : "N/A"} by ${name}`;
-          list.appendChild(item);
-        });
-      } catch (err) {
-        logDebug("❌ Upload Summary Error: " + err.message);
-      }
+      const res = await fetch(`${baseURL}/api/admin/upload-timestamps`, {
+        headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` }
+      });
+      const data = await res.json();
+      const list = document.getElementById("uploadSummaryList");
+      list.innerHTML = "";
+      ["user", "customer", "turnover", "nbcos", "arreas"].forEach(key => {
+        const item = document.createElement("li");
+        item.innerHTML = `<strong>${key}:</strong> ${data[key] ? new Date(data[key]).toLocaleString() : "N/A"} by ${data[`${key}Fullname`] || '–'}`;
+        list.appendChild(item);
+      });
     }
 
     async function loadStatistics() {
-      try {
-        logDebug("Fetching stats...");
-        const res = await fetch(`${baseURL}/api/admin/stats`, {
-          headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` }
-        });
-        const stats = await res.json();
-        logDebug("✅ Statistics: " + JSON.stringify(stats));
-        const list = document.getElementById("statisticsList");
-        list.innerHTML = `
-          <li><strong>Users:</strong> ${stats.users}</li>
-          <li><strong>Customers:</strong> ${stats.customers}</li>
-          <li><strong>Active Loans:</strong> ${stats.nbcos}</li>
-          <li><strong>Arreas:</strong> ${stats.arreas}</li>
-        `;
-      } catch (err) {
-        logDebug("❌ Statistics Error: " + err.message);
-      }
+      const res = await fetch(`${baseURL}/api/admin/stats`, {
+        headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` }
+      });
+      const stats = await res.json();
+      document.getElementById("statisticsList").innerHTML = `
+        <li><strong>Users:</strong> ${stats.users}</li>
+        <li><strong>Customers:</strong> ${stats.customers}</li>
+        <li><strong>Active Loans:</strong> ${stats.nbcos}</li>
+        <li><strong>Arreas:</strong> ${stats.arreas}</li>
+      `;
     }
 
     async function loadActivitySummary() {
-      try {
-        logDebug("Fetching activity summary...");
-        const res = await fetch(`${baseURL}/api/admin/user-activity-summary`, {
-          headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` }
-        });
-
-        const data = await res.json();
-        logDebug("✅ Activity Summary: " + JSON.stringify(data));
-
-        document.getElementById("todayCount").textContent = data.todayCount;
-        document.getElementById("weekCount").textContent = data.weekCount;
-        document.getElementById("monthCount").textContent = data.monthCount;
-
-      } catch (err) {
-        logDebug("❌ Activity Summary Error: " + err.message);
-      }
+      const res = await fetch(`${baseURL}/api/admin/user-activity-summary`, {
+        headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` }
+      });
+      const data = await res.json();
+      document.getElementById("todayCount").textContent = data.todayCount;
+      document.getElementById("weekCount").textContent = data.weekCount;
+      document.getElementById("monthCount").textContent = data.monthCount;
     }
 
-    async function loadTodayLoginDetails() {
-      try {
-        const res = await fetch(`${baseURL}/api/admin/user-logins-today`, {
-          headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` }
-        });
-        const users = await res.json();
-        const detailList = document.getElementById("loginTodayDetailList");
-        detailList.innerHTML = users.length
-          ? users.map(u => `<li>👤 ${u.username} (${u.fullname || ''}) at ${new Date(u.lastLogin).toLocaleString()}</li>`).join('')
-          : "<li>No logins today</li>";
-      } catch (err) {
-        logDebug("❌ Failed to load login details: " + err.message);
-      }
+    async function loadLoginDetails() {
+      const token = sessionStorage.getItem('token');
+
+      const todayRes = await fetch(`${baseURL}/api/admin/user-logins-today`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const todayUsers = await todayRes.json();
+      document.getElementById("loginTodayDetailList").innerHTML = todayUsers.map(u =>
+        `<li>👤 ${u.username} (${u.fullname || ''}) at ${new Date(u.lastLogin).toLocaleTimeString()}</li>`
+      ).join('');
+
+      const allUsersRes = await fetch(`${baseURL}/api/admin/user-activity`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const allUsers = await allUsersRes.json();
+      const now = new Date();
+      const weekStart = new Date(now); weekStart.setDate(now.getDate() - now.getDay());
+      const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+
+      const weekUsers = allUsers.filter(u => new Date(u.lastLogin) >= weekStart);
+      const monthUsers = allUsers.filter(u => new Date(u.lastLogin) >= monthStart);
+
+      document.getElementById("loginThisWeekDetailList").innerHTML = weekUsers.map(u =>
+        `<li>👤 ${u.username} (${u.fullname || ''}) at ${new Date(u.lastLogin).toLocaleString()}</li>`
+      ).join('');
+      document.getElementById("loginThisMonthDetailList").innerHTML = monthUsers.map(u =>
+        `<li>👤 ${u.username} (${u.fullname || ''}) at ${new Date(u.lastLogin).toLocaleString()}</li>`
+      ).join('');
+
+      // ✅ Show loginToday by default
+      toggleLoginDetail('today');
     }
   </script>
 </body>
