@@ -99,16 +99,20 @@
     </div>
 
     <div class="card user-activity">
-      <h3>User Activity Summary</h3>
-      <div class="activity-group">
-        <strong>🟢 Active Today:</strong>
-        <ul id="activeUsersList"></ul>
-      </div>
-      <div class="activity-group">
-        <strong>🔴 Inactive Users:</strong>
-        <ul id="inactiveUsersList"></ul>
-      </div>
-    </div>
+  <h3>User Activity Summary</h3>
+  <div class="activity-group">
+    <strong>🟢 Active Today:</strong>
+    <ul id="activeTodayList"></ul>
+  </div>
+  <div class="activity-group">
+    <strong>📅 Active This Week:</strong>
+    <ul id="activeWeekList"></ul>
+  </div>
+  <div class="activity-group">
+    <strong>🗓️ Active This Month:</strong>
+    <ul id="activeMonthList"></ul>
+  </div>
+</div>
 
     <div class="card">
       <h3>⚡ Quick Links</h3>
@@ -199,34 +203,50 @@
     }
 
     async function loadUserActivity() {
-      try {
-        logDebug("Fetching user-activity...");
-        const res = await fetch(`${baseURL}/api/admin/user-activity`, {
-          headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` }
-        });
-        const data = await res.json();
-        logDebug("✅ User Activity: " + JSON.stringify(data));
+  try {
+    const res = await fetch("/api/admin/user-activity", {
+      headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` }
+    });
+    const data = await res.json();
 
-        const today = new Date().toISOString().split('T')[0];
-        const activeList = document.getElementById("activeUsersList");
-        const inactiveList = document.getElementById("inactiveUsersList");
-        activeList.innerHTML = "";
-        inactiveList.innerHTML = "";
+    const now = new Date();
+    const todayStr = now.toISOString().split('T')[0];
 
-        data.forEach(user => {
-          const lastLogin = new Date(user.lastLogin || 0).toISOString().split('T')[0];
-          const li = document.createElement("li");
-          li.textContent = `${user.username} (${user.fullname || ''})`;
-          if (lastLogin === today) {
-            activeList.appendChild(li);
-          } else {
-            inactiveList.appendChild(li);
-          }
-        });
-      } catch (err) {
-        logDebug("❌ User Activity Error: " + err.message);
+    const startOfWeek = new Date(now);
+    startOfWeek.setDate(now.getDate() - now.getDay());
+
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+
+    const todayList = document.getElementById("activeTodayList");
+    const weekList = document.getElementById("activeWeekList");
+    const monthList = document.getElementById("activeMonthList");
+
+    todayList.innerHTML = '';
+    weekList.innerHTML = '';
+    monthList.innerHTML = '';
+
+    data.forEach(user => {
+      const lastLogin = user.lastLogin ? new Date(user.lastLogin) : null;
+      if (!lastLogin) return;
+
+      const li = document.createElement("li");
+      li.textContent = `${user.username} (${user.fullname || ''})`;
+
+      const loginDateStr = lastLogin.toISOString().split('T')[0];
+      if (loginDateStr === todayStr) {
+        todayList.appendChild(li.cloneNode(true));
       }
-    }
+      if (lastLogin >= startOfWeek) {
+        weekList.appendChild(li.cloneNode(true));
+      }
+      if (lastLogin >= startOfMonth) {
+        monthList.appendChild(li.cloneNode(true));
+      }
+    });
+  } catch (err) {
+    console.warn("❌ Failed to load user activity", err);
+  }
+}
   </script>
 </body>
 </html>
