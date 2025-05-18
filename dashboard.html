@@ -188,21 +188,29 @@
       }
     }
 
-    async function loadUserActivitySummary() {
-      try {
-        logDebug("Fetching activity summary...");
-        const res = await fetch(`${baseURL}/api/admin/user-activity-summary`, {
-          headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` }
-        });
-        const data = await res.json();
-        document.getElementById("todayCount").textContent = data.todayCount || 0;
-        document.getElementById("weekCount").textContent = data.weekCount || 0;
-        document.getElementById("monthCount").textContent = data.monthCount || 0;
-        logDebug("✅ Activity Summary: " + JSON.stringify(data));
-      } catch (err) {
-        logDebug("❌ Activity Summary Error: " + err.message);
-      }
+    async function loadActivitySummary() {
+  try {
+    logDebug("Fetching activity summary...");
+    const res = await fetch(`${baseURL}/api/admin/user-activity-summary`, {
+      headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` }
+    });
+
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(`Response not OK: ${res.status} - ${text}`);
     }
+
+    const data = await res.json();
+    logDebug("✅ Activity Summary: " + JSON.stringify(data));
+
+    document.getElementById("activeTodayList").innerHTML = `<li>${data.todayCount}</li>`;
+    document.getElementById("activeWeekList").innerHTML = `<li>${data.weekCount}</li>`;
+    document.getElementById("activeMonthList").innerHTML = `<li>${data.monthCount}</li>`;
+
+  } catch (err) {
+    logDebug("❌ Activity Summary Error: " + err.message);
+  }
+}
   </script>
 </body>
 </html>
