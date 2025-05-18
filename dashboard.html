@@ -141,7 +141,7 @@
 
       loadUploadSummary();
       loadStatistics();
-      loadUserActivitySummary();
+      loadActivitySummary();
     });
 
     async function loadUploadSummary() {
@@ -189,28 +189,28 @@
     }
 
     async function loadActivitySummary() {
-  try {
-    logDebug("Fetching activity summary...");
-    const res = await fetch(`${baseURL}/api/admin/user-activity-summary`, {
-      headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` }
-    });
+      try {
+        logDebug("Fetching activity summary...");
+        const res = await fetch(`${baseURL}/api/admin/user-activity-summary`, {
+          headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` }
+        });
 
-    if (!res.ok) {
-      const text = await res.text();
-      throw new Error(`Response not OK: ${res.status} - ${text}`);
+        if (!res.ok) {
+          const text = await res.text();
+          throw new Error(`Response not OK: ${res.status} - ${text}`);
+        }
+
+        const data = await res.json();
+        logDebug("✅ Activity Summary: " + JSON.stringify(data));
+
+        document.getElementById("todayCount").textContent = data.todayCount;
+        document.getElementById("weekCount").textContent = data.weekCount;
+        document.getElementById("monthCount").textContent = data.monthCount;
+
+      } catch (err) {
+        logDebug("❌ Activity Summary Error: " + err.message);
+      }
     }
-
-    const data = await res.json();
-    logDebug("✅ Activity Summary: " + JSON.stringify(data));
-
-    document.getElementById("activeTodayList").innerHTML = `<li>${data.todayCount}</li>`;
-    document.getElementById("activeWeekList").innerHTML = `<li>${data.weekCount}</li>`;
-    document.getElementById("activeMonthList").innerHTML = `<li>${data.monthCount}</li>`;
-
-  } catch (err) {
-    logDebug("❌ Activity Summary Error: " + err.message);
-  }
-}
   </script>
 </body>
 </html>
