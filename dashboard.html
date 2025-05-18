@@ -29,6 +29,9 @@
       color: white;
       text-decoration: none;
     }
+    .dashboard-left-link a:hover {
+      text-decoration: underline;
+    }
     .dashboard-title-text {
       font-size: 18px;
       font-weight: bold;
@@ -55,13 +58,6 @@
     }
     .card h3 {
       margin-top: 0;
-    }
-    .activity-group ul {
-      list-style: none;
-      padding-left: 20px;
-    }
-    .activity-group li {
-      padding: 4px 0;
     }
     #debugLog {
       background: #111;
@@ -97,18 +93,11 @@
 
     <div class="card user-activity">
       <h3>User Activity Summary</h3>
-      <div class="activity-group">
-        <strong>🟢 Active Today:</strong>
-        <ul id="activeTodayList"></ul>
-      </div>
-      <div class="activity-group">
-        <strong>📅 Active This Week:</strong>
-        <ul id="activeWeekList"></ul>
-      </div>
-      <div class="activity-group">
-        <strong>🗓️ Active This Month:</strong>
-        <ul id="activeMonthList"></ul>
-      </div>
+      <ul>
+        <li>🟢 Active Today: <span id="todayCount">0</span></li>
+        <li>📅 Active This Week: <span id="weekCount">0</span></li>
+        <li>🗓️ Active This Month: <span id="monthCount">0</span></li>
+      </ul>
     </div>
 
     <div class="card">
@@ -150,9 +139,9 @@
 
       logDebug("✅ User: " + user.username);
 
-      loadUserActivity();
       loadUploadSummary();
       loadStatistics();
+      loadUserActivitySummary();
     });
 
     async function loadUploadSummary() {
@@ -199,44 +188,19 @@
       }
     }
 
-    async function loadUserActivity() {
+    async function loadUserActivitySummary() {
       try {
-        logDebug("Fetching user-activity...");
-        const res = await fetch(`${baseURL}/api/admin/user-activity`, {
+        logDebug("Fetching activity summary...");
+        const res = await fetch(`${baseURL}/api/admin/user-activity-summary`, {
           headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` }
         });
         const data = await res.json();
-        logDebug("✅ Activity Users: " + data.length);
-
-        const now = new Date();
-        const todayStr = now.toISOString().split('T')[0];
-        const startOfWeek = new Date(now);
-        startOfWeek.setDate(now.getDate() - now.getDay());
-        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-
-        const todayList = document.getElementById("activeTodayList");
-        const weekList = document.getElementById("activeWeekList");
-        const monthList = document.getElementById("activeMonthList");
-
-        todayList.innerHTML = '';
-        weekList.innerHTML = '';
-        monthList.innerHTML = '';
-
-        data.forEach(user => {
-          const lastLogin = user.lastLogin ? new Date(user.lastLogin) : null;
-          if (!lastLogin) return;
-
-          const li = document.createElement("li");
-          li.textContent = `${user.username} (${user.fullname || ''})`;
-
-          const loginDateStr = lastLogin.toISOString().split('T')[0];
-          if (loginDateStr === todayStr) todayList.appendChild(li.cloneNode(true));
-          if (lastLogin >= startOfWeek) weekList.appendChild(li.cloneNode(true));
-          if (lastLogin >= startOfMonth) monthList.appendChild(li.cloneNode(true));
-        });
-
+        document.getElementById("todayCount").textContent = data.todayCount || 0;
+        document.getElementById("weekCount").textContent = data.weekCount || 0;
+        document.getElementById("monthCount").textContent = data.monthCount || 0;
+        logDebug("✅ Activity Summary: " + JSON.stringify(data));
       } catch (err) {
-        logDebug("❌ User Activity Error: " + err.message);
+        logDebug("❌ Activity Summary Error: " + err.message);
       }
     }
   </script>
