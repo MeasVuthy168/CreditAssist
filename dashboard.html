@@ -98,6 +98,7 @@
         <li>📅 Active This Week: <span id="weekCount">0</span></li>
         <li>🗓️ Active This Month: <span id="monthCount">0</span></li>
       </ul>
+      <ul id="loginTodayDetailList"></ul>
     </div>
 
     <div class="card">
@@ -142,6 +143,7 @@
       loadUploadSummary();
       loadStatistics();
       loadActivitySummary();
+      loadTodayLoginDetails();
     });
 
     async function loadUploadSummary() {
@@ -195,11 +197,6 @@
           headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` }
         });
 
-        if (!res.ok) {
-          const text = await res.text();
-          throw new Error(`Response not OK: ${res.status} - ${text}`);
-        }
-
         const data = await res.json();
         logDebug("✅ Activity Summary: " + JSON.stringify(data));
 
@@ -209,6 +206,21 @@
 
       } catch (err) {
         logDebug("❌ Activity Summary Error: " + err.message);
+      }
+    }
+
+    async function loadTodayLoginDetails() {
+      try {
+        const res = await fetch(`${baseURL}/api/admin/user-logins-today`, {
+          headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` }
+        });
+        const users = await res.json();
+        const detailList = document.getElementById("loginTodayDetailList");
+        detailList.innerHTML = users.length
+          ? users.map(u => `<li>👤 ${u.username} (${u.fullname || ''}) at ${new Date(u.lastLogin).toLocaleTimeString()}</li>`).join('')
+          : "<li>No logins today</li>";
+      } catch (err) {
+        logDebug("❌ Failed to load login details: " + err.message);
       }
     }
   </script>
