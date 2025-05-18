@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="km">
 <head>
@@ -71,21 +72,25 @@
 <body>
   <div class="dashboard-header">
     <div class="dashboard-left-link">
-      <a href="adminupload.html">⬅️ត្រឡប់ទៅ AdminUpload</a>
+      <a href="adminupload.html">⬅️Back</a>
     </div>
-    <div class="dashboard-title-text"></div>
+    <div class="dashboard-title-text">Dashboard (ផ្ទាំងគ្រប់គ្រង)</div>
     <button class="close-dashboard-btn" onclick="window.location.href='index.html'">&times;</button>
   </div>
 
   <div class="container">
     <div class="card">
       <h3>📊 Upload Summary</h3>
-      <p>Display last upload time and uploader for each dataset.</p>
+      <ul id="uploadSummaryList">
+        <li>Loading...</li>
+      </ul>
     </div>
 
     <div class="card">
       <h3>📈 Statistics Overview</h3>
-      <p>Total Users, Customers, Loans, Arreas, etc.</p>
+      <ul id="statisticsList">
+        <li>Loading...</li>
+      </ul>
     </div>
 
     <div class="card user-activity">
@@ -102,16 +107,21 @@
 
     <div class="card">
       <h3>⚡ Quick Links</h3>
-      <p>Buttons to Upload Page, SpotCheck Report, Search, etc.</p>
+      <ul>
+        <li><a href="adminupload.html">Upload Data Page</a></li>
+        <li><a href="spotcheckreport.html">SpotCheck Report</a></li>
+        <li><a href="search.html">Customer Search</a></li>
+      </ul>
     </div>
   </div>
 
   <script>
-    // Populate user info (optional, for expansion)
     document.addEventListener("DOMContentLoaded", () => {
       const user = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
       if (!user.username) return location.href = "login.html";
       loadUserActivity();
+      loadUploadSummary();
+      loadStatistics();
     });
 
     async function loadUserActivity() {
@@ -122,19 +132,64 @@
         const data = await res.json();
         const today = new Date().toISOString().split('T')[0];
 
+        const activeList = document.getElementById("activeUsersList");
+        const inactiveList = document.getElementById("inactiveUsersList");
+        activeList.innerHTML = "";
+        inactiveList.innerHTML = "";
+
         data.forEach(user => {
           const lastLoginDate = new Date(user.lastLogin || 0).toISOString().split('T')[0];
           const li = document.createElement("li");
           li.textContent = `${user.username} (${user.fullname || ''})`;
-
           if (lastLoginDate === today) {
-            document.getElementById("activeUsersList").appendChild(li);
+            activeList.appendChild(li);
           } else {
-            document.getElementById("inactiveUsersList").appendChild(li);
+            inactiveList.appendChild(li);
           }
         });
       } catch (err) {
         console.warn("Failed to load user activity", err);
+      }
+    }
+
+    async function loadUploadSummary() {
+      try {
+        const res = await fetch("/api/admin/upload-timestamps", {
+          headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` }
+        });
+        const data = await res.json();
+        const list = document.getElementById("uploadSummaryList");
+        list.innerHTML = "";
+
+        const keys = ["user", "customer", "turnover", "nbcos", "arreas"];
+        keys.forEach(key => {
+          const date = data[key];
+          const name = data[`${key}Fullname`] || "–";
+          const label = key.charAt(0).toUpperCase() + key.slice(1);
+          const item = document.createElement("li");
+          item.innerHTML = `<strong>${label}:</strong> ${date ? new Date(date).toLocaleString() : "N/A"} by ${name}`;
+          list.appendChild(item);
+        });
+      } catch (err) {
+        console.warn("Failed to load upload summary", err);
+      }
+    }
+
+    async function loadStatistics() {
+      try {
+        const res = await fetch("/api/admin/stats", {
+          headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` }
+        });
+        const stats = await res.json();
+        const list = document.getElementById("statisticsList");
+        list.innerHTML = `
+          <li><strong>Users:</strong> ${stats.users}</li>
+          <li><strong>Customers:</strong> ${stats.customers}</li>
+          <li><strong>Active Loans:</strong> ${stats.nbcos}</li>
+          <li><strong>Arreas:</strong> ${stats.arreas}</li>
+        `;
+      } catch (err) {
+        console.warn("Failed to load statistics", err);
       }
     }
   </script>
