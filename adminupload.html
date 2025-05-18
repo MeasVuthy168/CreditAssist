@@ -293,6 +293,16 @@ function isTokenExpired(token) {
   }
 }
 
+// ✅ Sanitize field names by replacing dots with underscores
+function sanitizeKeys(obj) {
+  const newObj = {};
+  for (const key in obj) {
+    const safeKey = key.replace(/\./g, "_"); // Replace dot with underscore
+    newObj[safeKey] = obj[key];
+  }
+  return newObj;
+}
+
 // ✅ Unified allowedColumns list
 const allowedColumns = {
   userFile: ['username', 'password', 'position', 'fullname', 'phone', 'image'],
@@ -308,8 +318,8 @@ const allowedColumns = {
     'Product Type', 'ABCM', 'OS by Amount', 'GovEmplyee/FactWorker', 'Address',
     'UniqueCIF', 'UniqueCIF_Branch', 'UniqueCIF_CO', 'Amount_Paid_Old'],
   arreasFile: [
-    'Loan Number', 'Customer', 'Location', 'DisDate', 'Prn.OS', 'Int.OS',
-    'Prn.Due', 'Int.Due', 'Penalty', 'Arreas', 'Day', 'Balnce',
+    'Loan Number', 'Customer', 'Location', 'DisDate', 'Prn_OS', 'Int_OS',
+    'Prn_Due', 'Int_Due', 'Penalty', 'Arreas', 'Day', 'Balnce',
     'Tell', 'CIF', 'Occu', 'Ministry', 'Branch', 'CO_ID', 'CO_Response', 'CCY', 'OS_USD', 'OS_Classify',
     'Team_Leader', 'CIF_អ្នករួមខ្ចី', 'Blocking', 'Class', 'PD', 'Concate', 'Product']
 };
@@ -373,17 +383,19 @@ if (fileInputId === "customerFile") {
       const allowed = allowedColumns[fileInputId];
       if (allowed) {
         const trimmed = json.map(row => {
-          const filtered = {};
-          const normalizedRow = {};
-          Object.keys(row).forEach(k => {
-            normalizedRow[k.trim()] = row[k];
-          });
+  const filtered = {};
+  const normalizedRow = {};
+  Object.keys(row).forEach(k => {
+    normalizedRow[k.trim()] = row[k];
+  });
 
-          for (const key of allowed) {
-            filtered[key] = normalizedRow[key] !== undefined ? normalizedRow[key] : "";
-          }
-          return filtered;
-        });
+  for (const key of allowed) {
+    const sanitizedKey = key.replace(/\./g, "_"); // sanitize from allowed list
+    filtered[sanitizedKey] = normalizedRow[key] !== undefined ? normalizedRow[key] : "";
+  }
+
+  return sanitizeKeys(filtered); // sanitize any remaining dot-keys
+});
 
         const newSheet = XLSX.utils.json_to_sheet(trimmed);
         const newWorkbook = XLSX.utils.book_new();
