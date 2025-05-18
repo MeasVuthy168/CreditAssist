@@ -90,7 +90,16 @@
         <li id="weekBtn" onclick="showLoginList('week')">📅 Active This Week: <span id="weekCount">0</span></li>
         <li id="monthBtn" onclick="showLoginList('month')">🗓️ Active This Month: <span id="monthCount">0</span></li>
       </ul>
-      <ul id="loginDetailList"></ul>
+      <ul id="loginDetailList"><li>Loading logins...</li></ul>
+    </div>
+
+    <div class="card">
+      <h3>⚡ Quick Links</h3>
+      <ul>
+        <li><a href="adminupload.html">Upload Data Page</a></li>
+        <li><a href="spotcheckreport.html">SpotCheck Report</a></li>
+        <li><a href="search.html">Customer Search</a></li>
+      </ul>
     </div>
   </div>
 
@@ -98,19 +107,12 @@
 
   <script>
     const baseURL = "https://secure-backend-tzj9.onrender.com";
-    let todayLogins = [];
-    let weekLogins = [];
-    let monthLogins = [];
-
-    function logDebug(msg) {
-      const log = document.getElementById("debugLog");
-      log.textContent += `[${new Date().toLocaleTimeString()}] ${msg}\n`;
-    }
+    let allLogins = [];
 
     document.addEventListener("DOMContentLoaded", async () => {
       const token = sessionStorage.getItem("token");
-      if (!token) {
-        logDebug("No token");
+      const user = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
+      if (!token || !user.username) {
         location.href = "login.html";
         return;
       }
@@ -118,8 +120,8 @@
       await loadUploadSummary();
       await loadStatistics();
       await loadActivitySummary();
-      await loadAllLogins();  // loads today/this week/this month
-      showLoginList('today'); // show today by default
+      await loadAllLogins(); // load all logs once
+      showLoginList('today'); // default show today
     });
 
     async function loadUploadSummary() {
@@ -130,14 +132,13 @@
         const data = await res.json();
         const list = document.getElementById("uploadSummaryList");
         list.innerHTML = "";
-        const keys = ["user", "customer", "turnover", "nbcos", "arreas"];
-        keys.forEach(k => {
-          const item = document.createElement("li");
-          item.innerHTML = `<strong>${k}:</strong> ${data[k] ? new Date(data[k]).toLocaleString() : 'N/A'} by ${data[`${k}Fullname`] || "–"}`;
-          list.appendChild(item);
+        ["user", "customer", "turnover", "nbcos", "arreas"].forEach(k => {
+          const li = document.createElement("li");
+          li.innerHTML = `<strong>${k}:</strong> ${data[k] ? new Date(data[k]).toLocaleString() : "N/A"} by ${data[`${k}Fullname`] || "–"}`;
+          list.appendChild(li);
         });
-      } catch (e) {
-        logDebug("Upload summary error: " + e.message);
+      } catch (err) {
+        console.warn("Upload summary failed", err);
       }
     }
 
@@ -151,9 +152,10 @@
           <li><strong>Users:</strong> ${stats.users}</li>
           <li><strong>Customers:</strong> ${stats.customers}</li>
           <li><strong>Active Loans:</strong> ${stats.nbcos}</li>
-          <li><strong>Arreas:</strong> ${stats.arreas}</li>`;
-      } catch (e) {
-        logDebug("Stats error: " + e.message);
+          <li><strong>Arreas:</strong> ${stats.arreas}</li>
+        `;
+      } catch (err) {
+        console.warn("Statistics fetch failed", err);
       }
     }
 
@@ -166,8 +168,8 @@
         document.getElementById("todayCount").textContent = data.todayCount;
         document.getElementById("weekCount").textContent = data.weekCount;
         document.getElementById("monthCount").textContent = data.monthCount;
-      } catch (e) {
-        logDebug("Activity summary error: " + e.message);
+      } catch (err) {
+        console.warn("Activity summary error", err);
       }
     }
 
@@ -176,58 +178,62 @@
         const res = await fetch(`${baseURL}/api/admin/user-logins-today`, {
           headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` }
         });
-        const users = await res.json();
-
-        const now = new Date();
-        const today = now.toISOString().split('T')[0];
-        const startOfWeek = new Date(now);
-        startOfWeek.setDate(now.getDate() - now.getDay());
-        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-
-        todayLogins = [];
-        weekLogins = [];
-        monthLogins = [];
-
-        users.forEach(user => {
-          const loginDate = new Date(user.lastLogin);
-          const dateStr = loginDate.toISOString().split('T')[0];
-
-          if (dateStr === today) todayLogins.push(user);
-          if (loginDate >= startOfWeek) weekLogins.push(user);
-          if (loginDate >= startOfMonth) monthLogins.push(user);
-        });
+        allLogins = await res.json();
       } catch (err) {
-        logDebug("Login fetch error: " + err.message);
+        allLogins = [];
+        console.warn("Login fetch failed", err);
       }
     }
 
-    function showLoginList(period) {
+    function showLoginList(type) {
+      const now = new Date();
+      const offset = 7 * 60 * 60 * 1000;
+      const today = new Date(now.getTime() + offset);
+      const todayStr = today.toISOString().split("T")[0];
+
+      const startOfWeek = new Date(today);
+      startOfWeek.setDate(today.getDate() - today.getDay());
+      const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+
       const list = document.getElementById("loginDetailList");
       const todayBtn = document.getElementById("todayBtn");
       const weekBtn = document.getElementById("weekBtn");
       const monthBtn = document.getElementById("monthBtn");
 
-      // Highlight active
       todayBtn.classList.remove("active-link");
       weekBtn.classList.remove("active-link");
       monthBtn.classList.remove("active-link");
 
-      if (period === 'today') {
+      let filtered = [];
+
+      if (type === 'today') {
         todayBtn.classList.add("active-link");
-        list.innerHTML = todayLogins.length
-          ? todayLogins.map(u => `<li>👤 ${u.username} (${u.fullname || ''}) - ${new Date(u.lastLogin).toLocaleString()}</li>`).join('')
-          : '<li>No logins today</li>';
-      } else if (period === 'week') {
+        filtered = allLogins.filter(u => {
+          const d = new Date(u.lastLogin);
+          const local = new Date(d.getTime() + offset);
+          return local.toISOString().split("T")[0] === todayStr;
+        });
+      } else if (type === 'week') {
         weekBtn.classList.add("active-link");
-        list.innerHTML = weekLogins.length
-          ? weekLogins.map(u => `<li>👤 ${u.username} (${u.fullname || ''}) - ${new Date(u.lastLogin).toLocaleString()}</li>`).join('')
-          : '<li>No logins this week</li>';
-      } else if (period === 'month') {
+        filtered = allLogins.filter(u => {
+          const d = new Date(u.lastLogin);
+          const local = new Date(d.getTime() + offset);
+          return local >= startOfWeek;
+        });
+      } else if (type === 'month') {
         monthBtn.classList.add("active-link");
-        list.innerHTML = monthLogins.length
-          ? monthLogins.map(u => `<li>👤 ${u.username} (${u.fullname || ''}) - ${new Date(u.lastLogin).toLocaleString()}</li>`).join('')
-          : '<li>No logins this month</li>';
+        filtered = allLogins.filter(u => {
+          const d = new Date(u.lastLogin);
+          const local = new Date(d.getTime() + offset);
+          return local >= startOfMonth;
+        });
       }
+
+      list.innerHTML = filtered.length
+        ? filtered.map(u =>
+            `<li>👤 ${u.username} (${u.fullname || ''}) - ${new Date(u.lastLogin).toLocaleString()}</li>`
+          ).join("")
+        : "<li>No users found for this period</li>";
     }
   </script>
 </body>
