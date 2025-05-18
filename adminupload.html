@@ -390,9 +390,14 @@ if (fileInputId === "customerFile") {
   });
 
   for (const key of allowed) {
-    const sanitizedKey = key.replace(/\./g, "_"); // sanitize from allowed list
-    filtered[sanitizedKey] = normalizedRow[key] !== undefined ? normalizedRow[key] : "";
-  }
+  const sanitizedKey = key.replace(/\./g, "_");
+
+  // Try original and sanitized key in normalized row
+  const originalVal = normalizedRow[key];
+  const dotFixedVal = normalizedRow[sanitizedKey];
+
+  filtered[sanitizedKey] = originalVal !== undefined ? originalVal : (dotFixedVal !== undefined ? dotFixedVal : "");
+}
 
   return sanitizeKeys(filtered); // sanitize any remaining dot-keys
 });
