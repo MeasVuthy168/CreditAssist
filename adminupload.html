@@ -392,11 +392,10 @@ if (fileInputId === "customerFile") {
   for (const key of allowed) {
   const sanitizedKey = key.replace(/\./g, "_");
 
-  // Try original and sanitized key in normalized row
-  const originalVal = normalizedRow[key];
-  const dotFixedVal = normalizedRow[sanitizedKey];
+  // Try to find value using original dot-format and sanitized format
+  const originalVal = normalizedRow[key] !== undefined ? normalizedRow[key] : normalizedRow[key.replace(/_/g, ".")];
 
-  filtered[sanitizedKey] = originalVal !== undefined ? originalVal : (dotFixedVal !== undefined ? dotFixedVal : "");
+  filtered[sanitizedKey] = originalVal !== undefined ? originalVal : "";
 }
 
   return sanitizeKeys(filtered); // sanitize any remaining dot-keys
