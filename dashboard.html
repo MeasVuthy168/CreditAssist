@@ -52,22 +52,18 @@
       border-radius: 8px;
       margin-bottom: 16px;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      font-size: 13px;
     }
     .card h3 {
       margin-top: 0;
+      font-size: 14px;
     }
     .card ul {
       padding-left: 20px;
       margin: 8px 0;
     }
     .card ul li {
-      font-size: 13px;
       margin-bottom: 4px;
-    }
-    .card span.clickable {
-      cursor: pointer;
-      color: #0d2d5c;
-      text-decoration: underline;
     }
     .hidden {
       display: none;
@@ -79,6 +75,13 @@
       font-size: 8px;
       font-family: monospace;
       white-space: pre-wrap;
+    }
+    .clickable {
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .clickable:hover {
+      text-decoration: underline;
     }
   </style>
 </head>
@@ -105,9 +108,9 @@
     <div class="card user-activity">
       <h3>🔐 User Activity Summary</h3>
       <ul>
-        <li><span class="clickable" onclick="toggleLoginDetail('today')">🟢 Active Today:</span> <span id="todayCount">0</span></li>
-        <li><span class="clickable" onclick="toggleLoginDetail('week')">🟢 Active This Week:</span> <span id="weekCount">0</span></li>
-        <li><span class="clickable" onclick="toggleLoginDetail('month')">🟢 Active This Month:</span> <span id="monthCount">0</span></li>
+        <li class="clickable" onclick="toggleLoginDetail('today')">🟢 Active Today: <span id="todayCount">0</span></li>
+        <li class="clickable" onclick="toggleLoginDetail('week')">📅 Active This Week: <span id="weekCount">0</span></li>
+        <li class="clickable" onclick="toggleLoginDetail('month')">🗓️ Active This Month: <span id="monthCount">0</span></li>
       </ul>
       <ul id="loginTodayDetailList"></ul>
       <ul id="loginThisWeekDetailList" class="hidden"></ul>
@@ -129,8 +132,8 @@
   <script>
     const baseURL = "https://secure-backend-tzj9.onrender.com";
 
-    function logDebug(message) {
-      document.getElementById("debugLog").textContent += `[${new Date().toLocaleTimeString()}] ${message}\n`;
+    function logDebug(msg) {
+      document.getElementById("debugLog").textContent += `[${new Date().toLocaleTimeString()}] ${msg}\n`;
     }
 
     function toggleLoginDetail(period) {
@@ -149,7 +152,12 @@
 
     document.addEventListener("DOMContentLoaded", () => {
       const token = sessionStorage.getItem("token");
-      if (!token) location.href = "login.html";
+      const user = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
+
+      if (!token || !user.username) {
+        location.href = "login.html";
+        return;
+      }
 
       loadUploadSummary();
       loadStatistics();
@@ -195,8 +203,9 @@
     }
 
     async function loadLoginDetails() {
-      const token = sessionStorage.getItem('token');
+      const token = sessionStorage.getItem("token");
 
+      // Today
       const todayRes = await fetch(`${baseURL}/api/admin/user-logins-today`, {
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -205,12 +214,15 @@
         `<li>👤 ${u.username} (${u.fullname || ''}) at ${new Date(u.lastLogin).toLocaleTimeString()}</li>`
       ).join('');
 
-      const allUsersRes = await fetch(`${baseURL}/api/admin/user-activity`, {
+      // All logins for week/month
+      const allRes = await fetch(`${baseURL}/api/admin/user-activity`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      const allUsers = await allUsersRes.json();
+      const allUsers = await allRes.json();
+
       const now = new Date();
-      const weekStart = new Date(now); weekStart.setDate(now.getDate() - now.getDay());
+      const weekStart = new Date(now);
+      weekStart.setDate(now.getDate() - now.getDay());
       const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
 
       const weekUsers = allUsers.filter(u => new Date(u.lastLogin) >= weekStart);
@@ -223,8 +235,7 @@
         `<li>👤 ${u.username} (${u.fullname || ''}) at ${new Date(u.lastLogin).toLocaleString()}</li>`
       ).join('');
 
-      // ✅ Show loginToday by default
-      toggleLoginDetail('today');
+      toggleLoginDetail("today"); // Show default view
     }
   </script>
 </body>
