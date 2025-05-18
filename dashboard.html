@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="km">
 <head>
@@ -126,6 +125,8 @@
 
   <!-- Script Section -->
   <script>
+    const baseURL = "https://secure-backend-tzj9.onrender.com";
+
     function logDebug(message) {
       const log = document.getElementById("debugLog");
       log.textContent += `[${new Date().toLocaleTimeString()}] ${message}\n`;
@@ -155,13 +156,12 @@
 
     async function loadUploadSummary() {
       try {
-        logDebug("Fetching /api/admin/upload-timestamps...");
-        const res = await fetch("/api/admin/upload-timestamps", {
+        logDebug("Fetching upload-timestamps...");
+        const res = await fetch(`${baseURL}/api/admin/upload-timestamps`, {
           headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` }
         });
         const data = await res.json();
         logDebug("✅ Upload Summary: " + JSON.stringify(data));
-
         const list = document.getElementById("uploadSummaryList");
         list.innerHTML = "";
         const keys = ["user", "customer", "turnover", "nbcos", "arreas"];
@@ -180,8 +180,8 @@
 
     async function loadStatistics() {
       try {
-        logDebug("Fetching /api/admin/stats...");
-        const res = await fetch("/api/admin/stats", {
+        logDebug("Fetching stats...");
+        const res = await fetch(`${baseURL}/api/admin/stats`, {
           headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` }
         });
         const stats = await res.json();
@@ -200,8 +200,8 @@
 
     async function loadUserActivity() {
       try {
-        logDebug("Fetching /api/admin/user-activity...");
-        const res = await fetch("/api/admin/user-activity", {
+        logDebug("Fetching user-activity...");
+        const res = await fetch(`${baseURL}/api/admin/user-activity`, {
           headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` }
         });
         const data = await res.json();
