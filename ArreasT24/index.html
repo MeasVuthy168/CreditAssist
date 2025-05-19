@@ -105,15 +105,7 @@
       font-size: 12px;
       line-height: 1.4;
     }
-    .action-section {
-      margin: 8px;
-      padding: 10px;
-      background: white;
-      display: flex;
-      justify-content: space-around;
-      gap: 8px;
-      border-radius: 12px;
-    }
+    
     .action-section button {
       padding: 8px 14px;
       border-radius: 6px;
@@ -249,27 +241,24 @@
 
   <div class="fixed-top-sections">
     <div class="filters-wrapper">
-      <div class="filter-section"><label for="branch">Branch</label><select id="branch"></select></div>
+      <div class="filter-section"><label for="branch">ឈ្មោះសាខា</label><select id="branch"></select></div>
       <div class="filter-section"><label for="teamLeader">អនុប្រធាន</label><select id="teamLeader"></select></div>
-      <div class="filter-section"><label for="coResponse">CO Response</label><select id="coResponse"></select></div>
-      <div class="filter-section"><label for="coId">CO ID</label><select id="coId"></select></div>
+      <div class="filter-section"><label for="coResponse">ភ្នាក់ងារតំបន់</label><select id="coResponse"></select></div>
+      <div class="filter-section"><label for="coId">ភ្នាក់ងារផ្ទាល់</label><select id="coId"></select></div>
       <div class="filter-section"><label for="osClassify">OS Classify</label><select id="osClassify"></select></div>
-      <div class="filter-section"><label for="occu">Occupation</label><select id="occu"></select></div>
-      <div class="filter-section"><label for="class">Class</label><select id="class"></select></div>
+      <div class="filter-section"><label for="occu">មុខរបរ</label><select id="occu"></select></div>
+      <div class="filter-section"><label for="class">ចំណាត់ថ្នាក់ឥណទាន</label><select id="class"></select></div>
       <div class="filter-section"><label for="pd">PD</label><select id="pd"></select></div>
     </div>
 
     <div class="summary-section">
       <div id="sumCount">👥 ចំនួនឥណទានសរុប: 0</div>
-      <div id="sumTotal">💰 ចំនួនសមតុល្យឥណទានសរុប: 0 USD</div>
+      <div id="sumTotal">💰 សមតុល្យឥណទានសរុប: 0 USD</div>
       <div id="latestDate">⏰ របាយការណ៍គិតត្រឹមថ្ងៃទី: -</div>
-    </div>
-
-    <div class="action-section">
       <button onclick="exportExcel()">Export Excel</button>
-      <button onclick="exportPDF()">Export PDF</button>
       <button onclick="resetFilters()">Clear Filter</button>
     </div>
+
 
     <div class="badge-wrapper" id="badgeFilters"></div>
   </div>
@@ -442,13 +431,13 @@ function updateDependentSelect(id, subset) {
 }
 
 function updateSummary(data) {
-  document.getElementById("sumCount").textContent = "ចំនួនឥណទានសរុប: " + data.length;
+  document.getElementById("sumCount").textContent = "👥 ចំនួនឥណទានសរុប: " + data.length;
   const total = data.reduce((sum, row) => sum + parseFloat(row.OS_USD || 0), 0);
-  document.getElementById("sumTotal").textContent = "ចំនួនសមតុល្យឥណទានសរុប: " + formatNumber(total) + " USD";
+  document.getElementById("sumTotal").textContent = "💰 សមតុល្យឥណទានសរុប: " + formatNumber(total) + " USD";
 
   const dates = data.map(d => new Date(d.Report_Date)).filter(d => !isNaN(d));
   const latest = dates.length > 0 ? new Date(Math.max(...dates)) : null;
-  document.getElementById("latestDate").textContent = "របាយការណ៍គិតត្រឹម: " + (latest ? latest.toLocaleDateString('en-GB') : "-");
+  document.getElementById("latestDate").textContent = "⏰ របាយការណ៍គិតត្រឹម: " + (latest ? latest.toLocaleDateString('en-GB') : "-");
 }
 
 function updateBadges(filters) {
