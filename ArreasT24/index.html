@@ -121,6 +121,24 @@
       font-family: 'Krasar', sans-serif;
       box-shadow: 0 1px 4px rgba(0,0,0,0.2);
     }
+    .badge-wrapper {
+      margin: 8px 12px -4px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .badge-filter {
+      background: #ffd700;
+      color: #002c5f;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+    }
+    .badge-filter span {
+      margin-left: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
     .table-container {
       margin: 8px;
       background: white;
@@ -150,10 +168,14 @@
     th.sort-asc::after {
       content: " ▲";
       font-size: 11px;
+      color: #888;
+      padding-left: 4px;
     }
     th.sort-desc::after {
       content: " ▼";
       font-size: 11px;
+      color: #888;
+      padding-left: 4px;
     }
     tr.normal { background-color: white; color: black; }
     tr.special { background-color: #fff9c4; color: black; }
@@ -213,7 +235,8 @@
 </head>
 <body>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="../notifications/checkNotification.js"></script>
 <script>
 let allData = [];
@@ -247,20 +270,17 @@ async function fetchData() {
   renderTable(allData);
   populateFilters(allData);
   updateSummary(allData);
+  updateBadges({});
 }
 
 function formatDate(dateStr) {
   const d = new Date(dateStr);
-  if (!isNaN(d)) {
-    return d.toLocaleDateString('en-GB');
-  }
-  return dateStr;
+  return !isNaN(d) ? d.toLocaleDateString('en-GB') : dateStr;
 }
 
 function formatNumber(value) {
   const num = parseFloat(value);
-  if (isNaN(num)) return value;
-  return num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  return isNaN(num) ? value : num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
 function renderTable(data) {
@@ -337,7 +357,6 @@ function populateFilters(data) {
 
 function applyFilters(data) {
   document.getElementById("spinner").style.display = "block";
-
   setTimeout(() => {
     const selected = {};
     for (const id in fields) {
@@ -351,9 +370,7 @@ function applyFilters(data) {
     }
 
     const filtered = data.filter(row =>
-      Object.entries(selected).every(([id, val]) => {
-        return val === "" || row[fields[id]] === val;
-      })
+      Object.entries(selected).every(([id, val]) => val === "" || row[fields[id]] === val)
     );
 
     renderTable(filtered);
@@ -363,10 +380,10 @@ function applyFilters(data) {
   }, 200);
 }
 
-function updateDependentSelect(id, dataSubset) {
+function updateDependentSelect(id, subset) {
   const field = fields[id];
   const sel = document.getElementById(id);
-  const values = [...new Set(dataSubset.map(d => d[field]).filter(Boolean))].sort();
+  const values = [...new Set(subset.map(d => d[field]).filter(Boolean))].sort();
   sel.innerHTML = "<option value=''>All</option>" + values.map(v => `<option>${v}</option>`).join("");
 }
 
@@ -401,9 +418,7 @@ function removeFilter(id) {
 }
 
 function resetFilters() {
-  for (const id in fields) {
-    document.getElementById(id).value = "";
-  }
+  for (const id in fields) document.getElementById(id).value = "";
   document.getElementById("searchInput").value = "";
   renderTable(allData);
   updateSummary(allData);
@@ -417,7 +432,7 @@ function exportExcel() {
 }
 
 function exportPDF() {
-  alert("PDF export not yet implemented.");
+  alert("PDF export not implemented yet.");
 }
 
 document.getElementById("searchInput").addEventListener("input", e => {
