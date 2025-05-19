@@ -1,3 +1,4 @@
+
 <!DOCTYPE html><html lang="km">
 <head>
   <meta charset="UTF-8">
@@ -42,8 +43,10 @@
     }
     .search-box {
       position: relative;
+      width: 160px;
     }
     .search-box input {
+      width: 100%;
       padding: 6px 30px 6px 10px;
       border-radius: 20px;
       border: none;
@@ -64,12 +67,15 @@
     }
     .filters-wrapper {
       margin-top: 60px;
+      margin-left: 10px;
+      margin-right: 10px;
       padding: 16px;
       background: white;
       color: black;
       display: flex;
       justify-content: space-between;
       flex-wrap: wrap;
+      border-radius: 12px;
     }
     .filter-section {
       display: flex;
@@ -149,7 +155,7 @@
 <body>
   <div class="header-bar">
     <button class="back-icon" onclick="window.location.href='../index.html'">←</button>
-    <div class="header-title">បញ្ជីអតិថិជនជំពាក់ T24</div>
+    <div class="header-title">ឥណទានយឺតយ៉ាវ</div>
     <div class="search-box">
       <input type="text" id="searchInput" placeholder="ស្វែងរកឈ្មោះ ឬ CIF">
       <button class="search-icon" id="searchButton">🔍</button>
