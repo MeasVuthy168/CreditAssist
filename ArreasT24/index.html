@@ -69,7 +69,6 @@
       background: white;
       color: black;
       border-radius: 12px;
-      box-sizing: border-box;
       animation: fadeIn 0.4s ease-in;
     }
     @keyframes fadeIn {
@@ -233,12 +232,62 @@
     }
   </style>
 </head>
-<body>
 
+  <body>
+  <div class="header-bar">
+    <button class="back-icon" onclick="location.href='../index.html'">←</button>
+    <div class="header-title">ឥណទានយឺតយ៉ាវ</div>
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="ស្វែងរកឈ្មោះ ឬ CIF" />
+    </div>
+  </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script src="../notifications/checkNotification.js"></script>
-<script>
+  <div class="fixed-top-sections">
+    <div class="filters-wrapper">
+      <div class="filter-section"><label for="branch">Branch</label><select id="branch"></select></div>
+      <div class="filter-section"><label for="teamLeader">Team Leader</label><select id="teamLeader"></select></div>
+      <div class="filter-section"><label for="coResponse">CO Response</label><select id="coResponse"></select></div>
+      <div class="filter-section"><label for="coId">CO ID</label><select id="coId"></select></div>
+      <div class="filter-section"><label for="osClassify">OS Classify</label><select id="osClassify"></select></div>
+      <div class="filter-section"><label for="occu">Occupation</label><select id="occu"></select></div>
+      <div class="filter-section"><label for="class">Class</label><select id="class"></select></div>
+      <div class="filter-section"><label for="pd">PD</label><select id="pd"></select></div>
+    </div>
+
+    <div class="summary-section">
+      <div id="sumCount">ចំនួនឥណទានសរុប: 0</div>
+      <div id="sumTotal">ចំនួនសមតុល្យឥណទានសរុប: 0 USD</div>
+      <div id="latestDate">របាយការណ៍គិតត្រឹម: -</div>
+    </div>
+
+    <div class="action-section">
+      <button onclick="exportExcel()">Export Excel</button>
+      <button onclick="exportPDF()">Export PDF</button>
+      <button onclick="resetFilters()">Clear Filter</button>
+    </div>
+
+    <div class="badge-wrapper" id="badgeFilters"></div>
+  </div>
+
+  <div class="table-container">
+    <div id="spinner" class="spinner" style="display: none;"></div>
+    <table id="arreasTable">
+      <thead id="tableHead"></thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
+
+  <div class="bottom-bar">
+    <button class="bottom-btn" onclick="location.href='../index.html'"><img src="../icons/Home.png" width="24"><div>Home</div></button>
+    <button class="bottom-btn" onclick="location.href='../Setting/index.html'"><img src="../icons/Setting.png" width="24"><div>Setting</div></button>
+    <button class="bottom-btn" onclick="location.href='../notifications/index.html'"><div style="position: relative;"><img src="../icons/Notification.png" width="24"><span id="notif-badge" class="badge" style="display:none;">●</span></div><div>Notification</div></button>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="../notifications/checkNotification.js"></script>
+ 
+    
+    <script>
 let allData = [];
 let currentSortKey = null;
 let currentSortDir = 'asc';
