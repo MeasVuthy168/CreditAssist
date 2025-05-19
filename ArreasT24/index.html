@@ -1,5 +1,5 @@
-<!DOCTYPE html>
-<html lang="km">
+
+<!DOCTYPE html><html lang="km">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
@@ -54,6 +54,12 @@
       background-color: #fff;
       color: #333;
     }
+    .fixed-top-sections {
+      position: sticky;
+      top: 56px;
+      z-index: 999;
+      background: #1c2331;
+    }
     .filters-wrapper, .summary-section, .action-section {
       margin: 8px;
       padding: 10px 12px;
@@ -100,16 +106,31 @@
       font-family: 'Krasar', sans-serif;
       box-shadow: 0 1px 4px rgba(0,0,0,0.2);
     }
-    .table-wrapper {
-      overflow-x: auto;
+    .badge-wrapper {
+      margin: 10px 12px -6px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .badge-filter {
+      background: #ffd700;
+      color: #002c5f;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+    }
+    .table-container {
       margin: 8px;
+      background: white;
+      color: black;
+      border-radius: 12px;
+      padding: 10px;
+      overflow-x: auto;
     }
     table {
       width: 100%;
       border-collapse: collapse;
       font-size: 12px;
-      background: white;
-      color: black;
     }
     th, td {
       border: 1px solid #ccc;
@@ -119,20 +140,32 @@
     th {
       background-color: #f0f0f0;
       position: sticky;
-      top: 172px;
-      z-index: 10;
+      top: 200px;
+      z-index: 2;
     }
     tr.normal { background-color: white; color: black; }
     tr.special { background-color: #fff9c4; color: black; }
     tr.substandard { background-color: #ffcdd2; color: black; }
-    tr.defaulted { background-color: #ef5350; color: white; }
+    tr.Doubtful { background-color: #ef5350; color: white; }
     tr.loss { background-color: #b71c1c; color: white; }
-    tr.highlighted {
+    .highlighted {
       animation: flashRow 0.8s ease;
     }
     @keyframes flashRow {
       0%   { background-color: #ffd700; }
       100% { background-color: inherit; }
+    }
+    .spinner {
+      width: 30px;
+      height: 30px;
+      border: 4px solid rgba(255,255,255,0.3);
+      border-top-color: #ffd700;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 40px auto;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
     }
     .bottom-bar {
       position: fixed;
@@ -174,49 +207,52 @@
       <input type="text" id="searchInput" placeholder="ស្វែងរកឈ្មោះ ឬ CIF">
     </div>
   </div>
-
-  <div class="filters-wrapper">
-    <div class="filter-section">
-      <label for="teamLeader">Team Leader</label>
-      <select id="teamLeader"><option value="">All</option></select>
-      <label for="branch">Branch</label>
-      <select id="branch"><option value="">All</option></select>
-      <label for="coResponse">CO Response</label>
-      <select id="coResponse"><option value="">All</option></select>
-      <label for="coId">CO ID</label>
-      <select id="coId"><option value="">All</option></select>
+  <div class="fixed-top-sections">
+    <div class="filters-wrapper">
+      <div class="filter-section">
+        <label for="branch">Branch</label>
+        <select id="branch"></select>
+        <label for="teamLeader">Team Leader</label>
+        <select id="teamLeader"></select>
+      </div>
+      <div class="filter-section">
+        <label for="coResponse">CO Response</label>
+        <select id="coResponse"></select>
+        <label for="coId">CO ID</label>
+        <select id="coId"></select>
+      </div>
+      <div class="filter-section">
+        <label for="osClassify">OS Classify</label>
+        <select id="osClassify"></select>
+        <label for="occu">Occupation</label>
+        <select id="occu"></select>
+      </div>
+      <div class="filter-section">
+        <label for="class">Class</label>
+        <select id="class"></select>
+        <label for="pd">PD</label>
+        <select id="pd"></select>
+      </div>
     </div>
-    <div class="filter-section">
-      <label for="osClassify">OS Classify</label>
-      <select id="osClassify"><option value="">All</option></select>
-      <label for="occu">Occupation</label>
-      <select id="occu"><option value="">All</option></select>
-      <label for="class">Class</label>
-      <select id="class"><option value="">All</option></select>
-      <label for="pd">PD</label>
-      <select id="pd"><option value="">All</option></select>
+    <div class="summary-section">
+      <div id="sumCount">ចំនួនឥណទានសរុប: 0</div>
+      <div id="sumTotal">ចំនួនសមតុល្យឥណទានសរុប: 0 USD</div>
+      <div id="latestDate">របាយការណ៍គិតត្រឹម: -</div>
     </div>
+    <div class="action-section">
+      <button onclick="exportExcel()">Export Excel</button>
+      <button onclick="exportPDF()">Export PDF</button>
+      <button onclick="resetFilters()">Clear Filter</button>
+    </div>
+    <div class="badge-wrapper" id="badgeFilters"></div>
   </div>
-
-  <div class="summary-section" id="summaryBox">
-    <div id="sumCount">ចំនួនឥណទានសរុប: 0</div>
-    <div id="sumTotal">ចំនួនសមតុល្យឥណទានសរុប: 0 USD</div>
-    <div id="latestDate">របាយការណ៍គិតត្រឹម: -</div>
-  </div>
-
-  <div class="action-section">
-    <button onclick="exportExcel()">Export Excel</button>
-    <button onclick="exportPDF()">Export PDF</button>
-    <button onclick="resetFilters()">Clear Filter</button>
-  </div>
-
-  <div class="table-wrapper">
+  <div class="table-container">
+    <div id="spinner" class="spinner" style="display:none;"></div>
     <table id="arreasTable">
       <thead id="tableHead"></thead>
       <tbody id="tableBody"></tbody>
     </table>
   </div>
-
   <div class="bottom-bar">
     <button class="bottom-btn" onclick="location.href='../index.html'">
       <img src="../icons/Home.png" width="24" height="24">
@@ -234,148 +270,186 @@
       <div>Notification</div>
     </button>
   </div>
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="../notifications/checkNotification.js"></script>
+<script>
+let allData = [];
+const fields = {
+  branch: "Branch",
+  teamLeader: "Team_Leader",
+  coResponse: "CO_Response",
+  coId: "CO_ID",
+  osClassify: "OS_Classify",
+  occu: "Occu",
+  class: "Class",
+  pd: "PD"
+};
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  <script src="../notifications/checkNotification.js"></script>
-  <script>
-    let allData = [];
+window.addEventListener("DOMContentLoaded", () => {
+  checkNotification();
+  fetchData();
+  setupAutoLogoutEvents();
+});
 
-    window.addEventListener("DOMContentLoaded", () => {
-      checkNotification();
-      fetchData();
-      setupAutoLogoutEvents();
+async function fetchData() {
+  document.getElementById("spinner").style.display = "block";
+  const res = await fetch("https://secure-backend-tzj9.onrender.com/api/arreas-t24");
+  allData = await res.json();
+  document.getElementById("spinner").style.display = "none";
+  renderTable(allData);
+  populateFilters(allData);
+  updateSummary(allData);
+  updateBadges({});
+}
+
+function renderTable(data) {
+  const head = document.getElementById("tableHead");
+  const body = document.getElementById("tableBody");
+  head.innerHTML = "";
+  body.innerHTML = "";
+
+  if (data.length === 0) {
+    body.innerHTML = "<tr><td colspan='99'>គ្មានទិន្នន័យ</td></tr>";
+    return;
+  }
+
+  const keys = Object.keys(data[0]).filter(k => k !== "_id" && k !== "__v" && k !== "Report_Date");
+  const headRow = document.createElement("tr");
+  headRow.innerHTML = "<th>No</th>" + keys.map(k => `<th>${k}</th>`).join("");
+  head.appendChild(headRow);
+
+  data.forEach((row, idx) => {
+    const tr = document.createElement("tr");
+    const classVal = (row.Class || '').toLowerCase();
+    if (classVal.includes("loss")) tr.className = "loss";
+    else if (classVal.includes("default")) tr.className = "defaulted";
+    else if (classVal.includes("sub")) tr.className = "substandard";
+    else if (classVal.includes("special")) tr.className = "special";
+    else tr.className = "normal";
+
+    tr.innerHTML = `<td>${idx + 1}</td>` + keys.map(k => `<td>${row[k] || ""}</td>`).join("");
+    tr.addEventListener("click", () => {
+      tr.classList.add("highlighted");
+      setTimeout(() => tr.classList.remove("highlighted"), 800);
     });
+    body.appendChild(tr);
+  });
+}
 
-    async function fetchData() {
-      const res = await fetch("https://secure-backend-tzj9.onrender.com/api/arreas-t24");
-      allData = await res.json();
-      renderTable(allData);
-      populateFilters(allData);
-      updateSummary(allData);
+function populateFilters(data) {
+  for (const id in fields) {
+    const select = document.getElementById(id);
+    const values = [...new Set(data.map(d => d[fields[id]]).filter(Boolean))].sort();
+    select.innerHTML = "<option value=''>All</option>" + values.map(v => `<option>${v}</option>`).join("");
+    select.addEventListener("change", () => applyFilters(data));
+  }
+}
+
+function applyFilters(data) {
+  document.getElementById("spinner").style.display = "block";
+  setTimeout(() => {
+    const selected = {};
+    for (const id in fields) {
+      selected[id] = document.getElementById(id).value;
     }
 
-    function renderTable(data) {
-      const head = document.getElementById("tableHead");
-      const body = document.getElementById("tableBody");
-      head.innerHTML = "";
-      body.innerHTML = "";
-
-      if (data.length === 0) {
-        body.innerHTML = "<tr><td colspan='99'>គ្មានទិន្នន័យ</td></tr>";
-        return;
-      }
-
-      const columns = Object.keys(data[0]).filter(c => c !== "_id" && c !== "Report_Date");
-      const headRow = document.createElement("tr");
-      headRow.innerHTML = "<th>No</th>" + columns.map(c => `<th>${c}</th>`).join("");
-      head.appendChild(headRow);
-
-      data.forEach((row, index) => {
-        const tr = document.createElement("tr");
-        const classVal = (row.Class || '').toLowerCase();
-        if (classVal.includes("loss")) tr.className = "loss";
-        else if (classVal.includes("default")) tr.className = "defaulted";
-        else if (classVal.includes("sub")) tr.className = "substandard";
-        else if (classVal.includes("special")) tr.className = "special";
-        else tr.className = "normal";
-
-        tr.innerHTML = `<td>${index + 1}</td>` + columns.map(c => `<td>${row[c] || ""}</td>`).join("");
-        tr.addEventListener("click", () => {
-          tr.classList.add("highlighted");
-          setTimeout(() => tr.classList.remove("highlighted"), 800);
-        });
-        body.appendChild(tr);
-      });
+    if (selected.branch) {
+      const filtered = data.filter(d => d.Branch === selected.branch);
+      updateDependentSelect("coResponse", filtered);
+      updateDependentSelect("coId", filtered);
     }
 
-    function updateSummary(data) {
-      document.getElementById("sumCount").textContent = "ចំនួនឥណទានសរុប: " + data.length;
-      const sum = data.reduce((total, row) => total + parseFloat(row.OS_USD || 0), 0);
-      document.getElementById("sumTotal").textContent = "ចំនួនសមតុល្យឥណទានសរុប: " + sum.toLocaleString() + " USD";
-      const dates = data.map(d => new Date(d.Report_Date)).filter(d => !isNaN(d));
-      const maxDate = dates.length > 0 ? new Date(Math.max(...dates)) : null;
-      document.getElementById("latestDate").textContent = "របាយការណ៍គិតត្រឹម: " + (maxDate ? maxDate.toLocaleDateString('en-GB') : "-");
-    }
+    const filtered = data.filter(row =>
+      Object.entries(selected).every(([id, val]) => {
+        return val === "" || row[fields[id]] === val;
+      })
+    );
 
-    function populateFilters(data) {
-      const fields = {
-        teamLeader: "Team_Leader",
-        branch: "Branch",
-        coResponse: "CO_Response",
-        coId: "CO_ID",
-        osClassify: "OS_Classify",
-        occu: "Occu",
-        class: "Class",
-        pd: "PD"
-      };
+    renderTable(filtered);
+    updateSummary(filtered);
+    updateBadges(selected);
+    document.getElementById("spinner").style.display = "none";
+  }, 200);
+}
 
-      for (const id in fields) {
-        const select = document.getElementById(id);
-        const values = [...new Set(data.map(item => item[fields[id]]).filter(Boolean))].sort();
-        values.forEach(val => {
-          const opt = document.createElement("option");
-          opt.value = val;
-          opt.textContent = val;
-          select.appendChild(opt);
-        });
-        select.addEventListener("change", () => applyFilters(data, fields));
-      }
-    }
+function updateDependentSelect(id, dataSubset) {
+  const field = fields[id];
+  const select = document.getElementById(id);
+  const values = [...new Set(dataSubset.map(d => d[field]).filter(Boolean))].sort();
+  select.innerHTML = "<option value=''>All</option>" + values.map(v => `<option>${v}</option>`).join("");
+}
 
-    function applyFilters(data, fields) {
-      const filtered = data.filter(item =>
-        Object.entries(fields).every(([id, field]) => {
-          const val = document.getElementById(id).value;
-          return val === "" || item[field] === val;
-        })
-      );
-      renderTable(filtered);
-      updateSummary(filtered);
-    }
+function updateSummary(data) {
+  document.getElementById("sumCount").textContent = "ចំនួនឥណទានសរុប: " + data.length;
+  const total = data.reduce((sum, row) => sum + parseFloat(row.OS_USD || 0), 0);
+  document.getElementById("sumTotal").textContent = "ចំនួនសមតុល្យឥណទានសរុប: " + total.toLocaleString() + " USD";
+  const dates = data.map(d => new Date(d.Report_Date)).filter(d => !isNaN(d));
+  const latest = dates.length > 0 ? new Date(Math.max(...dates)) : null;
+  document.getElementById("latestDate").textContent = "របាយការណ៍គិតត្រឹម: " + (latest ? latest.toLocaleDateString('en-GB') : "-");
+}
 
-    function resetFilters() {
-      document.querySelectorAll("select").forEach(select => select.value = "");
-      document.getElementById("searchInput").value = "";
-      renderTable(allData);
-      updateSummary(allData);
+function updateBadges(filters) {
+  const box = document.getElementById("badgeFilters");
+  box.innerHTML = "";
+  for (const id in filters) {
+    const val = filters[id];
+    if (val) {
+      const span = document.createElement("span");
+      span.className = "badge-filter";
+      span.textContent = `${id}: ${val}`;
+      box.appendChild(span);
     }
+  }
+}
 
-    document.getElementById("searchInput").addEventListener("input", e => {
-      const term = e.target.value.toLowerCase();
-      const filtered = allData.filter(row =>
-        (row.Customer || "").toLowerCase().includes(term) ||
-        (row.CIF || "").toLowerCase().includes(term)
-      );
-      renderTable(filtered);
-      updateSummary(filtered);
-    });
+function resetFilters() {
+  for (const id in fields) {
+    document.getElementById(id).value = "";
+  }
+  document.getElementById("searchInput").value = "";
+  renderTable(allData);
+  updateSummary(allData);
+  updateBadges({});
+}
 
-    function exportExcel() {
-      const table = document.getElementById("arreasTable");
-      const wb = XLSX.utils.table_to_book(table, { sheet: "Arreas T24" });
-      XLSX.writeFile(wb, "ArreasT24.xlsx");
-    }
+function exportExcel() {
+  const table = document.getElementById("arreasTable");
+  const wb = XLSX.utils.table_to_book(table, { sheet: "Arreas T24" });
+  XLSX.writeFile(wb, "ArreasT24.xlsx");
+}
 
-    function exportPDF() {
-      alert("PDF export not implemented yet.");
-    }
+function exportPDF() {
+  alert("PDF export not implemented yet.");
+}
 
-    const AUTO_LOGOUT_MINUTES = 5;
-    let logoutTimer;
-    function resetLogoutTimer() {
-      clearTimeout(logoutTimer);
-      logoutTimer = setTimeout(() => {
-        sessionStorage.clear();
-        alert("Session expired. Please login again.");
-        window.location.href = "../login.html";
-      }, AUTO_LOGOUT_MINUTES * 60000);
-    }
-    function setupAutoLogoutEvents() {
-      ['mousemove', 'mousedown', 'keydown', 'touchstart', 'touchmove', 'scroll'].forEach(evt =>
-        document.addEventListener(evt, resetLogoutTimer, true)
-      );
-      resetLogoutTimer();
-    }
-  </script>
+document.getElementById("searchInput").addEventListener("input", e => {
+  const term = e.target.value.toLowerCase();
+  const filtered = allData.filter(row =>
+    (row.Customer || "").toLowerCase().includes(term) ||
+    (row.CIF || "").toLowerCase().includes(term)
+  );
+  renderTable(filtered);
+  updateSummary(filtered);
+});
+
+// Auto logout
+const AUTO_LOGOUT_MINUTES = 5;
+let logoutTimer;
+function resetLogoutTimer() {
+  clearTimeout(logoutTimer);
+  logoutTimer = setTimeout(() => {
+    sessionStorage.clear();
+    alert("Session expired. Please login again.");
+    window.location.href = "../login.html";
+  }, AUTO_LOGOUT_MINUTES * 60000);
+}
+function setupAutoLogoutEvents() {
+  ['mousemove', 'mousedown', 'keydown', 'touchstart', 'touchmove', 'scroll'].forEach(evt =>
+    document.addEventListener(evt, resetLogoutTimer, true)
+  );
+  resetLogoutTimer();
+}
+</script>
 </body>
 </html>
