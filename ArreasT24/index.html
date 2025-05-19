@@ -1,9 +1,9 @@
-      
-    <!DOCTYPE html>
+
+<!DOCTYPE html>
 <html lang="km">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
   <title>Arreas T24</title>
   <meta name="theme-color" content="#0d2d5c" />
   <style>
@@ -55,47 +55,40 @@
       background-color: #fff;
       color: #333;
     }
-
     .fixed-top-sections {
       position: sticky;
       top: 56px;
       z-index: 999;
       background: #1c2331;
     }
-
     .filters-wrapper {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 6px;
+      gap: 8px;
       margin: 8px;
-      padding: 10px 12px;
+      padding: 10px;
       background: white;
       color: black;
       border-radius: 12px;
       box-sizing: border-box;
     }
-
     .filter-section {
       display: flex;
       flex-direction: column;
-      gap: 2px;
     }
-
     .filter-section label {
       font-size: 11px;
       margin-bottom: 2px;
     }
-
     .filter-section select {
       padding: 4px 6px;
       border-radius: 6px;
       border: 1px solid #ccc;
       font-size: 12px;
     }
-
     .summary-section {
       margin: 8px;
-      padding: 10px 12px;
+      padding: 10px;
       background: white;
       color: black;
       display: flex;
@@ -104,17 +97,15 @@
       font-size: 13px;
       line-height: 1.4;
     }
-
     .action-section {
       margin: 8px;
-      padding: 10px 12px;
+      padding: 10px;
       background: white;
       display: flex;
       justify-content: space-around;
       gap: 8px;
       border-radius: 12px;
     }
-
     .action-section button {
       padding: 8px 14px;
       border-radius: 6px;
@@ -126,72 +117,36 @@
       font-family: 'Krasar', sans-serif;
       box-shadow: 0 1px 4px rgba(0,0,0,0.2);
     }
-
-    .badge-wrapper {
-      margin: 10px 12px -6px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-
-    .badge-filter {
-      background: #ffd700;
-      color: #002c5f;
-      padding: 4px 10px;
-      border-radius: 12px;
-      font-size: 12px;
-    }
-
-    .badge-filter span {
-      margin-left: 6px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
     .table-container {
       margin: 8px;
       background: white;
       color: black;
       border-radius: 12px;
       padding: 10px;
-      overflow: auto;
+      overflow-x: auto;
       max-height: 60vh;
     }
-
     table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 12px;
+      font-size: 11px;
     }
-
     th, td {
       border: 1px solid #ccc;
-      padding: 6px 8px;
+      padding: 4px 6px;
       white-space: nowrap;
     }
-
     th {
       background-color: #f0f0f0;
       position: sticky;
       top: 0;
       z-index: 3;
     }
-
     tr.normal { background-color: white; color: black; }
     tr.special { background-color: #fff9c4; color: black; }
     tr.substandard { background-color: #ffcdd2; color: black; }
     tr.defaulted { background-color: #ef5350; color: white; }
     tr.loss { background-color: #b71c1c; color: white; }
-
-    .highlighted {
-      animation: flashRow 0.8s ease;
-    }
-
-    @keyframes flashRow {
-      0%   { background-color: #ffd700; }
-      100% { background-color: inherit; }
-    }
-
     .spinner {
       width: 30px;
       height: 30px;
@@ -201,11 +156,9 @@
       animation: spin 0.8s linear infinite;
       margin: 40px auto;
     }
-
     @keyframes spin {
       to { transform: rotate(360deg); }
     }
-
     .bottom-bar {
       position: fixed;
       bottom: 0;
@@ -216,7 +169,6 @@
       justify-content: space-around;
       align-items: center;
     }
-
     .bottom-btn {
       color: white;
       background: none;
@@ -226,7 +178,6 @@
       align-items: center;
       font-size: 11px;
     }
-
     .badge {
       position: absolute;
       top: -4px;
@@ -272,8 +223,6 @@
       <button onclick="exportPDF()">Export PDF</button>
       <button onclick="resetFilters()">Clear Filter</button>
     </div>
-
-    <div class="badge-wrapper" id="badgeFilters"></div>
   </div>
 
   <div class="table-container">
@@ -289,7 +238,6 @@
     <button class="bottom-btn" onclick="location.href='../Setting/index.html'"><img src="../icons/Setting.png" width="24" height="24"><div>Setting</div></button>
     <button class="bottom-btn" onclick="location.href='../notifications/index.html'"><div style="position: relative;"><img src="../icons/Notification.png" width="24" height="24"><span id="notif-badge" class="badge" style="display: none;">●</span></div><div>Notification</div></button>
   </div>
- 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="../notifications/checkNotification.js"></script>
@@ -323,6 +271,17 @@ async function fetchData() {
   updateBadges({});
 }
 
+function formatDate(dateStr) {
+  const date = new Date(dateStr);
+  if (!isNaN(date)) {
+    const d = date.getDate().toString().padStart(2, '0');
+    const m = (date.getMonth() + 1).toString().padStart(2, '0');
+    const y = date.getFullYear().toString().slice(-2);
+    return `${d}/${m}/${y}`;
+  }
+  return dateStr;
+}
+
 function renderTable(data) {
   const head = document.getElementById("tableHead");
   const body = document.getElementById("tableBody");
@@ -348,11 +307,17 @@ function renderTable(data) {
     else if (classVal.includes("special")) tr.className = "special";
     else tr.className = "normal";
 
-    tr.innerHTML = `<td>${idx + 1}</td>` + keys.map(k => `<td>${row[k] || ""}</td>`).join("");
+    tr.innerHTML = `<td>${idx + 1}</td>` + keys.map(k => {
+      let val = row[k] || "";
+      if (k === "DisDate") val = formatDate(val);
+      return `<td>${val}</td>`;
+    }).join("");
+
     tr.addEventListener("click", () => {
       tr.classList.add("highlighted");
       setTimeout(() => tr.classList.remove("highlighted"), 800);
     });
+
     body.appendChild(tr);
   });
 }
@@ -458,7 +423,6 @@ document.getElementById("searchInput").addEventListener("input", e => {
   updateSummary(filtered);
 });
 
-// Auto logout
 const AUTO_LOGOUT_MINUTES = 5;
 let logoutTimer;
 function resetLogoutTimer() {
@@ -475,7 +439,6 @@ function setupAutoLogoutEvents() {
   );
   resetLogoutTimer();
 }
-  
-</script>    
+</script>
 </body>
 </html>
