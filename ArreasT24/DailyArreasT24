@@ -1,0 +1,251 @@
+<!DOCTYPE html><html lang="km">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arreas T24 Report</title>
+  <meta name="theme-color" content="#0d2d5c">
+  <style>
+    @font-face {
+      font-family: 'Krasar';
+      src: url('../Krasar-Regular.ttf') format('truetype');
+    }
+    body {
+      font-family: 'Krasar', Arial, sans-serif;
+      margin: 0;
+      background-color: #1c2331;
+      color: white;
+      padding-bottom: 60px;
+    }
+    .header-bar {
+      background-color: #0d2d5c;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+    }
+    .header-title {
+      font-size: 16px;
+    }
+    .search-box input {
+      padding: 6px 12px;
+      border-radius: 20px;
+      border: none;
+      font-size: 13px;
+    }
+    .filters-wrapper {
+      margin-top: 60px;
+      padding: 16px;
+      background: white;
+      color: black;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+    .filter-section {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      margin: 8px;
+    }
+    .filter-section label {
+      margin: 4px 0;
+      font-size: 13px;
+    }
+    .filter-section select {
+      padding: 6px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+    .table-wrapper {
+      overflow-x: auto;
+      margin: 16px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      color: black;
+      font-size: 12px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 6px 8px;
+      white-space: nowrap;
+    }
+    th {
+      background-color: #f0f0f0;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+    .bottom-bar {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      height: 56px;
+      background: #0d2d5c;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+    }
+    .bottom-btn {
+      color: white;
+      background: none;
+      border: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-size: 11px;
+    }
+  </style>
+</head>
+<body>
+  <div class="header-bar">
+    <div class="header-title">បញ្ជីអតិថិជនជំពាក់ T24</div>
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="ស្វែងរកឈ្មោះ ឬ CIF">
+    </div>
+  </div>  <div class="filters-wrapper">
+    <div class="filter-section">
+      <label for="teamLeader">Team Leader</label>
+      <select id="teamLeader"><option value="">All</option></select>
+      <label for="branch">Branch</label>
+      <select id="branch"><option value="">All</option></select>
+      <label for="coResponse">CO Response</label>
+      <select id="coResponse"><option value="">All</option></select>
+      <label for="coId">CO ID</label>
+      <select id="coId"><option value="">All</option></select>
+    </div>
+    <div class="filter-section">
+      <label for="osClassify">OS Classify</label>
+      <select id="osClassify"><option value="">All</option></select>
+      <label for="occu">Occupation</label>
+      <select id="occu"><option value="">All</option></select>
+      <label for="class">Class</label>
+      <select id="class"><option value="">All</option></select>
+      <label for="pd">PD</label>
+      <select id="pd"><option value="">All</option></select>
+    </div>
+  </div>  <div class="table-wrapper">
+    <table id="arreasTable">
+      <thead id="tableHead"></thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>  <div class="bottom-bar">
+    <button class="bottom-btn" onclick="location.href='../index.html'">
+      <img src="../icons/Home.png" width="24" height="24">
+      <div>Home</div>
+    </button>
+    <button class="bottom-btn" onclick="location.href='../Setting/index.html'">
+      <img src="../icons/Setting.png" width="24" height="24">
+      <div>Setting</div>
+    </button>
+    <button class="bottom-btn" onclick="location.href='../notifications/index.html'">
+      <img src="../icons/Notification.png" width="24" height="24">
+      <div>Notification</div>
+    </button>
+  </div>  <script>
+    let allData = [];
+
+    async function fetchData() {
+      const res = await fetch("https://secure-backend-tzj9.onrender.com/api/arreas-t24");
+      allData = await res.json();
+      renderTable(allData);
+      populateFilters(allData);
+    }
+
+    function renderTable(data) {
+      const head = document.getElementById("tableHead");
+      const body = document.getElementById("tableBody");
+      head.innerHTML = "";
+      body.innerHTML = "";
+
+      if (data.length === 0) {
+        body.innerHTML = "<tr><td colspan='99'>គ្មានទិន្នន័យ</td></tr>";
+        return;
+      }
+
+      const columns = Object.keys(data[0]);
+      const headRow = document.createElement("tr");
+      columns.forEach(col => {
+        const th = document.createElement("th");
+        th.textContent = col;
+        headRow.appendChild(th);
+      });
+      head.appendChild(headRow);
+
+      data.forEach(row => {
+        const tr = document.createElement("tr");
+        columns.forEach(col => {
+          const td = document.createElement("td");
+          td.textContent = row[col] || "";
+          tr.appendChild(td);
+        });
+        body.appendChild(tr);
+      });
+    }
+
+    function populateFilters(data) {
+      const fields = {
+        teamLeader: "Team_Leader",
+        branch: "Branch",
+        coResponse: "CO_Response",
+        coId: "CO_ID",
+        osClassify: "OS_Classify",
+        occu: "Occu",
+        class: "Class",
+        pd: "PD"
+      };
+
+      for (const id in fields) {
+        const select = document.getElementById(id);
+        const values = [...new Set(data.map(item => item[fields[id]]).filter(Boolean))].sort();
+        values.forEach(val => {
+          const opt = document.createElement("option");
+          opt.value = val;
+          opt.textContent = val;
+          select.appendChild(opt);
+        });
+        select.addEventListener("change", applyFilters);
+      }
+    }
+
+    function applyFilters() {
+      const filters = {
+        teamLeader: document.getElementById("teamLeader").value,
+        branch: document.getElementById("branch").value,
+        coResponse: document.getElementById("coResponse").value,
+        coId: document.getElementById("coId").value,
+        osClassify: document.getElementById("osClassify").value,
+        occu: document.getElementById("occu").value,
+        class: document.getElementById("class").value,
+        pd: document.getElementById("pd").value
+      };
+
+      const filtered = allData.filter(item => {
+        return Object.entries(filters).every(([key, value]) => {
+          return value === "" || item[key.replace(/([A-Z])/g, '_$1').toUpperCase()] === value;
+        });
+      });
+
+      renderTable(filtered);
+    }
+
+    document.getElementById("searchInput").addEventListener("input", (e) => {
+      const term = e.target.value.toLowerCase();
+      const filtered = allData.filter(item => {
+        return (item.Customer || "").toLowerCase().includes(term) ||
+               (item.CIF || "").toLowerCase().includes(term);
+      });
+      renderTable(filtered);
+    });
+
+    window.onload = fetchData;
+  </script></body>
+</html>
