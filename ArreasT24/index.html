@@ -61,17 +61,33 @@
       background: #1c2331;
     }
     .filters-wrapper {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 8px;
-  margin: 8px;
-  padding: 10px;
-  background: white;
-  color: black;
-  border-radius: 12px;
-  box-sizing: border-box;
-  animation: fadeIn 0.4s ease-in;
-}
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 8px;
+      margin: 8px;
+      padding: 10px;
+      padding-right: 40px;
+      background: white;
+      color: black;
+      border-radius: 12px;
+      box-sizing: border-box;
+      position: relative;
+      animation: fadeIn 0.4s ease-in;
+    }
+    .clear-icon {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: #ffd700;
+      border: none;
+      border-radius: 50%;
+      font-weight: bold;
+      font-size: 16px;
+      color: #002c5f;
+      width: 28px;
+      height: 28px;
+      cursor: pointer;
+    }
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(-5px); }
       to { opacity: 1; transform: translateY(0); }
@@ -80,7 +96,6 @@
       display: flex;
       flex-direction: column;
     }
-    
     .filter-section label {
       font-size: 11px;
       margin-bottom: 2px;
@@ -90,13 +105,13 @@
       border-radius: 6px;
       border: 1px solid #ccc;
       font-size: 11px;
-  max-width: 100%;
-  text-overflow: ellipsis;
-  overflow: hidden;
-}
+      max-width: 100%;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
     .summary-section {
       margin: 8px;
-      padding: 10px;
+      padding: 10px 40px 10px 10px;
       background: white;
       color: #0d2d5c;
       display: flex;
@@ -104,18 +119,21 @@
       border-radius: 12px;
       font-size: 12px;
       line-height: 1.4;
+      position: relative;
     }
-    
-    .action-section button {
-      padding: 8px 14px;
-      border-radius: 6px;
-      font-size: 13px;
+    .export-icon {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: #ffd700;
       border: none;
-      cursor: pointer;
-      background-color: #ffd700;
+      border-radius: 50%;
+      font-size: 16px;
+      font-weight: bold;
       color: #002c5f;
-      font-family: 'Krasar', sans-serif;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+      width: 28px;
+      height: 28px;
+      cursor: pointer;
     }
     .badge-wrapper {
       margin: 8px 12px -4px;
@@ -249,16 +267,15 @@
       <div class="filter-section"><label for="occu">មុខរបរ</label><select id="occu"></select></div>
       <div class="filter-section"><label for="class">ចំណាត់ថ្នាក់ឥណទាន</label><select id="class"></select></div>
       <div class="filter-section"><label for="pd">PD</label><select id="pd"></select></div>
+      <button class="clear-icon" title="Clear Filters" onclick="resetFilters()">×</button>
     </div>
 
     <div class="summary-section">
       <div id="sumCount">👥 ចំនួនឥណទានសរុប: 0</div>
       <div id="sumTotal">💰 សមតុល្យឥណទានសរុប: 0 USD</div>
       <div id="latestDate">⏰ របាយការណ៍គិតត្រឹមថ្ងៃទី: -</div>
-      <button onclick="exportExcel()">Export Excel</button>
-      <button onclick="resetFilters()">Clear Filter</button>
+      <button class="export-icon" title="Export Excel" onclick="exportExcel()">⭳</button>
     </div>
-
 
     <div class="badge-wrapper" id="badgeFilters"></div>
   </div>
@@ -274,13 +291,18 @@
   <div class="bottom-bar">
     <button class="bottom-btn" onclick="location.href='../index.html'"><img src="../icons/Home.png" width="24"><div>Home</div></button>
     <button class="bottom-btn" onclick="location.href='../Setting/index.html'"><img src="../icons/Setting.png" width="24"><div>Setting</div></button>
-    <button class="bottom-btn" onclick="location.href='../notifications/index.html'"><div style="position: relative;"><img src="../icons/Notification.png" width="24"><span id="notif-badge" class="badge" style="display:none;">●</span></div><div>Notification</div></button>
+    <button class="bottom-btn" onclick="location.href='../notifications/index.html'">
+      <div style="position: relative;">
+        <img src="../icons/Notification.png" width="24">
+        <span id="notif-badge" class="badge" style="display:none;">●</span>
+      </div>
+      <div>Notification</div>
+    </button>
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="../notifications/checkNotification.js"></script>
- 
-    
+
     <script>
 let allData = [];
 let currentSortKey = null;
@@ -371,22 +393,26 @@ function renderTable(data) {
 }
 
 function sortTable(key) {
-  if (currentSortKey === key) {
-    currentSortDir = currentSortDir === 'asc' ? 'desc' : 'asc';
-  } else {
-    currentSortKey = key;
-    currentSortDir = 'asc';
-  }
-
-  const sorted = [...allData].sort((a, b) => {
-    let x = a[key] || "", y = b[key] || "";
-    if (!isNaN(parseFloat(x)) && !isNaN(parseFloat(y))) {
-      x = parseFloat(x); y = parseFloat(y);
+  document.getElementById("spinner").style.display = "block";
+  setTimeout(() => {
+    if (currentSortKey === key) {
+      currentSortDir = currentSortDir === 'asc' ? 'desc' : 'asc';
+    } else {
+      currentSortKey = key;
+      currentSortDir = 'asc';
     }
-    return currentSortDir === 'asc' ? (x > y ? 1 : -1) : (x < y ? 1 : -1);
-  });
 
-  renderTable(sorted);
+    const sorted = [...allData].sort((a, b) => {
+      let x = a[key] || "", y = b[key] || "";
+      if (!isNaN(parseFloat(x)) && !isNaN(parseFloat(y))) {
+        x = parseFloat(x); y = parseFloat(y);
+      }
+      return currentSortDir === 'asc' ? (x > y ? 1 : -1) : (x < y ? 1 : -1);
+    });
+
+    renderTable(sorted);
+    document.getElementById("spinner").style.display = "none";
+  }, 200);
 }
 
 function populateFilters(data) {
@@ -456,16 +482,23 @@ function updateBadges(filters) {
 }
 
 function removeFilter(id) {
-  document.getElementById(id).value = "";
-  applyFilters(allData);
+  document.getElementById("spinner").style.display = "block";
+  setTimeout(() => {
+    document.getElementById(id).value = "";
+    applyFilters(allData);
+  }, 100);
 }
 
 function resetFilters() {
-  for (const id in fields) document.getElementById(id).value = "";
-  document.getElementById("searchInput").value = "";
-  renderTable(allData);
-  updateSummary(allData);
-  updateBadges({});
+  document.getElementById("spinner").style.display = "block";
+  setTimeout(() => {
+    for (const id in fields) document.getElementById(id).value = "";
+    document.getElementById("searchInput").value = "";
+    renderTable(allData);
+    updateSummary(allData);
+    updateBadges({});
+    document.getElementById("spinner").style.display = "none";
+  }, 300);
 }
 
 function exportExcel() {
@@ -507,3 +540,4 @@ function setupAutoLogoutEvents() {
 </script>
 </body>
 </html>
+    
