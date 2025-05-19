@@ -1,10 +1,10 @@
-
-<!DOCTYPE html><html lang="km">
+<!DOCTYPE html>
+<html lang="km">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Arreas T24 Report</title>
-  <meta name="theme-color" content="#0d2d5c">
+  <title>Arreas T24</title>
+  <meta name="theme-color" content="#0d2d5c" />
   <style>
     @font-face {
       font-family: 'Krasar';
@@ -160,7 +160,9 @@
       <input type="text" id="searchInput" placeholder="ស្វែងរកឈ្មោះ ឬ CIF">
       <button class="search-icon" id="searchButton">🔍</button>
     </div>
-  </div>  <div class="filters-wrapper">
+  </div>
+
+  <div class="filters-wrapper">
     <div class="filter-section">
       <label for="teamLeader">Team Leader</label>
       <select id="teamLeader"><option value="">All</option></select>
@@ -181,12 +183,16 @@
       <label for="pd">PD</label>
       <select id="pd"><option value="">All</option></select>
     </div>
-  </div>  <div class="table-wrapper">
+  </div>
+
+  <div class="table-wrapper">
     <table id="arreasTable">
       <thead id="tableHead"></thead>
       <tbody id="tableBody"></tbody>
     </table>
-  </div>  <div class="bottom-bar">
+  </div>
+
+  <div class="bottom-bar">
     <button class="bottom-btn" onclick="location.href='../index.html'">
       <img src="../icons/Home.png" width="24" height="24">
       <div>Home</div>
@@ -202,7 +208,10 @@
       </div>
       <div>Notification</div>
     </button>
-  </div>  <script src="../notifications/checkNotification.js"></script>  <script>
+  </div>
+
+  <script src="../notifications/checkNotification.js"></script>
+  <script>
     let allData = [];
 
     window.addEventListener("DOMContentLoaded", () => {
@@ -240,8 +249,6 @@
 
       data.forEach(row => {
         const tr = document.createElement("tr");
-
-        // Apply class-based highlight
         const status = (row.Class || '').toLowerCase();
         if (status.includes("loss")) tr.className = "loss";
         else if (status.includes("default")) tr.className = "defaulted";
@@ -309,14 +316,14 @@
       renderTable(filtered);
     });
 
-    // Auto logout logic
+    // Auto logout
     const AUTO_LOGOUT_MINUTES = 5;
     let logoutTimer;
     function resetLogoutTimer() {
       clearTimeout(logoutTimer);
       logoutTimer = setTimeout(() => {
         sessionStorage.clear();
-        alert("Session expired due to inactivity. Please log in again.");
+        alert("Session expired due to inactivity.");
         window.location.href = "../login.html";
       }, AUTO_LOGOUT_MINUTES * 60 * 1000);
     }
@@ -326,5 +333,6 @@
       });
       resetLogoutTimer();
     }
-  </script></body>
+  </script>
+</body>
 </html>
