@@ -98,11 +98,11 @@
       margin: 8px;
       padding: 10px;
       background: white;
-      color: black;
+      color: #0d2d5c;
       display: flex;
       flex-direction: column;
       border-radius: 12px;
-      font-size: 13px;
+      font-size: 12px;
       line-height: 1.4;
     }
     .action-section {
@@ -184,7 +184,7 @@
     tr.normal { background-color: white; color: black; }
     tr.special { background-color: #fff9c4; color: black; }
     tr.substandard { background-color: #ffcdd2; color: black; }
-    tr.defaulted { background-color: #ef5350; color: white; }
+    tr.doubtful { background-color: #ef5350; color: white; }
     tr.loss { background-color: #b71c1c; color: white; }
     tr.highlighted {
       animation: flashRow 0.6s ease;
@@ -250,7 +250,7 @@
   <div class="fixed-top-sections">
     <div class="filters-wrapper">
       <div class="filter-section"><label for="branch">Branch</label><select id="branch"></select></div>
-      <div class="filter-section"><label for="teamLeader">Team Leader</label><select id="teamLeader"></select></div>
+      <div class="filter-section"><label for="teamLeader">អនុប្រធាន</label><select id="teamLeader"></select></div>
       <div class="filter-section"><label for="coResponse">CO Response</label><select id="coResponse"></select></div>
       <div class="filter-section"><label for="coId">CO ID</label><select id="coId"></select></div>
       <div class="filter-section"><label for="osClassify">OS Classify</label><select id="osClassify"></select></div>
@@ -260,9 +260,9 @@
     </div>
 
     <div class="summary-section">
-      <div id="sumCount">ចំនួនឥណទានសរុប: 0</div>
-      <div id="sumTotal">ចំនួនសមតុល្យឥណទានសរុប: 0 USD</div>
-      <div id="latestDate">របាយការណ៍គិតត្រឹម: -</div>
+      <div id="sumCount">👥 ចំនួនឥណទានសរុប: 0</div>
+      <div id="sumTotal">💰 ចំនួនសមតុល្យឥណទានសរុប: 0 USD</div>
+      <div id="latestDate">⏰ របាយការណ៍គិតត្រឹមថ្ងៃទី: -</div>
     </div>
 
     <div class="action-section">
