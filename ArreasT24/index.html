@@ -119,6 +119,11 @@
       border-radius: 12px;
       font-size: 12px;
     }
+    .badge-filter span {
+      margin-left: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
     .table-container {
       margin: 8px;
       background: white;
@@ -140,13 +145,13 @@
     th {
       background-color: #f0f0f0;
       position: sticky;
-      top: 200px;
+      top: 316px;
       z-index: 2;
     }
     tr.normal { background-color: white; color: black; }
     tr.special { background-color: #fff9c4; color: black; }
     tr.substandard { background-color: #ffcdd2; color: black; }
-    tr.Doubtful { background-color: #ef5350; color: white; }
+    tr.defaulted { background-color: #ef5350; color: white; }
     tr.loss { background-color: #b71c1c; color: white; }
     .highlighted {
       animation: flashRow 0.8s ease;
@@ -200,6 +205,7 @@
   </style>
 </head>
 <body>
+  
   <div class="header-bar">
     <button class="back-icon" onclick="window.location.href='../index.html'">←</button>
     <div class="header-title">ឥណទានយឺតយ៉ាវ</div>
@@ -207,6 +213,7 @@
       <input type="text" id="searchInput" placeholder="ស្វែងរកឈ្មោះ ឬ CIF">
     </div>
   </div>
+
   <div class="fixed-top-sections">
     <div class="filters-wrapper">
       <div class="filter-section">
@@ -234,18 +241,22 @@
         <select id="pd"></select>
       </div>
     </div>
+
     <div class="summary-section">
       <div id="sumCount">ចំនួនឥណទានសរុប: 0</div>
       <div id="sumTotal">ចំនួនសមតុល្យឥណទានសរុប: 0 USD</div>
       <div id="latestDate">របាយការណ៍គិតត្រឹម: -</div>
     </div>
+
     <div class="action-section">
       <button onclick="exportExcel()">Export Excel</button>
       <button onclick="exportPDF()">Export PDF</button>
       <button onclick="resetFilters()">Clear Filter</button>
     </div>
+
     <div class="badge-wrapper" id="badgeFilters"></div>
   </div>
+
   <div class="table-container">
     <div id="spinner" class="spinner" style="display:none;"></div>
     <table id="arreasTable">
@@ -253,6 +264,7 @@
       <tbody id="tableBody"></tbody>
     </table>
   </div>
+
   <div class="bottom-bar">
     <button class="bottom-btn" onclick="location.href='../index.html'">
       <img src="../icons/Home.png" width="24" height="24">
@@ -270,7 +282,7 @@
       <div>Notification</div>
     </button>
   </div>
-  
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="../notifications/checkNotification.js"></script>
 <script>
@@ -314,7 +326,7 @@ function renderTable(data) {
     return;
   }
 
-  const keys = Object.keys(data[0]).filter(k => k !== "_id" && k !== "__v" && k !== "Report_Date");
+  const keys = Object.keys(data[0]).filter(k => !["_id", "__v", "Report_Date"].includes(k));
   const headRow = document.createElement("tr");
   headRow.innerHTML = "<th>No</th>" + keys.map(k => `<th>${k}</th>`).join("");
   head.appendChild(headRow);
@@ -397,10 +409,15 @@ function updateBadges(filters) {
     if (val) {
       const span = document.createElement("span");
       span.className = "badge-filter";
-      span.textContent = `${id}: ${val}`;
+      span.innerHTML = `${id}: ${val} <span onclick="removeFilter('${id}')">&times;</span>`;
       box.appendChild(span);
     }
   }
+}
+
+function removeFilter(id) {
+  document.getElementById(id).value = "";
+  applyFilters(allData);
 }
 
 function resetFilters() {
@@ -450,6 +467,7 @@ function setupAutoLogoutEvents() {
   );
   resetLogoutTimer();
 }
-</script>
+  
+</script>    
 </body>
 </html>
