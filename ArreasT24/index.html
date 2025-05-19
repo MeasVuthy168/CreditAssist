@@ -24,8 +24,7 @@
       align-items: center;
       justify-content: space-between;
       padding: 12px 16px;
-      position: fixed;
-      width: 100%;
+      position: sticky;
       top: 0;
       z-index: 1000;
     }
@@ -44,58 +43,66 @@
     .search-box {
       position: relative;
       width: 160px;
+      margin-right: 8px;
     }
     .search-box input {
       width: 100%;
-      padding: 6px 30px 6px 10px;
+      padding: 6px 10px;
       border-radius: 20px;
       border: none;
       font-size: 13px;
       background-color: #fff;
       color: #333;
     }
-    .search-icon {
-      position: absolute;
-      right: 8px;
-      top: 50%;
-      transform: translateY(-50%);
-      border: none;
-      background: none;
-      cursor: pointer;
-      font-size: 16px;
-      color: #666;
-    }
-    .filters-wrapper {
-      margin-top: 60px;
-      margin-left: 10px;
-      margin-right: 10px;
-      padding: 16px;
+    .filters-wrapper, .summary-section, .action-section {
+      margin: 8px;
+      padding: 10px 12px;
       background: white;
       color: black;
       display: flex;
-      justify-content: space-between;
       flex-wrap: wrap;
       border-radius: 12px;
+      box-sizing: border-box;
     }
     .filter-section {
       display: flex;
       flex-direction: column;
       flex: 1;
-      margin: 8px;
+      margin: 4px;
     }
     .filter-section label {
-      margin: 4px 0;
+      margin: 2px 0;
       font-size: 13px;
     }
     .filter-section select {
-      padding: 6px;
+      padding: 4px;
       border-radius: 6px;
       border: 1px solid #ccc;
+      font-size: 13px;
+    }
+    .summary-section {
+      flex-direction: column;
       font-size: 14px;
+      line-height: 1.4;
+    }
+    .action-section {
+      justify-content: space-around;
+      gap: 8px;
+    }
+    .action-section button {
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 13px;
+      border: none;
+      cursor: pointer;
+      background-color: #ffd700;
+      color: #002c5f;
+      font-family: 'Krasar', sans-serif;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.2);
     }
     .table-wrapper {
       overflow-x: auto;
-      margin: 16px;
+      margin: 8px;
     }
     table {
       width: 100%;
@@ -112,14 +119,21 @@
     th {
       background-color: #f0f0f0;
       position: sticky;
-      top: 0;
-      z-index: 1;
+      top: 172px;
+      z-index: 10;
     }
     tr.normal { background-color: white; color: black; }
     tr.special { background-color: #fff9c4; color: black; }
     tr.substandard { background-color: #ffcdd2; color: black; }
     tr.defaulted { background-color: #ef5350; color: white; }
     tr.loss { background-color: #b71c1c; color: white; }
+    tr.highlighted {
+      animation: flashRow 0.8s ease;
+    }
+    @keyframes flashRow {
+      0%   { background-color: #ffd700; }
+      100% { background-color: inherit; }
+    }
     .bottom-bar {
       position: fixed;
       bottom: 0;
@@ -158,7 +172,6 @@
     <div class="header-title">ឥណទានយឺតយ៉ាវ</div>
     <div class="search-box">
       <input type="text" id="searchInput" placeholder="ស្វែងរកឈ្មោះ ឬ CIF">
-      <button class="search-icon" id="searchButton">🔍</button>
     </div>
   </div>
 
@@ -183,6 +196,18 @@
       <label for="pd">PD</label>
       <select id="pd"><option value="">All</option></select>
     </div>
+  </div>
+
+  <div class="summary-section" id="summaryBox">
+    <div id="sumCount">ចំនួនឥណទានសរុប: 0</div>
+    <div id="sumTotal">ចំនួនសមតុល្យឥណទានសរុប: 0 USD</div>
+    <div id="latestDate">របាយការណ៍គិតត្រឹម: -</div>
+  </div>
+
+  <div class="action-section">
+    <button onclick="exportExcel()">Export Excel</button>
+    <button onclick="exportPDF()">Export PDF</button>
+    <button onclick="resetFilters()">Clear Filter</button>
   </div>
 
   <div class="table-wrapper">
@@ -210,6 +235,7 @@
     </button>
   </div>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="../notifications/checkNotification.js"></script>
   <script>
     let allData = [];
@@ -225,6 +251,7 @@
       allData = await res.json();
       renderTable(allData);
       populateFilters(allData);
+      updateSummary(allData);
     }
 
     function renderTable(data) {
@@ -238,31 +265,36 @@
         return;
       }
 
-      const columns = Object.keys(data[0]);
+      const columns = Object.keys(data[0]).filter(c => c !== "_id" && c !== "Report_Date");
       const headRow = document.createElement("tr");
-      columns.forEach(col => {
-        const th = document.createElement("th");
-        th.textContent = col;
-        headRow.appendChild(th);
-      });
+      headRow.innerHTML = "<th>No</th>" + columns.map(c => `<th>${c}</th>`).join("");
       head.appendChild(headRow);
 
-      data.forEach(row => {
+      data.forEach((row, index) => {
         const tr = document.createElement("tr");
-        const status = (row.Class || '').toLowerCase();
-        if (status.includes("loss")) tr.className = "loss";
-        else if (status.includes("default")) tr.className = "defaulted";
-        else if (status.includes("sub")) tr.className = "substandard";
-        else if (status.includes("special")) tr.className = "special";
+        const classVal = (row.Class || '').toLowerCase();
+        if (classVal.includes("loss")) tr.className = "loss";
+        else if (classVal.includes("default")) tr.className = "defaulted";
+        else if (classVal.includes("sub")) tr.className = "substandard";
+        else if (classVal.includes("special")) tr.className = "special";
         else tr.className = "normal";
 
-        columns.forEach(col => {
-          const td = document.createElement("td");
-          td.textContent = row[col] || "";
-          tr.appendChild(td);
+        tr.innerHTML = `<td>${index + 1}</td>` + columns.map(c => `<td>${row[c] || ""}</td>`).join("");
+        tr.addEventListener("click", () => {
+          tr.classList.add("highlighted");
+          setTimeout(() => tr.classList.remove("highlighted"), 800);
         });
         body.appendChild(tr);
       });
+    }
+
+    function updateSummary(data) {
+      document.getElementById("sumCount").textContent = "ចំនួនឥណទានសរុប: " + data.length;
+      const sum = data.reduce((total, row) => total + parseFloat(row.OS_USD || 0), 0);
+      document.getElementById("sumTotal").textContent = "ចំនួនសមតុល្យឥណទានសរុប: " + sum.toLocaleString() + " USD";
+      const dates = data.map(d => new Date(d.Report_Date)).filter(d => !isNaN(d));
+      const maxDate = dates.length > 0 ? new Date(Math.max(...dates)) : null;
+      document.getElementById("latestDate").textContent = "របាយការណ៍គិតត្រឹម: " + (maxDate ? maxDate.toLocaleDateString('en-GB') : "-");
     }
 
     function populateFilters(data) {
@@ -286,51 +318,62 @@
           opt.textContent = val;
           select.appendChild(opt);
         });
-        select.addEventListener("change", () => {
-          const filtered = data.filter(item => {
-            return Object.entries(fields).every(([key, field]) => {
-              const value = document.getElementById(key).value;
-              return value === "" || item[field] === value;
-            });
-          });
-          renderTable(filtered);
-        });
+        select.addEventListener("change", () => applyFilters(data, fields));
       }
     }
 
-    document.getElementById("searchInput").addEventListener("input", (e) => {
+    function applyFilters(data, fields) {
+      const filtered = data.filter(item =>
+        Object.entries(fields).every(([id, field]) => {
+          const val = document.getElementById(id).value;
+          return val === "" || item[field] === val;
+        })
+      );
+      renderTable(filtered);
+      updateSummary(filtered);
+    }
+
+    function resetFilters() {
+      document.querySelectorAll("select").forEach(select => select.value = "");
+      document.getElementById("searchInput").value = "";
+      renderTable(allData);
+      updateSummary(allData);
+    }
+
+    document.getElementById("searchInput").addEventListener("input", e => {
       const term = e.target.value.toLowerCase();
-      const filtered = allData.filter(item => {
-        return (item.Customer || "").toLowerCase().includes(term) ||
-               (item.CIF || "").toLowerCase().includes(term);
-      });
+      const filtered = allData.filter(row =>
+        (row.Customer || "").toLowerCase().includes(term) ||
+        (row.CIF || "").toLowerCase().includes(term)
+      );
       renderTable(filtered);
+      updateSummary(filtered);
     });
 
-    document.getElementById("searchButton").addEventListener("click", () => {
-      const term = document.getElementById("searchInput").value.toLowerCase();
-      const filtered = allData.filter(item => {
-        return (item.Customer || "").toLowerCase().includes(term) ||
-               (item.CIF || "").toLowerCase().includes(term);
-      });
-      renderTable(filtered);
-    });
+    function exportExcel() {
+      const table = document.getElementById("arreasTable");
+      const wb = XLSX.utils.table_to_book(table, { sheet: "Arreas T24" });
+      XLSX.writeFile(wb, "ArreasT24.xlsx");
+    }
 
-    // Auto logout
+    function exportPDF() {
+      alert("PDF export not implemented yet.");
+    }
+
     const AUTO_LOGOUT_MINUTES = 5;
     let logoutTimer;
     function resetLogoutTimer() {
       clearTimeout(logoutTimer);
       logoutTimer = setTimeout(() => {
         sessionStorage.clear();
-        alert("Session expired due to inactivity.");
+        alert("Session expired. Please login again.");
         window.location.href = "../login.html";
-      }, AUTO_LOGOUT_MINUTES * 60 * 1000);
+      }, AUTO_LOGOUT_MINUTES * 60000);
     }
     function setupAutoLogoutEvents() {
-      ['mousemove', 'mousedown', 'keydown', 'touchstart', 'touchmove', 'scroll'].forEach(event => {
-        document.addEventListener(event, resetLogoutTimer, true);
-      });
+      ['mousemove', 'mousedown', 'keydown', 'touchstart', 'touchmove', 'scroll'].forEach(evt =>
+        document.addEventListener(evt, resetLogoutTimer, true)
+      );
       resetLogoutTimer();
     }
   </script>
