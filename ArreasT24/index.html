@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="km">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Arreas T24 Report</title>
   <meta name="theme-color" content="#0d2d5c">
   <style>
@@ -11,34 +11,72 @@
     }
     body {
       font-family: 'Krasar', Arial, sans-serif;
-      margin: 0;
       background-color: #1c2331;
       color: white;
-      padding-bottom: 60px;
+      margin: 0;
+      padding-bottom: 70px;
+      overflow-x: hidden;
     }
     .header-bar {
       background-color: #0d2d5c;
       display: flex;
       align-items: center;
-      justify-content: space-between;
       padding: 12px 16px;
       position: fixed;
+      width: 100%;
       top: 0;
-      left: 0;
-      right: 0;
       z-index: 1000;
+    }
+    .back-icon {
+      font-size: 22px;
+      border: none;
+      color: white;
+      background: none;
+      margin-right: 10px;
+      cursor: pointer;
     }
     .header-title {
       font-size: 16px;
     }
-    .search-box input {
-      padding: 6px 12px;
-      border-radius: 20px;
+    .search-fixed-bar {
+      position: fixed;
+      top: 56px;
+      left: 0;
+      right: 0;
+      background: #1c2331;
+      padding: 12px 0 8px;
+      z-index: 999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .search-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 320px;
+    }
+    .search-wrapper input {
+      width: 95%;
+      padding: 10px 20px 10px 10px;
+      border-radius: 25px;
       border: none;
-      font-size: 13px;
+      font-size: 16px;
+      background-color: #fff;
+      color: #333;
+    }
+    .search-icon {
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      border: none;
+      background: none;
+      cursor: pointer;
+      font-size: 20px;
+      color: #666;
     }
     .filters-wrapper {
-      margin-top: 60px;
+      margin-top: 116px;
       padding: 16px;
       background: white;
       color: black;
@@ -69,9 +107,9 @@
     table {
       width: 100%;
       border-collapse: collapse;
+      font-size: 12px;
       background: white;
       color: black;
-      font-size: 12px;
     }
     th, td {
       border: 1px solid #ccc;
@@ -107,9 +145,12 @@
 </head>
 <body>
   <div class="header-bar">
+    <button class="back-icon" onclick="window.location.href='../index.html'">←</button>
     <div class="header-title">បញ្ជីអតិថិជនជំពាក់ T24</div>
-    <div class="search-box">
+  </div>  <div class="search-fixed-bar">
+    <div class="search-wrapper">
       <input type="text" id="searchInput" placeholder="ស្វែងរកឈ្មោះ ឬ CIF">
+      <button class="search-icon" id="searchButton">🔍</button>
     </div>
   </div>  <div class="filters-wrapper">
     <div class="filter-section">
@@ -246,6 +287,16 @@
       renderTable(filtered);
     });
 
+    document.getElementById("searchButton").addEventListener("click", () => {
+      const term = document.getElementById("searchInput").value.toLowerCase();
+      const filtered = allData.filter(item => {
+        return (item.Customer || "").toLowerCase().includes(term) ||
+               (item.CIF || "").toLowerCase().includes(term);
+      });
+      renderTable(filtered);
+    });
+
     window.onload = fetchData;
   </script></body>
 </html>
+
