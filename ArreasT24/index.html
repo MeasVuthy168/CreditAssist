@@ -164,7 +164,7 @@
     }*/
     .table-container {
   position: relative;
-  margin: 6px;
+  margin: 4px;
   background: white;
   color: black;
   border-radius: 12px;
@@ -383,7 +383,7 @@ function renderTable(data) {
     const classVal = (row.Class || "").toLowerCase();
     tr.className = 
       classVal.includes("loss") ? "loss" :
-      classVal.includes("default") ? "defaulted" :
+      classVal.includes("Doubtful") ? "Doubtful" :
       classVal.includes("sub") ? "substandard" :
       classVal.includes("special") ? "special" : "normal";
 
@@ -518,9 +518,6 @@ function exportExcel() {
   XLSX.writeFile(wb, "ArreasT24.xlsx");
 }
 
-function exportPDF() {
-  alert("PDF export not implemented yet.");
-}
 
 document.getElementById("searchInput").addEventListener("input", e => {
   const term = e.target.value.toLowerCase();
