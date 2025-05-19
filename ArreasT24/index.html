@@ -383,7 +383,7 @@ function renderTable(data) {
     const classVal = (row.Class || "").toLowerCase();
     tr.className = 
       classVal.includes("loss") ? "loss" :
-      classVal.includes("Doubtful") ? "Doubtful" :
+      classVal.includes("doubtful") ? "doubtful" :
       classVal.includes("sub") ? "substandard" :
       classVal.includes("special") ? "special" : "normal";
 
