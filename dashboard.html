@@ -225,7 +225,9 @@
 
   // Start of week (Sunday 00:00 Phnom Penh)
   const startOfWeek = new Date(localNow);
-  startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
+  let day = startOfWeek.getDay();
+  if (day === 0) day = 7; // Sunday becomes 7
+  startOfWeek.setDate(startOfWeek.getDate() - day + 1); // Start from Monday
   startOfWeek.setHours(0, 0, 0, 0);
 
   // Start of month (1st day 00:00 Phnom Penh)
