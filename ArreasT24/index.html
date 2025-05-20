@@ -348,7 +348,7 @@ async function fetchData() {
   document.getElementById("spinner").style.display = "none";
   renderTable(allData);
   populateFilters(allData);
-  updateSummary(allData);
+  updateSummaryAndReportDate(allData);
   updateBadges({});
 }
 
@@ -357,6 +357,18 @@ function formatDate(dateStr) {
   return !isNaN(d) ? d.toLocaleDateString('en-GB') : dateStr;
 }
 
+  function formatUTCDate(isoString) {
+  const date = new Date(isoString);
+  const day = String(date.getUTCDate()).padStart(2, '0');
+  const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+  const year = date.getUTCFullYear();
+  const hours = String(date.getUTCHours()).padStart(2, '0');
+  const minutes = String(date.getUTCMinutes()).padStart(2, '0');
+  const hour12 = ((+hours + 11) % 12 + 1).toString().padStart(2, '0');
+  const period = +hours >= 12 ? 'PM' : 'AM';
+  return `${day}/${month}/${year} ${hour12}:${minutes} ${period} (UTC)`;
+}
+      
 function formatNumber(value) {
   const num = parseFloat(value);
   return isNaN(num) ? value : num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -460,7 +472,7 @@ function applyFilters(data) {
     );
 
     renderTable(filtered);
-    updateSummary(filtered);
+    updateSummaryAndReportDate(filtered);
     updateBadges(selected);
     document.getElementById("spinner").style.display = "none";
   }, 200);
@@ -476,22 +488,37 @@ function updateDependentSelect(id, subset, prevValue = "") {
     sel.value = prevValue;
   }
 }
+      
 
-function updateSummary(data) {
+function updateSummaryAndReportDate(data) {
+  // Update total count
   document.getElementById("sumCount").textContent = "👥 ចំនួនឥណទានសរុប: " + data.length;
+
+  // Calculate total OS_USD
   const total = data.reduce((sum, row) => sum + parseFloat(row.OS_USD || 0), 0);
   document.getElementById("sumTotal").textContent = "💰 សមតុល្យឥណទានសរុប: " + formatNumber(total) + " USD";
 
+  // Find the latest Report_Date in UTC format
   const dates = data.map(d => new Date(d.Report_Date)).filter(d => !isNaN(d));
   const latest = dates.length > 0 ? new Date(Math.max(...dates)) : null;
+
   if (latest) {
-  const dateStr = latest.toLocaleDateString('en-GB');
-  const timeStr = latest.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
-  document.getElementById("latestDate").textContent = `⏰ របាយការណ៍គិតត្រឹម: ${dateStr} ${timeStr}`;
-} else {
-  document.getElementById("latestDate").textContent = "⏰ របាយការណ៍គិតត្រឹម: -";
+    const day = String(latest.getUTCDate()).padStart(2, '0');
+    const month = String(latest.getUTCMonth() + 1).padStart(2, '0');
+    const year = latest.getUTCFullYear();
+    const hour = latest.getUTCHours();
+    const minute = String(latest.getUTCMinutes()).padStart(2, '0');
+    const hour12 = ((hour + 11) % 12 + 1).toString().padStart(2, '0');
+    const ampm = hour >= 12 ? 'PM' : 'AM';
+    const formattedUTC = `${day}/${month}/${year} ${hour12}:${minute} ${ampm} (UTC)`;
+
+    document.getElementById("latestDate").textContent = `⏰ របាយការណ៍គិតត្រឹម: ${formattedUTC}`;
+  } else {
+    document.getElementById("latestDate").textContent = "⏰ របាយការណ៍គិតត្រឹម: -";
+  }
 }
-}
+
+  
 function updateBadges(filters) {
   const box = document.getElementById("badgeFilters");
   if (!box) return;
@@ -521,7 +548,7 @@ function resetFilters() {
     for (const id in fields) document.getElementById(id).value = "";
     document.getElementById("searchInput").value = "";
     renderTable(allData);
-    updateSummary(allData);
+    updateSummaryAndReportDate(allData);
     updateBadges({});
     document.getElementById("spinner").style.display = "none";
   }, 300);
@@ -541,7 +568,7 @@ document.getElementById("searchInput").addEventListener("input", e => {
     (row.CIF || "").toLowerCase().includes(term)
   );
   renderTable(filtered);
-  updateSummary(filtered);
+  updateSummaryAndReportDate(filtered);
 });
 
 const AUTO_LOGOUT_MINUTES = 5;
