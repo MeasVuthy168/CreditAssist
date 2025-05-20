@@ -74,20 +74,7 @@
       position: relative;
       animation: fadeIn 0.4s ease-in;
     }
-    .clear-icon {
-      position: absolute;
-      top: 8px;
-      right: 8px;
-      background: #ffd700;
-      border: none;
-      border-radius: 50%;
-      font-weight: bold;
-      font-size: 16px;
-      color: #002c5f;
-      width: 28px;
-      height: 28px;
-      cursor: pointer;
-    }
+    
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(-5px); }
       to { opacity: 1; transform: translateY(0); }
@@ -118,14 +105,14 @@
       flex-direction: column;
       border-radius: 12px;
       font-size: 12px;
-      line-height: 1.4;
+      line-height: 1.8;
       position: relative;
     }
-    .export-icon {
+    .export-icon, .clear-icon {
       position: absolute;
       top: 8px;
       right: 8px;
-      background: #ffd700;
+      background: white;
       border: none;
       border-radius: 50%;
       font-size: 16px;
@@ -263,11 +250,11 @@
       font-weight: bold;
     }
 
-    .export-icon img,
+   /* .export-icon img,
     .clear-icon img {
     display: block;
     margin: auto;
-   }
+   }*/
     
   </style>
 </head>
@@ -292,7 +279,7 @@
       <div class="filter-section"><label for="class">ចំណាត់ថ្នាក់ឥណទាន</label><select id="class"></select></div>
       <div class="filter-section"><label for="pd">PD</label><select id="pd"></select></div>
       <button class="clear-icon" title="Clear Filters" onclick="resetFilters()">
-       <img src="../icons/clear.png" width="20" height="20" alt="Clear" />
+       <img src="../icons/clear-filter.png" width="20" height="20" alt="Clear" />
       </button>
     </div>
 
@@ -301,7 +288,7 @@
       <div id="sumTotal">💰 សមតុល្យឥណទានសរុប: 0 USD</div>
       <div id="latestDate">⏰ របាយការណ៍គិតត្រឹមថ្ងៃទី: -</div>
       <button class="export-icon" title="Export Excel" onclick="exportExcel()">
-        <img src="../icons/excel.png" width="20" height="20" alt="Export" />
+        <img src="../icons/excelSP.png" width="20" height="20" alt="Export" />
       </button>
     </div>
 
@@ -460,10 +447,13 @@ function applyFilters(data) {
     }
 
     if (selected.branch) {
-      const filtered = data.filter(d => d.Branch === selected.branch);
-      updateDependentSelect("coResponse", filtered);
-      updateDependentSelect("coId", filtered);
-    }
+  const filtered = data.filter(d => d.Branch === selected.branch);
+  const prevCOResponse = document.getElementById("coResponse").value;
+  const prevCOID = document.getElementById("coId").value;
+
+  updateDependentSelect("coResponse", filtered, prevCOResponse);
+  updateDependentSelect("coId", filtered, prevCOID);
+}
 
     const filtered = data.filter(row =>
       Object.entries(selected).every(([id, val]) => val === "" || row[fields[id]] === val)
@@ -476,11 +466,15 @@ function applyFilters(data) {
   }, 200);
 }
 
-function updateDependentSelect(id, subset) {
+function updateDependentSelect(id, subset, prevValue = "") {
   const field = fields[id];
   const sel = document.getElementById(id);
   const values = [...new Set(subset.map(d => d[field]).filter(Boolean))].sort();
-  sel.innerHTML = "<option value=''>All</option>" + values.map(v => `<option>${v}</option>`).join("");
+  sel.innerHTML = "<option value=''>All</option>" + values.map(v => `<option value="${v}">${v}</option>`).join("");
+
+  if (values.includes(prevValue)) {
+    sel.value = prevValue;
+  }
 }
 
 function updateSummary(data) {
