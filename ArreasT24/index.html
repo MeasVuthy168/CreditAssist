@@ -317,12 +317,12 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="../notifications/checkNotification.js"></script>
 
-    <script>
+ <script>
 let allData = [];
 let currentSortKey = null;
 let currentSortDir = 'asc';
 let coIdMap = {}; // Global dictionary: CO_ID => Full Name
-      
+
 const fields = {
   branch: "Branch",
   teamLeader: "Team_Leader",
@@ -337,36 +337,38 @@ const fields = {
 const numberFields = ["Prn_OS", "Int_OS", "Prn_Due", "Int_Due", "Penalty", "Arreas", "Balance", "OS_USD"];
 
 async function fetchUserMap() {
-  const res = await fetch("https://secure-backend-tzj9.onrender.com/api/users");
-  const users = await res.json();
-  users.forEach(user => {
-    coIdMap[user.username] = user.fullname;
-  });
+  try {
+    const res = await fetch("https://secure-backend-tzj9.onrender.com/api/users");
+    const users = await res.json();
+    users.forEach(user => {
+      coIdMap[user.username] = user.fullname;
+    });
+  } catch (error) {
+    console.error("Error loading user map:", error);
+  }
 }
-
-      
-//window.addEventListener("DOMContentLoaded", () => {
-//  checkNotification();
-//  fetchData();
-//  setupAutoLogoutEvents();
-//});
 
 window.addEventListener("DOMContentLoaded", async () => {
   checkNotification();
-  await fetchUserMap(); // Fetch user mapping before filters
+  await fetchUserMap();
   await fetchData();
   setupAutoLogoutEvents();
 });
-      
+
 async function fetchData() {
   document.getElementById("spinner").style.display = "block";
-  const res = await fetch("https://secure-backend-tzj9.onrender.com/api/arreas-t24");
-  allData = await res.json();
-  document.getElementById("spinner").style.display = "none";
-  renderTable(allData);
-  populateFilters(allData);
-  updateSummary(allData);
-  updateBadges({});
+  try {
+    const res = await fetch("https://secure-backend-tzj9.onrender.com/api/arreas-t24");
+    allData = await res.json();
+    renderTable(allData);
+    populateFilters(allData);
+    updateSummary(allData);
+    updateBadges({});
+  } catch (err) {
+    console.error("Error fetching data:", err);
+  } finally {
+    document.getElementById("spinner").style.display = "none";
+  }
 }
 
 function formatDate(dateStr) {
@@ -451,14 +453,14 @@ function populateFilters(data) {
     const sel = document.getElementById(id);
     const values = [...new Set(data.map(d => d[fields[id]]).filter(Boolean))].sort();
 
-    if (id === "coId") {
-      sel.innerHTML = `<option value="">All</option>` + values.map(v => {
-        const label = coIdMap[v] || v;
-        return `<option value="${v}">${label}</option>`;
-      }).join("");
-    } else {
-      sel.innerHTML = `<option value="">All</option>` + values.map(v => `<option>${v}</option>`).join("");
-    }
+    sel.innerHTML = "<option value=''>All</option>";
+    values.forEach(v => {
+      const label = (id === "coId" && coIdMap[v]) ? coIdMap[v] : v;
+      const option = document.createElement("option");
+      option.value = v;
+      option.textContent = label;
+      sel.appendChild(option);
+    });
 
     sel.addEventListener("change", () => applyFilters(data));
   }
@@ -473,16 +475,13 @@ function applyFilters(data) {
     }
 
     if (selected.branch) {
-  const filtered = data.filter(d => d.Branch === selected.branch);
-  const prevCOResponse = document.getElementById("coResponse").value;
-  const prevCOID = document.getElementById("coId").value;
-
-  updateDependentSelect("coResponse", filtered, prevCOResponse);
-  updateDependentSelect("coId", filtered, prevCOID);
-}
+      const filtered = data.filter(d => d.Branch === selected.branch);
+      updateDependentSelect("coResponse", filtered, document.getElementById("coResponse").value);
+      updateDependentSelect("coId", filtered, document.getElementById("coId").value);
+    }
 
     const filtered = data.filter(row =>
-      Object.entries(selected).every(([id, val]) => val === "" || row[fields[id]] === val)
+      Object.entries(selected).every(([id, val]) => val === "" || (row[fields[id]]?.toString() === val.toString()))
     );
 
     renderTable(filtered);
@@ -498,7 +497,6 @@ function updateDependentSelect(id, subset, prevValue = "") {
   const values = [...new Set(subset.map(d => d[field]).filter(Boolean))].sort();
 
   sel.innerHTML = "<option value=''>All</option>";
-
   values.forEach(v => {
     const label = (id === "coId" && coIdMap[v]) ? coIdMap[v] : v;
     const option = document.createElement("option");
@@ -519,15 +517,11 @@ function updateSummary(data) {
 
   const dates = data.map(d => new Date(d.Report_Date)).filter(d => !isNaN(d));
   const latest = dates.length > 0 ? new Date(Math.max(...dates)) : null;
-  if (latest) {
-  const dateStr = latest.toLocaleDateString('en-GB');
-  const timeStr = latest.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
-  document.getElementById("latestDate").textContent = `⏰ របាយការណ៍គិតត្រឹម: ${dateStr} ${timeStr}`;
-    } else {
-  document.getElementById("latestDate").textContent = "⏰ របាយការណ៍គិតត្រឹម: -";
-   }
- }
-      
+  document.getElementById("latestDate").textContent = latest ?
+    `⏰ របាយការណ៍គិតត្រឹម: ${latest.toLocaleDateString('en-GB')} ${latest.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}` :
+    "⏰ របាយការណ៍គិតត្រឹម: -";
+}
+
 function updateBadges(filters) {
   const box = document.getElementById("badgeFilters");
   if (!box) return;
@@ -535,10 +529,7 @@ function updateBadges(filters) {
   for (const id in filters) {
     const val = filters[id];
     if (val) {
-      let label = val;
-      if (id === "coId" && coIdMap[val]) {
-        label = coIdMap[val];
-      }
+      let label = (id === "coId" && coIdMap[val]) ? coIdMap[val] : val;
       const span = document.createElement("span");
       span.className = "badge-filter";
       span.innerHTML = `${id}: ${label} <span onclick="removeFilter('${id}')">&times;</span>`;
@@ -573,7 +564,6 @@ function exportExcel() {
   XLSX.writeFile(wb, "ArreasT24.xlsx");
 }
 
-
 document.getElementById("searchInput").addEventListener("input", e => {
   const term = e.target.value.toLowerCase();
   const filtered = allData.filter(row =>
@@ -599,7 +589,8 @@ function setupAutoLogoutEvents() {
     document.addEventListener(evt, resetLogoutTimer, true)
   );
   resetLogoutTimer();
-}
+}   
+      
 </script>
 </body>
 </html>
