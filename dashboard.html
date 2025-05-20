@@ -211,26 +211,43 @@
       }
     }
 
-
-  function showLoginList(period) {
+function showLoginList(period) {
   const list = document.getElementById("loginDetailList");
   const debugList = document.getElementById("debugLoginList");
   list.innerHTML = "";
   debugList.innerHTML = "";
 
-  const todayStr = new Date().toLocaleDateString("en-GB", { timeZone: "Asia/Phnom_Penh" });
+  const now = new Date();
+  const localNow = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Phnom_Penh" }));
+
+  // Create local reference dates
+  const todayStr = localNow.toLocaleDateString("en-GB", { timeZone: "Asia/Phnom_Penh" });
+
+  const startOfWeek = new Date(localNow);
+  startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay()); // Sunday
+  startOfWeek.setHours(0, 0, 0, 0);
+  const startOfMonth = new Date(localNow.getFullYear(), localNow.getMonth(), 1);
 
   const filtered = allLogins.filter(u => {
     const loginTime = new Date(u.lastLogin);
-    const loginStr = loginTime.toLocaleDateString("en-GB", { timeZone: "Asia/Phnom_Penh" });
-    const isToday = loginStr === todayStr;
+    const localLogin = new Date(loginTime.toLocaleString("en-US", { timeZone: "Asia/Phnom_Penh" }));
+    const loginStr = localLogin.toLocaleDateString("en-GB", { timeZone: "Asia/Phnom_Penh" });
 
-    // Show in debug list
+    let isMatch = false;
+    if (period === "today") {
+      isMatch = loginStr === todayStr;
+    } else if (period === "week") {
+      isMatch = localLogin >= startOfWeek;
+    } else if (period === "month") {
+      isMatch = localLogin >= startOfMonth;
+    }
+
+    // Debug output
     const debugItem = document.createElement("li");
-    debugItem.textContent = `👤 ${u.username} | ${u.fullname || ''} | ${loginTime.toLocaleString("en-GB", { timeZone: "Asia/Phnom_Penh" })} | ActiveToday = ${isToday}`;
+    debugItem.textContent = `👤 ${u.username} | ${u.fullname || ''} | ${localLogin.toLocaleString("en-GB", { timeZone: "Asia/Phnom_Penh" })} | Match = ${isMatch}`;
     debugList.appendChild(debugItem);
 
-    return isToday;
+    return isMatch;
   });
 
   if (filtered.length === 0) {
@@ -244,10 +261,9 @@
     });
   }
 
-  // Optional: log to bottom debug section
-  logDebug("Device local date: " + todayStr);
+  // Log period check range
+  logDebug(`[${period}] Range check complete`);
 }
-  
 </script>
 </body>
 </html>
