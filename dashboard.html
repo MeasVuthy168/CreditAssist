@@ -221,13 +221,15 @@
   const now = new Date();
   const localNow = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Phnom_Penh" }));
 
-  // Create local reference dates
   const todayStr = localNow.toLocaleDateString("en-GB", { timeZone: "Asia/Phnom_Penh" });
 
+  // Start of week (Sunday 00:00 Phnom Penh)
   const startOfWeek = new Date(localNow);
-  startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay()); // Sunday
+  startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
   startOfWeek.setHours(0, 0, 0, 0);
-  const startOfMonth = new Date(localNow.getFullYear(), localNow.getMonth(), 1);
+
+  // Start of month (1st day 00:00 Phnom Penh)
+  const startOfMonth = new Date(localNow.getFullYear(), localNow.getMonth(), 1, 0, 0, 0, 0);
 
   const filtered = allLogins.filter(u => {
     const loginTime = new Date(u.lastLogin);
@@ -238,12 +240,12 @@
     if (period === "today") {
       isMatch = loginStr === todayStr;
     } else if (period === "week") {
-      isMatch = localLogin >= startOfWeek;
+      isMatch = localLogin >= startOfWeek && localLogin <= localNow;
     } else if (period === "month") {
-      isMatch = localLogin >= startOfMonth;
+      isMatch = localLogin >= startOfMonth && localLogin <= localNow;
     }
 
-    // Debug output
+    // Debug output for all logins
     const debugItem = document.createElement("li");
     debugItem.textContent = `👤 ${u.username} | ${u.fullname || ''} | ${localLogin.toLocaleString("en-GB", { timeZone: "Asia/Phnom_Penh" })} | Match = ${isMatch}`;
     debugList.appendChild(debugItem);
@@ -262,8 +264,8 @@
     });
   }
 
-  // Log period check range
-  logDebug(`[${period}] Range check complete`);
+  // Log summary
+  logDebug(`[${period}] Filtered ${filtered.length} users`);
 }
   
 </script>
