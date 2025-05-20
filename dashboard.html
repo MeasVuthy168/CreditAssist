@@ -124,10 +124,6 @@
 
   <div id="debugLog"></div>
   
-  <div class="card">
-  <h3>🧪 Debug Login Timestamps</h3>
-  <ul id="debugLoginList"><li>Loading...</li></ul>
-</div>
 
   <script>
     const baseURL = "https://secure-backend-tzj9.onrender.com";
@@ -214,23 +210,19 @@
 
   function showLoginList(period) {
   const list = document.getElementById("loginDetailList");
-  const debugList = document.getElementById("debugLoginList");
   list.innerHTML = "";
-  debugList.innerHTML = "";
 
   const now = new Date();
   const localNow = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Phnom_Penh" }));
 
   const todayStr = localNow.toLocaleDateString("en-GB", { timeZone: "Asia/Phnom_Penh" });
 
-  // Start of week (Sunday 00:00 Phnom Penh)
   const startOfWeek = new Date(localNow);
   let day = startOfWeek.getDay();
-  if (day === 0) day = 7; // Sunday becomes 7
-  startOfWeek.setDate(startOfWeek.getDate() - day + 1); // Start from Monday
+  if (day === 0) day = 7;
+  startOfWeek.setDate(startOfWeek.getDate() - day + 1);
   startOfWeek.setHours(0, 0, 0, 0);
 
-  // Start of month (1st day 00:00 Phnom Penh)
   const startOfMonth = new Date(localNow.getFullYear(), localNow.getMonth(), 1, 0, 0, 0, 0);
 
   const filtered = allLogins.filter(u => {
@@ -247,11 +239,7 @@
       isMatch = localLogin >= startOfMonth && localLogin <= localNow;
     }
 
-    // Debug output for all logins
-    const debugItem = document.createElement("li");
-    debugItem.textContent = `👤 ${u.username} | ${u.fullname || ''} | ${localLogin.toLocaleString("en-GB", { timeZone: "Asia/Phnom_Penh" })} | Match = ${isMatch}`;
-    debugList.appendChild(debugItem);
-
+    logDebug(`👤 ${u.username} | ${u.fullname || ''} | ${localLogin.toLocaleString("en-GB", { timeZone: "Asia/Phnom_Penh" })} | Match = ${isMatch}`);
     return isMatch;
   });
 
@@ -266,9 +254,9 @@
     });
   }
 
-  // Log summary
   logDebug(`[${period}] Filtered ${filtered.length} users`);
 }
+
   
 </script>
 </body>
