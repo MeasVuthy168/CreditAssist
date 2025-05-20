@@ -337,15 +337,12 @@ const fields = {
 const numberFields = ["Prn_OS", "Int_OS", "Prn_Due", "Int_Due", "Penalty", "Arreas", "Balance", "OS_USD"];
 
 async function fetchUserMap() {
-  try {
-    const res = await fetch("https://secure-backend-tzj9.onrender.com/api/users");
-    const users = await res.json();
-    users.forEach(user => {
-      coIdMap[user.username] = user.fullname;
-    });
-  } catch (error) {
-    console.error("Error loading user map:", error);
-  }
+  const res = await fetch("https://secure-backend-tzj9.onrender.com/api/users");
+  const users = await res.json();
+  users.forEach(user => {
+    coIdMap[user.username] = user.fullname;
+  });
+  console.log("✅ coIdMap loaded:", coIdMap); // DEBUG LOG
 }
 
 window.addEventListener("DOMContentLoaded", async () => {
@@ -357,13 +354,14 @@ window.addEventListener("DOMContentLoaded", async () => {
 
 async function fetchData() {
   document.getElementById("spinner").style.display = "block";
-  try {
-    const res = await fetch("https://secure-backend-tzj9.onrender.com/api/arreas-t24");
-    allData = await res.json();
-    renderTable(allData);
-    populateFilters(allData);
-    updateSummary(allData);
-    updateBadges({});
+  const res = await fetch("https://secure-backend-tzj9.onrender.com/api/arreas-t24");
+  allData = await res.json();
+  console.log("✅ Loaded arreas data:", allData); // DEBUG LOG
+  document.getElementById("spinner").style.display = "none";
+  renderTable(allData);
+  populateFilters(allData);
+  updateSummary(allData);
+  updateBadges({});
   } catch (err) {
     console.error("Error fetching data:", err);
   } finally {
@@ -399,32 +397,38 @@ function renderTable(data) {
     return `<th class="${sortClass}" onclick="sortTable('${k}')">${k}</th>`;
   }).join("");
   head.appendChild(headRow);
-
+  
   data.forEach((row, i) => {
-    const tr = document.createElement("tr");
-    const classVal = (row.Class || "").toLowerCase();
-    tr.className = 
-      classVal.includes("loss") ? "loss" :
-      classVal.includes("doubtful") ? "doubtful" :
-      classVal.includes("sub") ? "substandard" :
-      classVal.includes("special") ? "special" : "normal";
+  const tr = document.createElement("tr");
+  const classVal = (row.Class || "").toLowerCase();
+  tr.className = 
+    classVal.includes("loss") ? "loss" :
+    classVal.includes("doubtful") ? "doubtful" :
+    classVal.includes("sub") ? "substandard" :
+    classVal.includes("special") ? "special" : "normal";
 
-    tr.innerHTML = `<td>${i + 1}</td>` + keys.map(k => {
-      let val = row[k] || "";
-      if (k === "DisDate") val = formatDate(val);
-      if (k === "CO_ID" && coIdMap[val]) val = coIdMap[val];
-      if (numberFields.includes(k)) val = formatNumber(val);
-      return `<td>${val}</td>`;
-    }).join("");
+  tr.innerHTML = `<td>${i + 1}</td>` + keys.map(k => {
+    let val = row[k] || "";
 
-    tr.addEventListener("click", () => {
-      tr.classList.add("highlighted");
-      setTimeout(() => tr.classList.remove("highlighted"), 600);
-    });
+    // DEBUG: log CO_ID before mapping
+    if (k === "CO_ID") {
+      console.log(`Row ${i} - Original CO_ID: ${val}, Mapped: ${coIdMap[val]}`);
+      val = coIdMap[val] || val;
+    }
 
-    body.appendChild(tr);
+    if (k === "DisDate") val = formatDate(val);
+    if (numberFields.includes(k)) val = formatNumber(val);
+
+    return `<td>${val}</td>`;
+  }).join("");
+
+  tr.addEventListener("click", () => {
+    tr.classList.add("highlighted");
+    setTimeout(() => tr.classList.remove("highlighted"), 600);
   });
-}
+
+  body.appendChild(tr);
+});
 
 function sortTable(key) {
   document.getElementById("spinner").style.display = "block";
