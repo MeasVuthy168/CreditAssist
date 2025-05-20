@@ -447,10 +447,13 @@ function applyFilters(data) {
     }
 
     if (selected.branch) {
-      const filtered = data.filter(d => d.Branch === selected.branch);
-      updateDependentSelect("coResponse", filtered);
-      updateDependentSelect("coId", filtered);
-    }
+  const filtered = data.filter(d => d.Branch === selected.branch);
+  const prevCOResponse = document.getElementById("coResponse").value;
+  const prevCOID = document.getElementById("coId").value;
+
+  updateDependentSelect("coResponse", filtered, prevCOResponse);
+  updateDependentSelect("coId", filtered, prevCOID);
+}
 
     const filtered = data.filter(row =>
       Object.entries(selected).every(([id, val]) => val === "" || row[fields[id]] === val)
@@ -463,11 +466,15 @@ function applyFilters(data) {
   }, 200);
 }
 
-function updateDependentSelect(id, subset) {
+function updateDependentSelect(id, subset, prevValue = "") {
   const field = fields[id];
   const sel = document.getElementById(id);
   const values = [...new Set(subset.map(d => d[field]).filter(Boolean))].sort();
-  sel.innerHTML = "<option value=''>All</option>" + values.map(v => `<option>${v}</option>`).join("");
+  sel.innerHTML = "<option value=''>All</option>" + values.map(v => `<option value="${v}">${v}</option>`).join("");
+
+  if (values.includes(prevValue)) {
+    sel.value = prevValue;
+  }
 }
 
 function updateSummary(data) {
