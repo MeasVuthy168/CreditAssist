@@ -412,6 +412,7 @@ function renderTable(data) {
     tr.innerHTML = `<td>${i + 1}</td>` + keys.map(k => {
       let val = row[k] || "";
       if (k === "DisDate") val = formatDate(val);
+      if (k === "CO_ID" && coIdMap[val]) val = coIdMap[val];
       if (numberFields.includes(k)) val = formatNumber(val);
       return `<td>${val}</td>`;
     }).join("");
