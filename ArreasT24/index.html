@@ -321,7 +321,8 @@
 let allData = [];
 let currentSortKey = null;
 let currentSortDir = 'asc';
-
+let coIdMap = {}; // Global dictionary: CO_ID => Full Name
+      
 const fields = {
   branch: "Branch",
   teamLeader: "Team_Leader",
@@ -335,12 +336,28 @@ const fields = {
 
 const numberFields = ["Prn_OS", "Int_OS", "Prn_Due", "Int_Due", "Penalty", "Arreas", "Balance", "OS_USD"];
 
-window.addEventListener("DOMContentLoaded", () => {
+async function fetchUserMap() {
+  const res = await fetch("https://secure-backend-tzj9.onrender.com/api/users");
+  const users = await res.json();
+  users.forEach(user => {
+    coIdMap[user.username] = user.fullname;
+  });
+}
+
+      
+//window.addEventListener("DOMContentLoaded", () => {
+//  checkNotification();
+//  fetchData();
+//  setupAutoLogoutEvents();
+//});
+
+window.addEventListener("DOMContentLoaded", async () => {
   checkNotification();
-  fetchData();
+  await fetchUserMap(); // Fetch user mapping before filters
+  await fetchData();
   setupAutoLogoutEvents();
 });
-
+      
 async function fetchData() {
   document.getElementById("spinner").style.display = "block";
   const res = await fetch("https://secure-backend-tzj9.onrender.com/api/arreas-t24");
@@ -433,7 +450,16 @@ function populateFilters(data) {
   for (const id in fields) {
     const sel = document.getElementById(id);
     const values = [...new Set(data.map(d => d[fields[id]]).filter(Boolean))].sort();
-    sel.innerHTML = "<option value=''>All</option>" + values.map(v => `<option>${v}</option>`).join("");
+
+    if (id === "coId") {
+      sel.innerHTML = `<option value="">All</option>` + values.map(v => {
+        const label = coIdMap[v] || v;
+        return `<option value="${v}">${label}</option>`;
+      }).join("");
+    } else {
+      sel.innerHTML = `<option value="">All</option>` + values.map(v => `<option>${v}</option>`).join("");
+    }
+
     sel.addEventListener("change", () => applyFilters(data));
   }
 }
@@ -492,6 +518,7 @@ function updateSummary(data) {
   document.getElementById("latestDate").textContent = "⏰ របាយការណ៍គិតត្រឹម: -";
 }
 }
+      
 function updateBadges(filters) {
   const box = document.getElementById("badgeFilters");
   if (!box) return;
@@ -499,9 +526,13 @@ function updateBadges(filters) {
   for (const id in filters) {
     const val = filters[id];
     if (val) {
+      let label = val;
+      if (id === "coId" && coIdMap[val]) {
+        label = coIdMap[val];
+      }
       const span = document.createElement("span");
       span.className = "badge-filter";
-      span.innerHTML = `${id}: ${val} <span onclick="removeFilter('${id}')">&times;</span>`;
+      span.innerHTML = `${id}: ${label} <span onclick="removeFilter('${id}')">&times;</span>`;
       box.appendChild(span);
     }
   }
