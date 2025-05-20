@@ -497,14 +497,15 @@ function updateDependentSelect(id, subset, prevValue = "") {
   const sel = document.getElementById(id);
   const values = [...new Set(subset.map(d => d[field]).filter(Boolean))].sort();
 
-  if (id === "coId") {
-    sel.innerHTML = "<option value=''>All</option>" + values.map(v => {
-      const label = coIdMap[v] || v;
-      return `<option value="${v}">${label}</option>`;
-    }).join("");
-  } else {
-    sel.innerHTML = "<option value=''>All</option>" + values.map(v => `<option value="${v}">${v}</option>`).join("");
-  }
+  sel.innerHTML = "<option value=''>All</option>";
+
+  values.forEach(v => {
+    const label = (id === "coId" && coIdMap[v]) ? coIdMap[v] : v;
+    const option = document.createElement("option");
+    option.value = v;
+    option.textContent = label;
+    sel.appendChild(option);
+  });
 
   if (values.includes(prevValue)) {
     sel.value = prevValue;
