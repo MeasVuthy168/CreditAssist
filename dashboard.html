@@ -212,29 +212,25 @@
     }
 
   function showLoginList(period) {
-  const timezoneOffset = 7 * 60 * 60 * 1000; // UTC+7 (Cambodia)
-
-  const nowUTC = new Date(); // current UTC
-  const nowLocal = new Date(nowUTC.getTime() + timezoneOffset); // Cambodia time
-
-  const startOfTodayLocal = new Date(nowLocal.getFullYear(), nowLocal.getMonth(), nowLocal.getDate());
-  const startOfTodayUTC = new Date(startOfTodayLocal.getTime() - timezoneOffset);
-  const endOfTodayUTC = new Date(startOfTodayUTC.getTime() + 24 * 60 * 60 * 1000 - 1);
-
+  function showLoginList(period) {
   const list = document.getElementById("loginDetailList");
   const debugList = document.getElementById("debugLoginList");
   list.innerHTML = "";
   debugList.innerHTML = "";
 
+  const todayStr = new Date().toLocaleDateString("en-GB", { timeZone: "Asia/Phnom_Penh" });
+
   const filtered = allLogins.filter(u => {
     const loginTime = new Date(u.lastLogin);
-    const isToday = loginTime >= startOfTodayUTC && loginTime <= endOfTodayUTC;
+    const loginStr = loginTime.toLocaleDateString("en-GB", { timeZone: "Asia/Phnom_Penh" });
+    const isToday = loginStr === todayStr;
 
     // Show in debug list
-  const filtered = allLogins.filter(u => {
-  const loginTimeStr = new Date(u.lastLogin).toLocaleDateString("en-GB", { timeZone: "Asia/Phnom_Penh" });
-  const todayStr = new Date().toLocaleDateString("en-GB", { timeZone: "Asia/Phnom_Penh" });
-  return loginTimeStr === todayStr;
+    const debugItem = document.createElement("li");
+    debugItem.textContent = `👤 ${u.username} | ${u.fullname || ''} | ${loginTime.toLocaleString("en-GB", { timeZone: "Asia/Phnom_Penh" })} | ActiveToday = ${isToday}`;
+    debugList.appendChild(debugItem);
+
+    return isToday;
   });
 
   if (filtered.length === 0) {
@@ -248,10 +244,8 @@
     });
   }
 
-  // Log current device time for verification
-  logDebug("Device time: " + new Date().toLocaleString("en-GB", { timeZone: "Asia/Phnom_Penh" }));
-  logDebug("Start of today UTC: " + startOfTodayUTC.toISOString());
-  logDebug("End of today UTC: " + endOfTodayUTC.toISOString());
+  // Optional: log to bottom debug section
+  logDebug("Device local date: " + todayStr);
 }
   
 </script>
