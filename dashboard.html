@@ -123,6 +123,11 @@
   </div>
 
   <div id="debugLog"></div>
+  
+  <div class="card">
+  <h3>🧪 Debug Login Timestamps</h3>
+  <ul id="debugLoginList"><li>Loading...</li></ul>
+</div>
 
   <script>
     const baseURL = "https://secure-backend-tzj9.onrender.com";
@@ -209,52 +214,47 @@
   function showLoginList(period) {
   const timezoneOffset = 7 * 60 * 60 * 1000; // UTC+7 (Cambodia)
 
-  const nowUTC = new Date(); // current time in UTC
-  const nowLocal = new Date(nowUTC.getTime() + timezoneOffset); // convert to Cambodia local time
+  const nowUTC = new Date(); // current UTC
+  const nowLocal = new Date(nowUTC.getTime() + timezoneOffset); // Cambodia time
 
   const startOfTodayLocal = new Date(nowLocal.getFullYear(), nowLocal.getMonth(), nowLocal.getDate());
   const startOfTodayUTC = new Date(startOfTodayLocal.getTime() - timezoneOffset);
-
   const endOfTodayUTC = new Date(startOfTodayUTC.getTime() + 24 * 60 * 60 * 1000 - 1);
 
-  const startOfWeekLocal = new Date(startOfTodayLocal);
-  startOfWeekLocal.setDate(startOfWeekLocal.getDate() - startOfWeekLocal.getDay()); // Sunday
-  const startOfWeekUTC = new Date(startOfWeekLocal.getTime() - timezoneOffset);
-
-  const startOfMonthLocal = new Date(nowLocal.getFullYear(), nowLocal.getMonth(), 1);
-  const startOfMonthUTC = new Date(startOfMonthLocal.getTime() - timezoneOffset);
-
-  let start, end;
-  if (period === 'today') {
-    start = startOfTodayUTC;
-    end = endOfTodayUTC;
-  } else if (period === 'week') {
-    start = startOfWeekUTC;
-    end = nowUTC;
-  } else if (period === 'month') {
-    start = startOfMonthUTC;
-    end = nowUTC;
-  }
-
   const list = document.getElementById("loginDetailList");
+  const debugList = document.getElementById("debugLoginList");
   list.innerHTML = "";
+  debugList.innerHTML = "";
 
   const filtered = allLogins.filter(u => {
     const loginTime = new Date(u.lastLogin);
-    return loginTime >= start && loginTime <= end;
+    const isToday = loginTime >= startOfTodayUTC && loginTime <= endOfTodayUTC;
+
+    // Show in debug list
+    const debugItem = document.createElement("li");
+    debugItem.textContent = `👤 ${u.username} | ${u.fullname || ''} | ${new Date(u.lastLogin).toLocaleString("en-GB", { timeZone: "Asia/Phnom_Penh" })} | ActiveToday = ${isToday}`;
+    debugList.appendChild(debugItem);
+
+    return isToday;
   });
 
   if (filtered.length === 0) {
     list.innerHTML = "<li>No logins</li>";
   } else {
     filtered.forEach(u => {
-      const time = new Date(u.lastLogin).toLocaleString("en-US", { timeZone: "Asia/Phnom_Penh" });
+      const time = new Date(u.lastLogin).toLocaleString("en-GB", { timeZone: "Asia/Phnom_Penh" });
       const li = document.createElement("li");
       li.textContent = `👤 ${u.username} (${u.fullname || ''}) at ${time}`;
       list.appendChild(li);
     });
   }
+
+  // Log current device time for verification
+  logDebug("Device time: " + new Date().toLocaleString("en-GB", { timeZone: "Asia/Phnom_Penh" }));
+  logDebug("Start of today UTC: " + startOfTodayUTC.toISOString());
+  logDebug("End of today UTC: " + endOfTodayUTC.toISOString());
 }
-  </script>
+  
+</script>
 </body>
 </html>
