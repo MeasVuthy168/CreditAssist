@@ -316,8 +316,7 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="../notifications/checkNotification.js"></script>
-
- <script>
+<script>
 let allData = [];
 let currentSortKey = null;
 let currentSortDir = 'asc';
@@ -336,13 +335,19 @@ const fields = {
 
 const numberFields = ["Prn_OS", "Int_OS", "Prn_Due", "Int_Due", "Penalty", "Arreas", "Balance", "OS_USD"];
 
+// ✅ Enhanced fetchUserMap with DEBUG
 async function fetchUserMap() {
-  const res = await fetch("https://secure-backend-tzj9.onrender.com/api/users");
-  const users = await res.json();
-  users.forEach(user => {
-    coIdMap[user.username] = user.fullname;
-  });
-  console.log("✅ coIdMap loaded:", coIdMap); // DEBUG LOG
+  try {
+    const res = await fetch("https://secure-backend-tzj9.onrender.com/api/users");
+    const users = await res.json();
+    console.log("✅ Raw users:", users); // DEBUG
+    users.forEach(user => {
+      coIdMap[user.username.toString()] = user.fullname;
+    });
+    console.log("✅ coIdMap loaded:", coIdMap);
+  } catch (err) {
+    console.error("❌ Error loading user map:", err);
+  }
 }
 
 window.addEventListener("DOMContentLoaded", async () => {
@@ -353,15 +358,15 @@ window.addEventListener("DOMContentLoaded", async () => {
 });
 
 async function fetchData() {
-  document.getElementById("spinner").style.display = "block";
-  const res = await fetch("https://secure-backend-tzj9.onrender.com/api/arreas-t24");
-  allData = await res.json();
-  console.log("✅ Loaded arreas data:", allData); // DEBUG LOG
-  document.getElementById("spinner").style.display = "none";
-  renderTable(allData);
-  populateFilters(allData);
-  updateSummary(allData);
-  updateBadges({});
+  try {
+    document.getElementById("spinner").style.display = "block";
+    const res = await fetch("https://secure-backend-tzj9.onrender.com/api/arreas-t24");
+    allData = await res.json();
+    console.log("✅ Loaded arreas data:", allData); // DEBUG
+    renderTable(allData);
+    populateFilters(allData);
+    updateSummary(allData);
+    updateBadges({});
   } catch (err) {
     console.error("Error fetching data:", err);
   } finally {
@@ -397,38 +402,37 @@ function renderTable(data) {
     return `<th class="${sortClass}" onclick="sortTable('${k}')">${k}</th>`;
   }).join("");
   head.appendChild(headRow);
-  
+
   data.forEach((row, i) => {
-  const tr = document.createElement("tr");
-  const classVal = (row.Class || "").toLowerCase();
-  tr.className = 
-    classVal.includes("loss") ? "loss" :
-    classVal.includes("doubtful") ? "doubtful" :
-    classVal.includes("sub") ? "substandard" :
-    classVal.includes("special") ? "special" : "normal";
+    const tr = document.createElement("tr");
+    const classVal = (row.Class || "").toLowerCase();
+    tr.className = 
+      classVal.includes("loss") ? "loss" :
+      classVal.includes("doubtful") ? "doubtful" :
+      classVal.includes("sub") ? "substandard" :
+      classVal.includes("special") ? "special" : "normal";
 
-  tr.innerHTML = `<td>${i + 1}</td>` + keys.map(k => {
-    let val = row[k] || "";
+    tr.innerHTML = `<td>${i + 1}</td>` + keys.map(k => {
+      let val = row[k] || "";
 
-    // DEBUG: log CO_ID before mapping
-    if (k === "CO_ID") {
-      console.log(`Row ${i} - Original CO_ID: ${val}, Mapped: ${coIdMap[val]}`);
-      val = coIdMap[val] || val;
-    }
+      if (k === "CO_ID") {
+        console.log(`Row ${i} - CO_ID: ${val}, Mapped: ${coIdMap[val?.toString()]}`);
+        val = coIdMap[val?.toString()] || val;
+      }
+      if (k === "DisDate") val = formatDate(val);
+      if (numberFields.includes(k)) val = formatNumber(val);
 
-    if (k === "DisDate") val = formatDate(val);
-    if (numberFields.includes(k)) val = formatNumber(val);
+      return `<td>${val}</td>`;
+    }).join("");
 
-    return `<td>${val}</td>`;
-  }).join("");
+    tr.addEventListener("click", () => {
+      tr.classList.add("highlighted");
+      setTimeout(() => tr.classList.remove("highlighted"), 600);
+    });
 
-  tr.addEventListener("click", () => {
-    tr.classList.add("highlighted");
-    setTimeout(() => tr.classList.remove("highlighted"), 600);
+    body.appendChild(tr);
   });
-
-  body.appendChild(tr);
-});
+}
 
 function sortTable(key) {
   document.getElementById("spinner").style.display = "block";
@@ -439,7 +443,6 @@ function sortTable(key) {
       currentSortKey = key;
       currentSortDir = 'asc';
     }
-
     const sorted = [...allData].sort((a, b) => {
       let x = a[key] || "", y = b[key] || "";
       if (!isNaN(parseFloat(x)) && !isNaN(parseFloat(y))) {
@@ -447,7 +450,6 @@ function sortTable(key) {
       }
       return currentSortDir === 'asc' ? (x > y ? 1 : -1) : (x < y ? 1 : -1);
     });
-
     renderTable(sorted);
     document.getElementById("spinner").style.display = "none";
   }, 200);
@@ -457,7 +459,6 @@ function populateFilters(data) {
   for (const id in fields) {
     const sel = document.getElementById(id);
     const values = [...new Set(data.map(d => d[fields[id]]).filter(Boolean))].sort();
-
     sel.innerHTML = "<option value=''>All</option>";
     values.forEach(v => {
       const label = (id === "coId" && coIdMap[v]) ? coIdMap[v] : v;
@@ -466,7 +467,6 @@ function populateFilters(data) {
       option.textContent = label;
       sel.appendChild(option);
     });
-
     sel.addEventListener("change", () => applyFilters(data));
   }
 }
@@ -478,17 +478,14 @@ function applyFilters(data) {
     for (const id in fields) {
       selected[id] = document.getElementById(id).value;
     }
-
     if (selected.branch) {
       const filtered = data.filter(d => d.Branch === selected.branch);
       updateDependentSelect("coResponse", filtered, document.getElementById("coResponse").value);
       updateDependentSelect("coId", filtered, document.getElementById("coId").value);
     }
-
     const filtered = data.filter(row =>
       Object.entries(selected).every(([id, val]) => val === "" || (row[fields[id]]?.toString() === val.toString()))
     );
-
     renderTable(filtered);
     updateSummary(filtered);
     updateBadges(selected);
@@ -500,7 +497,6 @@ function updateDependentSelect(id, subset, prevValue = "") {
   const field = fields[id];
   const sel = document.getElementById(id);
   const values = [...new Set(subset.map(d => d[field]).filter(Boolean))].sort();
-
   sel.innerHTML = "<option value=''>All</option>";
   values.forEach(v => {
     const label = (id === "coId" && coIdMap[v]) ? coIdMap[v] : v;
@@ -509,17 +505,13 @@ function updateDependentSelect(id, subset, prevValue = "") {
     option.textContent = label;
     sel.appendChild(option);
   });
-
-  if (values.includes(prevValue)) {
-    sel.value = prevValue;
-  }
+  if (values.includes(prevValue)) sel.value = prevValue;
 }
 
 function updateSummary(data) {
   document.getElementById("sumCount").textContent = "👥 ចំនួនឥណទានសរុប: " + data.length;
   const total = data.reduce((sum, row) => sum + parseFloat(row.OS_USD || 0), 0);
   document.getElementById("sumTotal").textContent = "💰 សមតុល្យឥណទានសរុប: " + formatNumber(total) + " USD";
-
   const dates = data.map(d => new Date(d.Report_Date)).filter(d => !isNaN(d));
   const latest = dates.length > 0 ? new Date(Math.max(...dates)) : null;
   document.getElementById("latestDate").textContent = latest ?
@@ -594,8 +586,8 @@ function setupAutoLogoutEvents() {
     document.addEventListener(evt, resetLogoutTimer, true)
   );
   resetLogoutTimer();
-}   
-      
+}
+          
 </script>
 </body>
 </html>
