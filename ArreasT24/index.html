@@ -136,11 +136,17 @@
       cursor: pointer;
     }
     .badge-wrapper {
-      margin: 8px 12px -4px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
+  margin-bottom: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  background: white;
+  padding: 6px;
+  border-radius: 12px;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
     .badge-filter {
       background: #ffd700;
       color: #002c5f;
@@ -288,16 +294,15 @@
       <button class="export-icon" title="Export Excel" onclick="exportExcel()">⭳</button>
     </div>
 
-    <div class="badge-wrapper" id="badgeFilters"></div>
-  </div>
 
   <div class="table-container">
-    <div id="spinner" class="spinner" style="display: none;"></div>
-    <table id="arreasTable">
-      <thead id="tableHead"></thead>
-      <tbody id="tableBody"></tbody>
-    </table>
-  </div>
+  <div class="badge-wrapper" id="badgeFilters"></div> <!-- Move here -->
+  <div id="spinner" class="spinner" style="display: none;"></div>
+  <table id="arreasTable">
+    <thead id="tableHead"></thead>
+    <tbody id="tableBody"></tbody>
+  </table>
+</div>
 
   <div class="bottom-bar">
     <button class="bottom-btn" onclick="location.href='../index.html'"><img src="../icons/Home.png" width="24"><div>Home</div></button>
