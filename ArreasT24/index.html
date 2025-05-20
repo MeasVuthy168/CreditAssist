@@ -262,6 +262,13 @@
       border-radius: 50%;
       font-weight: bold;
     }
+
+    .export-icon img,
+    .clear-icon img {
+    display: block;
+    margin: auto;
+   }
+    
   </style>
 </head>
 
@@ -284,14 +291,18 @@
       <div class="filter-section"><label for="occu">មុខរបរ</label><select id="occu"></select></div>
       <div class="filter-section"><label for="class">ចំណាត់ថ្នាក់ឥណទាន</label><select id="class"></select></div>
       <div class="filter-section"><label for="pd">PD</label><select id="pd"></select></div>
-      <button class="clear-icon" title="Clear Filters" onclick="resetFilters()">×</button>
+      <button class="clear-icon" title="Clear Filters" onclick="resetFilters()">
+       <img src="../icons/clear.png" width="20" height="20" alt="Clear" />
+      </button>
     </div>
 
     <div class="summary-section">
       <div id="sumCount">👥 ចំនួនឥណទានសរុប: 0</div>
       <div id="sumTotal">💰 សមតុល្យឥណទានសរុប: 0 USD</div>
       <div id="latestDate">⏰ របាយការណ៍គិតត្រឹមថ្ងៃទី: -</div>
-      <button class="export-icon" title="Export Excel" onclick="exportExcel()">⭳</button>
+      <button class="export-icon" title="Export Excel" onclick="exportExcel()">
+        <img src="../icons/excel.png" width="20" height="20" alt="Export" />
+      </button>
     </div>
 
 
