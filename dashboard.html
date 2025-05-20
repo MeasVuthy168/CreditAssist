@@ -231,11 +231,10 @@
     const isToday = loginTime >= startOfTodayUTC && loginTime <= endOfTodayUTC;
 
     // Show in debug list
-    const debugItem = document.createElement("li");
-    debugItem.textContent = `👤 ${u.username} | ${u.fullname || ''} | ${new Date(u.lastLogin).toLocaleString("en-GB", { timeZone: "Asia/Phnom_Penh" })} | ActiveToday = ${isToday}`;
-    debugList.appendChild(debugItem);
-
-    return isToday;
+  const filtered = allLogins.filter(u => {
+  const loginTimeStr = new Date(u.lastLogin).toLocaleDateString("en-GB", { timeZone: "Asia/Phnom_Penh" });
+  const todayStr = new Date().toLocaleDateString("en-GB", { timeZone: "Asia/Phnom_Penh" });
+  return loginTimeStr === todayStr;
   });
 
   if (filtered.length === 0) {
