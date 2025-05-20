@@ -496,7 +496,15 @@ function updateDependentSelect(id, subset, prevValue = "") {
   const field = fields[id];
   const sel = document.getElementById(id);
   const values = [...new Set(subset.map(d => d[field]).filter(Boolean))].sort();
-  sel.innerHTML = "<option value=''>All</option>" + values.map(v => `<option value="${v}">${v}</option>`).join("");
+
+  if (id === "coId") {
+    sel.innerHTML = "<option value=''>All</option>" + values.map(v => {
+      const label = coIdMap[v] || v;
+      return `<option value="${v}">${label}</option>`;
+    }).join("");
+  } else {
+    sel.innerHTML = "<option value=''>All</option>" + values.map(v => `<option value="${v}">${v}</option>`).join("");
+  }
 
   if (values.includes(prevValue)) {
     sel.value = prevValue;
@@ -514,10 +522,10 @@ function updateSummary(data) {
   const dateStr = latest.toLocaleDateString('en-GB');
   const timeStr = latest.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
   document.getElementById("latestDate").textContent = `⏰ របាយការណ៍គិតត្រឹម: ${dateStr} ${timeStr}`;
-} else {
+    } else {
   document.getElementById("latestDate").textContent = "⏰ របាយការណ៍គិតត្រឹម: -";
-}
-}
+   }
+ }
       
 function updateBadges(filters) {
   const box = document.getElementById("badgeFilters");
