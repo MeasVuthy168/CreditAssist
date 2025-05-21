@@ -693,12 +693,44 @@ async function fetchLatestArreasReportDate() {
 }
 
   
+async function fetchLatestNBCOSReportDate() {
+  try {
+    const res = await fetch("https://secure-backend-tzj9.onrender.com/api/nbcos");
+    const data = await res.json();
+
+    const dates = data.map(d => new Date(d.DISBURSE)).filter(d => !isNaN(d));
+    const latest = dates.length > 0 ? new Date(Math.max(...dates)) : null;
+
+    const reportSpan = document.getElementById("report-nbcos");
+
+    if (latest) {
+      const day = String(latest.getUTCDate()).padStart(2, '0');
+      const month = String(latest.getUTCMonth() + 1).padStart(2, '0');
+      const year = latest.getUTCFullYear();
+      const hour = latest.getUTCHours();
+      const minute = String(latest.getUTCMinutes()).padStart(2, '0');
+      const hour12 = ((hour + 11) % 12 + 1).toString().padStart(2, '0');
+      const ampm = hour >= 12 ? 'PM' : 'AM';
+      const formatted = `${day}/${month}/${year} ${hour12}:${minute} ${ampm} (UTC)`;
+      reportSpan.textContent = `Last Report: ${formatted}`;
+    } else {
+      reportSpan.textContent = "Last Report: –";
+    }
+  } catch (err) {
+    console.error("Failed to fetch NBCOS report date:", err);
+    const reportSpan = document.getElementById("report-nbcos");
+    reportSpan.textContent = "Last Report: –";
+  }
+}
   
-document.addEventListener("DOMContentLoaded", () => {
+  
+
+  document.addEventListener("DOMContentLoaded", () => {
   const userPosition = sessionStorage.getItem("userPosition") || "user";
   loadRobotMessage(userPosition);
   loadTimestamps();
-  fetchLatestArreasReportDate(); // <-- Add this line
+  fetchLatestArreasReportDate();
+  fetchLatestNBCOSReportDate(); // <--- add this
 });
   
 </script>
