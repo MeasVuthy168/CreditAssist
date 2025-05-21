@@ -729,22 +729,17 @@ async function fetchLatestTurnoverReportDate() {
       headers: { Authorization: `Bearer ${token}` }
     });
 
-    logMessage("[DEBUG] Turnover response status: " + res.status);
-    const text = await res.text();
-    logMessage("[DEBUG] Raw Turnover response: " + text);
-
-    const json = JSON.parse(text);
+    const json = await res.json();
     const latest = json.latestMonth;
-
-    logMessage("[DEBUG] latestMonth: " + latest);
 
     if (latest) {
       const d = new Date(latest);
       const formatted = `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
       document.getElementById("report-turnover").textContent = `Last Report: ${formatted}`;
+    } else {
+      document.getElementById("report-turnover").textContent = "Last Report: –";
     }
   } catch (err) {
-    logMessage("❌ Turnover Error: " + err.message);
     document.getElementById("report-turnover").textContent = "Last Report: –";
   }
 }
