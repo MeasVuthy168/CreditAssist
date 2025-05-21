@@ -345,16 +345,35 @@ window.addEventListener("DOMContentLoaded", () => {
   setupAutoLogoutEvents();
 });
 
+
 async function fetchData() {
   document.getElementById("spinner").style.display = "block";
-  const res = await fetch("https://secure-backend-tzj9.onrender.com/api/arreas-t24");
-  allData = await res.json();
-  document.getElementById("spinner").style.display = "none";
-  renderTable(allData);
-  populateFilters(allData);
-  updateSummaryAndReportDate(allData);
-  updateBadges({});
+  
+  const user = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
+  const token = user?.token;
+
+  try {
+    const res = await fetch("https://secure-backend-tzj9.onrender.com/api/arreas-t24", {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    if (!res.ok) throw new Error("Unauthorized or fetch failed");
+
+    allData = await res.json();
+    document.getElementById("spinner").style.display = "none";
+    renderTable(allData);
+    populateFilters(allData);
+    updateSummaryAndReportDate(allData);
+    updateBadges({});
+  } catch (err) {
+    document.getElementById("spinner").style.display = "none";
+    alert("Failed to load data: " + err.message);
+    console.error("❌ fetchData error:", err.message);
+  }
 }
+      
 
 function formatDate(dateStr) {
   const d = new Date(dateStr);
