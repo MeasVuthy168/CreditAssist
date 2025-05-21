@@ -700,26 +700,43 @@ async function fetchLatestArreasReportDate() {
   
 async function loadNBCOSLatestReport() {
   const debug = document.getElementById("uploadLog");
-  debug.innerHTML += `<div style="color: lime;">[DEBUG] Fetching NBCOS...</div>`;
+  debug.innerHTML += `<div style="color: lime;">[DEBUG] NBCOS check log...</div>`;
 
   try {
+    const token = sessionStorage.getItem("token");
+    if (!token) throw new Error("No token in sessionStorage");
+
     const res = await fetch("https://secure-backend-tzj9.onrender.com/api/nbcos/latest-disburse", {
       headers: {
-        Authorization: `Bearer ${sessionStorage.getItem("token")}`
+        Authorization: `Bearer ${token}`
       }
     });
 
-    const data = await res.json();
+    debug.innerHTML += `<div style="color: orange;">[DEBUG] Response Status: ${res.status}</div>`;
 
-    if (res.ok && data.latestDisburse) {
-      const date = new Date(data.latestDisburse);
+    const text = await res.text(); // get raw text first
+    debug.innerHTML += `<div style="color: yellow;">[DEBUG] Raw Response: ${text.slice(0, 100)}</div>`;
+
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch (jsonErr) {
+      throw new Error("❌ Failed to parse JSON: " + jsonErr.message);
+    }
+
+    const rawDate = data.latestDisburse;
+    debug.innerHTML += `<div style="color: cyan;">[DEBUG] latestDisburse: ${rawDate}</div>`;
+
+    if (rawDate) {
+      const date = new Date(rawDate);
       const formatted = `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`;
       document.getElementById("report-nbcos").textContent = `Last Report: ${formatted}`;
     } else {
       document.getElementById("report-nbcos").textContent = "Last Report: –";
     }
+
   } catch (err) {
-    debug.innerHTML += `<div style="color: red;">❌ ERROR: ${err.message}</div>`;
+    debug.innerHTML += `<div style="color: red;">❌ NBCOS Error: ${err.message}</div>`;
     document.getElementById("report-nbcos").textContent = "Last Report: –";
   }
 }
