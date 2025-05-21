@@ -699,49 +699,36 @@ async function fetchLatestArreasReportDate() {
 
   
 
-  async function loadNBCOSLatestReport() {
-  const debug = document.getElementById("uploadLog");
-  debug.innerHTML += `<div style="color: lime;">[DEBUG] NBCOS check log...</div>`;
-
+  async function checkNBCOSLatestDisburse() {
   try {
+    logMessage("[DEBUG] NBCOS check log...");
     const token = sessionStorage.getItem("token");
-    if (!token) throw new Error("No token in sessionStorage");
-
     const res = await fetch("https://secure-backend-tzj9.onrender.com/api/nbcos/latest-disburse", {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
+      headers: { Authorization: `Bearer ${token}` }
     });
 
-    debug.innerHTML += `<div style="color: orange;">[DEBUG] Response Status: ${res.status}</div>`;
+    logMessage("[DEBUG] Response Status: " + res.status);
 
-    const text = await res.text(); // get raw text first
-    debug.innerHTML += `<div style="color: yellow;">[DEBUG] Raw Response: ${text.slice(0, 100)}</div>`;
+    const text = await res.text();
+    logMessage("[DEBUG] Raw Response: " + text);
 
-    let data;
     try {
-      data = JSON.parse(text);
-    } catch (jsonErr) {
-      throw new Error("❌ Failed to parse JSON: " + jsonErr.message);
+      const json = JSON.parse(text);
+      const latest = json.latestDisburse;
+      logMessage("[DEBUG] latestDisburse: " + latest);
+
+      if (latest) {
+        const d = new Date(latest);
+        const formatted = `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
+        document.getElementById("report-nbcos").textContent = `Last Report: ${formatted}`;
+      }
+    } catch (e) {
+      logMessage("❌ ERROR: " + e.message);
     }
-
-    const rawDate = data.latestDisburse;
-    debug.innerHTML += `<div style="color: cyan;">[DEBUG] latestDisburse: ${rawDate}</div>`;
-
-    if (rawDate) {
-      const date = new Date(rawDate);
-      const formatted = `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`;
-      document.getElementById("report-nbcos").textContent = `Last Report: ${formatted}`;
-    } else {
-      document.getElementById("report-nbcos").textContent = "Last Report: –";
-    }
-
   } catch (err) {
-    debug.innerHTML += `<div style="color: red;">❌ NBCOS Error: ${err.message}</div>`;
-    document.getElementById("report-nbcos").textContent = "Last Report: –";
+    logMessage("❌ NBCOS Error: " + err.message);
   }
 }
-  
 
   document.addEventListener("DOMContentLoaded", () => {
   const userPosition = sessionStorage.getItem("userPosition") || "user";
