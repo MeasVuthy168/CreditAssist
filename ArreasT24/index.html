@@ -123,7 +123,8 @@
       cursor: pointer;
     }
     .badge-wrapper {
-  margin-bottom: 10px;
+  margin-top: 8px; 
+  margin-bottom: 8px;
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
@@ -134,6 +135,7 @@
   top: 0;
   z-index: 2;
 }
+
     .badge-filter {
       background: #ffd700;
       color: #002c5f;
@@ -294,12 +296,12 @@
 
 
   <div class="table-container">
-  <div class="badge-wrapper" id="badgeFilters"></div> <!-- Move here -->
   <div id="spinner" class="spinner" style="display: none;"></div>
   <table id="arreasTable">
     <thead id="tableHead"></thead>
     <tbody id="tableBody"></tbody>
   </table>
+  <div class="badge-wrapper" id="badgeFilters"></div> <!-- moved here -->
 </div>
 
   <div class="bottom-bar">
