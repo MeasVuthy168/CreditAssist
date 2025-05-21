@@ -723,12 +723,40 @@ async function fetchLatestArreasReportDate() {
   }
 }
 
+async function fetchLatestTurnoverReportDate() {
+  try {
+    const res = await fetch("https://secure-backend-tzj9.onrender.com/api/turnover/latest-month", {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+    logMessage("[DEBUG] Turnover response status: " + res.status);
+    const text = await res.text();
+    logMessage("[DEBUG] Raw Turnover response: " + text);
+
+    const json = JSON.parse(text);
+    const latest = json.latestMonth;
+
+    logMessage("[DEBUG] latestMonth: " + latest);
+
+    if (latest) {
+      const d = new Date(latest);
+      const formatted = `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
+      document.getElementById("report-turnover").textContent = `Last Report: ${formatted}`;
+    }
+  } catch (err) {
+    logMessage("❌ Turnover Error: " + err.message);
+    document.getElementById("report-turnover").textContent = "Last Report: –";
+  }
+}
+
+  
   document.addEventListener("DOMContentLoaded", () => {
   const userPosition = sessionStorage.getItem("userPosition") || "user";
   loadRobotMessage(userPosition);
   loadTimestamps();
   fetchLatestArreasReportDate();
-  fetchLatestNbcosReportDate(); // <--- add this
+  fetchLatestNbcosReportDate(); 
+  fetchLatestTurnoverReportDate() // <--- add this
 });
   
 </script>
