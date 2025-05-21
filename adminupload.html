@@ -698,36 +698,29 @@ async function fetchLatestArreasReportDate() {
 }
 
   
-async function fetchLatestNBCOSReportDate() {
-  const debugBox = document.getElementById("debugNBCOS");
-  try {
-    debugBox.textContent = "[DEBUG] Fetching NBCOS...";
+async function loadNBCOSLatestReport() {
+  const debug = document.getElementById("uploadLog");
+  debug.innerHTML += `<div style="color: lime;">[DEBUG] Fetching NBCOS...</div>`;
 
-    const res = await fetch("https://secure-backend-tzj9.onrender.com/api/nbcos");
+  try {
+    const res = await fetch("https://secure-backend-tzj9.onrender.com/api/nbcos/latest-disburse", {
+      headers: {
+        Authorization: `Bearer ${sessionStorage.getItem("token")}`
+      }
+    });
+
     const data = await res.json();
 
-    debugBox.textContent += `\nFetched ${data.length} rows`;
-
-    const rawDates = data.map(d => d.DISBURSE);
-    debugBox.textContent += `\nFirst 5 DISBURSE values:\n` + rawDates.slice(0, 5).join("\n");
-
-    const dates = rawDates.map(d => new Date(d)).filter(d => !isNaN(d));
-    const latest = dates.length > 0 ? new Date(Math.max(...dates)) : null;
-
-    if (latest) {
-      const day = String(latest.getUTCDate()).padStart(2, '0');
-      const month = String(latest.getUTCMonth() + 1).padStart(2, '0');
-      const year = latest.getUTCFullYear();
-      const formatted = `${day}/${month}/${year}`;
+    if (res.ok && data.latestDisburse) {
+      const date = new Date(data.latestDisburse);
+      const formatted = `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`;
       document.getElementById("report-nbcos").textContent = `Last Report: ${formatted}`;
-      debugBox.textContent += `\nLatest valid DISBURSE: ${formatted}`;
     } else {
       document.getElementById("report-nbcos").textContent = "Last Report: –";
-      debugBox.textContent += "\nNo valid DISBURSE date found.";
     }
   } catch (err) {
+    debug.innerHTML += `<div style="color: red;">❌ ERROR: ${err.message}</div>`;
     document.getElementById("report-nbcos").textContent = "Last Report: –";
-    debugBox.textContent += `\n❌ ERROR: ${err.message}`;
   }
 }
   
