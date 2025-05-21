@@ -680,7 +680,12 @@ async function fetchLatestArreasReportDate() {
       const day = String(latest.getDate()).padStart(2, '0');
       const month = String(latest.getMonth() + 1).padStart(2, '0');
       const year = latest.getFullYear();
-      const formatted = `${day}/${month}/${year}`;
+      const hour = latest.getHours();
+      const minute = String(latest.getMinutes()).padStart(2, '0');
+      const hour12 = ((hour + 11) % 12 + 1).toString().padStart(2, '0');
+      const ampm = hour >= 12 ? 'PM' : 'AM';
+
+      const formatted = `${day}/${month}/${year} ${hour12}:${minute} ${ampm}`;
       reportSpan.textContent = `Last Report: ${formatted}`;
     } else {
       reportSpan.textContent = "Last Report: –";
