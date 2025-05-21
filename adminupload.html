@@ -696,7 +696,7 @@ async function fetchLatestArreasReportDate() {
 
   
 
-  async function checkNBCOSLatestDisburse() {
+  async function fetchLatestNbcosReportDate() {
   try {
     const res = await fetch("https://secure-backend-tzj9.onrender.com/api/nbcos/latest-disburse", {
       headers: { Authorization: `Bearer ${token}` }
@@ -728,7 +728,7 @@ async function fetchLatestArreasReportDate() {
   loadRobotMessage(userPosition);
   loadTimestamps();
   fetchLatestArreasReportDate();
-  checkNBCOSLatestDisburse(); // <--- add this
+  fetchLatestNbcosReportDate(); // <--- add this
 });
   
 </script>
