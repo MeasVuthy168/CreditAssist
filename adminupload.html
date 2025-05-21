@@ -190,6 +190,21 @@
   vertical-align: middle;
   margin-right: 6px;
 }
+
+  .meta-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: #555;
+  width: 100%;
+  margin-bottom: 6px;
+}
+
+.report-date {
+  color: #888;
+  font-style: italic;
+}
+    
 </style>
 </head>
 
@@ -247,14 +262,17 @@
   <div class="progress-container"><div class="progress-bar" id="nbcosProgress"></div></div>
 
   <!-- Arreas Data -->
-  <label class="upload-label">
-    <div><img src="icons/adm_arreasT24.png" class="icon-title" alt="arreas" /> ទិន្នន័យArreas T24</div>
-    <div class="uploader" id="by-arreas">Uploaded by: –</div>
-    <div class="timestamp" id="ts-arreas">–</div>
-  </label>
-  <input type="file" id="arreasFile" accept=".xlsx" onchange="showPreview('arreasFile', 'arreasPreview')" />
-  <div class="file-info" id="arreasPreview"></div>
-  <div class="progress-container"><div class="progress-bar" id="arreasProgress"></div></div>
+<label class="upload-label">
+  <div><img src="icons/adm_arreasT24.png" class="icon-title" alt="arreas" /> ទិន្នន័យArreas T24</div>
+  <div class="uploader" id="by-arreas">Uploaded by: –</div>
+  <div class="meta-row">
+    <span id="ts-arreas">–</span>
+    <span class="report-date" id="report-arreas">Last Report: –</span>
+  </div>
+</label>
+<input type="file" id="arreasFile" accept=".xlsx" onchange="showPreview('arreasFile', 'arreasPreview')" />
+<div class="file-info" id="arreasPreview"></div>
+<div class="progress-container"><div class="progress-bar" id="arreasProgress"></div></div>
 
   <!-- Upload Button -->
   <button class="upload-btn" onclick="uploadFiles()">🗃️ Upload to Backend (MongoDB)</button>
