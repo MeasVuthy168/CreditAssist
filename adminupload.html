@@ -698,7 +698,8 @@ async function fetchLatestArreasReportDate() {
 }
 
   
-async function loadNBCOSLatestReport() {
+
+  async function loadNBCOSLatestReport() {
   const debug = document.getElementById("uploadLog");
   debug.innerHTML += `<div style="color: lime;">[DEBUG] NBCOS check log...</div>`;
 
@@ -740,7 +741,6 @@ async function loadNBCOSLatestReport() {
     document.getElementById("report-nbcos").textContent = "Last Report: –";
   }
 }
-  
   
 
   document.addEventListener("DOMContentLoaded", () => {
