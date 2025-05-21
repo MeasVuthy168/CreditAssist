@@ -303,6 +303,11 @@
 <!-- Log Display + Overlay -->
 <div class="log-box" id="uploadLog"></div>
 <div id="overlay"><span>កំពុងបញ្ជូនទិន្នន័យ...សូមរង់ចាំ</span></div>
+
+
+<div id="debugNBCOS" style="background:#111;color:#0f0;padding:10px;font-size:11px;font-family:monospace;white-space:pre-wrap;margin:10px auto;max-width:500px;border-radius:6px;">
+  [DEBUG] NBCOS check log...
+</div>
   
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
@@ -694,29 +699,35 @@ async function fetchLatestArreasReportDate() {
 
   
 async function fetchLatestNBCOSReportDate() {
+  const debugBox = document.getElementById("debugNBCOS");
   try {
+    debugBox.textContent = "[DEBUG] Fetching NBCOS...";
+
     const res = await fetch("https://secure-backend-tzj9.onrender.com/api/nbcos");
     const data = await res.json();
 
-    // Parse DISBURSE column to Date objects
-    const dates = data.map(d => new Date(d.DISBURSE)).filter(d => !isNaN(d));
-    const latest = dates.length > 0 ? new Date(Math.max(...dates)) : null;
+    debugBox.textContent += `\nFetched ${data.length} rows`;
 
-    const reportSpan = document.getElementById("report-nbcos");
+    const rawDates = data.map(d => d.DISBURSE);
+    debugBox.textContent += `\nFirst 5 DISBURSE values:\n` + rawDates.slice(0, 5).join("\n");
+
+    const dates = rawDates.map(d => new Date(d)).filter(d => !isNaN(d));
+    const latest = dates.length > 0 ? new Date(Math.max(...dates)) : null;
 
     if (latest) {
       const day = String(latest.getUTCDate()).padStart(2, '0');
       const month = String(latest.getUTCMonth() + 1).padStart(2, '0');
       const year = latest.getUTCFullYear();
       const formatted = `${day}/${month}/${year}`;
-      reportSpan.textContent = `Last Report: ${formatted}`;
+      document.getElementById("report-nbcos").textContent = `Last Report: ${formatted}`;
+      debugBox.textContent += `\nLatest valid DISBURSE: ${formatted}`;
     } else {
-      reportSpan.textContent = "Last Report: –";
+      document.getElementById("report-nbcos").textContent = "Last Report: –";
+      debugBox.textContent += "\nNo valid DISBURSE date found.";
     }
   } catch (err) {
-    console.error("❌ Failed to fetch NBCOS data:", err);
-    const reportSpan = document.getElementById("report-nbcos");
-    reportSpan.textContent = "Last Report: –";
+    document.getElementById("report-nbcos").textContent = "Last Report: –";
+    debugBox.textContent += `\n❌ ERROR: ${err.message}`;
   }
 }
   
