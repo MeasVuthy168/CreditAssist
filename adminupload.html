@@ -700,33 +700,30 @@ async function fetchLatestArreasReportDate() {
   
 
   async function checkNBCOSLatestDisburse() {
+  async function checkNBCOSLatestDisburse() {
   try {
-    logMessage("[DEBUG] NBCOS check log...");
-    const token = sessionStorage.getItem("token");
     const res = await fetch("https://secure-backend-tzj9.onrender.com/api/nbcos/latest-disburse", {
       headers: { Authorization: `Bearer ${token}` }
     });
 
-    logMessage("[DEBUG] Response Status: " + res.status);
+    if (!res.ok) {
+      logMessage("❌ NBCOS fetch failed with status " + res.status);
+      document.getElementById("report-nbcos").textContent = "Last Report: –";
+      return;
+    }
 
-    const text = await res.text();
-    logMessage("[DEBUG] Raw Response: " + text);
+    const { latestDisburse } = await res.json();
 
-    try {
-      const json = JSON.parse(text);
-      const latest = json.latestDisburse;
-      logMessage("[DEBUG] latestDisburse: " + latest);
-
-      if (latest) {
-        const d = new Date(latest);
-        const formatted = `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
-        document.getElementById("report-nbcos").textContent = `Last Report: ${formatted}`;
-      }
-    } catch (e) {
-      logMessage("❌ ERROR: " + e.message);
+    if (latestDisburse) {
+      const d = new Date(latestDisburse);
+      const formatted = `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
+      document.getElementById("report-nbcos").textContent = `Last Report: ${formatted}`;
+    } else {
+      document.getElementById("report-nbcos").textContent = "Last Report: –";
     }
   } catch (err) {
     logMessage("❌ NBCOS Error: " + err.message);
+    document.getElementById("report-nbcos").textContent = "Last Report: –";
   }
 }
 
