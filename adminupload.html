@@ -190,6 +190,37 @@
   vertical-align: middle;
   margin-right: 6px;
 }
+
+ /* lastest report date*/ 
+  .edit-line {
+  display: flex;
+  align-items: center;
+  font-size: 13px;
+  margin: 4px 0 2px;
+  color: #0d2d5c;
+}
+
+.edit-icon {
+  width: 16px;
+  height: 16px;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+.meta-row {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  font-size: 13px;
+  color: #555;
+  margin-bottom: 2px;
+}
+
+.report-date {
+  text-align: right;
+  color: #888;
+}  
+
 </style>
 </head>
 
@@ -207,54 +238,54 @@
   </div>
 
   <!-- User Data -->
-  <label class="upload-label">
-    <div><img src="icons/amd_user.png" class="icon-title" alt="user" /> ទិន្នន័យបុគ្គលិក</div>
+<label class="upload-label">
+  <div><img src="icons/amd_user.png" class="icon-title" alt="user" /> ទិន្នន័យបុគ្គលិក</div>
+  <div class="edit-line"><img src="icons/edit.png" class="edit-icon" alt="edit" /> <span class="edit-label">Edit User</span></div>
+  <div class="meta-row">
     <div class="uploader" id="by-user">Uploaded by: –</div>
-    <div class="timestamp" id="ts-user">–</div>
-  </label>
-  <input type="file" id="userFile" accept=".xlsx" onchange="showPreview('userFile', 'userPreview')" />
-  <div class="file-info" id="userPreview"></div>
-  <div class="progress-container"><div class="progress-bar" id="userProgress"></div></div>
+    <div class="report-date" id="report-user">Last Report Date: –</div>
+  </div>
+</label>
 
-  <!-- Customer Data -->
-  <label class="upload-label">
-    <div><img src="icons/adm_customer.png" class="icon-title" alt="customer" /> ទិន្នន័យអតិថិជន</div>
+<!-- Customer Data -->
+<label class="upload-label">
+  <div><img src="icons/adm_customer.png" class="icon-title" alt="customer" /> ទិន្នន័យអតិថិជន</div>
+  <div class="edit-line"><img src="icons/edit.png" class="edit-icon" alt="edit" /> <span class="edit-label">Edit Customer</span></div>
+  <div class="meta-row">
     <div class="uploader" id="by-customer">Uploaded by: –</div>
-    <div class="timestamp" id="ts-customer">–</div>
-  </label>
-  <input type="file" id="customerFile" accept=".xlsx" onchange="showPreview('customerFile', 'customerPreview')" />
-  <div class="file-info" id="customerPreview"></div>
-  <div class="progress-container"><div class="progress-bar" id="customerProgress"></div></div>
+    <div class="report-date" id="report-customer">Last Report Date: –</div>
+  </div>
+</label>
 
-  <!-- Turnover Data -->
-  <label class="upload-label">
-    <div><img src="icons/adm_turnover.png" class="icon-title" alt="turnover" /> ទិន្នន័យDebitTurnover</div>
+<!-- Turnover Data -->
+<label class="upload-label">
+  <div><img src="icons/adm_turnover.png" class="icon-title" alt="turnover" /> ទិន្នន័យDebitTurnover</div>
+  <div class="edit-line"><img src="icons/edit.png" class="edit-icon" alt="edit" /> <span class="edit-label">Edit Turnover</span></div>
+  <div class="meta-row">
     <div class="uploader" id="by-turnover">Uploaded by: –</div>
-    <div class="timestamp" id="ts-turnover">–</div>
-  </label>
-  <input type="file" id="turnoverFile" accept=".xlsx" onchange="showPreview('turnoverFile', 'turnoverPreview')" />
-  <div class="file-info" id="turnoverPreview"></div>
-  <div class="progress-container"><div class="progress-bar" id="turnoverProgress"></div></div>
+    <div class="report-date" id="report-turnover">Last Report Date: –</div>
+  </div>
+</label>
 
-  <!-- NBCOS Data -->
-  <label class="upload-label">
-    <div><img src="icons/adm_loan.png" class="icon-title" alt="loan" /> ទិន្នន័យLoanOutstanding</div>
+<!-- NBCOS Data -->
+<label class="upload-label">
+  <div><img src="icons/adm_loan.png" class="icon-title" alt="loan" /> ទិន្នន័យLoanOutstanding</div>
+  <div class="edit-line"><img src="icons/edit.png" class="edit-icon" alt="edit" /> <span class="edit-label">Edit NBCOS</span></div>
+  <div class="meta-row">
     <div class="uploader" id="by-nbcos">Uploaded by: –</div>
-    <div class="timestamp" id="ts-nbcos">–</div>
-  </label>
-  <input type="file" id="nbcosFile" accept=".xlsx" onchange="showPreview('nbcosFile', 'nbcosPreview')" />
-  <div class="file-info" id="nbcosPreview"></div>
-  <div class="progress-container"><div class="progress-bar" id="nbcosProgress"></div></div>
+    <div class="report-date" id="report-nbcos">Last Report Date: –</div>
+  </div>
+</label>
 
-  <!-- Arreas Data -->
-  <label class="upload-label">
-    <div><img src="icons/adm_arreasT24.png" class="icon-title" alt="arreas" /> ទិន្នន័យArreas T24</div>
+<!-- Arreas Data -->
+<label class="upload-label">
+  <div><img src="icons/adm_arreasT24.png" class="icon-title" alt="arreas" /> ទិន្នន័យArreas T24</div>
+  <div class="edit-line"><img src="icons/edit.png" class="edit-icon" alt="edit" /> <span class="edit-label">Edit Arreas</span></div>
+  <div class="meta-row">
     <div class="uploader" id="by-arreas">Uploaded by: –</div>
-    <div class="timestamp" id="ts-arreas">–</div>
-  </label>
-  <input type="file" id="arreasFile" accept=".xlsx" onchange="showPreview('arreasFile', 'arreasPreview')" />
-  <div class="file-info" id="arreasPreview"></div>
-  <div class="progress-container"><div class="progress-bar" id="arreasProgress"></div></div>
+    <div class="report-date" id="report-arreas">Last Report Date: –</div>
+  </div>
+</label>
 
   <!-- Upload Button -->
   <button class="upload-btn" onclick="uploadFiles()">🗃️ Upload to Backend (MongoDB)</button>
