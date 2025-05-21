@@ -159,6 +159,7 @@
         if (res.ok && data.success) {
           sessionStorage.setItem("token", data.token); // ✅ Save token here
           sessionStorage.setItem("loggedInUser", JSON.stringify({
+  token: data.token, // <-- ADD THIS LINE INSIDE THE OBJECT
   username: data.username,
   fullname: data.fullname,
   position: data.position,
