@@ -677,15 +677,15 @@ async function fetchLatestArreasReportDate() {
     const reportSpan = document.getElementById("report-arreas");
 
     if (latest) {
-      const day = String(latest.getDate()).padStart(2, '0');
-      const month = String(latest.getMonth() + 1).padStart(2, '0');
-      const year = latest.getFullYear();
-      const hour = latest.getHours();
-      const minute = String(latest.getMinutes()).padStart(2, '0');
+      const day = String(latest.getUTCDate()).padStart(2, '0');
+      const month = String(latest.getUTCMonth() + 1).padStart(2, '0');
+      const year = latest.getUTCFullYear();
+      const hour = latest.getUTCHours();
+      const minute = String(latest.getUTCMinutes()).padStart(2, '0');
       const hour12 = ((hour + 11) % 12 + 1).toString().padStart(2, '0');
       const ampm = hour >= 12 ? 'PM' : 'AM';
 
-      const formatted = `${day}/${month}/${year} ${hour12}:${minute} ${ampm}`;
+      const formatted = `${day}/${month}/${year} ${hour12}:${minute} ${ampm} (UTC)`;
       reportSpan.textContent = `Last Report: ${formatted}`;
     } else {
       reportSpan.textContent = "Last Report: –";
@@ -695,7 +695,6 @@ async function fetchLatestArreasReportDate() {
     document.getElementById("report-arreas").textContent = "Last Report: –";
   }
 }
-
   
 
   async function fetchLatestNbcosReportDate() {
