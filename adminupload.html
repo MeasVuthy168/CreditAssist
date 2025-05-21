@@ -685,7 +685,7 @@ async function fetchLatestArreasReportDate() {
       const hour12 = ((hour + 11) % 12 + 1).toString().padStart(2, '0');
       const ampm = hour >= 12 ? 'PM' : 'AM';
 
-      const formatted = `${day}/${month}/${year} ${hour12}:${minute} ${ampm} (UTC)`;
+      const formatted = `${day}/${month}/${year} ${hour12}:${minute} ${ampm}`;
       reportSpan.textContent = `Last Report: ${formatted}`;
     } else {
       reportSpan.textContent = "Last Report: –";
