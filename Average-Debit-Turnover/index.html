@@ -370,12 +370,25 @@ function formatYMD(dateInput) {
 
 async function loadAllData() {
   try {
-    const res = await fetch("https://secure-backend-tzj9.onrender.com/api/turnover");
+    const user = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
+    const token = user?.token;
+    if (!token) throw new Error("Missing token");
+
+    const res = await fetch("https://secure-backend-tzj9.onrender.com/api/turnover", {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    if (!res.ok) throw new Error("Unauthorized or server error");
+
     combinedData = await res.json();
-  } catch {
+  } catch (err) {
     alert("បញ្ហាភ្ជាប់ម៉ាស៊ីនមេ");
+    console.error("❌ Turnover fetch error:", err.message);
   }
 }
+  
 
 async function fetchAndFillData(cif) {
   let totalAmtIn = 0, totalOd = 0, totalRate = 0, count = 0;
