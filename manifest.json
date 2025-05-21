@@ -1,6 +1,6 @@
 {
   "name": "កម្មវិធីជំនួយឥណទាន",
-  "short_name": "ឥណទានឥណទាន",
+  "short_name": "ជំនួយឥណទាន",
   "start_url": "login.html",
   "display": "standalone",
   "background_color": "#0d2d5c",
