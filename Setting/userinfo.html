@@ -103,10 +103,15 @@
       <span class="info-value" id="user-position">-</span>
     </div>
 
-    <div class="info-row">
-      <span class="info-label">លេខកាត :</span>
-      <span class="info-value" id="user-username">-</span>
-    </div>
+    <div class="info-row">  
+     <span class="info-label">លេខកាត :</span>  
+     <span class="info-value" id="user-username">-</span>  
+    </div>  
+
+   <div class="info-row">  
+     <span class="info-label">ឈ្មោះសាខា :</span>  
+     <span class="info-value" id="user-branch">-</span>  
+   </div>
 
     <div class="info-row">
       <span class="info-label">លេខទូរសព្ទ :</span>
@@ -116,14 +121,17 @@
     <button class="btn-close" onclick="window.history.back()">បិទ</button>
   </div>
 
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      document.getElementById("user-fullname").textContent = sessionStorage.getItem("fullname") || "ឈ្មោះមិនមាន";
-      document.getElementById("user-position").textContent = sessionStorage.getItem("userPosition") || "-";
-      document.getElementById("user-username").textContent = sessionStorage.getItem("loggedInUser") || "-";
-      document.getElementById("user-phone").textContent = sessionStorage.getItem("phone") || "-";
-      document.getElementById("profile-photo").src = "https://secure-backend-tzj9.onrender.com/" + (sessionStorage.getItem("image") || "profile.jpg");
-    });
-  </script>
+  <script>  
+  document.addEventListener("DOMContentLoaded", () => {
+    const user = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
+
+    document.getElementById("user-fullname").textContent = user.fullname || "ឈ្មោះមិនមាន";
+    document.getElementById("user-position").textContent = user.position || "-";
+    document.getElementById("user-username").textContent = user.username || "-";
+    document.getElementById("user-branch").textContent = user.branch || "-";
+    document.getElementById("user-phone").textContent = user.phone || "-";
+    document.getElementById("profile-photo").src = "https://secure-backend-tzj9.onrender.com/" + (user.image || "profile.jpg");
+  });  
+</script>
 </body>
 </html>
