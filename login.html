@@ -159,19 +159,23 @@
         if (res.ok && data.success) {
           sessionStorage.setItem("token", data.token); // ✅ Save token here
           sessionStorage.setItem("loggedInUser", JSON.stringify({
-  token: data.token, // <-- ADD THIS LINE INSIDE THE OBJECT
+  token: data.token,
   username: data.username,
   fullname: data.fullname,
   position: data.position,
   phone: data.phone,
-  image: data.image
+  image: data.image,
+  branch: data.branch  // ✅ Add this line
 }));
+
+          
           sessionStorage.setItem("userPosition", data.position);
           sessionStorage.setItem("fullname", data.fullname);
           sessionStorage.setItem("image", data.image);
           sessionStorage.setItem("phone", data.phone);
           sessionStorage.setItem("userFullname", data.fullname);
-
+          sessionStorage.setItem("branch", data.branch); // ✅ Add this
+          
           if (rememberMe) {
             localStorage.setItem("rememberedUser", JSON.stringify({ username, password }));
           } else {
