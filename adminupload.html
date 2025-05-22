@@ -598,10 +598,10 @@ async function uploadFiles() {
   const arreas = document.getElementById('arreasFile').files[0];
 
   if (!user && !customer && !turnover && !nbcos && !arreas) {
-   alert("Please choose at least one file to upload.");
-  return;
-}
-  
+    alert("Please choose at least one file to upload.");
+    return;
+  }
+
   document.getElementById("overlay").style.display = "flex";
 
   try {
@@ -610,18 +610,23 @@ async function uploadFiles() {
     if (turnover) await uploadSingleFile(turnover, "turnover", "turnoverProgress", "turnoverFile", "turnoverPreview");
     if (nbcos) await uploadSingleFile(nbcos, "nbcos", "nbcosProgress", "nbcosFile", "nbcosPreview");
     if (arreas) await uploadSingleFile(arreas, "arreas", "arreasProgress", "arreasFile", "arreasPreview");
-    
+
     logMessage("✅ All uploads completed.");
     alert("✅ All files uploaded successfully.");
-    
+
+    // Refresh timestamps and latest report dates
     await loadTimestamps();
-  
+    await fetchLatestTurnoverReportDate();
+    await fetchLatestNbcosReportDate();
+    await fetchLatestArreasReportDate();
+
   } catch (err) {
     alert("❌ Some uploads failed. Check logs.");
   }
 
   document.getElementById("overlay").style.display = "none";
 }
+  
 
 async function loadRobotMessage(userPosition) {
   try {
