@@ -414,7 +414,7 @@ function renderTable(data) {
     return;
   }
 
-  const keys = Object.keys(data[0]).filter(k => !["_id", "__v", "Report_Date"].includes(k));
+  const keys = Object.keys(data[0]).filter(k => !["_id", "__v", "Concate", "Report_Date"].includes(k));
   const headRow = document.createElement("tr");
   headRow.innerHTML = `<th>No</th>` + keys.map(k => {
     const sortClass = (currentSortKey === k) ? `sort-${currentSortDir}` : "";
