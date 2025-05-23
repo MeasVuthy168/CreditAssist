@@ -339,7 +339,7 @@ const token = sessionStorage.getItem('token');
 
 if (!token || isTokenExpired(token)) {
   alert("⚠️ Session expired. Please login again.");
-  window.location.href = "login.html";
+  window.location.href = "../login.html";
 }
 
 function isTokenExpired(token) {
