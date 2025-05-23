@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Admin Dashboard</title>
+  <style>
+    @font-face {
+      font-family: 'Krasar';
+      src: url('Krasar-Regular.ttf') format('truetype');
+    }
+    body {
+      font-family: 'Krasar', Arial, sans-serif;
+      background: #f0f2f5;
+      margin: 0;
+      padding: 0;
+    }
+    .dashboard-header {
+      background-color: #0d2d5c;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+    }
+    .dashboard-left-link a {
+      font-size: 15px;
+      font-weight: bold;
+      color: white;
+      text-decoration: none;
+    }
+    .dashboard-left-link a:hover {
+      text-decoration: underline;
+    }
+    .dashboard-title-text {
+      font-size: 18px;
+      font-weight: bold;
+      text-align: center;
+      flex: 1;
+    }
+    .close-dashboard-btn {
+      background: transparent;
+      border: none;
+      color: white;
+      font-size: 26px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .container {
+      padding: 16px;
+    }
+    .card {
+      background: white;
+      padding: 16px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .card h3 {
+      margin-top: 0;
+    }
+    .card ul {
+      padding-left: 20px;
+      margin: 8px 0;
+    }
+    .card ul li {
+      font-size: 13px;
+      margin-bottom: 4px;
+      cursor: pointer;
+    }
+    .card ul li:hover {
+      color: blue;
+      text-decoration: underline;
+    }
+    #debugLog {
+      background: #111;
+      color: #0f0;
+      padding: 10px;
+      font-size: 8px;
+      font-family: monospace;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard-header">
+    <div class="dashboard-left-link">
+      <a href="adminupload.html">⬅️Back</a>
+    </div>
+    <div class="dashboard-title-text">Dashboard (ផ្ទាំងគ្រប់គ្រង)</div>
+    <button class="close-dashboard-btn" onclick="window.location.href='index.html'">&times;</button>
+  </div>
+
+  <div class="container">
+    <div class="card">
+      <h3>📊 Upload Summary</h3>
+      <ul id="uploadSummaryList"><li>Loading...</li></ul>
+    </div>
+
+    <div class="card">
+      <h3>📈 Statistics Overview</h3>
+      <ul id="statisticsList"><li>Loading...</li></ul>
+    </div>
+
+    <div class="card user-activity">
+      <h3>🔐 User Activity Summary</h3>
+      <ul>
+        <li onclick="showLoginList('today')">🟢 Active Today: <span id="todayCount">0</span></li>
+        <li onclick="showLoginList('week')">📅 Active This Week: <span id="weekCount">0</span></li>
+        <li onclick="showLoginList('month')">🗓️ Active This Month: <span id="monthCount">0</span></li>
+      </ul>
+      <ul id="loginDetailList"></ul>
+    </div>
+
+    <div class="card">
+      <h3>⚡ Quick Links</h3>
+      <ul>
+        <li><a href="adminupload.html">Upload Data Page</a></li>
+        <li><a href="spotcheckreport.html">SpotCheck Report</a></li>
+        <li><a href="search.html">Customer Search</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="debugLog"></div>
+  
+
+  <script>
+    const baseURL = "https://secure-backend-tzj9.onrender.com";
+    let allLogins = [];
+
+    function logDebug(msg) {
+      document.getElementById("debugLog").textContent += `[${new Date().toLocaleTimeString()}] ${msg}\n`;
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const token = sessionStorage.getItem("token");
+      const user = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
+      if (!token || !user.username) return location.href = "login.html";
+
+      loadUploadSummary();
+      loadStatistics();
+      loadActivitySummary();
+      loadAllLoginDetails();
+    });
+
+    async function loadUploadSummary() {
+      try {
+        const res = await fetch(`${baseURL}/api/admin/upload-timestamps`, {
+          headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` }
+        });
+        const data = await res.json();
+        const list = document.getElementById("uploadSummaryList");
+        list.innerHTML = "";
+        ["user", "customer", "turnover", "nbcos", "arreas"].forEach(key => {
+          const date = data[key];
+          const name = data[`${key}Fullname`] || "–";
+          const label = key.charAt(0).toUpperCase() + key.slice(1);
+          const item = document.createElement("li");
+          item.innerHTML = `<strong>${label}:</strong> ${date ? new Date(date).toLocaleString() : "N/A"} by ${name}`;
+          list.appendChild(item);
+        });
+      } catch (err) {
+        logDebug("❌ Upload Summary Error: " + err.message);
+      }
+    }
+
+    async function loadStatistics() {
+      try {
+        const res = await fetch(`${baseURL}/api/admin/stats`, {
+          headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` }
+        });
+        const stats = await res.json();
+        document.getElementById("statisticsList").innerHTML = `
+          <li><strong>Users:</strong> ${stats.users}</li>
+          <li><strong>Customers:</strong> ${stats.customers}</li>
+          <li><strong>Active Loans:</strong> ${stats.nbcos}</li>
+          <li><strong>Arreas:</strong> ${stats.arreas}</li>`;
+      } catch (err) {
+        logDebug("❌ Statistics Error: " + err.message);
+      }
+    }
+
+    async function loadActivitySummary() {
+      try {
+        const res = await fetch(`${baseURL}/api/admin/user-activity-summary`, {
+          headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` }
+        });
+        const data = await res.json();
+        document.getElementById("todayCount").textContent = data.todayCount;
+        document.getElementById("weekCount").textContent = data.weekCount;
+        document.getElementById("monthCount").textContent = data.monthCount;
+      } catch (err) {
+        logDebug("❌ Activity Summary Error: " + err.message);
+      }
+    }
+
+    async function loadAllLoginDetails() {
+      try {
+        const res = await fetch(`${baseURL}/api/admin/user-logins-all`, {
+          headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` }
+        });
+        allLogins = await res.json();
+        showLoginList('today'); // default
+      } catch (err) {
+        logDebug("❌ Failed to fetch login list: " + err.message);
+      }
+    }
+
+
+  function showLoginList(period) {
+  const list = document.getElementById("loginDetailList");
+  list.innerHTML = "";
+
+  const now = new Date();
+  const localNow = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Phnom_Penh" }));
+
+  const todayStr = localNow.toLocaleDateString("en-GB", { timeZone: "Asia/Phnom_Penh" });
+
+  const startOfWeek = new Date(localNow);
+  let day = startOfWeek.getDay();
+  if (day === 0) day = 7;
+  startOfWeek.setDate(startOfWeek.getDate() - day + 1);
+  startOfWeek.setHours(0, 0, 0, 0);
+
+  const startOfMonth = new Date(localNow.getFullYear(), localNow.getMonth(), 1, 0, 0, 0, 0);
+
+  const filtered = allLogins.filter(u => {
+    const loginTime = new Date(u.lastLogin);
+    const localLogin = new Date(loginTime.toLocaleString("en-US", { timeZone: "Asia/Phnom_Penh" }));
+    const loginStr = localLogin.toLocaleDateString("en-GB", { timeZone: "Asia/Phnom_Penh" });
+
+    let isMatch = false;
+    if (period === "today") {
+      isMatch = loginStr === todayStr;
+    } else if (period === "week") {
+      isMatch = localLogin >= startOfWeek && localLogin <= localNow;
+    } else if (period === "month") {
+      isMatch = localLogin >= startOfMonth && localLogin <= localNow;
+    }
+
+    logDebug(`👤 ${u.username} | ${u.fullname || ''} | ${localLogin.toLocaleString("en-GB", { timeZone: "Asia/Phnom_Penh" })} | Match = ${isMatch}`);
+    return isMatch;
+  });
+
+  if (filtered.length === 0) {
+    list.innerHTML = "<li>No logins</li>";
+  } else {
+    filtered.forEach(u => {
+      const time = new Date(u.lastLogin).toLocaleString("en-GB", { timeZone: "Asia/Phnom_Penh" });
+      const li = document.createElement("li");
+      li.textContent = `👤 ${u.username} (${u.fullname || ''}) at ${time}`;
+      list.appendChild(li);
+    });
+  }
+
+  logDebug(`[${period}] Filtered ${filtered.length} users`);
+}
+
+  
+</script>
+</body>
+</html>
