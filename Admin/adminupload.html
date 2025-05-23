@@ -205,10 +205,10 @@
   font-style: italic;
 }
 
- .label-row {
+.label-row-between {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 6px;
 }
 
 .edit-btn {
@@ -224,7 +224,7 @@
 
 .edit-btn:hover {
   background-color: #09306d;
-}   
+}
     
 </style>
 </head>
@@ -244,10 +244,12 @@
 
   <!-- User Data -->
 <label class="upload-label">
-  <div class="label-row">
+  <div class="label-row-between">
+    <div style="display: flex; align-items: center; gap: 6px;">
+      <img src="../icons/amd_user.png" class="icon-title" alt="user" />
+      <span>ទិន្នន័យបុគ្គលិក</span>
+    </div>
     <button class="edit-btn" onclick="window.location.href='officer.html'">Edit</button>
-    <img src="../icons/amd_user.png" class="icon-title" alt="user" />
-    <span>ទិន្នន័យបុគ្គលិក</span>
   </div>
   <div class="uploader" id="by-user">Uploaded by: –</div>
   <div class="meta-row">
@@ -258,7 +260,7 @@
 <input type="file" id="userFile" accept=".xlsx" onchange="showPreview('userFile', 'userPreview')" />
 <div class="file-info" id="userPreview"></div>
 <div class="progress-container"><div class="progress-bar" id="userProgress"></div></div>
-
+  
   
 <!-- Customer Data -->
 <label class="upload-label">
