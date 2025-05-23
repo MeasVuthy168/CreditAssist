@@ -205,21 +205,21 @@
   font-style: italic;
 }
 
-.label-row-relative {
+.upload-label-wrapper {
   position: relative;
-  display: flex;
-  align-items: center;
 }
 
-.label-left {
+.label-title {
   display: flex;
   align-items: center;
-  gap: 6px;
+  position: relative;
 }
 
-.edit-btn-absolute {
+.edit-btn-right {
   position: absolute;
   right: 0;
+  top: 50%;
+  transform: translateY(-50%);
   background-color: #0d2d5c;
   color: white;
   border: none;
@@ -230,7 +230,7 @@
   transition: background 0.3s;
 }
 
-.edit-btn-absolute:hover {
+.edit-btn-right:hover {
   background-color: #09306d;
 }
     
@@ -271,19 +271,24 @@
 <div class="progress-container"><div class="progress-bar" id="userProgress"></div></div>
   
   
-<!-- Customer Data -->
-<label class="upload-label">
-  <div><img src="../icons/adm_customer.png" class="icon-title" alt="customer" /> ទិន្នន័យអតិថិជន</div>
-  <div class="uploader" id="by-customer">Uploaded by: –</div>
+<!-- User Data -->
+<label class="upload-label upload-label-wrapper">
+  <div class="label-title">
+    <img src="../icons/amd_user.png" class="icon-title" alt="user" />
+    <span>ទិន្នន័យបុគ្គលិក</span>
+    <button class="edit-btn-right" onclick="window.location.href='officer.html'">Edit</button>
+  </div>
+  <div class="uploader" id="by-user">Uploaded by: –</div>
   <div class="meta-row">
-    <span id="ts-customer">–</span>
-    <!--<span class="report-date" id="report-customer">Last Report: –</span>-->
+    <span id="ts-user">–</span>
+    <!--<span class="report-date" id="report-user">Last Report: –</span> -->
   </div>
 </label>
-<input type="file" id="customerFile" accept=".xlsx" onchange="showPreview('customerFile', 'customerPreview')" />
-<div class="file-info" id="customerPreview"></div>
-<div class="progress-container"><div class="progress-bar" id="customerProgress"></div></div>
+<input type="file" id="userFile" accept=".xlsx" onchange="showPreview('userFile', 'userPreview')" />
+<div class="file-info" id="userPreview"></div>
+<div class="progress-container"><div class="progress-bar" id="userProgress"></div></div>
 
+  
 <!-- Turnover Data -->
 <label class="upload-label">
   <div><img src="../icons/adm_turnover.png" class="icon-title" alt="turnover" /> ទិន្នន័យDebitTurnover</div>
