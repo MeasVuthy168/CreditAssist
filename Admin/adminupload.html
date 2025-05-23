@@ -205,13 +205,21 @@
   font-style: italic;
 }
 
-.label-row-between {
+.label-row-relative {
+  position: relative;
   display: flex;
-  justify-content: space-between;
   align-items: center;
 }
 
-.edit-btn {
+.label-left {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.edit-btn-absolute {
+  position: absolute;
+  right: 0;
   background-color: #0d2d5c;
   color: white;
   border: none;
@@ -222,7 +230,7 @@
   transition: background 0.3s;
 }
 
-.edit-btn:hover {
+.edit-btn-absolute:hover {
   background-color: #09306d;
 }
     
@@ -243,13 +251,14 @@
   </div>
 
   <!-- User Data -->
+<l<!-- User Data -->
 <label class="upload-label">
-  <div class="label-row-between">
-    <div style="display: flex; align-items: center; gap: 6px;">
+  <div class="label-row-relative">
+    <div class="label-left">
       <img src="../icons/amd_user.png" class="icon-title" alt="user" />
       <span>ទិន្នន័យបុគ្គលិក</span>
     </div>
-    <button class="edit-btn" onclick="window.location.href='officer.html'">Edit</button>
+    <button class="edit-btn-absolute" onclick="window.location.href='officer.html'">Edit</button>
   </div>
   <div class="uploader" id="by-user">Uploaded by: –</div>
   <div class="meta-row">
