@@ -205,21 +205,13 @@
   font-style: italic;
 }
 
-.upload-label-wrapper {
-  position: relative;
-}
-
-.label-title {
+ .label-row {
   display: flex;
   align-items: center;
-  position: relative;
+  gap: 6px;
 }
 
-.edit-btn-right {
-  position: absolute;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
+.edit-btn {
   background-color: #0d2d5c;
   color: white;
   border: none;
@@ -230,9 +222,9 @@
   transition: background 0.3s;
 }
 
-.edit-btn-right:hover {
+.edit-btn:hover {
   background-color: #09306d;
-}
+}   
     
 </style>
 </head>
@@ -251,32 +243,11 @@
   </div>
 
   <!-- User Data -->
-<l<!-- User Data -->
 <label class="upload-label">
-  <div class="label-row-relative">
-    <div class="label-left">
-      <img src="../icons/amd_user.png" class="icon-title" alt="user" />
-      <span>ទិន្នន័យបុគ្គលិក</span>
-    </div>
-    <button class="edit-btn-absolute" onclick="window.location.href='officer.html'">Edit</button>
-  </div>
-  <div class="uploader" id="by-user">Uploaded by: –</div>
-  <div class="meta-row">
-    <span id="ts-user">–</span>
-    <!--<span class="report-date" id="report-user">Last Report: –</span> -->
-  </div>
-</label>
-<input type="file" id="userFile" accept=".xlsx" onchange="showPreview('userFile', 'userPreview')" />
-<div class="file-info" id="userPreview"></div>
-<div class="progress-container"><div class="progress-bar" id="userProgress"></div></div>
-  
-  
-<!-- User Data -->
-<label class="upload-label upload-label-wrapper">
-  <div class="label-title">
+  <div class="label-row">
+    <button class="edit-btn" onclick="window.location.href='officer.html'">Edit</button>
     <img src="../icons/amd_user.png" class="icon-title" alt="user" />
     <span>ទិន្នន័យបុគ្គលិក</span>
-    <button class="edit-btn-right" onclick="window.location.href='officer.html'">Edit</button>
   </div>
   <div class="uploader" id="by-user">Uploaded by: –</div>
   <div class="meta-row">
@@ -289,6 +260,19 @@
 <div class="progress-container"><div class="progress-bar" id="userProgress"></div></div>
 
   
+<!-- Customer Data -->
+<label class="upload-label">
+  <div><img src="../icons/adm_customer.png" class="icon-title" alt="customer" /> ទិន្នន័យអតិថិជន</div>
+  <div class="uploader" id="by-customer">Uploaded by: –</div>
+  <div class="meta-row">
+    <span id="ts-customer">–</span>
+    <!--<span class="report-date" id="report-customer">Last Report: –</span>-->
+  </div>
+</label>
+<input type="file" id="customerFile" accept=".xlsx" onchange="showPreview('customerFile', 'customerPreview')" />
+<div class="file-info" id="customerPreview"></div>
+<div class="progress-container"><div class="progress-bar" id="customerProgress"></div></div>
+
 <!-- Turnover Data -->
 <label class="upload-label">
   <div><img src="../icons/adm_turnover.png" class="icon-title" alt="turnover" /> ទិន្នន័យDebitTurnover</div>
@@ -805,4 +789,3 @@ async function fetchLatestTurnoverReportDate() {
 </script>
 </body>
 </html>
-
