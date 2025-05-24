@@ -39,6 +39,7 @@
       padding: 20px;
       border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      text-align: center;
     }
     input, select {
       width: 100%;
@@ -76,11 +77,11 @@
       width: 100%;
       border-collapse: collapse;
       margin-top: 16px;
+      text-align: center;
     }
     th, td {
       padding: 8px;
       border: 1px solid #ccc;
-      text-align: left;
     }
     th {
       background-color: #0d2d5c;
@@ -97,7 +98,6 @@
     <button onclick="window.location.href='dashboard.html'">← Back</button>
     <div>Officer Management</div>
   </div>  <!-- Section 1: Add/Edit/Delete -->  <div class="section">
-    <h3>Section 1: Manage Officer</h3>
     <input type="text" id="username" placeholder="Username">
     <input type="password" id="password" placeholder="Password">
     <input type="text" id="position" placeholder="Position">
@@ -116,8 +116,7 @@
         <img src="../icons/delete.png" class="icon-btn" alt="Delete"> Delete
       </button>
     </div>
-  </div>  <!-- Section 3: MongoDB Table -->  <div class="section">
-    <h3>Section 2: Officer List</h3>
+  </div>  <!-- Section 2: MongoDB Table -->  <div class="section">
     <table id="officerTable">
       <thead>
         <tr>
