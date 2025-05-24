@@ -13,31 +13,54 @@
       margin: 0;
       padding-top: 50px;
     }
-    .header {
-      background-color: #0d2d5c;
-      color: white;
-      font-size: 18px;
-      font-weight: bold;
-      padding: 10px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      height: 44px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-      z-index: 999;
-    }
-    .header button {
-      position: absolute;
-      left: 10px;
-      background: transparent;
-      border: none;
-      color: white;
-      font-size: 18px;
-      cursor: pointer;
-  
-    }
+    
+.header {
+  background-color: #0d2d5c;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 56px;
+  z-index: 1000;
+  font-family: 'Krasar', sans-serif;
+}
+
+.back-btn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.header-title {
+  flex: 1;
+  text-align: center;
+  font-size: 16px;
+  margin-left: -20px; /* balance the back button space */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.search-box {
+  margin-left: 8px;
+  flex-shrink: 0;
+}
+
+.search-box input {
+  width: 120px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  border: none;
+  font-size: 13px;
+  font-family: 'Krasar', sans-serif;
+}
     .section {
       background: white;
       color: black;
@@ -101,32 +124,18 @@
       height: 18px;
     }
 
-    /* Floating search bar below header */
-.search-box {
-  margin-left: 8px;
-  flex-shrink: 0;
-}
-
-.search-box input {
-  width: 120px;
-  padding: 5px 12px;
-  border-radius: 20px;
-  border: none;
-  font-family: 'Krasar', sans-serif;
-  font-size: 13px;
-}
+    
   </style>
 </head>
 <body>
 
-  <div class="header-bar">
-    <button class="back-icon" onclick="window.location.href='../index.html'">←</button>
-    <div class="header-title">បញ្ចូលថ្មី និងកែប្រែភ្នាក់ងារ</div>
-    <div class="search-box">
-    <input type="text" id="searchInput" placeholder="ស្វែងរកឈ្មោះ ឬ CIF">
+  <div class="header">
+  <button class="back-btn" onclick="window.location.href='adminupload.html'">←</button>
+  <span class="header-title">បញ្វូលថ្មី និងកែប្រែភ្នាក់ងារ</span>
+  <div class="search-box">
+    <input type="text" id="searchInput" placeholder="ស្វែងរកភ្នាក់ងារឥណទាន" />
   </div>
 </div>
-
     
 
   </div>  <div class="section">
