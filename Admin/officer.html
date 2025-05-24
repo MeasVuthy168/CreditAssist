@@ -98,11 +98,61 @@
       width: 18px;
       height: 18px;
     }
+
+    /* Floating search bar below header */
+.search-fixed-bar {
+  position: fixed;
+  top: 56px;
+  left: 0;
+  right: 0;
+  background: #1c2331;
+  padding: 12px 0 8px;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Wrapper for search input + button */
+.search-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 320px;
+}
+
+/* Search input box */
+.search-wrapper input {
+  width: 95%;
+  padding: 10px 20px 10px 10px;
+  border-radius: 25px;
+  border: none;
+  font-size: 16px;
+  background-color: #fff;
+  color: #333;
+}
+
+/* Search icon button */
+.search-icon {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 20px;
+  color: #666;
+}
   </style>
 </head>
 <body>
   <div class="header">
     <button onclick="window.location.href='adminupload.html'">←បញ្ចូលថ្មី និងកែប្រែភ្នាក់ងារ</button>
+      <div class="search-fixed-bar">
+       <div class="search-wrapper">
+       <input type="text" id="searchBox" placeholder="សូមបញ្ចូលលេខ CIF ឬឈ្មោះ" />
+      <button class="search-icon" id="searchButton">🔍</button>
+    </div>
 
   </div>  <div class="section">
     <input type="text" id="username" placeholder="Username">
