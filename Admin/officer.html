@@ -11,52 +11,53 @@
       background-color: #1c2331;
       color: white;
       margin: 0;
-      padding-top: 50px;
+      padding-top: 60px;
     }
-    
-.header {
-  background-color: #0d2d5c;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 6px 10px;     /* Reduced padding */
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 44px;          /* Reduced height */
-  z-index: 1000;
-  font-family: 'Krasar', sans-serif;
-}
 
-.back-btn {
-  background: none;
-  border: none;
-  color: white;
-  font-size: 18px;
-  cursor: pointer;
-  padding: 0;
-}
+    .header {
+      background-color: #0d2d5c;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 10px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 44px;
+      z-index: 1000;
+      font-family: 'Krasar', sans-serif;
+    }
 
-.header-title {
-  flex: 1;
-  text-align: center;
-  font-size: 16px;       /* Slightly smaller font */
-  margin-left: -20px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
+    .back-btn {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 18px;
+      cursor: pointer;
+      padding: 0;
+    }
 
-.search-box input {
-  width: 150px;
-  padding: 4px 10px;     /* Smaller input padding */
-  border-radius: 18px;
-  border: none;
-  font-size: 12px;
-  font-family: 'Krasar', sans-serif;
-}
+    .header-title {
+      flex: 1;
+      text-align: center;
+      font-size: 14px;
+      margin-left: -20px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .search-box input {
+      width: 150px;
+      padding: 4px 10px;
+      border-radius: 18px;
+      border: none;
+      font-size: 12px;
+      font-family: 'Krasar', sans-serif;
+    }
+
     .section {
       background: white;
       color: black;
@@ -67,6 +68,7 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
       text-align: center;
     }
+
     input, select {
       width: 100%;
       padding: 10px;
@@ -77,12 +79,14 @@
       box-sizing: border-box;
       margin-bottom: 2px;
     }
+
     .button-row {
       display: flex;
       justify-content: space-between;
       gap: 6px;
       margin-top: 12px;
     }
+
     .button-row button {
       flex: 1;
       display: flex;
@@ -90,6 +94,7 @@
       justify-content: center;
       gap: 6px;
     }
+
     button {
       padding: 10px;
       background-color: #0d2d5c;
@@ -98,48 +103,81 @@
       border-radius: 6px;
       font-size: 12px;
     }
+
     button:hover {
       background-color: #09306d;
     }
-    table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 10px;
-  text-align: center;
-  font-size: 12px; /* Reduced font size */
-}
 
-th, td {
-  padding: 4px 6px;     /* Reduced padding */
-  border: 1px solid #ccc;
-  white-space: nowrap;  /* Prevent text wrapping */
-}
-
-th {
-  background-color: #0d2d5c;
-  color: white;
-  font-size: 12px;      /* Match body font size */
-}
     .icon-btn {
       width: 18px;
       height: 18px;
     }
 
-    
+    /* Table Styling */
+    .table-wrapper {
+      overflow-x: auto;
+      width: 100%;
+      border-radius: 8px;
+    }
+
+    table {
+      min-width: 700px;
+      width: max-content;
+      border-collapse: collapse;
+      margin-top: 10px;
+      text-align: center;
+      font-size: 12px;
+    }
+
+    th, td {
+      padding: 4px 6px;
+      border: 1px solid #ccc;
+      white-space: nowrap;
+    }
+
+    th {
+      background-color: #0d2d5c;
+      color: white;
+      font-size: 12px;
+    }
+
+    /* Scrollbar Styling */
+    .table-wrapper::-webkit-scrollbar {
+      height: 8px;
+    }
+
+    .table-wrapper::-webkit-scrollbar-track {
+      background: #e0e0e0;
+      border-radius: 10px;
+    }
+
+    .table-wrapper::-webkit-scrollbar-thumb {
+      background-color: #0d2d5c;
+      border-radius: 10px;
+      border: 2px solid #e0e0e0;
+    }
+
+    .table-wrapper::-webkit-scrollbar-thumb:hover {
+      background-color: #09306d;
+    }
+
+    .table-wrapper {
+      scrollbar-color: #0d2d5c #e0e0e0;
+      scrollbar-width: thin;
+    }
   </style>
 </head>
 <body>
 
   <div class="header">
-  <button class="back-btn" onclick="window.location.href='adminupload.html'">←</button>
-  <span class="header-title">បញ្វូលថ្មី និងកែប្រែភ្នាក់ងារ</span>
-  <div class="search-box">
-    <input type="text" id="searchInput" placeholder="ស្វែងរកភ្នាក់ងារឥណទាន" />
+    <button class="back-btn" onclick="window.location.href='adminupload.html'">←</button>
+    <span class="header-title">បញ្វូលថ្មី និងកែប្រែភ្នាក់ងារ</span>
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="ស្វែងរកភ្នាក់ងារឥណទាន" />
+    </div>
   </div>
-</div>
-    
 
-  </div>  <div class="section">
+  <div class="section">
     <input type="text" id="username" placeholder="Username">
     <input type="password" id="password" placeholder="Password">
     <input type="text" id="position" placeholder="Position">
@@ -158,22 +196,28 @@ th {
         <img src="../icons/deleteSP.png" class="icon-btn" alt="Delete"> Delete
       </button>
     </div>
-  </div>  <div class="section">
-    <table id="officerTable">
-      <thead>
-        <tr>
-          <th>Username</th>
-          <th>Password</th>
-          <th>Position</th>
-          <th>Fullname</th>
-          <th>Phone</th>
-          <th>Branch</th>
-          <th>Image Path</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </div>  <script>
+  </div>
+
+  <div class="section">
+    <div class="table-wrapper">
+      <table id="officerTable">
+        <thead>
+          <tr>
+            <th>Username</th>
+            <th>Password</th>
+            <th>Position</th>
+            <th>Fullname</th>
+            <th>Phone</th>
+            <th>Branch</th>
+            <th>Image Path</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
     async function fetchOfficers() {
       const res = await fetch("https://secure-backend-tzj9.onrender.com/api/users", {
         headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` }
@@ -185,10 +229,12 @@ th {
         const tr = document.createElement('tr');
         tr.innerHTML = `
           <td>${user.username}</td>
+          <td>${user.password}</td>
           <td>${user.position}</td>
           <td>${user.fullname}</td>
           <td>${user.phone}</td>
           <td>${user.branch}</td>
+          <td>${user.image}</td>
         `;
         tbody.appendChild(tr);
       });
@@ -205,5 +251,6 @@ th {
     }
 
     document.addEventListener("DOMContentLoaded", fetchOfficers);
-  </script></body>
+  </script>
+</body>
 </html>
