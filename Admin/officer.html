@@ -96,25 +96,30 @@
       color: white;
       border: none;
       border-radius: 6px;
-      font-size: 16px;
+      font-size: 12px;
     }
     button:hover {
       background-color: #09306d;
     }
     table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 10px;
-      text-align: center;
-    }
-    th, td {
-      padding: 8px;
-      border: 1px solid #ccc;
-    }
-    th {
-      background-color: #0d2d5c;
-      color: white;
-    }
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  text-align: center;
+  font-size: 11px; /* Reduced font size */
+}
+
+th, td {
+  padding: 4px 6px;     /* Reduced padding */
+  border: 1px solid #ccc;
+  white-space: nowrap;  /* Prevent text wrapping */
+}
+
+th {
+  background-color: #0d2d5c;
+  color: white;
+  font-size: 11px;      /* Match body font size */
+}
     .icon-btn {
       width: 18px;
       height: 18px;
