@@ -1,0 +1,162 @@
+<!DOCTYPE html><html lang="km">
+<head>
+  <meta charset="UTF-8">
+  <title>Officer Management</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      font-family: 'Krasar', Arial, sans-serif;
+      background-color: #1c2331;
+      color: white;
+      margin: 0;
+      padding-top: 60px;
+    }
+    .header {
+      background-color: #0d2d5c;
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px;
+      color: white;
+      z-index: 999;
+    }
+    .section {
+      background: white;
+      color: black;
+      margin: 16px auto;
+      max-width: 600px;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    input, select {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-family: 'Krasar', Arial;
+    }
+    button {
+      padding: 10px;
+      background-color: #0d2d5c;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      width: 100%;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    button:hover {
+      background-color: #09306d;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 16px;
+    }
+    th, td {
+      padding: 8px;
+      border: 1px solid #ccc;
+      text-align: left;
+    }
+    th {
+      background-color: #0d2d5c;
+      color: white;
+    }
+    .icon-btn {
+      width: 20px;
+      height: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div>Officer Management</div>
+    <button onclick="window.location.href='dashboard.html'">⬅ Back</button>
+  </div>  <!-- Section 1: Add/Edit/Delete -->  <div class="section">
+    <h3>Section 1: Manage Officer</h3>
+    <input type="text" id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
+    <input type="text" id="position" placeholder="Position">
+    <input type="text" id="fullname" placeholder="Fullname">
+    <input type="text" id="phone" placeholder="Phone">
+    <input type="text" id="branch" placeholder="Branch">
+    <input type="text" id="image" placeholder="Image Path">
+    <button onclick="addOfficer()">
+      <img src="../icons/add.png" class="icon-btn" alt="Add"> Add Officer
+    </button>
+    <button onclick="editOfficer()">
+      <img src="../icons/edit.png" class="icon-btn" alt="Edit"> Edit Officer
+    </button>
+    <button onclick="deleteOfficer()">
+      <img src="../icons/delete.png" class="icon-btn" alt="Delete"> Delete Officer
+    </button>
+  </div>  <!-- Section 2: Summary -->  <div class="section">
+    <h3>Section 2: Officer Summary</h3>
+    <div id="officerSummary">Select a user from the table to view details.</div>
+  </div>  <!-- Section 3: MongoDB Table -->  <div class="section">
+    <h3>Section 3: Officer List</h3>
+    <table id="officerTable">
+      <thead>
+        <tr>
+          <th>Username</th>
+          <th>Position</th>
+          <th>Fullname</th>
+          <th>Phone</th>
+          <th>Branch</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>  <script>
+    async function fetchOfficers() {
+      const res = await fetch("https://secure-backend-tzj9.onrender.com/api/users", {
+        headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` }
+      });
+      const officers = await res.json();
+      const tbody = document.querySelector('#officerTable tbody');
+      tbody.innerHTML = '';
+      officers.forEach(user => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${user.username}</td>
+          <td>${user.position}</td>
+          <td>${user.fullname}</td>
+          <td>${user.phone}</td>
+          <td>${user.branch}</td>
+        `;
+        tr.onclick = () => {
+          document.getElementById("officerSummary").innerHTML = `
+            <strong>Username:</strong> ${user.username}<br>
+            <strong>Password:</strong> ${user.password}<br>
+            <strong>Position:</strong> ${user.position}<br>
+            <strong>Fullname:</strong> ${user.fullname}<br>
+            <strong>Phone:</strong> ${user.phone}<br>
+            <strong>Branch:</strong> ${user.branch}<br>
+            <strong>Image:</strong> ${user.image}
+          `;
+        };
+        tbody.appendChild(tr);
+      });
+    }
+
+    function addOfficer() {
+      alert("Add logic here");
+    }
+    function editOfficer() {
+      alert("Edit logic here");
+    }
+    function deleteOfficer() {
+      alert("Delete logic here");
+    }
+
+    document.addEventListener("DOMContentLoaded", fetchOfficers);
+  </script></body>
+</html>
