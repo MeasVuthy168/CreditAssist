@@ -247,7 +247,9 @@ function updatePreview() {
   } else if (path.startsWith("http")) {
     preview.src = path;
   } else {
-    preview.src = `https://secure-backend-tzj9.onrender.com/${path}`;
+    // Always serve from /profile/
+    const cleanPath = path.replace(/^profile\//, ''); // remove if already included
+    preview.src = `https://secure-backend-tzj9.onrender.com/profile/${cleanPath}`;
   }
 }
 
