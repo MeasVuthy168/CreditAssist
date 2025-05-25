@@ -202,41 +202,35 @@
     <div class="image-preview">
       <img id="previewImage" src="../icons/default-user.png" alt="Preview" />
       
-      <div id="debugLog" style="font-size: 10px; color: red; word-break: break-all; max-width: 140px;"></div>
-
-      <div id="debugLabel" style="color: lime; font-size: 12px;"></div>
-
-
-      
       <input type="file" id="uploadImage" accept="image/*" onchange="uploadToServer()" />
     </div>
     <div class="form-fields">
       <input type="text" id="username" placeholder="Username" oninput="autoFillImagePath()">
       <input type="password" id="password" placeholder="Password">
       <select id="position">
-  <option value="">-- Select Position --</option>
-  <option value="admin">admin</option>
-  <option value="Credit Officer">Credit Officer</option>
-  <option value="FSRO">FSRO</option>
-  <option value="SBCM">SBCM</option>
-  <option value="ABCM">ABCM</option>
-  <option value="BCM">BCM</option>
-  <option value="Staff">Staff</option>
-</select>
+       <option value="">-- Select Position --</option>
+       <option value="admin">admin</option>
+       <option value="Credit Officer">Credit Officer</option>
+      <option value="FSRO">FSRO</option>
+      <option value="SBCM">SBCM</option>
+      <option value="ABCM">ABCM</option>
+      <option value="BCM">BCM</option>
+      <option value="Staff">Staff</option>
+    </select>
 
 
       <input type="text" id="fullname" placeholder="Fullname">
       <input type="text" id="phone" placeholder="Phone">
       <select id="branch">
-  <option value="">-- Select Branch --</option>
-  <option value="Svay Rieng">Svay Rieng</option>
-  <option value="Romeas Haek">Romeas Haek</option>
-  <option value="Kraol Kou">Kraol Kou</option>
-  <option value="Nhor">Nhor</option>
-  <option value="Svay Teab">Svay Teab</option>
-  <option value="Rumdoul">Rumdoul</option>
-  <option value="Svay Chrom">Svay Chrom</option>
-</select>
+       <option value="">-- Select Branch --</option>
+       <option value="Svay Rieng">Svay Rieng</option>
+       <option value="Romeas Haek">Romeas Haek</option>
+       <option value="Kraol Kou">Kraol Kou</option>
+       <option value="Nhor">Nhor</option>
+       <option value="Svay Teab">Svay Teab</option>
+       <option value="Rumdoul">Rumdoul</option>
+       <option value="Svay Chrom">Svay Chrom</option>
+     </select>
       <input type="text" id="image" placeholder="Image Path" disabled />
       <div class="button-row">
         <button id="addBtn" onclick="addOrUpdateOfficer()">
@@ -270,7 +264,8 @@
       </table>
     </div>
   </div>
-
+<div id="debugLog" style="font-size: 10px; color: red; word-break: break-all; max-width: 140px;"></div>
+<div id="debugLabel" style="color: lime; font-size: 12px;"></div>
   <script>
     let selectedUsername = null;
 
