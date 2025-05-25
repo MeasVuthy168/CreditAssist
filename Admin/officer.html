@@ -240,13 +240,14 @@
     function autoFillImagePath() {
       const username = document.getElementById("username").value.trim();
       if (username) {
-        document.getElementById("image").value = "https://raw.githubusercontent.com/MeasVuthy168/secure-backend/main/profile/" + username + ".jpg";
+        document.getElementById("image").value = "https://secure-backend-tzj9.onrender.com/profile/" + username + ".jpg";
         updatePreview();
       }
     }
 
   
-function updatePreview() {
+
+    function updatePreview() {
   const path = document.getElementById("image").value.trim();
   const preview = document.getElementById("previewImage");
   const debug = document.getElementById("debugLabel");
@@ -257,8 +258,14 @@ function updatePreview() {
     return;
   }
 
-  preview.src = path;
-  debug.textContent = "✅ Using full image URL";
+  // Support both profile/9027.jpg or full URL
+  if (path.startsWith("profile/")) {
+    preview.src = "https://secure-backend-tzj9.onrender.com/" + path;
+  } else {
+    preview.src = path;
+  }
+
+  debug.textContent = "✅ Previewing image";
 
   preview.onerror = () => {
     preview.src = "../icons/non-image.jpg";
