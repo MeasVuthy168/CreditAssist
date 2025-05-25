@@ -257,21 +257,15 @@ function updatePreview() {
     return;
   }
 
-  if (path.startsWith("http")) {
-    preview.src = path;
-    debug.textContent = "✅ Loaded: " + path;
-  } else {
-    const cleanPath = path.replace(/^profile\//, '');
-    const fullPath = `https://secure-backend-tzj9.onrender.com/profile/${cleanPath}`;
-    preview.src = fullPath;
-    debug.textContent = "➡️ Redirect to GitHub: " + fullPath;
-  }
+  preview.src = path;
+  debug.textContent = "✅ Using full image URL";
 
   preview.onerror = () => {
     preview.src = "../icons/non-image.jpg";
-    debug.textContent = "❌ Failed to load: " + preview.src;
+    debug.textContent = "❌ Failed to load image";
   };
 }
+
 
 
 
@@ -307,10 +301,13 @@ async function uploadToServer() {
     console.log("✅ Upload result:", result);
 
 
-      if (res.ok && result.imageUrl) {
-  document.getElementById("image").value = result.imageUrl;
-  console.log("✅ Stored image path:", result.imageUrl); // Debug
+      
+if (res.ok && result.imageUrl) {
+  document.getElementById("image").value = result.imageUrl; // already full URL
   updatePreview();
+}
+
+    
 
     } else {
       alert("Upload failed: " + (result.message || "Unknown error"));
