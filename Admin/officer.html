@@ -27,29 +27,29 @@
       right: 0;
       height: 44px;
       z-index: 1000;
-      font-family: 'Krasar', sans-serif;
     }
 
     .back-btn {
-  background: none;
-  border: none;
-  color: white;
-  font-size: 22px;
-  font-weight: bold;
-  cursor: pointer;
-  padding: 8px 12px; /* Add more clickable padding */
-  margin-right: 8px;
-  border-radius: 6px;
-}
+      background: none;
+      border: none;
+      color: white;
+      font-size: 22px;
+      font-weight: bold;
+      cursor: pointer;
+      padding: 8px 12px;
+      margin-right: 8px;
+      border-radius: 6px;
+    }
 
     .back-btn:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-}
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+
     .header-title {
       flex: 1;
       text-align: center;
       font-size: 16px;
-      font-wieght: bold;
+      font-weight: bold;
       margin-left: -20px;
       white-space: nowrap;
       overflow: hidden;
@@ -69,11 +69,42 @@
       background: white;
       color: black;
       margin: 14px auto;
-      max-width: 600px;
+      max-width: 700px;
       padding: 10px 16px;
       border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      text-align: center;
+    }
+
+    .form-section {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .image-preview {
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .image-preview img {
+      width: 80px;
+      height: 80px;
+      border-radius: 8px;
+      object-fit: cover;
+      border: 2px solid #ccc;
+      background: #f0f0f0;
+      margin-bottom: 6px;
+    }
+
+    .image-preview input[type="file"] {
+      font-size: 11px;
+      width: 100px;
+    }
+
+    .form-fields {
+      flex: 1;
     }
 
     input, select {
@@ -84,7 +115,6 @@
       border: 1px solid #ccc;
       font-family: 'Krasar', Arial;
       box-sizing: border-box;
-      margin-bottom: 2px;
     }
 
     .button-row {
@@ -120,7 +150,6 @@
       height: 18px;
     }
 
-    /* Table Styling */
     .table-wrapper {
       overflow-x: auto;
       width: 100%;
@@ -145,10 +174,8 @@
     th {
       background-color: #0d2d5c;
       color: white;
-      font-size: 12px;
     }
 
-    /* Scrollbar Styling */
     .table-wrapper::-webkit-scrollbar {
       height: 8px;
     }
@@ -184,24 +211,30 @@
     </div>
   </div>
 
-  <div class="section">
-    <input type="text" id="username" placeholder="Username">
-    <input type="password" id="password" placeholder="Password">
-    <input type="text" id="position" placeholder="Position">
-    <input type="text" id="fullname" placeholder="Fullname">
-    <input type="text" id="phone" placeholder="Phone">
-    <input type="text" id="branch" placeholder="Branch">
-    <input type="text" id="image" placeholder="Image Path">
-    <div class="button-row">
-      <button onclick="addOfficer()">
-        <img src="../icons/add-newSP.png" class="icon-btn" alt="Add"> Add
-      </button>
-      <button onclick="editOfficer()">
-        <img src="../icons/editSP.png" class="icon-btn" alt="Edit"> Edit
-      </button>
-      <button onclick="deleteOfficer()">
-        <img src="../icons/deleteSP.png" class="icon-btn" alt="Delete"> Delete
-      </button>
+  <div class="section form-section">
+    <div class="image-preview">
+      <img id="previewImage" src="../icons/default-user.png" alt="Preview" />
+      <input type="file" id="uploadImage" accept="image/*" onchange="uploadToServer()" />
+    </div>
+    <div class="form-fields">
+      <input type="text" id="username" placeholder="Username">
+      <input type="password" id="password" placeholder="Password">
+      <input type="text" id="position" placeholder="Position">
+      <input type="text" id="fullname" placeholder="Fullname">
+      <input type="text" id="phone" placeholder="Phone">
+      <input type="text" id="branch" placeholder="Branch">
+      <input type="text" id="image" placeholder="Image Path" oninput="updatePreview()" />
+      <div class="button-row">
+        <button onclick="addOfficer()">
+          <img src="../icons/add-newSP.png" class="icon-btn" alt="Add"> Add
+        </button>
+        <button onclick="editOfficer()">
+          <img src="../icons/editSP.png" class="icon-btn" alt="Edit"> Edit
+        </button>
+        <button onclick="deleteOfficer()">
+          <img src="../icons/deleteSP.png" class="icon-btn" alt="Delete"> Delete
+        </button>
+      </div>
     </div>
   </div>
 
@@ -225,6 +258,41 @@
   </div>
 
   <script>
+    const defaultImage = "../icons/default-user.png";
+
+    function updatePreview() {
+      const path = document.getElementById("image").value.trim();
+      const preview = document.getElementById("previewImage");
+      preview.src = path || defaultImage;
+    }
+
+    async function uploadToServer() {
+      const fileInput = document.getElementById("uploadImage");
+      const file = fileInput.files[0];
+      if (!file) return;
+
+      const formData = new FormData();
+      formData.append("image", file);
+
+      try {
+        const res = await fetch("https://secure-backend-tzj9.onrender.com/api/upload", {
+          method: "POST",
+          body: formData
+        });
+
+        const result = await res.json();
+        if (res.ok && result.imageUrl) {
+          document.getElementById("previewImage").src = result.imageUrl;
+          document.getElementById("image").value = result.imageUrl;
+        } else {
+          alert("Upload failed.");
+        }
+      } catch (err) {
+        console.error("Upload error:", err);
+        alert("Failed to upload image.");
+      }
+    }
+
     async function fetchOfficers() {
       const res = await fetch("https://secure-backend-tzj9.onrender.com/api/users", {
         headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` }
@@ -235,13 +303,13 @@
       officers.forEach(user => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
-          <td>${user.username}</td>
-          <td>${user.password}</td>
-          <td>${user.position}</td>
-          <td>${user.fullname}</td>
-          <td>${user.phone}</td>
-          <td>${user.branch}</td>
-          <td>${user.image}</td>
+          <td>${user.username || ''}</td>
+          <td>${user.password || ''}</td>
+          <td>${user.position || ''}</td>
+          <td>${user.fullname || ''}</td>
+          <td>${user.phone || ''}</td>
+          <td>${user.branch || ''}</td>
+          <td>${user.image || ''}</td>
         `;
         tbody.appendChild(tr);
       });
@@ -250,9 +318,11 @@
     function addOfficer() {
       alert("Add logic here");
     }
+
     function editOfficer() {
       alert("Edit logic here");
     }
+
     function deleteOfficer() {
       alert("Delete logic here");
     }
