@@ -248,9 +248,12 @@ function updatePreview() {
   } else if (path.startsWith("http")) {
     preview.src = path;
   } else {
-    preview.src = `https://secure-backend-tzj9.onrender.com/${path}`;
+    // If using GitHub repo for image hosting
+    const cleanPath = path.replace(/^profile\//, '');
+    preview.src = `https://raw.githubusercontent.com/MeasVuthy168/secure-backend/main/profile/${cleanPath}`;
   }
 }
+
 
 
 
