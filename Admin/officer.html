@@ -238,11 +238,12 @@
     let selectedUsername = null;
 
     function autoFillImagePath() {
-  // REMOVE THIS: it breaks actual uploaded path
-  // document.getElementById("image").value = "profile/" + username + ".jpg";
-  updatePreview(); // Only update preview from current image path
-}
-
+      const username = document.getElementById("username").value.trim();
+      if (username) {
+        document.getElementById("image").value = "profile/" + username + ".jpg";
+        updatePreview();
+      }
+    }
 
   
 function updatePreview() {
