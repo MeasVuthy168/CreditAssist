@@ -243,7 +243,7 @@ function updatePreview() {
   const path = document.getElementById("image").value.trim();
   const preview = document.getElementById("previewImage");
   if (!path) {
-    preview.src = "../icons/default-user.png";
+    preview.src = "../icons/non-image.png";
   } else if (path.startsWith("http")) {
     preview.src = path;
   } else {
