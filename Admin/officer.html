@@ -247,7 +247,7 @@ function updatePreview() {
   } else if (path.startsWith("http")) {
     preview.src = path;
   } else {
-    preview.src = `https://secure-backend-tzj9.onrender.com/profile/${path}`;
+    preview.src = `https://secure-backend-tzj9.onrender.com/${path}`;
   }
 }
 
@@ -276,9 +276,10 @@ async function uploadToServer() {
     console.log("✅ Upload result:", result);
 
     if (res.ok && result.imageUrl) {
-      const filename = result.imageUrl.replace(/^profile\//, '');
-      document.getElementById("image").value = filename;
-      updatePreview();
+  // Always keep "profile/filename.jpg" format
+  document.getElementById("image").value = result.imageUrl;
+  updatePreview();
+}
     } else {
       alert("Upload failed: " + (result.message || "Unknown error"));
     }
