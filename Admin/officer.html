@@ -247,7 +247,8 @@
 
   
 
-    function updatePreview() {
+    
+function updatePreview() {
   const path = document.getElementById("image").value.trim();
   const preview = document.getElementById("previewImage");
   const debug = document.getElementById("debugLabel");
@@ -258,7 +259,10 @@
     return;
   }
 
-  // Support profile/9027.jpg or full URL
+  // Temporarily detach previous error handler to prevent double-trigger
+  preview.onerror = null;
+
+  // Full image path logic
   if (path.startsWith("profile/")) {
     preview.src = "https://secure-backend-tzj9.onrender.com/" + path;
   } else {
@@ -267,17 +271,12 @@
 
   debug.textContent = "✅ Previewing image";
 
+  // Re-attach error handler after setting src
   preview.onerror = () => {
     preview.src = "../icons/non-image.jpg";
     debug.textContent = "❌ Failed to load image";
   };
 }
-
-
-
-
-
-
 
 async function uploadToServer() {
   const fileInput = document.getElementById("uploadImage");
