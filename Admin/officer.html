@@ -252,14 +252,21 @@ th {
         <tbody></tbody>
       </table>
     </div>
-  </div>  <script>
+  </div>  
+  
+  <script>
     const defaultImage = "../icons/default-user.png";
 
-    function updatePreview() {
-      const path = document.getElementById("image").value.trim();
-      const preview = document.getElementById("previewImage");
-      preview.src = path || defaultImage;
-    }
+  function updatePreview() {
+  const filename = document.getElementById("image").value.trim();
+  const preview = document.getElementById("previewImage");
+
+  if (filename) {
+    preview.src = `https://secure-backend-tzj9.onrender.com/profile/${filename}`;
+  } else {
+    preview.src = "../icons/default-user.png";
+  }
+}
 
     async function uploadToServer() {
   const fileInput = document.getElementById("uploadImage");
