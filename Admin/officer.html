@@ -436,37 +436,47 @@ function retryPreview(url, attempts) {
     }
 
     async function addOrUpdateOfficer() {
-      const token = sessionStorage.getItem("token");
-      const data = {
-        username: document.getElementById("username").value.trim(),
-        password: document.getElementById("password").value.trim(),
-        position: document.getElementById("position").value.trim(),
-        fullname: document.getElementById("fullname").value.trim(),
-        phone: document.getElementById("phone").value.trim(),
-        branch: document.getElementById("branch").value.trim(),
-        image: document.getElementById("image").value.trim()
-      };
+    async function addOrUpdateOfficer() {
+  const token = sessionStorage.getItem("token");
+  const usernameInput = document.getElementById("username").value.trim();
 
-      if (!data.username) return alert("Username is required");
+  const data = {
+    username: usernameInput,
+    password: document.getElementById("password").value.trim(),
+    position: document.getElementById("position").value.trim(),
+    fullname: document.getElementById("fullname").value.trim(),
+    phone: document.getElementById("phone").value.trim(),
+    branch: document.getElementById("branch").value.trim(),
+    image: document.getElementById("image").value.trim()
+  };
 
-      const res = await fetch("https://secure-backend-tzj9.onrender.com/api/users", {
-        method: selectedUsername ? "PUT" : "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify(data)
-      });
+  if (!data.username) return alert("Username is required");
 
-      const result = await res.json();
-      if (res.ok) {
-        alert(result.message);
-        clearForm();
-        fetchOfficers();
-      } else {
-        alert(result.message || "Error saving officer");
-      }
-    }
+  const isUpdate = selectedUsername && selectedUsername === usernameInput;
+  const url = isUpdate
+    ? `https://secure-backend-tzj9.onrender.com/api/users/${usernameInput}`
+    : "https://secure-backend-tzj9.onrender.com/api/users";
+
+  const method = isUpdate ? "PUT" : "POST";
+
+  const res = await fetch(url, {
+    method,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`
+    },
+    body: JSON.stringify(data)
+  });
+
+  const result = await res.json();
+  if (res.ok) {
+    alert(result.message);
+    clearForm();
+    fetchOfficers();
+  } else {
+    alert(result.message || "Error saving officer");
+  }
+}
 
     async function deleteOfficer() {
       if (!selectedUsername) return alert("Select a row to delete");
