@@ -282,7 +282,7 @@ async function uploadToServer() {
 
   if (!file) return;
 
-  // 1. Local preview (immediate)
+  // 1. Local preview (shows immediately)
   const reader = new FileReader();
   reader.onload = function (e) {
     preview.src = e.target.result;
@@ -290,7 +290,7 @@ async function uploadToServer() {
   };
   reader.readAsDataURL(file);
 
-  // 2. Upload to GitHub via backend
+  // 2. Upload image to backend (GitHub via server)
   const token = sessionStorage.getItem("token");
   if (!token) {
     alert("Session expired. Please log in again.");
@@ -311,13 +311,14 @@ async function uploadToServer() {
 
     const result = await res.json();
     if (res.ok && result.imageUrl) {
-      // ✅ Convert full raw URL to relative path for proxy loading
+      // ✅ Extract relative path only (remove full GitHub URL)
       const proxyPath = result.imageUrl.replace(
         "https://raw.githubusercontent.com/MeasVuthy168/secure-backend/main/",
-        "profile/"
+        ""
       );
       document.getElementById("image").value = proxyPath;
-      debug.textContent = "✅ Image uploaded, will apply after Save.";
+      debug.textContent = "✅ Image uploaded. Ready to save.";
+      console.log("✅ Proxy-safe image path:", proxyPath);
     } else {
       alert("Upload failed: " + (result.message || "Unknown error"));
     }
