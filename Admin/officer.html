@@ -243,29 +243,31 @@ function updatePreview() {
   const path = document.getElementById("image").value.trim();
   const preview = document.getElementById("previewImage");
 
-  console.log("🟡 Raw path value:", path); // Debug log
+  console.log("🟡 Image path input:", path);
 
   if (!path) {
     preview.src = "../icons/non-image.jpg";
-    console.log("⚠️ No image path set, using fallback.");
-  } else if (path.startsWith("http")) {
-    preview.src = path;
-    console.log("✅ Previewing direct URL:", preview.src);
-  } else {
-    // For Option 3 (GitHub-hosted)
-    const cleanPath = path.replace(/^profile\//, '');
-    const githubUrl = `https://raw.githubusercontent.com/MeasVuthy168/secure-backend/main/profile/${cleanPath}`;
-    preview.src = githubUrl;
-    console.log("✅ Previewing GitHub-hosted image:", githubUrl);
-
-    // Test loading image and log result
-    preview.onload = () => console.log("✅ Image loaded successfully.");
-    preview.onerror = () => {
-      console.error("❌ Failed to load image from:", githubUrl);
-      preview.src = "../icons/non-image.jpg"; // fallback
-    };
+    console.warn("⚠️ No image path provided.");
+    return;
   }
-      }
+
+  // Assume path like 'profile/123456.jpg'
+  const filename = path.split("/").pop();
+  const imageUrl = `https://raw.githubusercontent.com/MeasVuthy168/secure-backend/main/profile/${filename}`;
+
+  console.log("🔵 Trying GitHub image URL:", imageUrl);
+
+  preview.onerror = () => {
+    console.error("❌ Image failed to load:", imageUrl);
+    preview.src = "../icons/non-image.jpg";
+  };
+
+  preview.onload = () => {
+    console.log("✅ Image loaded successfully:", imageUrl);
+  };
+
+  preview.src = imageUrl;
+}
 
 
 
