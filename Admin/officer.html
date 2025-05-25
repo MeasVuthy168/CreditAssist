@@ -420,20 +420,23 @@ function retryPreview(url, attempts) {
 }
 
     function selectRow(row, user) {
-      document.querySelectorAll("#officerTable tbody tr").forEach(r => r.classList.remove("selected-row"));
-      row.classList.add("selected-row");
+  document.querySelectorAll("#officerTable tbody tr").forEach(r => r.classList.remove("selected-row"));
+  row.classList.add("selected-row");
 
-      selectedUsername = user.username;
-      document.getElementById("username").value = user.username;
-      document.getElementById("password").value = user.password;
-      document.getElementById("position").value = user.position;
-      document.getElementById("fullname").value = user.fullname;
-      document.getElementById("phone").value = user.phone;
-      document.getElementById("branch").value = user.branch;
-      document.getElementById("image").value = user.image;
-      document.getElementById("addBtn").innerHTML = `<img src="../icons/add-newSP.png" class="icon-btn"> Update`;
-      updatePreview();
-    }
+  selectedUsername = user.username;
+  document.getElementById("username").value = user.username;
+  document.getElementById("username").disabled = true; // ✅ disable username
+
+  document.getElementById("password").value = user.password;
+  document.getElementById("position").value = user.position;
+  document.getElementById("fullname").value = user.fullname;
+  document.getElementById("phone").value = user.phone;
+  document.getElementById("branch").value = user.branch;
+  document.getElementById("image").value = user.image;
+
+  document.getElementById("addBtn").innerHTML = `<img src="../icons/add-newSP.png" class="icon-btn"> Update`;
+  updatePreview();
+}
 
     
     async function addOrUpdateOfficer() {
@@ -500,11 +503,12 @@ function retryPreview(url, attempts) {
     }
 
     function clearForm() {
-      selectedUsername = null;
-      document.querySelectorAll("input").forEach(i => i.value = "");
-      document.getElementById("previewImage").src = "../icons/default-user.png";
-      document.getElementById("addBtn").innerHTML = `<img src="../icons/add-newSP.png" class="icon-btn"> Save`;
-    }
+  selectedUsername = null;
+  document.querySelectorAll("input").forEach(i => i.value = "");
+  document.getElementById("previewImage").src = "../icons/default-user.png";
+  document.getElementById("username").disabled = false; // ✅ re-enable username
+  document.getElementById("addBtn").innerHTML = `<img src="../icons/add-newSP.png" class="icon-btn"> Save`;
+}
 
     document.addEventListener("DOMContentLoaded", fetchOfficers);
   </script>
