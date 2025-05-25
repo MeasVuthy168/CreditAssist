@@ -105,6 +105,12 @@
       font-family: 'Krasar', Arial;
       box-sizing: border-box;
     }
+
+    input[disabled] {
+  background-color: #f2f2f2;
+  color: #555;
+  cursor: not-allowed;
+}
     .button-row {
       display: flex;
       justify-content: space-between;
@@ -200,7 +206,7 @@
       <input type="text" id="fullname" placeholder="Fullname">
       <input type="text" id="phone" placeholder="Phone">
       <input type="text" id="branch" placeholder="Branch">
-      <input type="text" id="image" placeholder="Image Path" oninput="updatePreview()" />
+      <input type="text" id="image" placeholder="Image Path" disabled />
       <div class="button-row">
         <button id="addBtn" onclick="addOrUpdateOfficer()">
           <img src="../icons/add-newSP.png" class="icon-btn" alt="Add"> Save
