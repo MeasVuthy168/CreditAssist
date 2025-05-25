@@ -428,21 +428,27 @@ function retryPreview(url, attempts) {
       return;
     }
 
-    officers.forEach(user => {
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td>${user.username}</td>
-        <td>${user.password}</td>
-        <td>${user.position}</td>
-        <td>${user.fullname}</td>
-        <td>${user.phone}</td>
-        <td>${user.branch}</td>
-        <td>${user.image}</td>
-      `;
-      tr.onclick = () => selectRow(tr, user);
-      tbody.appendChild(tr);
-    });
-
+    let first = true;
+[...officers].reverse().forEach(user => {
+  const tr = document.createElement("tr");
+  tr.innerHTML = `
+    <td>${user.username}</td>
+    <td>${user.password}</td>
+    <td>${user.position}</td>
+    <td>${user.fullname}</td>
+    <td>${user.phone}</td>
+    <td>${user.branch}</td>
+    <td>${user.image}</td>
+  `;
+  tr.onclick = () => selectRow(tr, user);
+  if (first) {
+    tr.style.backgroundColor = "#ffe066";
+    setTimeout(() => (tr.style.backgroundColor = ""), 1500);
+    first = false;
+  }
+  tbody.appendChild(tr);
+});
+    
   } catch (err) {
     console.error("❌ Fetch error:", err);
     alert("Error connecting to server. Please check your internet.");
@@ -562,7 +568,20 @@ function retryPreview(url, attempts) {
   document.getElementById("addBtn").innerHTML = `<img src="../icons/add-newSP.png" class="icon-btn"> Save`;
 }
 
+    
+
     document.addEventListener("DOMContentLoaded", fetchOfficers);
-  </script>
+    document.getElementById("searchInput").addEventListener("input", filterOfficerTable);
+
+function filterOfficerTable() {
+  const query = document.getElementById("searchInput").value.toLowerCase();
+  const rows = document.querySelectorAll("#officerTable tbody tr");
+
+  rows.forEach(row => {
+    const text = row.innerText.toLowerCase();
+    row.style.display = text.includes(query) ? "" : "none";
+  });
+}
+</script>
 </body>
 </html>
