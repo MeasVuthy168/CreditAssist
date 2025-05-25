@@ -293,13 +293,41 @@
       }
     }
 
-    async function fetchOfficers() {
-      const res = await fetch("https://secure-backend-tzj9.onrender.com/api/users", {
-        headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` }
+  async function fetchOfficers() {
+    const token = sessionStorage.getItem('token');
+    const url = "https://secure-backend-tzj9.onrender.com/api/users";
+    const tbody = document.querySelector('#officerTable tbody');
+
+    console.log("🔍 Fetching users with token:", token);
+    console.log("📡 URL:", url);
+
+    try {
+      const res = await fetch(url, {
+        headers: { Authorization: `Bearer ${token}` }
       });
+
+      const status = res.status;
+      const contentType = res.headers.get("content-type");
+      console.log("✅ Status:", status, "| Content-Type:", contentType);
+
+      if (!res.ok) {
+        const errorText = await res.text();
+        console.error("❌ Server error response:", errorText);
+        alert("Server error: " + status);
+        return;
+      }
+
       const officers = await res.json();
-      const tbody = document.querySelector('#officerTable tbody');
+      console.log("✅ Officers received:", officers);
+
       tbody.innerHTML = '';
+
+      if (!Array.isArray(officers) || officers.length === 0) {
+        console.warn("⚠️ No users found");
+        tbody.innerHTML = `<tr><td colspan="7">គ្មានទិន្នន័យ</td></tr>`;
+        return;
+      }
+
       officers.forEach(user => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
@@ -313,7 +341,14 @@
         `;
         tbody.appendChild(tr);
       });
+
+    } catch (err) {
+      console.error("❌ Network error:", err);
+      alert("Failed to fetch officers. Please check your network or server.");
     }
+  }
+
+  
 
     function addOfficer() {
       alert("Add logic here");
