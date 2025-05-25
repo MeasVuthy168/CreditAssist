@@ -11,6 +11,7 @@
       color: white;
       margin: 0;
       padding-top: 60px;
+      
     }.header {
   background-color: #0d2d5c;
   color: white;
@@ -258,14 +259,20 @@ th {
     const defaultImage = "../icons/default-user.png";
 
   function updatePreview() {
-  const filename = document.getElementById("image").value.trim();
+  const path = document.getElementById("image").value.trim();
   const preview = document.getElementById("previewImage");
 
-  if (filename) {
-    preview.src = `https://secure-backend-tzj9.onrender.com/profile/${filename}`;
-  } else {
+  if (!path || path === "null") {
     preview.src = "../icons/default-user.png";
+  } else if (path.startsWith("http")) {
+    preview.src = path;
+  } else if (path.startsWith("profile/")) {
+    preview.src = `https://secure-backend-tzj9.onrender.com/${path}`;
+  } else {
+    preview.src = `https://secure-backend-tzj9.onrender.com/profile/${path}`;
   }
+
+  console.log("🖼️ Preview updated to:", preview.src);
 }
 
     async function uploadToServer() {
