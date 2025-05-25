@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="km">
+
+<!DOCTYPE html>
+<html lang="km">
 <head>
   <meta charset="UTF-8">
   <title>Officer Management</title>
@@ -11,197 +13,165 @@
       color: white;
       margin: 0;
       padding-top: 60px;
-      
-    }.header {
-  background-color: #0d2d5c;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 6px 10px;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 44px;
-  z-index: 1000;
-}
-
-.back-btn {
-  background: none;
-  border: none;
-  color: white;
-  font-size: 22px;
-  font-weight: bold;
-  cursor: pointer;
-  padding: 8px 12px;
-  margin-right: 8px;
-  border-radius: 6px;
-}
-
-.back-btn:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
-.header-title {
-  flex: 1;
-  text-align: center;
-  font-size: 16px;
-  font-weight: bold;
-  margin-left: -20px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.search-box input {
-  width: 160px;
-  padding: 6px 12px;
-  border-radius: 18px;
-  border: none;
-  font-size: 15px;
-  font-family: 'Krasar', sans-serif;
-}
-
-.section {
-  background: white;
-  color: black;
-  margin: 14px auto;
-  max-width: 700px;
-  padding: 10px 16px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-}
-    
-.selected-row {
-  background-color: #ffd700;
-  font-weight: bold;
-}
-.form-section {
-  display: flex;
-  align-items: flex-start;
-  gap: 16px;
-}
-
-.image-preview {
-  flex-shrink: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.image-preview img {
-  width: 80px;
-  height: 80px;
-  border-radius: 8px;
-  object-fit: cover;
-  border: 2px solid #ccc;
-  background: #f0f0f0;
-  margin-bottom: 6px;
-}
-
-.image-preview input[type="file"] {
-  font-size: 11px;
-  width: 100px;
-}
-
-.form-fields {
-  flex: 1;
-}
-
-input, select {
-  width: 100%;
-  padding: 10px;
-  margin: 2px 0;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  font-family: 'Krasar', Arial;
-  box-sizing: border-box;
-}
-
-.button-row {
-  display: flex;
-  justify-content: space-between;
-  gap: 6px;
-  margin-top: 12px;
-}
-
-.button-row button {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-}
-
-button {
-  padding: 10px;
-  background-color: #0d2d5c;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 12px;
-}
-
-button:hover {
-  background-color: #09306d;
-}
-
-.icon-btn {
-  width: 18px;
-  height: 18px;
-}
-
-.table-wrapper {
-  overflow-x: auto;
-  width: 100%;
-  border-radius: 8px;
-}
-
-table {
-  min-width: 700px;
-  width: max-content;
-  border-collapse: collapse;
-  margin-top: 10px;
-  text-align: center;
-  font-size: 12px;
-}
-
-th, td {
-  padding: 4px 6px;
-  border: 1px solid #ccc;
-  white-space: nowrap;
-}
-
-th {
-  background-color: #0d2d5c;
-  color: white;
-}
-
-.table-wrapper::-webkit-scrollbar {
-  height: 8px;
-}
-
-.table-wrapper::-webkit-scrollbar-track {
-  background: #e0e0e0;
-  border-radius: 10px;
-}
-
-.table-wrapper::-webkit-scrollbar-thumb {
-  background-color: #0d2d5c;
-  border-radius: 10px;
-  border: 2px solid #e0e0e0;
-}
-
-.table-wrapper::-webkit-scrollbar-thumb:hover {
-  background-color: #09306d;
-}
-
-.table-wrapper {
-  scrollbar-color: #0d2d5c #e0e0e0;
-  scrollbar-width: thin;
-}
-
+    }
+    .header {
+      background-color: #0d2d5c;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 10px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 44px;
+      z-index: 1000;
+    }
+    .back-btn {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 22px;
+      font-weight: bold;
+      cursor: pointer;
+      padding: 8px 12px;
+      margin-right: 8px;
+      border-radius: 6px;
+    }
+    .back-btn:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+    .header-title {
+      flex: 1;
+      text-align: center;
+      font-size: 16px;
+      font-weight: bold;
+      margin-left: -20px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .search-box input {
+      width: 160px;
+      padding: 6px 12px;
+      border-radius: 18px;
+      border: none;
+      font-size: 15px;
+    }
+    .section {
+      background: white;
+      color: black;
+      margin: 14px auto;
+      max-width: 700px;
+      padding: 10px 16px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .form-section {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+    }
+    .image-preview {
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .image-preview img {
+      width: 80px;
+      height: 80px;
+      border-radius: 8px;
+      object-fit: cover;
+      border: 2px solid #ccc;
+      background: #f0f0f0;
+      margin-bottom: 6px;
+    }
+    .image-preview input[type="file"] {
+      font-size: 11px;
+      width: 100px;
+    }
+    .form-fields {
+      flex: 1;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 2px 0;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+    .button-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 6px;
+      margin-top: 12px;
+    }
+    .button-row button {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    button {
+      padding: 10px;
+      background-color: #0d2d5c;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 12px;
+    }
+    button:hover {
+      background-color: #09306d;
+    }
+    .icon-btn {
+      width: 18px;
+      height: 18px;
+    }
+    .table-wrapper {
+      overflow-x: auto;
+      width: 100%;
+      border-radius: 8px;
+    }
+    table {
+      min-width: 700px;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 12px;
+      width: max-content;
+    }
+    th, td {
+      padding: 4px 6px;
+      border: 1px solid #ccc;
+      white-space: nowrap;
+    }
+    th {
+      background-color: #0d2d5c;
+      color: white;
+    }
+    .selected-row {
+      background-color: #ffd700;
+      font-weight: bold;
+    }
+    .table-wrapper::-webkit-scrollbar {
+      height: 8px;
+    }
+    .table-wrapper::-webkit-scrollbar-track {
+      background: #e0e0e0;
+      border-radius: 10px;
+    }
+    .table-wrapper::-webkit-scrollbar-thumb {
+      background-color: #0d2d5c;
+      border-radius: 10px;
+      border: 2px solid #e0e0e0;
+    }
+    .table-wrapper {
+      scrollbar-color: #0d2d5c #e0e0e0;
+      scrollbar-width: thin;
+    }
   </style>
 </head>
 <body>
@@ -209,9 +179,11 @@ th {
     <button class="back-btn" onclick="window.location.href='adminupload.html'">←</button>
     <span class="header-title">បញ្វូលថ្មី និងកែប្រែភ្នាក់ងារ</span>
     <div class="search-box">
-      <input type="text" id="searchInput" placeholder="ស្វែងរកភ្នាក់ងារឥណទាន" />
+      <input type="text" id="searchInput" placeholder="ស្វែងរកភ្នាក់ងារ" />
     </div>
-  </div>  <div class="section form-section">
+  </div>
+
+  <div class="section form-section">
     <div class="image-preview">
       <img id="previewImage" src="../icons/default-user.png" alt="Preview" />
       <input type="file" id="uploadImage" accept="image/*" onchange="uploadToServer()" />
@@ -225,18 +197,14 @@ th {
       <input type="text" id="branch" placeholder="Branch">
       <input type="text" id="image" placeholder="Image Path" oninput="updatePreview()" />
       <div class="button-row">
-        <button onclick="addOfficer()">
-          <img src="../icons/add-newSP.png" class="icon-btn" alt="Add"> Add
-        </button>
-        <button onclick="editOfficer()">
-          <img src="../icons/editSP.png" class="icon-btn" alt="Edit"> Edit
-        </button>
-        <button onclick="deleteOfficer()">
-          <img src="../icons/deleteSP.png" class="icon-btn" alt="Delete"> Delete
-        </button>
+        <button onclick="addOfficer()"><img src="../icons/add-newSP.png" class="icon-btn"> Add</button>
+        <button onclick="editOfficer()"><img src="../icons/editSP.png" class="icon-btn"> Edit</button>
+        <button onclick="deleteOfficer()"><img src="../icons/deleteSP.png" class="icon-btn"> Delete</button>
       </div>
     </div>
-  </div>  <div class="section">
+  </div>
+
+  <div class="section">
     <div class="table-wrapper">
       <table id="officerTable">
         <thead>
@@ -253,167 +221,160 @@ th {
         <tbody></tbody>
       </table>
     </div>
-  </div>  
-  
+  </div>
+
   <script>
     const defaultImage = "../icons/default-user.png";
 
-  function updatePreview() {
-  const path = document.getElementById("image").value.trim();
-  const preview = document.getElementById("previewImage");
+    function updatePreview() {
+      const path = document.getElementById("image").value.trim();
+      const preview = document.getElementById("previewImage");
 
-  if (!path || path === "null") {
-    preview.src = "../icons/default-user.png";
-  } else if (path.startsWith("http")) {
-    preview.src = path;
-  } else if (path.startsWith("profile/")) {
-    preview.src = `https://secure-backend-tzj9.onrender.com/${path}`;
-  } else {
-    preview.src = `https://secure-backend-tzj9.onrender.com/profile/${path}`;
-  }
-
-  console.log("🖼️ Preview updated to:", preview.src);
-}
+      if (!path || path === "null") {
+        preview.src = defaultImage;
+      } else if (path.startsWith("http")) {
+        preview.src = path;
+      } else if (path.startsWith("profile/")) {
+        preview.src = `https://secure-backend-tzj9.onrender.com/${path}`;
+      } else {
+        preview.src = `https://secure-backend-tzj9.onrender.com/profile/${path}`;
+      }
+    }
 
     async function uploadToServer() {
-  const fileInput = document.getElementById("uploadImage");
-  const file = fileInput.files[0];
-  if (!file) return;
+      const fileInput = document.getElementById("uploadImage");
+      const file = fileInput.files[0];
+      if (!file) return;
 
-  const token = sessionStorage.getItem("token");
-  if (!token) {
-    alert("Session expired. Please log in again.");
-    return;
-  }
+      const token = sessionStorage.getItem("token");
+      if (!token) return alert("Session expired.");
 
-  const formData = new FormData();
-  formData.append("image", file);
+      const formData = new FormData();
+      formData.append("image", file);
 
-  try {
-    const res = await fetch("https://secure-backend-tzj9.onrender.com/api/upload", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}` // Add token here
-      },
-      body: formData
-    });
-
-    const result = await res.json();
-    if (res.ok && result.imageUrl) {
-      document.getElementById("previewImage").src = result.imageUrl;
-      document.getElementById("image").value = result.imageUrl;
-    } else {
-      alert("Upload failed: " + (result.message || "Unknown error"));
-    }
-  } catch (err) {
-    console.error("Upload error:", err);
-    alert("Failed to upload image.");
-  }
-}
-
-  async function fetchOfficers() {
-    const token = sessionStorage.getItem("token");
-    const url = "https://secure-backend-tzj9.onrender.com/api/users";
-    const tbody = document.querySelector("#officerTable tbody");
-
-    console.log("🔐 Fetching with token:", token);
-    if (!token) {
-      alert("Session expired. Please log in again.");
-      window.location.href = "../login.html";
-      return;
-    }
-
-    try {
-      const res = await fetch(url, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
+      const res = await fetch("https://secure-backend-tzj9.onrender.com/api/upload", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData
       });
 
-      console.log("📡 Status:", res.status);
-
-      if (!res.ok) {
-        const text = await res.text();
-        console.error("❌ Response text:", text);
-        alert("Error " + res.status + ": " + text);
-        return;
+      const result = await res.json();
+      if (res.ok && result.imageUrl) {
+        document.getElementById("previewImage").src = result.imageUrl;
+        document.getElementById("image").value = result.imageUrl;
+      } else {
+        alert("Upload failed");
       }
+    }
 
-      const officers = await res.json();
-      console.log("✅ Officers fetched:", officers);
+    function fillForm(user) {
+      document.getElementById("username").value = user.username || "";
+      document.getElementById("password").value = user.password || "";
+      document.getElementById("position").value = user.position || "";
+      document.getElementById("fullname").value = user.fullname || "";
+      document.getElementById("phone").value = user.phone || "";
+      document.getElementById("branch").value = user.branch || "";
+      document.getElementById("image").value = user.image || "";
+      updatePreview();
+    }
 
+    async function fetchOfficers() {
+      const token = sessionStorage.getItem("token");
+      const tbody = document.querySelector("#officerTable tbody");
+      const res = await fetch("https://secure-backend-tzj9.onrender.com/api/users", {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
       tbody.innerHTML = "";
 
-      if (!Array.isArray(officers) || officers.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7">⚠️ គ្មានទិន្នន័យ</td></tr>`;
-        return;
-      }
-
-      officers.forEach(user => {
+      data.forEach(user => {
         const tr = document.createElement("tr");
         tr.innerHTML = `
-          <td>${user.username || ""}</td>
-          <td>${user.password || ""}</td>
-          <td>${user.position || ""}</td>
-          <td>${user.fullname || ""}</td>
-          <td>${user.phone || ""}</td>
-          <td>${user.branch || ""}</td>
-          <td>${user.image || ""}</td>
+          <td>${user.username}</td>
+          <td>${user.password}</td>
+          <td>${user.position}</td>
+          <td>${user.fullname}</td>
+          <td>${user.phone}</td>
+          <td>${user.branch}</td>
+          <td>${user.image}</td>
         `;
+        tr.addEventListener("click", () => {
+          tbody.querySelectorAll("tr").forEach(r => r.classList.remove("selected-row"));
+          tr.classList.add("selected-row");
+          fillForm(user);
+        });
         tbody.appendChild(tr);
       });
-
-    } catch (err) {
-      console.error("❌ Fetch error:", err);
-      alert("Failed to connect to server. Please check your internet or backend.");
-    }
-  }
-
-
-document.addEventListener("click", function (e) {
-  const row = e.target.closest("tr");
-  const tableBody = document.querySelector("#officerTable tbody");
-  if (!row || !tableBody.contains(row)) return;
-
-  // Remove highlight from all rows
-  tableBody.querySelectorAll("tr").forEach(tr => tr.classList.remove("selected-row"));
-
-  // Highlight clicked row
-  row.classList.add("selected-row");
-
-  const cells = row.querySelectorAll("td");
-  if (cells.length < 7) return;
-
-  // Fill form
-  document.getElementById("username").value = cells[0].textContent.trim();
-  document.getElementById("password").value = cells[1].textContent.trim();
-  document.getElementById("position").value = cells[2].textContent.trim();
-  document.getElementById("fullname").value = cells[3].textContent.trim();
-  document.getElementById("phone").value = cells[4].textContent.trim();
-  document.getElementById("branch").value = cells[5].textContent.trim();
-  document.getElementById("image").value = cells[6].textContent.trim();
-
-  // Update preview
-  updatePreview();
-});
-    
-  
-
-    function addOfficer() {
-      alert("Add logic here");
     }
 
-    function editOfficer() {
-      alert("Edit logic here");
+    async function addOfficer() {
+      const token = sessionStorage.getItem("token");
+      const body = getFormData();
+
+      const res = await fetch("https://secure-backend-tzj9.onrender.com/api/users/add", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(body)
+      });
+
+      const result = await res.json();
+      alert(result.message || "Add success");
+      fetchOfficers();
     }
 
-    function deleteOfficer() {
-      alert("Delete logic here");
+    async function editOfficer() {
+      const token = sessionStorage.getItem("token");
+      const body = getFormData();
+
+      const res = await fetch("https://secure-backend-tzj9.onrender.com/api/users/edit", {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(body)
+      });
+
+      const result = await res.json();
+      alert(result.message || "Edit success");
+      fetchOfficers();
     }
 
+    async function deleteOfficer() {
+      const token = sessionStorage.getItem("token");
+      const username = document.getElementById("username").value;
+      if (!confirm("Are you sure to delete " + username + "?")) return;
+
+      const res = await fetch("https://secure-backend-tzj9.onrender.com/api/users/delete", {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ username })
+      });
+
+      const result = await res.json();
+      alert(result.message || "Delete success");
+      fetchOfficers();
+    }
+
+    function getFormData() {
+      return {
+        username: document.getElementById("username").value.trim(),
+        password: document.getElementById("password").value.trim(),
+        position: document.getElementById("position").value.trim(),
+        fullname: document.getElementById("fullname").value.trim(),
+        phone: document.getElementById("phone").value.trim(),
+        branch: document.getElementById("branch").value.trim(),
+        image: document.getElementById("image").value.trim()
+      };
+    }
 
     document.addEventListener("DOMContentLoaded", fetchOfficers);
-
   </script>
 </body>
 </html>
