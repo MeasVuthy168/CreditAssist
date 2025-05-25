@@ -293,62 +293,65 @@ th {
   }
 }
 
-    async function fetchOfficers() {
-      const token = sessionStorage.getItem('token');
-      const url = "https://secure-backend-tzj9.onrender.com/api/users";
-      const tbody = document.querySelector('#officerTable tbody');
+  async function fetchOfficers() {
+    const token = sessionStorage.getItem("token");
+    const url = "https://secure-backend-tzj9.onrender.com/api/users";
+    const tbody = document.querySelector("#officerTable tbody");
 
-      try {
-        const res = await fetch(url, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-
-        if (!res.ok) {
-          const errorText = await res.text();
-          console.error("❌ Server error response:", errorText);
-          alert("Server error: " + res.status);
-          return;
-        }
-
-        const officers = await res.json();
-        tbody.innerHTML = '';
-
-        if (!Array.isArray(officers) || officers.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="7">គ្មានទិន្នន័យ</td></tr>`;
-          return;
-        }
-
-        officers.forEach(user => {
-          const tr = document.createElement('tr');
-          tr.innerHTML = `
-            <td>${user.username || ''}</td>
-            <td>${user.password || ''}</td>
-            <td>${user.position || ''}</td>
-            <td>${user.fullname || ''}</td>
-            <td>${user.phone || ''}</td>
-            <td>${user.branch || ''}</td>
-            <td>${user.image || ''}</td>
-          `;
-          tr.addEventListener("click", () => {
-            document.querySelectorAll('#officerTable tbody tr').forEach(row => row.style.background = "");
-            tr.style.background = "#ffd700";
-
-            document.getElementById("username").value = user.username || '';
-            document.getElementById("password").value = user.password || '';
-            document.getElementById("position").value = user.position || '';
-            document.getElementById("fullname").value = user.fullname || '';
-            document.getElementById("phone").value = user.phone || '';
-            document.getElementById("branch").value = user.branch || '';
-            document.getElementById("image").value = user.image || '';
-            updatePreview();
-          });
-          tbody.appendChild(tr);
-        });
-      } catch (err) {
-        console.error("❌ Network error:", err);
-        alert("Failed to fetch officers.");
-      }
+    console.log("🔐 Fetching with token:", token);
+    if (!token) {
+      alert("Session expired. Please log in again.");
+      window.location.href = "../login.html";
+      return;
     }
+
+    try {
+      const res = await fetch(url, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+
+      console.log("📡 Status:", res.status);
+
+      if (!res.ok) {
+        const text = await res.text();
+        console.error("❌ Response text:", text);
+        alert("Error " + res.status + ": " + text);
+        return;
+      }
+
+      const officers = await res.json();
+      console.log("✅ Officers fetched:", officers);
+
+      tbody.innerHTML = "";
+
+      if (!Array.isArray(officers) || officers.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7">⚠️ គ្មានទិន្នន័យ</td></tr>`;
+        return;
+      }
+
+      officers.forEach(user => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${user.username || ""}</td>
+          <td>${user.password || ""}</td>
+          <td>${user.position || ""}</td>
+          <td>${user.fullname || ""}</td>
+          <td>${user.phone || ""}</td>
+          <td>${user.branch || ""}</td>
+          <td>${user.image || ""}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+    } catch (err) {
+      console.error("❌ Fetch error:", err);
+      alert("Failed to connect to server. Please check your internet or backend.");
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", fetchOfficers);
 
     function addOfficer() {
       alert("Add logic here");
