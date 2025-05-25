@@ -184,6 +184,11 @@
   <div class="section form-section">
     <div class="image-preview">
       <img id="previewImage" src="../icons/default-user.png" alt="Preview" />
+      
+      <div id="debugLog" style="font-size: 10px; color: red; word-break: break-all; max-width: 140px;"></div>
+
+
+      
       <input type="file" id="uploadImage" accept="image/*" onchange="uploadToServer()" />
     </div>
     <div class="form-fields">
@@ -242,32 +247,32 @@
 function updatePreview() {
   const path = document.getElementById("image").value.trim();
   const preview = document.getElementById("previewImage");
-
-  console.log("🟡 Image path input:", path);
+  const debug = document.getElementById("debugLog");
 
   if (!path) {
     preview.src = "../icons/non-image.jpg";
-    console.warn("⚠️ No image path provided.");
+    debug.textContent = "⚠️ No image path provided.";
     return;
   }
 
-  // Assume path like 'profile/123456.jpg'
-  const filename = path.split("/").pop();
+  const filename = path.split("/").pop(); // get '123456.jpg'
   const imageUrl = `https://raw.githubusercontent.com/MeasVuthy168/secure-backend/main/profile/${filename}`;
 
-  console.log("🔵 Trying GitHub image URL:", imageUrl);
+  debug.textContent = "🔍 Testing URL: " + imageUrl;
 
+  // Show fallback if image fails
   preview.onerror = () => {
-    console.error("❌ Image failed to load:", imageUrl);
     preview.src = "../icons/non-image.jpg";
+    debug.textContent = "❌ Failed to load image from: " + imageUrl;
   };
 
   preview.onload = () => {
-    console.log("✅ Image loaded successfully:", imageUrl);
+    debug.textContent = "✅ Image loaded: " + imageUrl;
   };
 
   preview.src = imageUrl;
 }
+
 
 
 
