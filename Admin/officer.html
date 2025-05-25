@@ -238,13 +238,13 @@
     let selectedUsername = null;
 
     function autoFillImagePath() {
-      const username = document.getElementById("username").value.trim();
-      if (username) {
-        document.getElementById("image").value = "https://secure-backend-tzj9.onrender.com/profile/" + username + ".jpg";
-        updatePreview();
-      }
-    }
-
+  const username = document.getElementById("username").value.trim();
+  if (username) {
+    document.getElementById("image").value = "profile/" + username + ".jpg";
+    document.getElementById("debugLabel").textContent = "ℹ️ Image path set, not previewed.";
+    // Do NOT call updatePreview()
+  }
+}
   
 
     
