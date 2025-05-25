@@ -202,10 +202,28 @@
     <div class="form-fields">
       <input type="text" id="username" placeholder="Username" oninput="autoFillImagePath()">
       <input type="password" id="password" placeholder="Password">
-      <input type="text" id="position" placeholder="Position">
+      <input type="text" id="position" placeholder="Position" list="positions" />
+        <datalist id="positions">
+          <option value="admin">
+          <option value="Credit Officer">
+          <option value="FSRO">
+          <option value="SBCM">
+          <option value="ABCM">
+          <option value="BCM">
+          <option value="Staff">
+       </datalist>
       <input type="text" id="fullname" placeholder="Fullname">
       <input type="text" id="phone" placeholder="Phone">
-      <input type="text" id="branch" placeholder="Branch">
+      <input type="text" id="branch" placeholder="Branch" list="branches" />
+       <datalist id="branches">
+         <option value="Svay Rieng">
+         <option value="Romeas Haek">
+         <option value="Kraol Kou">
+         <option value="Nhor">
+         <option value="Svay Teab">
+         <option value="Rumdoul">
+         <option value="Svay Chrom">
+       </datalist>
       <input type="text" id="image" placeholder="Image Path" disabled />
       <div class="button-row">
         <button id="addBtn" onclick="addOrUpdateOfficer()">
@@ -445,21 +463,43 @@ function retryPreview(url, attempts) {
 }
 
     
-    async function addOrUpdateOfficer() {
+  async function addOrUpdateOfficer() {
   const token = sessionStorage.getItem("token");
   const usernameInput = document.getElementById("username").value.trim();
+  const password = document.getElementById("password").value.trim();
+  const position = document.getElementById("position").value.trim();
+  const fullname = document.getElementById("fullname").value.trim();
+  const phone = document.getElementById("phone").value.trim();
+  const branch = document.getElementById("branch").value.trim();
+  const image = document.getElementById("image").value.trim();
+
+  const allowedPositions = ["admin", "Credit Officer", "FSRO", "SBCM", "ABCM", "BCM", "Staff"];
+  const allowedBranches = ["Svay Rieng", "Romeas Haek", "Kraol Kou", "Nhor", "Svay Teab", "Rumdoul", "Svay Chrom"];
+
+  if (!usernameInput || !password || !position || !fullname || !phone || !branch) {
+    alert("All fields are required.");
+    return;
+  }
+
+  if (!allowedPositions.includes(position)) {
+    alert("Invalid Position. Must be one of:\n" + allowedPositions.join(", "));
+    return;
+  }
+
+  if (!allowedBranches.includes(branch)) {
+    alert("Invalid Branch. Must be one of:\n" + allowedBranches.join(", "));
+    return;
+  }
 
   const data = {
     username: usernameInput,
-    password: document.getElementById("password").value.trim(),
-    position: document.getElementById("position").value.trim(),
-    fullname: document.getElementById("fullname").value.trim(),
-    phone: document.getElementById("phone").value.trim(),
-    branch: document.getElementById("branch").value.trim(),
-    image: document.getElementById("image").value.trim()
+    password,
+    position,
+    fullname,
+    phone,
+    branch,
+    image
   };
-
-  if (!data.username) return alert("Username is required");
 
   const isUpdate = selectedUsername && selectedUsername === usernameInput;
   const url = isUpdate
