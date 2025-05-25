@@ -60,7 +60,7 @@
       font-size: 15px;
       font-family: 'Krasar', sans-serif;
     }
-    .section {
+   /* .section {
       background: white;
       color: black;
       margin: 14px auto;
@@ -68,7 +68,18 @@
       padding: 10px 16px;
       border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
+    }*/
+
+    select {
+  width: 100%;
+  padding: 10px;
+  margin: 2px 0;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-family: 'Krasar', Arial;
+  box-sizing: border-box;
+  font-size: 14px;
+}
     .form-section {
       display: flex;
       align-items: flex-start;
@@ -202,28 +213,30 @@
     <div class="form-fields">
       <input type="text" id="username" placeholder="Username" oninput="autoFillImagePath()">
       <input type="password" id="password" placeholder="Password">
-      <input type="text" id="position" placeholder="Position" list="positions" />
-        <datalist id="positions">
-          <option value="admin">
-          <option value="Credit Officer">
-          <option value="FSRO">
-          <option value="SBCM">
-          <option value="ABCM">
-          <option value="BCM">
-          <option value="Staff">
-       </datalist>
+      <select id="position">
+  <option value="">-- Select Position --</option>
+  <option value="admin">admin</option>
+  <option value="Credit Officer">Credit Officer</option>
+  <option value="FSRO">FSRO</option>
+  <option value="SBCM">SBCM</option>
+  <option value="ABCM">ABCM</option>
+  <option value="BCM">BCM</option>
+  <option value="Staff">Staff</option>
+</select>
+
+
       <input type="text" id="fullname" placeholder="Fullname">
       <input type="text" id="phone" placeholder="Phone">
-      <input type="text" id="branch" placeholder="Branch" list="branches" />
-       <datalist id="branches">
-         <option value="Svay Rieng">
-         <option value="Romeas Haek">
-         <option value="Kraol Kou">
-         <option value="Nhor">
-         <option value="Svay Teab">
-         <option value="Rumdoul">
-         <option value="Svay Chrom">
-       </datalist>
+      <select id="branch">
+  <option value="">-- Select Branch --</option>
+  <option value="Svay Rieng">Svay Rieng</option>
+  <option value="Romeas Haek">Romeas Haek</option>
+  <option value="Kraol Kou">Kraol Kou</option>
+  <option value="Nhor">Nhor</option>
+  <option value="Svay Teab">Svay Teab</option>
+  <option value="Rumdoul">Rumdoul</option>
+  <option value="Svay Chrom">Svay Chrom</option>
+</select>
       <input type="text" id="image" placeholder="Image Path" disabled />
       <div class="button-row">
         <button id="addBtn" onclick="addOrUpdateOfficer()">
