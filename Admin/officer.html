@@ -351,6 +351,28 @@ th {
     }
   }
 
+
+   // Make rows clickable and fill form
+document.addEventListener("click", function (e) {
+  const row = e.target.closest("tr");
+  if (!row || !row.parentElement || row.parentElement.tagName !== "TBODY") return;
+
+  const cells = row.querySelectorAll("td");
+  if (cells.length < 7) return;
+
+  // Fill inputs
+  document.getElementById("username").value = cells[0].textContent.trim();
+  document.getElementById("password").value = cells[1].textContent.trim();
+  document.getElementById("position").value = cells[2].textContent.trim();
+  document.getElementById("fullname").value = cells[3].textContent.trim();
+  document.getElementById("phone").value = cells[4].textContent.trim();
+  document.getElementById("branch").value = cells[5].textContent.trim();
+  document.getElementById("image").value = cells[6].textContent.trim();
+
+  // Update preview image
+  updatePreview();
+});
+    
   document.addEventListener("DOMContentLoaded", fetchOfficers);
 
     function addOfficer() {
@@ -366,5 +388,6 @@ th {
     }
 
     document.addEventListener("DOMContentLoaded", fetchOfficers);
-  </script></body>
+  </script>
+</body>
 </html>
