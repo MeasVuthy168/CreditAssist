@@ -286,7 +286,7 @@ async function uploadToServer() {
 
   if (!file) return;
 
-  // ✅ 1. Local preview before upload
+  // 1. Local preview immediately
   const reader = new FileReader();
   reader.onload = function (e) {
     preview.src = e.target.result;
@@ -294,7 +294,7 @@ async function uploadToServer() {
   };
   reader.readAsDataURL(file);
 
-  // ✅ 2. Upload to server
+  // 2. Upload to server
   const token = sessionStorage.getItem("token");
   if (!token) {
     alert("Session expired. Please log in again.");
@@ -314,14 +314,13 @@ async function uploadToServer() {
     });
 
     const result = await res.json();
-    console.log("✅ Upload result:", result);
-
     if (res.ok && result.imageUrl) {
-      // ✅ Update image input value and re-preview final hosted version
-      document.getElementById("image").value = result.imageUrl;
+      const finalUrl = result.imageUrl;
+      document.getElementById("image").value = finalUrl;
 
-      // Wait briefly before re-preview to ensure it doesn't conflict
-      setTimeout(() => updatePreview(), 500);
+      // 3. Wait and retry preview with hosted image
+      debug.textContent = "⏳ Upload complete, verifying hosted image...";
+      retryPreview(finalUrl, 5);
     } else {
       alert("Upload failed: " + (result.message || "Unknown error"));
     }
@@ -330,6 +329,34 @@ async function uploadToServer() {
     alert("Failed to upload image.");
   }
 }
+
+function retryPreview(url, attempts) {
+  const preview = document.getElementById("previewImage");
+  const debug = document.getElementById("debugLabel");
+
+  let count = 0;
+
+  function tryLoad() {
+    const testImg = new Image();
+    testImg.onload = () => {
+      preview.src = url;
+      debug.textContent = "✅ Hosted image loaded successfully.";
+    };
+    testImg.onerror = () => {
+      if (++count < attempts) {
+        debug.textContent = `⏳ Retrying image... (${count}/${attempts})`;
+        setTimeout(tryLoad, 1000); // retry after 1 sec
+      } else {
+        debug.textContent = "❌ Failed to load hosted image after retrying.";
+        preview.src = "../icons/non-image.jpg";
+      }
+    };
+    testImg.src = url + "?t=" + Date.now(); // cache buster
+  }
+
+  tryLoad();
+}
+
     
 
     async function fetchOfficers() {
