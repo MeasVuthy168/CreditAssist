@@ -249,29 +249,25 @@
 
     
 function updatePreview() {
+function updatePreview() {
   const path = document.getElementById("image").value.trim();
   const preview = document.getElementById("previewImage");
   const debug = document.getElementById("debugLabel");
 
   if (!path) {
     preview.src = "../icons/non-image.jpg";
-    debug.textContent = "❌ No path provided";
+    debug.textContent = "❌ No image";
     return;
   }
 
-  // Temporarily detach previous error handler to prevent double-trigger
-  preview.onerror = null;
-
-  // Full image path logic
   if (path.startsWith("profile/")) {
     preview.src = "https://secure-backend-tzj9.onrender.com/" + path;
   } else {
     preview.src = path;
   }
 
-  debug.textContent = "✅ Previewing image";
+  debug.textContent = "✅ Previewing saved image";
 
-  // Re-attach error handler after setting src
   preview.onerror = () => {
     preview.src = "../icons/non-image.jpg";
     debug.textContent = "❌ Failed to load image";
@@ -286,11 +282,11 @@ async function uploadToServer() {
 
   if (!file) return;
 
-  // 1. Local preview immediately
+  // 1. Local preview
   const reader = new FileReader();
   reader.onload = function (e) {
     preview.src = e.target.result;
-    debug.textContent = "🟡 Previewing local file...";
+    debug.textContent = "🟡 Previewing local file only (not saved yet)";
   };
   reader.readAsDataURL(file);
 
@@ -315,12 +311,8 @@ async function uploadToServer() {
 
     const result = await res.json();
     if (res.ok && result.imageUrl) {
-      const finalUrl = result.imageUrl;
-      document.getElementById("image").value = finalUrl;
-
-      // 3. Wait and retry preview with hosted image
-      debug.textContent = "⏳ Upload complete, verifying hosted image...";
-      retryPreview(finalUrl, 5);
+      document.getElementById("image").value = result.imageUrl;
+      debug.textContent = "✅ Image uploaded, will apply after Save.";
     } else {
       alert("Upload failed: " + (result.message || "Unknown error"));
     }
