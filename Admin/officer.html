@@ -58,6 +58,7 @@
       border-radius: 18px;
       border: none;
       font-size: 15px;
+      font-family: 'Krasar', sans-serif;
     }
     .section {
       background: white;
@@ -95,12 +96,13 @@
     .form-fields {
       flex: 1;
     }
-    input {
+    input, select {
       width: 100%;
       padding: 10px;
       margin: 2px 0;
       border-radius: 6px;
       border: 1px solid #ccc;
+      font-family: 'Krasar', Arial;
       box-sizing: border-box;
     }
     .button-row {
@@ -138,10 +140,11 @@
     }
     table {
       min-width: 700px;
+      width: max-content;
       border-collapse: collapse;
       margin-top: 10px;
+      text-align: center;
       font-size: 12px;
-      width: max-content;
     }
     th, td {
       padding: 4px 6px;
@@ -151,10 +154,6 @@
     th {
       background-color: #0d2d5c;
       color: white;
-    }
-    .selected-row {
-      background-color: #ffd700;
-      font-weight: bold;
     }
     .table-wrapper::-webkit-scrollbar {
       height: 8px;
@@ -168,9 +167,9 @@
       border-radius: 10px;
       border: 2px solid #e0e0e0;
     }
-    .table-wrapper {
-      scrollbar-color: #0d2d5c #e0e0e0;
-      scrollbar-width: thin;
+    .selected-row {
+      background-color: #ffd700;
+      font-weight: bold;
     }
   </style>
 </head>
@@ -179,17 +178,16 @@
     <button class="back-btn" onclick="window.location.href='adminupload.html'">←</button>
     <span class="header-title">បញ្វូលថ្មី និងកែប្រែភ្នាក់ងារ</span>
     <div class="search-box">
-      <input type="text" id="searchInput" placeholder="ស្វែងរកភ្នាក់ងារ" />
+      <input type="text" id="searchInput" placeholder="ស្វែងរកភ្នាក់ងារឥណទាន" />
     </div>
   </div>
-
   <div class="section form-section">
     <div class="image-preview">
       <img id="previewImage" src="../icons/default-user.png" alt="Preview" />
       <input type="file" id="uploadImage" accept="image/*" onchange="uploadToServer()" />
     </div>
     <div class="form-fields">
-      <input type="text" id="username" placeholder="Username">
+      <input type="text" id="username" placeholder="Username" oninput="autoFillImagePath()">
       <input type="password" id="password" placeholder="Password">
       <input type="text" id="position" placeholder="Position">
       <input type="text" id="fullname" placeholder="Fullname">
@@ -197,9 +195,15 @@
       <input type="text" id="branch" placeholder="Branch">
       <input type="text" id="image" placeholder="Image Path" oninput="updatePreview()" />
       <div class="button-row">
-        <button onclick="addOfficer()"><img src="../icons/add-newSP.png" class="icon-btn"> Add</button>
-        <button onclick="editOfficer()"><img src="../icons/editSP.png" class="icon-btn"> Edit</button>
-        <button onclick="deleteOfficer()"><img src="../icons/deleteSP.png" class="icon-btn"> Delete</button>
+        <button id="addBtn" onclick="addOrUpdateOfficer()">
+          <img src="../icons/add-newSP.png" class="icon-btn" alt="Add"> Save
+        </button>
+        <button onclick="clearForm()">
+          <img src="../icons/editSP.png" class="icon-btn" alt="Clear"> Clear
+        </button>
+        <button onclick="deleteOfficer()">
+          <img src="../icons/deleteSP.png" class="icon-btn" alt="Delete"> Delete
+        </button>
       </div>
     </div>
   </div>
@@ -223,193 +227,155 @@
     </div>
   </div>
 
-<script>
-  const defaultImage = "../icons/default-user.png";
+  <script>
+    let selectedUsername = null;
 
-  function updatePreview() {
-    const path = document.getElementById("image").value.trim();
-    const preview = document.getElementById("previewImage");
-
-    if (!path || path === "null") {
-      preview.src = "../icons/default-user.png";
-    } else if (path.startsWith("http")) {
-      preview.src = path;
-    } else if (path.startsWith("profile/")) {
-      preview.src = `https://secure-backend-tzj9.onrender.com/${path}`;
-    } else {
-      preview.src = `https://secure-backend-tzj9.onrender.com/profile/${path}`;
+    function autoFillImagePath() {
+      const username = document.getElementById("username").value.trim();
+      if (username) {
+        document.getElementById("image").value = "profile/" + username + ".jpg";
+        updatePreview();
+      }
     }
 
-    console.log("🖼️ Preview updated to:", preview.src);
-  }
-
-  async function uploadToServer() {
-    const fileInput = document.getElementById("uploadImage");
-    const file = fileInput.files[0];
-    if (!file) return;
-
-    const token = sessionStorage.getItem("token");
-    if (!token) {
-      alert("Session expired. Please log in again.");
-      return;
+    function updatePreview() {
+      const path = document.getElementById("image").value.trim();
+      const preview = document.getElementById("previewImage");
+      if (!path || path === "null") {
+        preview.src = "../icons/default-user.png";
+      } else if (path.startsWith("http")) {
+        preview.src = path;
+      } else if (path.startsWith("profile/")) {
+        preview.src = `https://secure-backend-tzj9.onrender.com/${path}`;
+      } else {
+        preview.src = `https://secure-backend-tzj9.onrender.com/profile/${path}`;
+      }
     }
 
-    const formData = new FormData();
-    formData.append("image", file);
+    async function uploadToServer() {
+      const file = document.getElementById("uploadImage").files[0];
+      if (!file) return;
+      const token = sessionStorage.getItem("token");
+      const formData = new FormData();
+      formData.append("image", file);
 
-    try {
       const res = await fetch("https://secure-backend-tzj9.onrender.com/api/upload", {
         method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`
-        },
+        headers: { Authorization: `Bearer ${token}` },
         body: formData
       });
-
       const result = await res.json();
       if (res.ok && result.imageUrl) {
-        document.getElementById("previewImage").src = result.imageUrl;
         document.getElementById("image").value = result.imageUrl;
+        updatePreview();
       } else {
-        alert("Upload failed: " + (result.message || "Unknown error"));
+        alert("Upload failed");
       }
-    } catch (err) {
-      console.error("Upload error:", err);
-      alert("Failed to upload image.");
-    }
-  }
-
-  async function fetchOfficers() {
-    const token = sessionStorage.getItem("token");
-    const url = "https://secure-backend-tzj9.onrender.com/api/users";
-    const tbody = document.querySelector("#officerTable tbody");
-
-    console.log("🔐 Fetching with token:", token);
-    if (!token) {
-      alert("Session expired. Please log in again.");
-      window.location.href = "../login.html";
-      return;
     }
 
-    try {
-      const res = await fetch(url, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
+    async function fetchOfficers() {
+      const token = sessionStorage.getItem("token");
+      const res = await fetch("https://secure-backend-tzj9.onrender.com/api/users", {
+        headers: { Authorization: `Bearer ${token}` }
       });
-
-      console.log("📡 Status:", res.status);
-      if (!res.ok) {
-        const text = await res.text();
-        console.error("❌ Response text:", text);
-        alert("Error " + res.status + ": " + text);
-        return;
-      }
-
       const officers = await res.json();
+      const tbody = document.querySelector("#officerTable tbody");
       tbody.innerHTML = "";
-
-      if (!Array.isArray(officers) || officers.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7">⚠️ គ្មានទិន្នន័យ</td></tr>`;
-        return;
-      }
 
       officers.forEach(user => {
         const tr = document.createElement("tr");
         tr.innerHTML = `
-          <td>${user.username || ""}</td>
-          <td>${user.password || ""}</td>
-          <td>${user.position || ""}</td>
-          <td>${user.fullname || ""}</td>
-          <td>${user.phone || ""}</td>
-          <td>${user.branch || ""}</td>
-          <td>${user.image || ""}</td>
+          <td>${user.username}</td>
+          <td>${user.password}</td>
+          <td>${user.position}</td>
+          <td>${user.fullname}</td>
+          <td>${user.phone}</td>
+          <td>${user.branch}</td>
+          <td>${user.image}</td>
         `;
-        document.querySelector("#officerTable tbody").appendChild(tr);
+        tr.onclick = () => selectRow(tr, user);
+        tbody.appendChild(tr);
       });
-
-    } catch (err) {
-      console.error("❌ Fetch error:", err);
-      alert("Failed to connect to server. Please check your internet or backend.");
-    }
-  }
-
-  document.addEventListener("click", function (e) {
-    const row = e.target.closest("tr");
-    const tableBody = document.querySelector("#officerTable tbody");
-    if (!row || !tableBody.contains(row)) return;
-
-    tableBody.querySelectorAll("tr").forEach(tr => tr.classList.remove("selected-row"));
-    row.classList.add("selected-row");
-
-    const cells = row.querySelectorAll("td");
-    if (cells.length < 7) return;
-
-    document.getElementById("username").value = cells[0].textContent.trim();
-    document.getElementById("password").value = cells[1].textContent.trim();
-    document.getElementById("position").value = cells[2].textContent.trim();
-    document.getElementById("fullname").value = cells[3].textContent.trim();
-    document.getElementById("phone").value = cells[4].textContent.trim();
-    document.getElementById("branch").value = cells[5].textContent.trim();
-    document.getElementById("image").value = cells[6].textContent.trim();
-
-    updatePreview();
-  });
-
-  async function addOfficer() {
-    console.log("🟢 Add button clicked");
-
-    const token = sessionStorage.getItem("token");
-    if (!token) {
-      alert("Session expired. Please log in again.");
-      return;
     }
 
-    const payload = {
-      username: document.getElementById("username").value.trim(),
-      password: document.getElementById("password").value.trim(),
-      position: document.getElementById("position").value.trim(),
-      fullname: document.getElementById("fullname").value.trim(),
-      phone: document.getElementById("phone").value.trim(),
-      branch: document.getElementById("branch").value.trim(),
-      image: document.getElementById("image").value.trim()
-    };
+    function selectRow(row, user) {
+      document.querySelectorAll("#officerTable tbody tr").forEach(r => r.classList.remove("selected-row"));
+      row.classList.add("selected-row");
 
-    try {
+      selectedUsername = user.username;
+      document.getElementById("username").value = user.username;
+      document.getElementById("password").value = user.password;
+      document.getElementById("position").value = user.position;
+      document.getElementById("fullname").value = user.fullname;
+      document.getElementById("phone").value = user.phone;
+      document.getElementById("branch").value = user.branch;
+      document.getElementById("image").value = user.image;
+      document.getElementById("addBtn").innerHTML = `<img src="../icons/add-newSP.png" class="icon-btn"> Update`;
+      updatePreview();
+    }
+
+    async function addOrUpdateOfficer() {
+      const token = sessionStorage.getItem("token");
+      const data = {
+        username: document.getElementById("username").value.trim(),
+        password: document.getElementById("password").value.trim(),
+        position: document.getElementById("position").value.trim(),
+        fullname: document.getElementById("fullname").value.trim(),
+        phone: document.getElementById("phone").value.trim(),
+        branch: document.getElementById("branch").value.trim(),
+        image: document.getElementById("image").value.trim()
+      };
+
+      if (!data.username) return alert("Username is required");
+
       const res = await fetch("https://secure-backend-tzj9.onrender.com/api/users", {
-        method: "POST",
+        method: selectedUsername ? "PUT" : "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`
         },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(data)
       });
 
       const result = await res.json();
       if (res.ok) {
-        console.log("✅ Officer added:", result);
-        alert("Officer added successfully");
+        alert(result.message);
+        clearForm();
         fetchOfficers();
       } else {
-        console.error("❌ Failed to add:", result);
-        alert("Add failed: " + result.message);
+        alert(result.message || "Error saving officer");
       }
-    } catch (err) {
-      console.error("❌ Add error:", err);
-      alert("Add request failed");
     }
-  }
 
-  function editOfficer() {
-    alert("Edit logic here");
-  }
+    async function deleteOfficer() {
+      if (!selectedUsername) return alert("Select a row to delete");
+      const confirmDelete = confirm("Are you sure to delete this officer?");
+      if (!confirmDelete) return;
+      const token = sessionStorage.getItem("token");
 
-  function deleteOfficer() {
-    alert("Delete logic here");
-  }
+      const res = await fetch("https://secure-backend-tzj9.onrender.com/api/users/" + selectedUsername, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` }
+      });
 
-  document.addEventListener("DOMContentLoaded", fetchOfficers);
-</script>
+      const result = await res.json();
+      if (res.ok) {
+        alert(result.message);
+        clearForm();
+        fetchOfficers();
+      } else {
+        alert("Delete failed");
+      }
+    }
+
+    function clearForm() {
+      selectedUsername = null;
+      document.querySelectorAll("input").forEach(i => i.value = "");
+      document.getElementById("previewImage").src = "../icons/default-user.png";
+      document.getElementById("addBtn").innerHTML = `<img src="../icons/add-newSP.png" class="icon-btn"> Save`;
+    }
+
+    document.addEventListener("DOMContentLoaded", fetchOfficers);
+  </script>
 </body>
 </html>
-  
