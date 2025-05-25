@@ -281,8 +281,20 @@ function updatePreview() {
 async function uploadToServer() {
   const fileInput = document.getElementById("uploadImage");
   const file = fileInput.files[0];
+  const preview = document.getElementById("previewImage");
+  const debug = document.getElementById("debugLabel");
+
   if (!file) return;
 
+  // ✅ 1. Local preview before upload
+  const reader = new FileReader();
+  reader.onload = function (e) {
+    preview.src = e.target.result;
+    debug.textContent = "🟡 Previewing local file...";
+  };
+  reader.readAsDataURL(file);
+
+  // ✅ 2. Upload to server
   const token = sessionStorage.getItem("token");
   if (!token) {
     alert("Session expired. Please log in again.");
@@ -305,9 +317,11 @@ async function uploadToServer() {
     console.log("✅ Upload result:", result);
 
     if (res.ok && result.imageUrl) {
-      // Set the full image URL as the image path
+      // ✅ Update image input value and re-preview final hosted version
       document.getElementById("image").value = result.imageUrl;
-      updatePreview();
+
+      // Wait briefly before re-preview to ensure it doesn't conflict
+      setTimeout(() => updatePreview(), 500);
     } else {
       alert("Upload failed: " + (result.message || "Unknown error"));
     }
@@ -316,7 +330,6 @@ async function uploadToServer() {
     alert("Failed to upload image.");
   }
 }
-
     
 
     async function fetchOfficers() {
