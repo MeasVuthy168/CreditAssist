@@ -282,7 +282,7 @@ async function uploadToServer() {
 
   if (!file) return;
 
-  // 1. Local preview
+  // 1. Local preview (immediate)
   const reader = new FileReader();
   reader.onload = function (e) {
     preview.src = e.target.result;
@@ -290,7 +290,7 @@ async function uploadToServer() {
   };
   reader.readAsDataURL(file);
 
-  // 2. Upload to server
+  // 2. Upload to GitHub via backend
   const token = sessionStorage.getItem("token");
   if (!token) {
     alert("Session expired. Please log in again.");
@@ -311,7 +311,12 @@ async function uploadToServer() {
 
     const result = await res.json();
     if (res.ok && result.imageUrl) {
-      document.getElementById("image").value = result.imageUrl;
+      // ✅ Convert full raw URL to relative path for proxy loading
+      const proxyPath = result.imageUrl.replace(
+        "https://raw.githubusercontent.com/MeasVuthy168/secure-backend/main/",
+        "profile/"
+      );
+      document.getElementById("image").value = proxyPath;
       debug.textContent = "✅ Image uploaded, will apply after Save.";
     } else {
       alert("Upload failed: " + (result.message || "Unknown error"));
@@ -322,6 +327,7 @@ async function uploadToServer() {
   }
 }
 
+    
 function retryPreview(url, attempts) {
   const preview = document.getElementById("previewImage");
   const debug = document.getElementById("debugLabel");
