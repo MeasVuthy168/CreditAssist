@@ -289,29 +289,54 @@ async function uploadToServer() {
 }
 
     async function fetchOfficers() {
-      const token = sessionStorage.getItem("token");
-      const res = await fetch("https://secure-backend-tzj9.onrender.com/api/users", {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      const officers = await res.json();
-      const tbody = document.querySelector("#officerTable tbody");
-      tbody.innerHTML = "";
+  const token = sessionStorage.getItem("token");
+  const tbody = document.querySelector("#officerTable tbody");
 
-      officers.forEach(user => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${user.username}</td>
-          <td>${user.password}</td>
-          <td>${user.position}</td>
-          <td>${user.fullname}</td>
-          <td>${user.phone}</td>
-          <td>${user.branch}</td>
-          <td>${user.image}</td>
-        `;
-        tr.onclick = () => selectRow(tr, user);
-        tbody.appendChild(tr);
-      });
+  if (!token) {
+    alert("Session expired. Please log in again.");
+    return;
+  }
+
+  try {
+    const res = await fetch("https://secure-backend-tzj9.onrender.com/api/users", {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+    if (!res.ok) {
+      const errText = await res.text();
+      console.error("❌ Fetch officers failed:", errText);
+      alert("Failed to load officers. Please try again.");
+      return;
     }
+
+    const officers = await res.json();
+    tbody.innerHTML = "";
+
+    if (!Array.isArray(officers) || officers.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="7">⚠️ No officer data found</td></tr>`;
+      return;
+    }
+
+    officers.forEach(user => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${user.username}</td>
+        <td>${user.password}</td>
+        <td>${user.position}</td>
+        <td>${user.fullname}</td>
+        <td>${user.phone}</td>
+        <td>${user.branch}</td>
+        <td>${user.image}</td>
+      `;
+      tr.onclick = () => selectRow(tr, user);
+      tbody.appendChild(tr);
+    });
+
+  } catch (err) {
+    console.error("❌ Fetch error:", err);
+    alert("Error connecting to server. Please check your internet.");
+  }
+}
 
     function selectRow(row, user) {
       document.querySelectorAll("#officerTable tbody tr").forEach(r => r.classList.remove("selected-row"));
