@@ -100,7 +100,10 @@ input[disabled] {
   color: #555;
   cursor: not-allowed;
 }
-
+.short-input {
+  max-width: 160px;
+}
+    
 .form-section {
   display: flex;
   align-items: flex-start;
@@ -235,7 +238,7 @@ th {
   <div class="image-preview">
     <img id="previewImage" src="../icons/default-user.png" alt="Preview" />
     <input type="file" id="uploadImage" accept="image/*" onchange="uploadToServer()" />
-    <input type="text" id="image" placeholder="Image Path" disabled />
+    <input type="text" id="image" placeholder="Image Path" disabled class="short-input" />
   </div>
   <div class="form-fields">
     <input type="text" id="username" placeholder="Username" oninput="autoFillImagePath()">
