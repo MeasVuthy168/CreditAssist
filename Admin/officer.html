@@ -258,6 +258,23 @@
     return;
   }
 
+  // Support profile/9027.jpg or full URL
+  if (path.startsWith("profile/")) {
+    preview.src = "https://secure-backend-tzj9.onrender.com/" + path;
+  } else {
+    preview.src = path;
+  }
+
+  debug.textContent = "✅ Previewing image";
+
+  preview.onerror = () => {
+    preview.src = "../icons/non-image.jpg";
+    debug.textContent = "❌ Failed to load image";
+  };
+}
+
+    
+
   // Support both profile/9027.jpg or full URL
   if (path.startsWith("profile/")) {
     preview.src = "https://secure-backend-tzj9.onrender.com/" + path;
@@ -307,14 +324,10 @@ async function uploadToServer() {
     const result = await res.json();
     console.log("✅ Upload result:", result);
 
-
-      
-if (res.ok && result.imageUrl) {
-  document.getElementById("image").value = result.imageUrl; // already full URL
-  updatePreview();
-
-    
-
+    if (res.ok && result.imageUrl) {
+      // Set the full image URL as the image path
+      document.getElementById("image").value = result.imageUrl;
+      updatePreview();
     } else {
       alert("Upload failed: " + (result.message || "Unknown error"));
     }
@@ -323,6 +336,8 @@ if (res.ok && result.imageUrl) {
     alert("Failed to upload image.");
   }
 }
+
+    
 
     async function fetchOfficers() {
   const token = sessionStorage.getItem("token");
