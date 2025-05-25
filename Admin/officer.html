@@ -284,7 +284,15 @@ async function uploadToServer() {
 
   if (!file) return;
 
-  // 1. Local preview
+  // ✅ Validate file type
+  const allowed = ['jpg', 'jpeg', 'png'];
+  const extension = file.name.split('.').pop().toLowerCase();
+  if (!allowed.includes(extension)) {
+    alert("Only JPG, JPEG, PNG files are allowed.");
+    return;
+  }
+
+  // ✅ Preview locally
   const reader = new FileReader();
   reader.onload = function (e) {
     preview.src = e.target.result;
@@ -298,22 +306,17 @@ async function uploadToServer() {
     return;
   }
 
-  // 2. Prepare upload
   const formData = new FormData();
   formData.append("image", file);
 
-  // ✅ Send desired new file name (based on username)
   if (username) {
-    const extension = file.name.split('.').pop(); // keep original extension
     formData.append("newFileName", `profile/${username}.${extension}`);
   }
 
   try {
     const res = await fetch("https://secure-backend-tzj9.onrender.com/api/upload", {
       method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`
-      },
+      headers: { Authorization: `Bearer ${token}` },
       body: formData
     });
 
