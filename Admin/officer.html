@@ -71,7 +71,11 @@
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
-
+    
+.selected-row {
+  background-color: #ffd700;
+  font-weight: bold;
+}
 .form-section {
   display: flex;
   align-items: flex-start;
@@ -352,15 +356,21 @@ th {
   }
 
 
-   // Make rows clickable and fill form
 document.addEventListener("click", function (e) {
   const row = e.target.closest("tr");
-  if (!row || !row.parentElement || row.parentElement.tagName !== "TBODY") return;
+  const tableBody = document.querySelector("#officerTable tbody");
+  if (!row || !tableBody.contains(row)) return;
+
+  // Remove highlight from all rows
+  tableBody.querySelectorAll("tr").forEach(tr => tr.classList.remove("selected-row"));
+
+  // Highlight clicked row
+  row.classList.add("selected-row");
 
   const cells = row.querySelectorAll("td");
   if (cells.length < 7) return;
 
-  // Fill inputs
+  // Fill form
   document.getElementById("username").value = cells[0].textContent.trim();
   document.getElementById("password").value = cells[1].textContent.trim();
   document.getElementById("position").value = cells[2].textContent.trim();
@@ -369,11 +379,11 @@ document.addEventListener("click", function (e) {
   document.getElementById("branch").value = cells[5].textContent.trim();
   document.getElementById("image").value = cells[6].textContent.trim();
 
-  // Update preview image
+  // Update preview
   updatePreview();
 });
     
-  document.addEventListener("DOMContentLoaded", fetchOfficers);
+  
 
     function addOfficer() {
       alert("Add logic here");
@@ -387,7 +397,9 @@ document.addEventListener("click", function (e) {
       alert("Delete logic here");
     }
 
+
     document.addEventListener("DOMContentLoaded", fetchOfficers);
+
   </script>
 </body>
 </html>
