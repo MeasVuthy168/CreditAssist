@@ -242,15 +242,17 @@
 function updatePreview() {
   const path = document.getElementById("image").value.trim();
   const preview = document.getElementById("previewImage");
+
   if (!path) {
     preview.src = "../icons/non-image.jpg";
   } else if (path.startsWith("http")) {
     preview.src = path;
   } else {
     const cleanPath = path.replace(/^profile\//, '');
-    preview.src = `https://raw.githubusercontent.com/MeasVuthy168/secure-backend/main/profile/${cleanPath}`;
+    preview.src = `https://secure-backend-tzj9.onrender.com/profile/${cleanPath}`;
   }
 }
+
 
 async function uploadToServer() {
   const fileInput = document.getElementById("uploadImage");
