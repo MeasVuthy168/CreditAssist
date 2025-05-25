@@ -187,7 +187,8 @@
       
       <div id="debugLog" style="font-size: 10px; color: red; word-break: break-all; max-width: 140px;"></div>
 
-      <div id="debugLabel" style="color: lime; font-size: 12px; padding: 4px;"></div>
+      <div id="debugLabel" style="color: lime; font-size: 12px;"></div>
+
 
       
       <input type="file" id="uploadImage" accept="image/*" onchange="uploadToServer()" />
@@ -246,31 +247,30 @@
 
   
 function updatePreview() {
+function updatePreview() {
   const path = document.getElementById("image").value.trim();
   const preview = document.getElementById("previewImage");
   const debug = document.getElementById("debugLabel");
 
   if (!path) {
     preview.src = "../icons/non-image.jpg";
-    debug.textContent = "❌ No image path.";
+    debug.textContent = "❌ No path provided";
     return;
   }
 
-  let imageUrl = "";
-
   if (path.startsWith("http")) {
-    imageUrl = path;
+    preview.src = path;
+    debug.textContent = "✅ Loaded: " + path;
   } else {
-    imageUrl = `https://secure-backend-tzj9.onrender.com/${path.replace(/^\/?/, '')}`;
+    const cleanPath = path.replace(/^profile\//, '');
+    const fullPath = `https://secure-backend-tzj9.onrender.com/profile/${cleanPath}`;
+    preview.src = fullPath;
+    debug.textContent = "➡️ Redirect to GitHub: " + fullPath;
   }
 
-  preview.src = imageUrl;
-  debug.textContent = "✅ Loading: " + imageUrl;
-
-  // Optional test to verify image loading
   preview.onerror = () => {
     preview.src = "../icons/non-image.jpg";
-    debug.textContent = "❌ Failed to load: " + imageUrl;
+    debug.textContent = "❌ Failed to load: " + preview.src;
   };
 }
 
