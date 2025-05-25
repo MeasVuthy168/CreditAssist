@@ -273,25 +273,6 @@
   };
 }
 
-    
-
-  // Support both profile/9027.jpg or full URL
-  if (path.startsWith("profile/")) {
-    preview.src = "https://secure-backend-tzj9.onrender.com/" + path;
-  } else {
-    preview.src = path;
-  }
-
-  debug.textContent = "✅ Previewing image";
-
-  preview.onerror = () => {
-    preview.src = "../icons/non-image.jpg";
-    debug.textContent = "❌ Failed to load image";
-  };
-}
-
-
-
 
 
 
