@@ -248,10 +248,10 @@ function updatePreview() {
   } else if (path.startsWith("http")) {
     preview.src = path;
   } else {
-    const cleanPath = path.replace(/^profile\//, '');
-    preview.src = `https://secure-backend-tzj9.onrender.com/profile/${cleanPath}`;
+    preview.src = `https://secure-backend-tzj9.onrender.com/${path}`;
   }
 }
+
 
 
 async function uploadToServer() {
