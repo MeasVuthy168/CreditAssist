@@ -12,10 +12,24 @@
   font-family: 'Krasar';
   src: url('../Krasar-Regular.ttf') format('truetype');
 }
-    html, body {
+
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
 }
+
+
+
+
+
+
+
+
+
+
+    
     body {
   font-family: 'Krasar', Arial, sans-serif;
   background-color: #1c2331;
@@ -80,8 +94,12 @@
   max-width: 700px;
   padding: 10px 16px;
   border-radius: 12px;
+  width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
+
 
 select {
   width: 100%;
@@ -101,8 +119,11 @@ input, select {
   border-radius: 6px;
   border: 1px solid #ccc;
   font-family: 'Krasar', Arial;
-  
   box-sizing: border-box;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  font-size: 14px;
 }
 
 input[disabled] {
@@ -118,8 +139,11 @@ input[disabled] {
   display: flex;
   align-items: flex-start;
   gap: 16px;
+  flex-wrap: wrap;
+  width: 100%;
 }
 
+    
 .image-preview {
   flex-shrink: 0;
   display: flex;
@@ -142,8 +166,10 @@ input[disabled] {
   width: 100px;
 }
 
-.form-fields {
-  flex: 1;
+    .form-fields {
+  flex: 1 1 0;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 .button-row {
