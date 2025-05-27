@@ -743,11 +743,13 @@ th, td {
   <!-- ឃ - សន្និដ្ឋាន -->
   <label>ឃ - សន្និដ្ឋាន</label>
   <label>សន្និដ្ឋាន<span class="required">*</span></label>
-  <select id="conclusion">
-    <option value="">-- ជ្រើសរើស --</option>
-    <option>ឥណទានមិនមានសញ្ញាណហានិភ័យណាមួយកើតឡើងទេ ៕</option>
-    <option>យោងតាមការត្រួតពិនិត្យឯកសារឥណទាន និងចុះត្រួតពិនិត្យដល់លំនៅដ្ឋាន បង្ហាញថាឥណទានមិនមានសញ្ញាណហានិភ័យណាមួយកើតឡើងទេ ៕</option>
-  </select>
+  <label>សន្និដ្ឋាន<span class="required">*</span></label>
+<input list="conclusionOptions" id="conclusion" name="conclusion" placeholder="-- ជ្រើសរើស --" />
+
+<datalist id="conclusionOptions">
+  <option value="ឥណទានមិនមានសញ្ញាណហានិភ័យណាមួយកើតឡើងទេ ៕">
+  <option value="យោងតាមការត្រួតពិនិត្យឯកសារឥណទាន និងចុះត្រួតពិនិត្យដល់លំនៅដ្ឋាន បង្ហាញថាឥណទានមិនមានសញ្ញាណហានិភ័យណាមួយកើតឡើងទេ ៕">
+</datalist>
 
   <div class="action-buttons">
     <button id="clearBtn">Clear</button>
