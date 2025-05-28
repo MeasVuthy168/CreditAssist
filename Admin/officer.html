@@ -318,20 +318,29 @@ th {
 
 <div class="section">
   <div class="table-wrapper">
-    <table id="officerTable">
-      <thead>
-        <tr>
-          <th>Username</th>
-          <th>Password</th>
-          <th>Position</th>
-          <th>Fullname</th>
-          <th>Phone</th>
-          <th>Branch</th>
-          <th>Image Path</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
+  <table id="officerTable">
+  <thead>
+    <tr id="sortRow">
+      <th onclick="sortTable(0)">⬍ Username</th>
+      <th onclick="sortTable(1)">⬍ Password</th>
+      <th onclick="sortTable(2)">⬍ Position</th>
+      <th onclick="sortTable(3)">⬍ Fullname</th>
+      <th onclick="sortTable(4)">⬍ Phone</th>
+      <th onclick="sortTable(5)">⬍ Branch</th>
+      <th onclick="sortTable(6)">⬍ Image Path</th>
+    </tr>
+    <tr>
+      <th>Username</th>
+      <th>Password</th>
+      <th>Position</th>
+      <th>Fullname</th>
+      <th>Phone</th>
+      <th>Branch</th>
+      <th>Image Path</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
   </div>
 </div>
 
@@ -605,13 +614,13 @@ function retryPreview(url, attempts) {
   });
 
   const result = await res.json();
-  if (res.ok) {
-    alert(result.message);
-    clearForm();
-    fetchOfficers();
-  } else {
-    alert(result.message || "Error saving officer");
-  }
+if (res.ok) {
+  alert(result.message);
+  clearForm();
+  await fetchOfficers(); // ✅ wait for table to update
+  document.querySelector("#officerTable tbody tr")?.scrollIntoView({ behavior: "smooth" }); // ✅ scroll to top row
+} else {
+  alert(result.message || "Error saving officer");
 }
 
     async function deleteOfficer() {
@@ -657,6 +666,23 @@ function filterOfficerTable() {
     row.style.display = text.includes(query) ? "" : "none";
   });
 }
+
+ function sortTable(colIndex) {
+  const table = document.getElementById("officerTable");
+  const tbody = table.querySelector("tbody");
+  const rows = Array.from(tbody.querySelectorAll("tr"));
+
+  const asc = !table.dataset.sortDir || table.dataset.sortDir === "desc";
+  rows.sort((a, b) => {
+    const aText = a.children[colIndex].textContent.trim();
+    const bText = b.children[colIndex].textContent.trim();
+    return asc ? aText.localeCompare(bText) : bText.localeCompare(aText);
+  });
+
+  table.dataset.sortDir = asc ? "asc" : "desc";
+  rows.forEach(row => tbody.appendChild(row));
+}
+
 </script>
 </body>
 </html>
