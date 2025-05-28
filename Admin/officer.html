@@ -320,25 +320,16 @@ th {
   <div class="table-wrapper">
   <table id="officerTable">
   <thead>
-    <tr id="sortRow">
-      <th onclick="sortTable(0)">⬍ Username</th>
-      <th onclick="sortTable(1)">⬍ Password</th>
-      <th onclick="sortTable(2)">⬍ Position</th>
-      <th onclick="sortTable(3)">⬍ Fullname</th>
-      <th onclick="sortTable(4)">⬍ Phone</th>
-      <th onclick="sortTable(5)">⬍ Branch</th>
-      <th onclick="sortTable(6)">⬍ Image Path</th>
-    </tr>
-    <tr>
-      <th>Username</th>
-      <th>Password</th>
-      <th>Position</th>
-      <th>Fullname</th>
-      <th>Phone</th>
-      <th>Branch</th>
-      <th>Image Path</th>
-    </tr>
-  </thead>
+  <tr id="sortRow">
+    <th onclick="sortTable(0, this)" data-order="none">Username</th>
+    <th onclick="sortTable(1, this)" data-order="none">Password</th>
+    <th onclick="sortTable(2, this)" data-order="none">Position</th>
+    <th onclick="sortTable(3, this)" data-order="none">Fullname</th>
+    <th onclick="sortTable(4, this)" data-order="none">Phone</th>
+    <th onclick="sortTable(5, this)" data-order="none">Branch</th>
+    <th onclick="sortTable(6, this)" data-order="none">Image Path</th>
+  </tr>
+</thead>
   <tbody></tbody>
 </table>
   </div>
@@ -668,20 +659,32 @@ function filterOfficerTable() {
   });
 }
 
- function sortTable(colIndex) {
+ function sortTable(colIndex, thElement) {
   const table = document.getElementById("officerTable");
   const tbody = table.querySelector("tbody");
   const rows = Array.from(tbody.querySelectorAll("tr"));
 
-  const asc = !table.dataset.sortDir || table.dataset.sortDir === "desc";
+  const currentOrder = thElement.getAttribute("data-order");
+  const newOrder = currentOrder === "asc" ? "desc" : "asc";
+
+  // Clear all other headers' indicators
+  document.querySelectorAll("#sortRow th").forEach(th => {
+    th.setAttribute("data-order", "none");
+    th.textContent = th.textContent.replace(/[\u2191\u2193]/g, ""); // remove ↑↓
+  });
+
+  // Apply new arrow to clicked header
+  thElement.setAttribute("data-order", newOrder);
+  const baseText = thElement.textContent.replace(/[\u2191\u2193]/g, "").trim();
+  thElement.textContent = baseText + (newOrder === "asc" ? " ↑" : " ↓");
+
   rows.sort((a, b) => {
     const aText = a.children[colIndex].textContent.trim();
     const bText = b.children[colIndex].textContent.trim();
-    return asc ? aText.localeCompare(bText) : bText.localeCompare(aText);
+    return newOrder === "asc" ? aText.localeCompare(bText) : bText.localeCompare(aText);
   });
 
-  table.dataset.sortDir = asc ? "asc" : "desc";
-  rows.forEach(row => tbody.appendChild(row));
+  rows.forEach(row => tbody.appendChild(row)); // Re-append sorted rows
 }
 
 </script>
