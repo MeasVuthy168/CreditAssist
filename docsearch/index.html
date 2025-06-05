@@ -282,21 +282,23 @@ async function handleSearch() {
   spinner.style.display = "block";
 
   try {
+    // ✅ Get token from sessionStorage
     const user = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
     const token = user?.token;
     if (!token) throw new Error("Missing token");
 
-    console.log("🔍 Searching for:", keyword);
+    console.log("🔍 Searching keyword:", keyword);
 
     const res = await fetch(`https://secure-backend-tzj9.onrender.com/api/documents/search?q=${encodeURIComponent(keyword)}`, {
+      method: "GET",
       headers: {
         Authorization: `Bearer ${token}`
       }
     });
 
     if (!res.ok) {
-      const errData = await res.json();
-      throw new Error(errData.message || "Search failed");
+      const errorData = await res.json();
+      throw new Error(errorData.message || "Server error");
     }
 
     const results = await res.json();
@@ -307,7 +309,7 @@ async function handleSearch() {
 
     if (!results.length) {
       const row = document.createElement("tr");
-      row.innerHTML = `<td colspan="5">No documents found</td>`;
+      row.innerHTML = `<td colspan="5">No documents found for "${keyword}"</td>`;
       tbody.appendChild(row);
       return;
     }
@@ -326,7 +328,7 @@ async function handleSearch() {
 
   } catch (err) {
     alert("❌ Error during search: " + err.message);
-    console.error("❌ Search Error:", err);
+    console.error("❌ Search error:", err);
   } finally {
     spinner.style.display = "none";
   }
