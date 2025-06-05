@@ -1,3 +1,4 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="km">
 <head>
@@ -24,9 +25,7 @@
       display: flex;
       align-items: center;
       position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
+      top: 0; left: 0; right: 0;
       z-index: 1000;
       box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     }
@@ -58,13 +57,6 @@
       margin-bottom: 20px;
     }
 
-    .form-row label {
-      color: white;
-      margin-bottom: 5px;
-      display: block;
-      font-size: 14px;
-    }
-
     input[type="file"], input[type="text"] {
       padding: 6px 10px;
       border-radius: 4px;
@@ -74,11 +66,10 @@
     }
 
     .actions {
-      text-align: center;
-      margin: 10px 0;
       display: flex;
       gap: 10px;
       justify-content: center;
+      margin: 12px 0;
       flex-wrap: wrap;
     }
 
@@ -93,7 +84,6 @@
     }
 
     .table-container {
-      width: 100%;
       overflow-x: auto;
     }
 
@@ -115,9 +105,8 @@
     }
 
     .thumb-img {
-      max-height: 70px;
-      display: block;
-      margin: 0 auto 5px;
+      height: 70px;
+      margin: 2px;
       border: 1px solid #999;
     }
 
@@ -160,7 +149,6 @@
       display: flex;
       justify-content: space-around;
       align-items: center;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
       z-index: 1000;
     }
 
@@ -170,14 +158,8 @@
       align-items: center;
       font-size: 11px;
       color: white;
-      border: none;
       background: none;
-      padding: 2px;
-    }
-
-    .bottom-btn img {
-      margin-bottom: 2px;
-      pointer-events: none;
+      border: none;
     }
 
     .badge {
@@ -195,10 +177,9 @@
 </head>
 <body>
   <div class="header">
-    <button class="back" onclick="window.location.href='../index.html'">←</button>
+    <button class="back" onclick="location.href='../index.html'">←</button>
     <div class="title">ស្វែងរកឯកសារ (Document Search)</div>
   </div>
-
   <div class="spacer"></div>
 
   <div class="form-section">
@@ -206,12 +187,10 @@
       <label for="doc-upload">📤 ឯកសារដែលត្រូវបញ្ចូល</label>
       <input type="file" id="doc-upload" accept=".pdf,.docx,.xlsx,.pptx" />
     </div>
-
     <div>
       <label for="search-keyword">🔍 ស្វែងរកដោយពាក្យគន្លឹះ</label>
       <input type="text" id="search-keyword" placeholder="សូមវាយពាក្យគន្លឹះ..." />
     </div>
-
     <div class="actions">
       <button onclick="handleUpload()">Upload</button>
       <button onclick="handleSearch()">Search</button>
@@ -234,23 +213,20 @@
           <th>Delete</th>
         </tr>
       </thead>
-      <tbody id="result-table-body">
-        <!-- Dynamic rows -->
-      </tbody>
+      <tbody id="result-table-body"></tbody>
     </table>
   </div>
 
-
-    <div class="bottom-bar">
-    <button class="bottom-btn" onclick="window.location.href='../index.html'">
-      <img src="../icons/Home.png" width="24" height="24" /><div>Home</div>
+  <div class="bottom-bar">
+    <button class="bottom-btn" onclick="location.href='../index.html'">
+      <img src="../icons/Home.png" width="24" /><div>Home</div>
     </button>
-    <button class="bottom-btn" onclick="window.location.href='../Setting/index.html'">
-      <img src="../icons/Setting.png" width="24" height="24" /><div>Setting</div>
+    <button class="bottom-btn" onclick="location.href='../Setting/index.html'">
+      <img src="../icons/Setting.png" width="24" /><div>Setting</div>
     </button>
-    <button class="bottom-btn" onclick="window.location.href='../notifications/index.html'">
+    <button class="bottom-btn" onclick="location.href='../notifications/index.html'">
       <div style="position: relative;">
-        <img src="../icons/Notification.png" width="24" height="24" />
+        <img src="../icons/Notification.png" width="24" />
         <span id="notif-badge" class="badge" style="display: none;"></span>
       </div>
       <div>Notification</div>
@@ -268,8 +244,7 @@
       const formData = new FormData();
       formData.append("file", file);
 
-      const spinner = document.getElementById("loadingSpinnerWrapper");
-      spinner.style.display = "block";
+      document.getElementById("loadingSpinnerWrapper").style.display = "block";
 
       try {
         const user = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
@@ -294,19 +269,18 @@
         alert("Error uploading file");
         console.error(err);
       } finally {
-        spinner.style.display = "none";
+        document.getElementById("loadingSpinnerWrapper").style.display = "none";
       }
     }
 
     async function handleSearch() {
       const keyword = document.getElementById("search-keyword").value.trim();
       if (!keyword) return alert("សូមបញ្ចូលពាក្យគន្លឹះ");
-
-      await fetchDocs(`/api/documents/search?q=${encodeURIComponent(keyword)}`);
+      fetchDocs(`/api/documents/search?q=${encodeURIComponent(keyword)}`);
     }
 
     async function showAll() {
-      await fetchDocs(`/api/documents/all`);
+      fetchDocs(`/api/documents/all`);
     }
 
     async function fetchDocs(endpoint) {
@@ -329,21 +303,22 @@
         if (!result.length) {
           const row = document.createElement("tr");
           row.innerHTML = `<td colspan="7">រកមិនឃើញឯកសារ</td>`;
-          return tbody.appendChild(row);
+          tbody.appendChild(row);
+          return;
         }
 
         for (const file of result) {
-          const previews = (file.previews || []).map(base64 =>
-            `<img src="${base64}" class="thumb-img" />`
+          const previews = (file.previews || []).map(b64 =>
+            `<img src="${b64}" class="thumb-img" />`
           ).join("");
-
+          const snippet = file.snippet || "[OCR failed to extract text]";
           const row = document.createElement("tr");
           row.innerHTML = `
             <td>${previews || '-'}</td>
             <td>${file.filename}</td>
             <td>${file.filetype}</td>
             <td>${new Date(file.uploadedAt).toLocaleString()}</td>
-            <td>${file.snippet}</td>
+            <td>${snippet}</td>
             <td><a href="${BASE_URL}/api/documents/download/${file._id}" target="_blank">⬇️</a></td>
             <td><button class="delete-btn" onclick="deleteDoc('${file._id}')">Delete</button></td>
           `;
@@ -351,7 +326,7 @@
         }
 
       } catch (err) {
-        alert("Search error: " + err.message);
+        alert("❌ Search error: " + err.message);
         console.error(err);
       } finally {
         spinner.style.display = "none";
@@ -364,13 +339,10 @@
       try {
         const user = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
         const token = user?.token;
-        if (!token) throw new Error("Token missing");
-
         const res = await fetch(`${BASE_URL}/api/documents/${docId}`, {
           method: "DELETE",
           headers: { Authorization: `Bearer ${token}` }
         });
-
         if (res.ok) {
           alert("✅ Deleted");
           showAll();
@@ -383,15 +355,12 @@
       }
     }
 
-    // Auto load
     window.addEventListener("DOMContentLoaded", () => {
       showAll();
       checkNotification?.();
       setupAutoLogoutEvents?.();
     });
   </script>
-
-  <!-- Optional Notification Script -->
   <script src="../notifications/checkNotification.js"></script>
 </body>
 </html>
