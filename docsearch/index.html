@@ -10,22 +10,27 @@
       font-family: 'Krasar';
       src: url('https://measvuthy168.github.io/CreditAssist/Krasar-Regular.ttf') format('truetype');
     }
+
     body {
       font-family: 'Krasar', Arial, sans-serif;
       background-color: #1c2331;
       margin: 0;
       padding: 0 20px 80px;
     }
+
     .header {
       background-color: #0d2d5c;
       padding: 14px 16px;
       display: flex;
       align-items: center;
       position: fixed;
-      top: 0; left: 0; right: 0;
+      top: 0;
+      left: 0;
+      right: 0;
       z-index: 1000;
       box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     }
+
     .header .back {
       font-size: 22px;
       color: white;
@@ -34,14 +39,17 @@
       margin-right: 12px;
       cursor: pointer;
     }
+
     .header .title {
       font-size: 17px;
       font-weight: bold;
       color: white;
     }
+
     .spacer {
       height: 58px;
     }
+
     .form-section {
       display: flex;
       flex-direction: column;
@@ -49,12 +57,14 @@
       margin-top: 10px;
       margin-bottom: 20px;
     }
+
     .form-row label {
       color: white;
       margin-bottom: 5px;
       display: block;
       font-size: 14px;
     }
+
     input[type="file"], input[type="text"] {
       padding: 6px 10px;
       border-radius: 4px;
@@ -62,33 +72,84 @@
       width: 100%;
       font-size: 14px;
     }
+
     .actions {
       text-align: center;
       margin: 10px 0;
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
     }
+
     .actions button {
-      margin: 0 4px;
-      padding: 6px 12px;
-      font-family: 'Krasar';
+      padding: 6px 14px;
+      border: none;
+      border-radius: 6px;
+      background: #0d2d5c;
+      color: white;
+      font-size: 14px;
+      cursor: pointer;
     }
+
     .table-container {
       width: 100%;
       overflow-x: auto;
     }
+
     table {
       width: 100%;
       border-collapse: collapse;
       background-color: #B9C2CA;
       font-size: 13px;
     }
+
     th, td {
       border: 1px solid #ccc;
       padding: 6px;
       text-align: center;
     }
+
     th {
       background-color: #dbe8f5;
     }
+
+    .thumb-img {
+      max-height: 70px;
+      display: block;
+      margin: 0 auto 5px;
+      border: 1px solid #999;
+    }
+
+    .delete-btn {
+      background: red;
+      color: white;
+      border: none;
+      padding: 4px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .spinner {
+      width: 32px;
+      height: 32px;
+      border: 4px solid #ffffff33;
+      border-top: 4px solid #ffd700;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      margin: 0 auto;
+    }
+
+    #loadingSpinnerWrapper {
+      display: none;
+      text-align: center;
+      padding: 10px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
     .bottom-bar {
       position: fixed;
       bottom: 0;
@@ -102,6 +163,7 @@
       box-shadow: 0 2px 5px rgba(0,0,0,0.3);
       z-index: 1000;
     }
+
     .bottom-btn {
       display: flex;
       flex-direction: column;
@@ -112,10 +174,12 @@
       background: none;
       padding: 2px;
     }
+
     .bottom-btn img {
       margin-bottom: 2px;
       pointer-events: none;
     }
+
     .badge {
       position: absolute;
       top: -4px;
@@ -127,42 +191,10 @@
       border-radius: 50%;
       font-weight: bold;
     }
-    .spinner {
-      width: 32px;
-      height: 32px;
-      border: 4px solid #ffffff33;
-      border-top: 4px solid #ffd700;
-      border-radius: 50%;
-      animation: spin 0.6s linear infinite;
-      margin: 0 auto;
-    }
-    #loadingSpinnerWrapper {
-      display: none;
-      text-align: center;
-      padding: 10px;
-    }
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-    .thumb-img {
-      max-height: 70px;
-      display: block;
-      margin: 0 auto 5px;
-      border: 1px solid #999;
-    }
-    .delete-btn {
-      background: red;
-      color: white;
-      border: none;
-      padding: 4px 8px;
-      border-radius: 4px;
-      cursor: pointer;
-    }
   </style>
 </head>
 <body>
-
-    <div class="header">
+  <div class="header">
     <button class="back" onclick="window.location.href='../index.html'">←</button>
     <div class="title">ស្វែងរកឯកសារ (Document Search)</div>
   </div>
@@ -183,7 +215,7 @@
     <div class="actions">
       <button onclick="handleUpload()">Upload</button>
       <button onclick="handleSearch()">Search</button>
-      <button onclick="handleSearch(true)">Show All</button>
+      <button onclick="showAll()">Show All</button>
     </div>
   </div>
 
@@ -203,12 +235,13 @@
         </tr>
       </thead>
       <tbody id="result-table-body">
-        <!-- Dynamic content -->
+        <!-- Dynamic rows -->
       </tbody>
     </table>
   </div>
 
-  <div class="bottom-bar">
+
+    <div class="bottom-bar">
     <button class="bottom-btn" onclick="window.location.href='../index.html'">
       <img src="../icons/Home.png" width="24" height="24" /><div>Home</div>
     </button>
@@ -253,7 +286,7 @@
         if (res.ok) {
           alert("✅ Upload success");
           fileInput.value = "";
-          handleSearch(); // Refresh list
+          showAll();
         } else {
           alert("❌ Upload failed: " + (data.message || "Server error"));
         }
@@ -265,8 +298,18 @@
       }
     }
 
-    async function handleSearch(showAll = false) {
+    async function handleSearch() {
       const keyword = document.getElementById("search-keyword").value.trim();
+      if (!keyword) return alert("សូមបញ្ចូលពាក្យគន្លឹះ");
+
+      await fetchDocs(`/api/documents/search?q=${encodeURIComponent(keyword)}`);
+    }
+
+    async function showAll() {
+      await fetchDocs(`/api/documents/all`);
+    }
+
+    async function fetchDocs(endpoint) {
       const spinner = document.getElementById("loadingSpinnerWrapper");
       spinner.style.display = "block";
 
@@ -275,8 +318,7 @@
         const token = user?.token;
         if (!token) throw new Error("Token missing");
 
-        const q = showAll ? "" : `?q=${encodeURIComponent(keyword)}`;
-        const res = await fetch(`${BASE_URL}/api/documents/search${q}`, {
+        const res = await fetch(`${BASE_URL}${endpoint}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
 
@@ -291,13 +333,13 @@
         }
 
         for (const file of result) {
-          const previewImg = file.preview?.length
-            ? `<img src="${file.preview[0]}" class="thumb-img" />`
-            : "-";
+          const previews = (file.previews || []).map(base64 =>
+            `<img src="${base64}" class="thumb-img" />`
+          ).join("");
 
           const row = document.createElement("tr");
           row.innerHTML = `
-            <td>${previewImg}</td>
+            <td>${previews || '-'}</td>
             <td>${file.filename}</td>
             <td>${file.filetype}</td>
             <td>${new Date(file.uploadedAt).toLocaleString()}</td>
@@ -310,27 +352,28 @@
 
       } catch (err) {
         alert("Search error: " + err.message);
+        console.error(err);
       } finally {
         spinner.style.display = "none";
       }
     }
 
     async function deleteDoc(docId) {
-      if (!confirm("Are you sure you want to delete this file?")) return;
+      if (!confirm("តើអ្នកពិតជាចង់លុបឯកសារនេះមែនទេ?")) return;
 
       try {
         const user = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
         const token = user?.token;
         if (!token) throw new Error("Token missing");
 
-        const res = await fetch(`${BASE_URL}/api/documents/delete/${docId}`, {
+        const res = await fetch(`${BASE_URL}/api/documents/${docId}`, {
           method: "DELETE",
           headers: { Authorization: `Bearer ${token}` }
         });
 
         if (res.ok) {
           alert("✅ Deleted");
-          handleSearch();
+          showAll();
         } else {
           const err = await res.json();
           alert("❌ Delete failed: " + (err.message || "Server error"));
@@ -340,14 +383,15 @@
       }
     }
 
+    // Auto load
     window.addEventListener("DOMContentLoaded", () => {
-      handleSearch(); // auto load
+      showAll();
       checkNotification?.();
       setupAutoLogoutEvents?.();
     });
   </script>
 
-  <!-- Shared script for badge -->
+  <!-- Optional Notification Script -->
   <script src="../notifications/checkNotification.js"></script>
 </body>
 </html>
