@@ -385,50 +385,18 @@ async function deleteDoc(docId) {
 
 async function downloadDoc(docId) {
   const token = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}")?.token;
-  const url = `${BASE_URL}/api/documents/download/${docId}`;
-
   if (!token) {
     alert("❌ Token missing");
     return;
   }
 
-  try {
-    const res = await fetch(url, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
-
-    if (!res.ok) {
-      const text = await res.text();
-      alert("❌ Download failed: " + text);
-      return;
-    }
-
-    const contentDisp = res.headers.get("Content-Disposition") || "";
-let filename = "document";
-const utfMatch = /filename\*?=UTF-8''([^;]+)/i.exec(contentDisp);
-if (utfMatch) {
-  filename = decodeURIComponent(utfMatch[1]);
-} else {
-  const fallbackMatch = /filename="?([^"]+)"?/i.exec(contentDisp);
-  if (fallbackMatch) {
-    filename = fallbackMatch[1];
-  }
+  // ✅ Use direct download via anchor for correct filename
+  const a = document.getElementById("hidden-download");
+  a.href = `${BASE_URL}/api/documents/download/${docId}?token=${encodeURIComponent(token)}`;
+  a.download = ""; // let browser decide filename from Content-Disposition
+  a.click();
 }
-
-    const blob = await res.blob();
-    const urlBlob = URL.createObjectURL(blob);
-
-    // ✅ Trigger download using hidden anchor
-    const a = document.getElementById("hidden-download");
-    a.href = urlBlob;
-    a.download = filename;
-    a.click();
-    URL.revokeObjectURL(urlBlob);
-  } catch (err) {
-    console.error("❌ Download error:", err);
-    alert("Download error: " + err.message);
-  }
-}
+  
   
 window.addEventListener("DOMContentLoaded", () => {
   showAll();
