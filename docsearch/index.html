@@ -378,6 +378,7 @@ async function deleteDoc(docId) {
   }
 }
 
+
 async function downloadDoc(docId) {
   try {
     const user = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
@@ -392,8 +393,17 @@ async function downloadDoc(docId) {
 
     const blob = await res.blob();
     const contentDisp = res.headers.get("Content-Disposition");
-    const match = /filename="(.+)"/.exec(contentDisp || "");
-    const filename = match ? decodeURIComponent(match[1]) : "document";
+    let filename = "document";
+
+    const match = /filename\*?=UTF-8''(.+?)(;|$)/i.exec(contentDisp || "");
+    if (match && match[1]) {
+      filename = decodeURIComponent(match[1]);
+    } else {
+      const fallback = /filename="?(.+?)"?($|;)/i.exec(contentDisp || "");
+      if (fallback && fallback[1]) {
+        filename = fallback[1];
+      }
+    }
 
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
