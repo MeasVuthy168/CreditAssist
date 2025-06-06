@@ -404,8 +404,17 @@ async function downloadDoc(docId) {
     }
 
     const contentDisp = res.headers.get("Content-Disposition") || "";
-    const match = /filename\*?=UTF-8''(.+?)(;|$)/i.exec(contentDisp);
-    const filename = match ? decodeURIComponent(match[1]) : "document";
+let filename = "document";
+
+const utfMatch = /filename\*?=UTF-8''([^;]+)/i.exec(contentDisp);
+if (utfMatch) {
+  filename = decodeURIComponent(utfMatch[1]);
+} else {
+  const fallbackMatch = /filename="?([^"]+)"?/i.exec(contentDisp);
+  if (fallbackMatch) {
+    filename = fallbackMatch[1];
+  }
+}
 
     const blob = await res.blob();
     const urlBlob = URL.createObjectURL(blob);
