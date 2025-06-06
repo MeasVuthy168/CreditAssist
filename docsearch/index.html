@@ -405,7 +405,6 @@ async function downloadDoc(docId) {
 
     const contentDisp = res.headers.get("Content-Disposition") || "";
 let filename = "document";
-
 const utfMatch = /filename\*?=UTF-8''([^;]+)/i.exec(contentDisp);
 if (utfMatch) {
   filename = decodeURIComponent(utfMatch[1]);
