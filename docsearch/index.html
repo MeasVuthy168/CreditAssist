@@ -379,7 +379,8 @@ async function deleteDoc(docId) {
 }
 
 
-async function downloadDoc(docId, filename) {
+
+async function downloadDoc(docId, fallbackName) {
   try {
     const user = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
     const token = user?.token;
@@ -392,12 +393,16 @@ async function downloadDoc(docId, filename) {
     if (!res.ok) throw new Error("Download failed");
 
     const blob = await res.blob();
-    const safeFilename = filename || "document";
+    const contentDisp = res.headers.get("Content-Disposition");
+
+    // ✅ Extract filename from response header
+    const match = /filename\*?=UTF-8''(.+?)(;|$)/i.exec(contentDisp || "");
+    const serverFilename = match ? decodeURIComponent(match[1]) : fallbackName || "document";
 
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = safeFilename;
+    a.download = serverFilename;
     document.body.appendChild(a);
     a.click();
     a.remove();
@@ -407,7 +412,7 @@ async function downloadDoc(docId, filename) {
     console.error(err);
   }
 }
-
+  
 window.addEventListener("DOMContentLoaded", () => {
   showAll();
   checkNotification?.();
