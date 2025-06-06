@@ -384,17 +384,34 @@ async function downloadDoc(docId) {
   const token = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}")?.token;
   const url = `${BASE_URL}/api/documents/download/${docId}`;
 
+  console.log("📥 Starting download for:", docId);
+  console.log("📥 Request URL:", url);
+  if (!token) {
+    alert("❌ No token found in sessionStorage");
+    return;
+  }
+
   try {
     const res = await fetch(url, {
       headers: { Authorization: `Bearer ${token}` }
     });
 
-    if (!res.ok) throw new Error("Download failed");
+    console.log("📥 Response status:", res.status);
 
-    // ✅ Extract filename from Content-Disposition header
-    const contentDisp = res.headers.get("Content-Disposition") || "";
-    const match = /filename\*?=UTF-8''(.+?)(;|$)/i.exec(contentDisp);
+    if (!res.ok) {
+      const text = await res.text();
+      console.error("❌ Download failed:", res.status, text);
+      alert("Download failed: " + text);
+      return;
+    }
+
+    const contentDisp = res.headers.get("Content-Disposition");
+    console.log("📥 Content-Disposition:", contentDisp);
+
+    const match = /filename\*?=UTF-8''(.+?)(;|$)/i.exec(contentDisp || "");
     const decodedFilename = match ? decodeURIComponent(match[1]) : "document";
+
+    console.log("📥 Decoded filename:", decodedFilename);
 
     const blob = await res.blob();
     const a = document.createElement("a");
@@ -404,9 +421,11 @@ async function downloadDoc(docId) {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(a.href);
+
+    console.log("✅ Download triggered for:", decodedFilename);
   } catch (err) {
-    console.error("❌ Download error:", err.message);
-    alert("Download failed");
+    console.error("❌ Download exception:", err);
+    alert("Download exception: " + err.message);
   }
 }
   
