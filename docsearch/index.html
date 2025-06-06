@@ -336,7 +336,7 @@ async function fetchDocs(endpoint) {
         <td>${file.filetype}</td>
         <td>${new Date(file.uploadedAt).toLocaleString()}</td>
         <td>${highlightedSnippet}</td>
-        <button onclick="downloadDoc('${file._id}')">⬇️</button>
+        <td><button onclick="downloadDoc('${file._id}')">⬇️</button></td>
         <td><button class="delete-btn" onclick="deleteDoc('${file._id}')">Delete</button></td>
       `;
       tbody.appendChild(row);
