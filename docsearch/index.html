@@ -336,7 +336,7 @@ async function fetchDocs(endpoint) {
         <td>${file.filetype}</td>
         <td>${new Date(file.uploadedAt).toLocaleString()}</td>
         <td>${highlightedSnippet}</td>
-        <td><button onclick="downloadDoc('${file._id}')">⬇️</button></td>
+        <td><button onclick="downloadDoc('${file._id}', ${JSON.stringify(file.filename)})">⬇️</button></td>
         <td><button class="delete-btn" onclick="deleteDoc('${file._id}')">Delete</button></td>
       `;
       tbody.appendChild(row);
@@ -379,7 +379,7 @@ async function deleteDoc(docId) {
 }
 
 
-async function downloadDoc(docId) {
+async function downloadDoc(docId, filename) {
   try {
     const user = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
     const token = user?.token;
@@ -392,23 +392,12 @@ async function downloadDoc(docId) {
     if (!res.ok) throw new Error("Download failed");
 
     const blob = await res.blob();
-    const contentDisp = res.headers.get("Content-Disposition");
-    let filename = "document";
-
-    const match = /filename\*?=UTF-8''(.+?)(;|$)/i.exec(contentDisp || "");
-    if (match && match[1]) {
-      filename = decodeURIComponent(match[1]);
-    } else {
-      const fallback = /filename="?(.+?)"?($|;)/i.exec(contentDisp || "");
-      if (fallback && fallback[1]) {
-        filename = fallback[1];
-      }
-    }
+    const safeFilename = filename || "document";
 
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = filename;
+    a.download = safeFilename;
     document.body.appendChild(a);
     a.click();
     a.remove();
