@@ -384,17 +384,30 @@ async function downloadDoc(docId) {
   const token = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}")?.token;
   const url = `${BASE_URL}/api/documents/download/${docId}`;
 
-  const res = await fetch(url, {
-    headers: { Authorization: `Bearer ${token}` }
-  });
+  try {
+    const res = await fetch(url, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
 
-  const blob = await res.blob();
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "TestFile"; // hardcoded to isolate bug
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
+    if (!res.ok) throw new Error("Download failed");
+
+    // ✅ Extract filename from Content-Disposition header
+    const contentDisp = res.headers.get("Content-Disposition") || "";
+    const match = /filename\*?=UTF-8''(.+?)(;|$)/i.exec(contentDisp);
+    const decodedFilename = match ? decodeURIComponent(match[1]) : "document";
+
+    const blob = await res.blob();
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = decodedFilename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(a.href);
+  } catch (err) {
+    console.error("❌ Download error:", err.message);
+    alert("Download failed");
+  }
 }
   
 window.addEventListener("DOMContentLoaded", () => {
