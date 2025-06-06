@@ -384,29 +384,39 @@ async function downloadDoc(docId) {
   const token = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}")?.token;
   const url = `${BASE_URL}/api/documents/download/${docId}`;
 
-  const res = await fetch(url, {
-    headers: { Authorization: `Bearer ${token}` }
-  });
+  try {
+    const res = await fetch(url, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
 
-  if (!res.ok) {
-    alert("❌ Download failed");
-    return;
+    if (!res.ok) {
+      alert("❌ Download failed");
+      return;
+    }
+
+    const blob = await res.blob();
+    const contentDisp = res.headers.get("Content-Disposition") || "";
+
+    // ✅ Extract UTF-8 encoded filename
+    const match = /filename\*?=UTF-8''(.+?)(;|$)/i.exec(contentDisp);
+    const filename = match ? decodeURIComponent(match[1]) : "document";
+
+    // ✅ Create File object with name to force correct filename in download
+    const file = new File([blob], filename, { type: blob.type });
+
+    // ✅ Create anchor and trigger download
+    const urlBlob = URL.createObjectURL(file);
+    const a = document.createElement("a");
+    a.href = urlBlob;
+    a.download = file.name;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(urlBlob);
+  } catch (err) {
+    console.error("❌ Download exception:", err);
+    alert("Download exception: " + err.message);
   }
-
-  const blob = await res.blob();
-
-  // ✅ Extract original filename from headers (handles Khmer + UTF-8)
-  const contentDisp = res.headers.get("Content-Disposition") || "";
-  const match = /filename\*?=UTF-8''(.+?)(;|$)/i.exec(contentDisp);
-  const filename = match ? decodeURIComponent(match[1]) : "document";
-
-  // ✅ Trigger download
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
 }
   
 window.addEventListener("DOMContentLoaded", () => {
