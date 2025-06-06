@@ -1,78 +1,187 @@
-<!DOCTYPE html>  
-<html lang="km">  
-<head>  
-  <meta charset="UTF-8" />  
-  <title>ស្វែងរកឯកសារ (Document Search)</title>  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />  
-  <meta name="theme-color" content="#0d2d5c" />  
-  <style>  
-    @font-face {  
-      font-family: 'Krasar';  
-      src: url('https://measvuthy168.github.io/CreditAssist/Krasar-Regular.ttf') format('truetype');  
-    }  
-    body {  
-      font-family: 'Krasar', Arial, sans-serif;  
-      background-color: #1c2331;  
-      margin: 0;  
-      padding: 0 20px 80px;  
-    }  
-    .header { background-color: #0d2d5c; padding: 14px 16px; display: flex; align-items: center; position: fixed; top: 0; left: 0; right: 0; z-index: 1000; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }  
-    .header .back { font-size: 22px; color: white; background: none; border: none; margin-right: 12px; cursor: pointer; }  
-    .header .title { font-size: 17px; font-weight: bold; color: white; }  
-    .spacer { height: 58px; }  
-    .form-section { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; margin-bottom: 20px; }  
-    input[type="file"], input[type="text"] { padding: 6px 10px; border-radius: 4px; border: 1px solid #ccc; width: 100%; font-size: 14px; }  
-    .actions { display: flex; gap: 10px; justify-content: center; margin: 12px 0; flex-wrap: wrap; }  
-    .actions button { padding: 6px 14px; border: none; border-radius: 6px; background: #0d2d5c; color: white; font-size: 14px; cursor: pointer; }  
-    .table-container { overflow-x: auto; }  
-    table { width: 100%; border-collapse: collapse; background-color: #B9C2CA; font-size: 13px; }  
-    th, td { border: 1px solid #ccc; padding: 6px; text-align: center; }  
-    th { background-color: #dbe8f5; }  
-    .thumb-img { height: 70px; margin: 2px; border: 1px solid #999; }  
-    .delete-btn { background: red; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; }  
-    .spinner { width: 32px; height: 32px; border: 4px solid #ffffff33; border-top: 4px solid #ffd700; border-radius: 50%; animation: spin 0.6s linear infinite; margin: 0 auto; }  
-    #loadingSpinnerWrapper { display: none; text-align: center; padding: 10px; }  
-    @keyframes spin { to { transform: rotate(360deg); } }  
-    .bottom-bar { position: fixed; bottom: 0; left: 0; width: 100%; height: 56px; background: #0d2d5c; display: flex; justify-content: space-around; align-items: center; z-index: 1000; }  
-    .bottom-btn { display: flex; flex-direction: column; align-items: center; font-size: 11px; color: white; background: none; border: none; }  
-    .badge { position: absolute; top: -4px; right: -8px; background: red; color: white; font-size: 10px; padding: 2px 6px; border-radius: 50%; font-weight: bold; }  
-    .highlighted { background: #ffffa0 !important; }  
-    .highlight-word { background: yellow; font-weight: bold; }  
-  </style>  
-</head>  
-<body>  
-  <div class="header">  
-    <button class="back" onclick="location.href='../index.html'">←</button>  
-    <div class="title">ស្វែងរកឯកសារ (Document Search)</div>  
-  </div>  
-  <div class="spacer"></div>  
-  
-  <div class="form-section">  
-    <div><label for="doc-upload">📤 ឯកសារដែលត្រូវបញ្ចូល</label><input type="file" id="doc-upload" accept=".pdf,.docx,.xlsx,.pptx" /></div>  
-    <div><label for="search-keyword">🔍 ស្វែងរកដោយពាក្យគន្លឹះ</label><input type="text" id="search-keyword" placeholder="សូមវាយពាក្យគន្លឹះ..." /></div>  
-    <div class="actions">  
-      <button onclick="handleUpload()">Upload</button>  
-      <button onclick="handleSearch()">Search</button>  
-      <button onclick="showAll()">Show All</button>  
-    </div>  
-  </div>  
-  
-  <div id="loadingSpinnerWrapper"><div class="spinner"></div></div>  
-  
-  <div class="table-container">  
-    <table>  
-      <thead><tr><th>Preview</th><th>Filename</th><th>Type</th><th>Uploaded</th><th>Snippet</th><th>Download</th><th>Delete</th></tr></thead>  
-      <tbody id="result-table-body"></tbody>  
-    </table>  
-  </div>  
-  
-  <div class="bottom-bar">  
-    <button class="bottom-btn" onclick="location.href='../index.html'"><img src="../icons/Home.png" width="24" /><div>Home</div></button>  
-    <button class="bottom-btn" onclick="location.href='../Setting/index.html'"><img src="../icons/Setting.png" width="24" /><div>Setting</div></button>  
-    <button class="bottom-btn" onclick="location.href='../notifications/index.html'"><div style="position: relative;"><img src="../icons/Notification.png" width="24" /><span id="notif-badge" class="badge" style="display: none;"></span></div><div>Notification</div></button>  
-  </div>  
-  
-<script>
+
+<!DOCTYPE html>
+<html lang="km">
+<head>
+  <meta charset="UTF-8" />
+  <title>ស្វែងរកឯកសារ (Document Search)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#0d2d5c" />
+  <style>
+    @font-face {
+      font-family: 'Krasar';
+      src: url('https://measvuthy168.github.io/CreditAssist/Krasar-Regular.ttf') format('truetype');
+    }
+    body {
+      font-family: 'Krasar', Arial, sans-serif;
+      background-color: #1c2331;
+      margin: 0;
+      padding: 0 20px 80px;
+    }
+    .header {
+      background-color: #0d2d5c;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    .header .back {
+      font-size: 22px;
+      color: white;
+      background: none;
+      border: none;
+      margin-right: 12px;
+      cursor: pointer;
+    }
+    .header .title {
+      font-size: 17px;
+      font-weight: bold;
+      color: white;
+    }
+    .spacer { height: 58px; }
+    .form-section {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+      margin-bottom: 20px;
+    }
+    input[type="file"], input[type="text"] {
+      padding: 6px 10px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      width: 100%;
+      font-size: 14px;
+    }
+    .actions {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin: 12px 0;
+      flex-wrap: wrap;
+    }
+    .actions button {
+      padding: 6px 14px;
+      border: none;
+      border-radius: 6px;
+      background: #0d2d5c;
+      color: white;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .table-container { overflow-x: auto; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: #B9C2CA;
+      font-size: 13px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 6px;
+      text-align: center;
+    }
+    th { background-color: #dbe8f5; }
+    .thumb-img {
+      height: 70px;
+      margin: 2px;
+      border: 1px solid #999;
+    }
+    .delete-btn {
+      background: red;
+      color: white;
+      border: none;
+      padding: 4px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .spinner {
+      width: 32px;
+      height: 32px;
+      border: 4px solid #ffffff33;
+      border-top: 4px solid #ffd700;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      margin: 0 auto;
+    }
+    #loadingSpinnerWrapper {
+      display: none;
+      text-align: center;
+      padding: 10px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .bottom-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 56px;
+      background: #0d2d5c;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      z-index: 1000;
+    }
+    .bottom-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-size: 11px;
+      color: white;
+      background: none;
+      border: none;
+    }
+    .badge {
+      position: absolute;
+      top: -4px;
+      right: -8px;
+      background: red;
+      color: white;
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 50%;
+      font-weight: bold;
+    }
+    .highlighted { background: #ffffa0 !important; }
+    .highlight-word { background: yellow; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <button class="back" onclick="location.href='../index.html'">←</button>
+    <div class="title">ស្វែងរកឯកសារ (Document Search)</div>
+  </div>
+  <div class="spacer"></div>
+
+  <div class="form-section">
+    <div><label for="doc-upload">📤 ឯកសារដែលត្រូវបញ្ចូល</label><input type="file" id="doc-upload" accept=".pdf,.docx,.xlsx,.pptx" /></div>
+    <div><label for="search-keyword">🔍 ស្វែងរកដោយពាក្យគន្លឹះ</label><input type="text" id="search-keyword" placeholder="សូមវាយពាក្យគន្លឹះ..." /></div>
+    <div class="actions">
+      <button onclick="handleUpload()">Upload</button>
+      <button onclick="handleSearch()">Search</button>
+      <button onclick="showAll()">Show All</button>
+    </div>
+  </div>
+
+  <div id="loadingSpinnerWrapper"><div class="spinner"></div></div>
+
+  <div class="table-container">
+    <table>
+      <thead><tr><th>Preview</th><th>Filename</th><th>Type</th><th>Uploaded</th><th>Snippet</th><th>Download</th><th>Delete</th></tr></thead>
+      <tbody id="result-table-body"></tbody>
+    </table>
+  </div>
+
+  <div class="bottom-bar">
+    <button class="bottom-btn" onclick="location.href='../index.html'"><img src="../icons/Home.png" width="24" /><div>Home</div></button>
+    <button class="bottom-btn" onclick="location.href='../Setting/index.html'"><img src="../icons/Setting.png" width="24" /><div>Setting</div></button>
+    <button class="bottom-btn" onclick="location.href='../notifications/index.html'"><div style="position: relative;"><img src="../icons/Notification.png" width="24" /><span id="notif-badge" class="badge" style="display: none;"></span></div><div>Notification</div></button>
+  </div>
+
+
+  <script>
 const BASE_URL = "https://secure-backend-tzj9.onrender.com";
 let lastKeyword = "";
 
@@ -124,7 +233,6 @@ function showAll() {
   lastKeyword = "";
   fetchDocs(`/api/documents/all`);
 }
-
 
 async function fetchDocs(endpoint) {
   const spinner = document.getElementById("loadingSpinnerWrapper");
@@ -179,7 +287,7 @@ async function fetchDocs(endpoint) {
         <td>${file.filetype}</td>
         <td>${new Date(file.uploadedAt).toLocaleString()}</td>
         <td>${highlightedSnippet}</td>
-        <td><a href="${BASE_URL}/api/documents/download/${file._id}" target="_blank">⬇️</a></td>
+        <td><button onclick="downloadFile('${file._id}', '${file.filename}')">⬇️</button></td>
         <td><button class="delete-btn" onclick="deleteDoc('${file._id}')">Delete</button></td>
       `;
       tbody.appendChild(row);
@@ -196,6 +304,37 @@ async function fetchDocs(endpoint) {
     console.error(err);
   } finally {
     spinner.style.display = "none";
+  }
+}
+
+async function downloadFile(fileId, filename) {
+  try {
+    const user = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
+    const token = user?.token;
+    if (!token) throw new Error("Token missing");
+
+    const res = await fetch(`${BASE_URL}/api/documents/download/${fileId}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      alert("❌ Download failed: " + (err.message || "Server error"));
+      return;
+    }
+
+    const blob = await res.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename || "document";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    window.URL.revokeObjectURL(url);
+  } catch (err) {
+    alert("Download error: " + err.message);
+    console.error(err);
   }
 }
 
@@ -230,4 +369,3 @@ window.addEventListener("DOMContentLoaded", () => {
 <script src="../notifications/checkNotification.js"></script>
 </body>
 </html>
-  
