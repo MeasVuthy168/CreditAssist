@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="km">
 <head>
@@ -118,42 +117,42 @@
       filter: brightness(0) saturate(100%) invert(19%) sepia(100%) saturate(6486%) hue-rotate(355deg) brightness(93%) contrast(104%);
     }
 
-   .footer {
+    .footer {
       text-align: center;
       font-size: 14px;
       color: #aaa;
       margin-top: 40px;
     }
 
-.bottom-bar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 56px;
-  background: #0d2d5c;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-  z-index: 1000;
-}
+    .bottom-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 56px;
+      background: #0d2d5c;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+      z-index: 1000;
+    }
 
-.bottom-btn {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-size: 11px;
-  color: white;
-  border: none;
-  background: none;
-  padding: 2px;
-}
+    .bottom-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-size: 11px;
+      color: white;
+      border: none;
+      background: none;
+      padding: 2px;
+    }
 
-.bottom-btn img {
-  margin-bottom: 2px;
-  pointer-events: none;
-}
+    .bottom-btn img {
+      margin-bottom: 2px;
+      pointer-events: none;
+    }
 
     .modal {
       display: none;
@@ -228,16 +227,16 @@
     }
 
     .badge {
-  position: absolute;
-  top: -4px;
-  right: -8px;
-  background: red;
-  color: white;
-  font-size: 10px;
-  padding: 2px 6px;
-  border-radius: 50%;
-  font-weight: bold;
-}
+      position: absolute;
+      top: -4px;
+      right: -8px;
+      background: red;
+      color: white;
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 50%;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
@@ -274,6 +273,14 @@
       <span>›</span>
     </div>
 
+    <!-- ✅ Enable Push Notifications -->
+    <div id="push-setting" class="setting-item" onclick="subscribeUserToPush()">
+      <span>
+        <img class="icon" src="bell.png" alt="Push" />
+        <span id="push-label">បើកការជូនដំណឹង</span>
+      </span>
+    </div>
+
     <div class="setting-item signout" onclick="confirmLogout()">
       <span>
         <img class="icon" src="logout-rounded-left.png" alt="Logout" />
@@ -283,23 +290,22 @@
   </div>
 
   <!-- Footer -->
-<div class="bottom-bar">
-  <button class="bottom-btn active" onclick="window.location.href='../index.html'">
-    <img src="../icons/Home.png" width="24" height="24" /><div>Home</div>
-  </button>
-  <button class="bottom-btn" onclick="window.location.href='../Setting/index.html'">
-    <img src="../icons/Setting.png" width="24" height="24" /><div>Setting</div>
-  </button>
-  <button class="bottom-btn" onclick="window.location.href='../notifications/index.html'">
-  <div style="position: relative;">
-    <img src="../icons/Notification.png" width="24" height="24" />
-    <span id="notif-badge" class="badge" style="display: none;"></span>
+  <div class="bottom-bar">
+    <button class="bottom-btn active" onclick="window.location.href='../index.html'">
+      <img src="../icons/Home.png" width="24" height="24" /><div>Home</div>
+    </button>
+    <button class="bottom-btn" onclick="window.location.href='../Setting/index.html'">
+      <img src="../icons/Setting.png" width="24" height="24" /><div>Setting</div>
+    </button>
+    <button class="bottom-btn" onclick="window.location.href='../notifications/index.html'">
+      <div style="position: relative;">
+        <img src="../icons/Notification.png" width="24" height="24" />
+        <span id="notif-badge" class="badge" style="display: none;"></span>
+      </div>
+      <div>Notification</div>
+    </button>
   </div>
-  <div>Notification</div>
-</button>
-</div>
 
-  
   <!-- Custom Modal -->
   <div id="logoutModal" class="modal">
     <div class="modal-content">
@@ -315,74 +321,130 @@
   <audio id="logout-audio" src="logout-sound.mp3" preload="auto"></audio>
 
   <script>
-
-// ✅ Protect Page by Token
-const token = sessionStorage.getItem('token');
-if (!token) {
-  alert("Session expired or unauthorized access.");
-  window.location.href = "../login.html";
-}
-// ✅ auto logout
-  function setupAutoLogoutEvents() {
-  const AUTO_LOGOUT_MINUTES = 1;
-  let logoutTimer;
-
-  function resetLogoutTimer() {
-    clearTimeout(logoutTimer);
-    logoutTimer = setTimeout(() => {
-      sessionStorage.clear();
-      alert("Session expired due to inactivity. Please log in again.");
-      window.location.href = "../login.html";
-    }, AUTO_LOGOUT_MINUTES * 60 * 1000);
+  // ✅ Protect Page by Token
+  const token = sessionStorage.getItem('token');
+  if (!token) {
+    alert("Session expired or unauthorized access.");
+    window.location.href = "../login.html";
   }
 
-  ['mousemove', 'mousedown', 'keydown', 'touchstart', 'touchmove', 'scroll'].forEach(event => {
-    document.addEventListener(event, resetLogoutTimer, true);
-  });
+  // ✅ auto logout
+  function setupAutoLogoutEvents() {
+    const AUTO_LOGOUT_MINUTES = 1;
+    let logoutTimer;
 
-  resetLogoutTimer();
-}
-    function logout() {
-      const audio = document.getElementById("logout-audio");
-      if (audio) audio.play();
-
-      setTimeout(() => {
+    function resetLogoutTimer() {
+      clearTimeout(logoutTimer);
+      logoutTimer = setTimeout(() => {
         sessionStorage.clear();
+        alert("Session expired due to inactivity. Please log in again.");
         window.location.href = "../login.html";
-      }, 800);
+      }, AUTO_LOGOUT_MINUTES * 60 * 1000);
     }
 
+    ['mousemove', 'mousedown', 'keydown', 'touchstart', 'touchmove', 'scroll'].forEach(event => {
+      document.addEventListener(event, resetLogoutTimer, true);
+    });
 
-    
-    function confirmLogout() {
-      document.getElementById("logoutModal").classList.add("show");
+    resetLogoutTimer();
+  }
+
+  function logout() {
+    const audio = document.getElementById("logout-audio");
+    if (audio) audio.play();
+
+    setTimeout(() => {
+      sessionStorage.clear();
+      window.location.href = "../login.html";
+    }, 800);
+  }
+
+  function confirmLogout() {
+    document.getElementById("logoutModal").classList.add("show");
+  }
+
+  function closeModal() {
+    document.getElementById("logoutModal").classList.remove("show");
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const name = sessionStorage.getItem("fullname") || "អ្នកប្រើ";
+    const position = sessionStorage.getItem("userPosition") || "មិនដំណើរការ";
+    const image = sessionStorage.getItem("image") || "profile.jpg";
+
+    document.getElementById("user-fullname").textContent = name;
+    document.getElementById("user-position").textContent = position;
+    document.getElementById("profile-photo").src = "https://secure-backend-tzj9.onrender.com/" + image;
+  });
+  </script>
+
+  <!-- ✅ Push subscription -->
+  <script>
+    const VAPID_PUBLIC_KEY = "BM_2VepdV2VgczrbNc1pJSCX7zj4ms7wxg9PccE-tkqH4rFRT8pX0oA5OApJfW1umhDJDymxBfd_jWCGfXkYfKg; // ⚠️ replace with your real key
+
+    async function checkIfSubscribed() {
+      if (!("serviceWorker" in navigator)) return;
+
+      const reg = await navigator.serviceWorker.getRegistration();
+      if (!reg) return;
+
+      const sub = await reg.pushManager.getSubscription();
+      if (sub) {
+        document.getElementById("push-label").textContent = "✓ Already Enabled";
+        document.getElementById("push-setting").onclick = null;
+      }
     }
 
-    function closeModal() {
-      document.getElementById("logoutModal").classList.remove("show");
+    async function subscribeUserToPush() {
+      try {
+        const reg = await navigator.serviceWorker.register("../sw.js");
+        const permission = await Notification.requestPermission();
+        if (permission !== "granted") {
+          alert("Permission denied.");
+          return;
+        }
+
+        const subscription = await reg.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+        });
+
+        const res = await fetch("../api/push/subscribe", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          },
+          body: JSON.stringify({ subscription })
+        });
+
+        if (res.ok) {
+          document.getElementById("push-label").textContent = "✓ Already Enabled";
+          document.getElementById("push-setting").onclick = null;
+          alert("Push notifications enabled!");
+        } else {
+          alert("Failed to enable push.");
+        }
+      } catch (err) {
+        console.error("❌ Push error:", err);
+        alert("Subscription failed.");
+      }
+    }
+
+    function urlBase64ToUint8Array(base64String) {
+      const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
+      const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
+      const rawData = atob(base64);
+      return Uint8Array.from([...rawData].map(c => c.charCodeAt(0)));
     }
 
     document.addEventListener("DOMContentLoaded", () => {
-      const name = sessionStorage.getItem("fullname") || "អ្នកប្រើ";
-      const position = sessionStorage.getItem("userPosition") || "មិនដំណើរការ";
-      const image = sessionStorage.getItem("image") || "profile.jpg";
-
-      document.getElementById("user-fullname").textContent = name;
-      document.getElementById("user-position").textContent = position;
-      document.getElementById("profile-photo").src = "https://secure-backend-tzj9.onrender.com/" + image;
+      setupAutoLogoutEvents();
+      checkIfSubscribed();
     });
+  </script>
 
-    </script> 
-  
-<!-- ✅ Load shared notification script -->
-<script src="../notifications/checkNotification.js"></script>
-
-<!-- ✅ Initialize after DOM ready -->
-<script>
-  window.addEventListener("DOMContentLoaded", () => {
-    setupAutoLogoutEvents();
-    checkNotification();
-  });
-</script>
+  <!-- ✅ Load shared notification script -->
+  <script src="../notifications/checkNotification.js"></script>
 </body>
 </html>
