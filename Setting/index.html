@@ -6,10 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#0d2d5c" />
   <style>
-    @font-face {
-      font-family: 'Krasar';
-      src: url('../Krasar-Regular.ttf') format('truetype');
-    }
+    @font-face { font-family:'Krasar'; src:url('../Krasar-Regular.ttf') format('truetype'); }
     body{margin:0;font-family:'Krasar',Arial,sans-serif;background:#f1f4f8;color:#333;padding-bottom:70px}
     .header{background:#0d2d5c;color:#fff;padding:14px 16px;font-size:18px;font-weight:bold;box-shadow:0 2px 5px rgba(0,0,0,.2);position:fixed;top:0;left:0;right:0;z-index:999;display:flex;align-items:center}
     .header .back{font-size:22px;color:#fff;background:none;border:none;margin-right:12px;cursor:pointer}
@@ -106,7 +103,7 @@
   <script>
     // ===== CONFIG =====
     const API_BASE = "https://secure-backend-tzj9.onrender.com"; // Render backend
-    const VAPID_PUBLIC_KEY = "BM_2VepdV2VgczrbNc1pJSCX7zj4ms7wxg9PccE"; // <-- paste your real public key
+    let VAPID_PUBLIC_KEY = null; // fetched from backend
 
     // ===== Guard by token =====
     const token = sessionStorage.getItem('token');
@@ -140,15 +137,26 @@
 
       setupAutoLogoutEvents();
       checkIfSubscribed();
-      checkNotificationBadge();
-      setInterval(checkNotificationBadge, 15000);
+      refreshBadge();
+      setInterval(refreshBadge, 15000);
     });
+
+    // ===== Fetch VAPID key from backend (avoid copy/paste mismatch)
+    async function getVapidKey() {
+      if (VAPID_PUBLIC_KEY) return VAPID_PUBLIC_KEY;
+      const res = await fetch(`${API_BASE}/api/push/public-key`);
+      const data = await res.json();
+      if (!data.key || !/^[A-Za-z0-9_-]{80,}$/.test(data.key)) {
+        throw new Error("Invalid VAPID public key from server.");
+      }
+      VAPID_PUBLIC_KEY = data.key;
+      return VAPID_PUBLIC_KEY;
+    }
 
     // ===== Push subscription =====
     async function checkIfSubscribed() {
       try {
         if (!('serviceWorker' in navigator)) return;
-        // Get existing registration or register (root scope)
         let reg = await navigator.serviceWorker.getRegistration('/');
         if (!reg) reg = await navigator.serviceWorker.register('/service-worker.js');
         const sub = await reg.pushManager.getSubscription();
@@ -156,42 +164,42 @@
           document.getElementById("push-label").textContent = "✓ Already Enabled";
           document.getElementById("push-setting").onclick = null;
         }
-      } catch (e) { console.warn("checkIfSubscribed error:", e); }
+      } catch (e) {
+        console.warn("checkIfSubscribed error:", e);
+      }
     }
 
     async function subscribeUserToPush() {
-      console.log("Start subscription…");
       try {
-        // register SW at root
         const reg = await navigator.serviceWorker.register('/service-worker.js');
-        console.log("SW registered:", reg.scope);
 
         const perm = await Notification.requestPermission();
-        console.log("Permission:", perm);
-        if (perm !== 'granted') return alert("Permission denied.");
+        if (perm !== 'granted') { alert("Permission denied."); return; }
+
+        const key = await getVapidKey();
 
         const sub = await reg.pushManager.subscribe({
           userVisibleOnly: true,
-          applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+          applicationServerKey: urlBase64ToUint8Array(key)
         });
-        console.log("Subscription object:", sub);
 
         const res = await fetch(`${API_BASE}/api/push/subscribe`, {
           method: 'POST',
           headers: { 'Content-Type':'application/json', 'Authorization': `Bearer ${token}` },
           body: JSON.stringify({ subscription: sub })
         });
-        const data = await res.json().catch(()=> ({}));
-        console.log("Subscribe response:", res.status, data);
 
-        if (!res.ok) return alert("Subscription failed, check console.");
+        if (!res.ok) {
+          const msg = await res.text();
+          throw new Error(`Backend responded ${res.status}: ${msg}`);
+        }
 
         document.getElementById("push-label").textContent = "✓ Already Enabled";
         document.getElementById("push-setting").onclick = null;
         alert("Push notifications enabled!");
       } catch (err) {
         console.error("Subscription error:", err);
-        alert("Subscription failed, check console.");
+        alert(`Subscription failed: ${err.message || err}`);
       }
     }
 
@@ -204,20 +212,26 @@
       return output;
     }
 
-    // ===== Notification red badge =====
-    async function checkNotificationBadge() {
+    // ===== Red badge logic (compare upload timestamps with read_{username})
+    async function refreshBadge() {
       try {
-        const res = await fetch(`${API_BASE}/api/notifications/status`, {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-        const status = await res.json();
+        const res = await fetch(`${API_BASE}/api/notifications/status`);
+        const s = await res.json();
+
+        const username = sessionStorage.getItem("username") || sessionStorage.getItem("user") || "";
+        const readKey = username ? `read_${username}` : null;
+
+        const uploads = ["user","customer","turnover","nbcos","arreas"]
+          .map(k => s?.[k]).filter(Boolean).map(v => Date.parse(v)).filter(n => !Number.isNaN(n));
+
+        const latestUpload = uploads.length ? Math.max(...uploads) : 0;
+        const lastRead = readKey && s?.[readKey] ? Date.parse(s[readKey]) : 0;
+
+        const show = latestUpload && (!lastRead || lastRead < latestUpload);
+
         const badge = document.getElementById("notif-badge");
-        if (status && status.hasNew) {
-          badge.style.display = "inline-block";
-          badge.textContent = "•";
-        } else {
-          badge.style.display = "none";
-        }
+        if (show) { badge.style.display = "inline-block"; badge.textContent = "•"; }
+        else { badge.style.display = "none"; }
       } catch (e) {
         console.warn("Badge check failed:", e);
       }
