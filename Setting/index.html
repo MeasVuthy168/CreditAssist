@@ -101,15 +101,12 @@
   <audio id="logout-audio" src="logout-sound.mp3" preload="auto"></audio>
 
   <script>
-    // ===== CONFIG =====
-    const API_BASE = "https://secure-backend-tzj9.onrender.com"; // Render backend
-    let VAPID_PUBLIC_KEY = null; // fetched from backend
+    const API_BASE = "https://secure-backend-tzj9.onrender.com";
+    let VAPID_PUBLIC_KEY = null;
 
-    // ===== Guard by token =====
     const token = sessionStorage.getItem('token');
     if (!token) { alert("Session expired or unauthorized access."); window.location.href = "../login.html"; }
 
-    // ===== Auto logout =====
     function setupAutoLogoutEvents() {
       const AUTO_LOGOUT_MINUTES = 1;
       let logoutTimer;
@@ -141,43 +138,35 @@
       setInterval(refreshBadge, 15000);
     });
 
-    // ===== Fetch VAPID key from backend (avoid copy/paste mismatch)
     async function getVapidKey() {
       if (VAPID_PUBLIC_KEY) return VAPID_PUBLIC_KEY;
       const res = await fetch(`${API_BASE}/api/push/public-key`);
       const data = await res.json();
-      if (!data.key || !/^[A-Za-z0-9_-]{80,}$/.test(data.key)) {
-        throw new Error("Invalid VAPID public key from server.");
-      }
       VAPID_PUBLIC_KEY = data.key;
       return VAPID_PUBLIC_KEY;
     }
 
-    // ===== Push subscription =====
     async function checkIfSubscribed() {
       try {
         if (!('serviceWorker' in navigator)) return;
-        let reg = await navigator.serviceWorker.getRegistration('/');
-        if (!reg) reg = await navigator.serviceWorker.register('/service-worker.js');
+        let reg = await navigator.serviceWorker.getRegistration('../');
+        if (!reg) reg = await navigator.serviceWorker.register('../service-worker.js');
         const sub = await reg.pushManager.getSubscription();
         if (sub) {
           document.getElementById("push-label").textContent = "✓ Already Enabled";
           document.getElementById("push-setting").onclick = null;
         }
-      } catch (e) {
-        console.warn("checkIfSubscribed error:", e);
-      }
+      } catch (e) { console.warn("checkIfSubscribed error:", e); }
     }
 
     async function subscribeUserToPush() {
       try {
-        const reg = await navigator.serviceWorker.register('/service-worker.js');
+        const reg = await navigator.serviceWorker.register('../service-worker.js');
 
         const perm = await Notification.requestPermission();
         if (perm !== 'granted') { alert("Permission denied."); return; }
 
         const key = await getVapidKey();
-
         const sub = await reg.pushManager.subscribe({
           userVisibleOnly: true,
           applicationServerKey: urlBase64ToUint8Array(key)
@@ -189,10 +178,7 @@
           body: JSON.stringify({ subscription: sub })
         });
 
-        if (!res.ok) {
-          const msg = await res.text();
-          throw new Error(`Backend responded ${res.status}: ${msg}`);
-        }
+        if (!res.ok) { const msg = await res.text(); throw new Error(`Backend ${res.status}: ${msg}`); }
 
         document.getElementById("push-label").textContent = "✓ Already Enabled";
         document.getElementById("push-setting").onclick = null;
@@ -212,31 +198,22 @@
       return output;
     }
 
-    // ===== Red badge logic (compare upload timestamps with read_{username})
     async function refreshBadge() {
       try {
         const res = await fetch(`${API_BASE}/api/notifications/status`);
         const s = await res.json();
-
-        const username = sessionStorage.getItem("username") || sessionStorage.getItem("user") || "";
+        const username = sessionStorage.getItem("username") || "";
         const readKey = username ? `read_${username}` : null;
-
         const uploads = ["user","customer","turnover","nbcos","arreas"]
           .map(k => s?.[k]).filter(Boolean).map(v => Date.parse(v)).filter(n => !Number.isNaN(n));
-
         const latestUpload = uploads.length ? Math.max(...uploads) : 0;
         const lastRead = readKey && s?.[readKey] ? Date.parse(s[readKey]) : 0;
-
         const show = latestUpload && (!lastRead || lastRead < latestUpload);
-
         const badge = document.getElementById("notif-badge");
         if (show) { badge.style.display = "inline-block"; badge.textContent = "•"; }
         else { badge.style.display = "none"; }
-      } catch (e) {
-        console.warn("Badge check failed:", e);
-      }
+      } catch (e) { console.warn("Badge check failed:", e); }
     }
   </script>
 </body>
 </html>
-        
