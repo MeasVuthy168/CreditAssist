@@ -273,10 +273,10 @@
       <span>›</span>
     </div>
 
-    <!-- ✅ Enable Push Notifications -->
+    <!-- ✅ Push Notification Toggle -->
     <div id="push-setting" class="setting-item" onclick="subscribeUserToPush()">
       <span>
-        <img class="icon" src="Bell.png" alt="Push" />
+        <img class="icon" src="bell.png" alt="Push" />
         <span id="push-label">បើកការជូនដំណឹង</span>
       </span>
     </div>
@@ -321,73 +321,63 @@
   <audio id="logout-audio" src="logout-sound.mp3" preload="auto"></audio>
 
   <script>
-  // ✅ Protect Page by Token
-  const token = sessionStorage.getItem('token');
-  if (!token) {
-    alert("Session expired or unauthorized access.");
-    window.location.href = "../login.html";
-  }
-
-  // ✅ auto logout
-  function setupAutoLogoutEvents() {
-    const AUTO_LOGOUT_MINUTES = 1;
-    let logoutTimer;
-
-    function resetLogoutTimer() {
-      clearTimeout(logoutTimer);
-      logoutTimer = setTimeout(() => {
-        sessionStorage.clear();
-        alert("Session expired due to inactivity. Please log in again.");
-        window.location.href = "../login.html";
-      }, AUTO_LOGOUT_MINUTES * 60 * 1000);
+    const token = sessionStorage.getItem('token');
+    if (!token) {
+      alert("Session expired or unauthorized access.");
+      window.location.href = "../login.html";
     }
 
-    ['mousemove', 'mousedown', 'keydown', 'touchstart', 'touchmove', 'scroll'].forEach(event => {
-      document.addEventListener(event, resetLogoutTimer, true);
+    // ✅ Auto Logout
+    function setupAutoLogoutEvents() {
+      const AUTO_LOGOUT_MINUTES = 1;
+      let logoutTimer;
+      function resetLogoutTimer() {
+        clearTimeout(logoutTimer);
+        logoutTimer = setTimeout(() => {
+          sessionStorage.clear();
+          alert("Session expired due to inactivity. Please log in again.");
+          window.location.href = "../login.html";
+        }, AUTO_LOGOUT_MINUTES * 60 * 1000);
+      }
+      ['mousemove','mousedown','keydown','touchstart','touchmove','scroll'].forEach(event => {
+        document.addEventListener(event, resetLogoutTimer, true);
+      });
+      resetLogoutTimer();
+    }
+
+    function logout() {
+      const audio = document.getElementById("logout-audio");
+      if (audio) audio.play();
+      setTimeout(() => {
+        sessionStorage.clear();
+        window.location.href = "../login.html";
+      }, 800);
+    }
+    function confirmLogout() { document.getElementById("logoutModal").classList.add("show"); }
+    function closeModal() { document.getElementById("logoutModal").classList.remove("show"); }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const name = sessionStorage.getItem("fullname") || "អ្នកប្រើ";
+      const position = sessionStorage.getItem("userPosition") || "មិនដំណើរការ";
+      const image = sessionStorage.getItem("image") || "profile.jpg";
+      document.getElementById("user-fullname").textContent = name;
+      document.getElementById("user-position").textContent = position;
+      document.getElementById("profile-photo").src = "https://secure-backend-tzj9.onrender.com/" + image;
+
+      setupAutoLogoutEvents();
+      checkIfSubscribed();
+      checkNotificationBadge();
+      setInterval(checkNotificationBadge, 15000); // refresh badge every 15s
     });
 
-    resetLogoutTimer();
-  }
-
-  function logout() {
-    const audio = document.getElementById("logout-audio");
-    if (audio) audio.play();
-
-    setTimeout(() => {
-      sessionStorage.clear();
-      window.location.href = "../login.html";
-    }, 800);
-  }
-
-  function confirmLogout() {
-    document.getElementById("logoutModal").classList.add("show");
-  }
-
-  function closeModal() {
-    document.getElementById("logoutModal").classList.remove("show");
-  }
-
-  document.addEventListener("DOMContentLoaded", () => {
-    const name = sessionStorage.getItem("fullname") || "អ្នកប្រើ";
-    const position = sessionStorage.getItem("userPosition") || "មិនដំណើរការ";
-    const image = sessionStorage.getItem("image") || "profile.jpg";
-
-    document.getElementById("user-fullname").textContent = name;
-    document.getElementById("user-position").textContent = position;
-    document.getElementById("profile-photo").src = "https://secure-backend-tzj9.onrender.com/" + image;
-  });
-  </script>
-
-  <!-- ✅ Push subscription -->
-  <script>
-    const VAPID_PUBLIC_KEY = "BM_2VepdV2VgczrbNc1pJSCX7zj4ms7wxg9PccE-tkqH4rFRT8pX0oA5OApJfW1umhDJDymxBfd_jWCGfXkYfKg; // ⚠️ replace with your real key
+    // ✅ Push Notification Subscription
+    const VAPID_PUBLIC_KEY = "YOUR_REAL_VAPID_PUBLIC_KEY";
 
     async function checkIfSubscribed() {
+      console.log("🔍 Checking existing subscription...");
       if (!("serviceWorker" in navigator)) return;
-
-      const reg = await navigator.serviceWorker.getRegistration();
+      const reg = await navigator.serviceWorker.getRegistration("../sw.js");
       if (!reg) return;
-
       const sub = await reg.pushManager.getSubscription();
       if (sub) {
         document.getElementById("push-label").textContent = "✓ Already Enabled";
@@ -403,12 +393,10 @@
           alert("Permission denied.");
           return;
         }
-
         const subscription = await reg.pushManager.subscribe({
           userVisibleOnly: true,
           applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
         });
-
         const res = await fetch("../api/push/subscribe", {
           method: "POST",
           headers: {
@@ -417,17 +405,14 @@
           },
           body: JSON.stringify({ subscription })
         });
-
         if (res.ok) {
           document.getElementById("push-label").textContent = "✓ Already Enabled";
           document.getElementById("push-setting").onclick = null;
           alert("Push notifications enabled!");
-        } else {
-          alert("Failed to enable push.");
         }
       } catch (err) {
-        console.error("❌ Push error:", err);
-        alert("Subscription failed.");
+        console.error("❌ Subscription error:", err);
+        alert("Subscription failed, check console.");
       }
     }
 
@@ -438,13 +423,23 @@
       return Uint8Array.from([...rawData].map(c => c.charCodeAt(0)));
     }
 
-    document.addEventListener("DOMContentLoaded", () => {
-      setupAutoLogoutEvents();
-      checkIfSubscribed();
-    });
+    // ✅ Fix Notification Badge
+    async function checkNotificationBadge() {
+      try {
+        const res = await fetch("../api/notifications/status", {
+          headers: { "Authorization": `Bearer ${token}` }
+        });
+        const data = await res.json();
+        if (data && data.hasNew) {
+          document.getElementById("notif-badge").style.display = "inline-block";
+          document.getElementById("notif-badge").textContent = "•";
+        } else {
+          document.getElementById("notif-badge").style.display = "none";
+        }
+      } catch (err) {
+        console.warn("⚠️ Badge check failed:", err);
+      }
+    }
   </script>
-
-  <!-- ✅ Load shared notification script -->
-  <script src="../notifications/checkNotification.js"></script>
 </body>
 </html>
