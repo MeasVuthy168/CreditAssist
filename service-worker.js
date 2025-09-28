@@ -1,68 +1,63 @@
-const cacheName = 'credit-assist-cache-v1';
+// /service-worker.js
+const cacheName = 'credit-assist-cache-v2';
 const assets = [
   './',
   './login.html',
+  './index.html',
+  './manifest.json',
   './Krasar-Regular.ttf',
   './LogoAC.png',
-  './icons/icon-192.png',
-  './icons/icon-512.png'
+  './LogoAC2.PNG',
+  './icons/icon-192.PNG',  // match your file case
+  './icons/icon-512.PNG'
 ];
 
-// Install and cache core assets
+// Install & cache
 self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(cacheName).then(cache => cache.addAll(assets))
-  );
+  event.waitUntil(caches.open(cacheName).then(cache => cache.addAll(assets)));
+  self.skipWaiting();
 });
 
-// Serve cached assets when offline
+// Activate & cleanup old caches
+self.addEventListener('activate', event => {
+  event.waitUntil(
+    caches.keys().then(keys =>
+      Promise.all(keys.map(k => (k !== cacheName ? caches.delete(k) : null)))
+    )
+  );
+  self.clients.claim();
+});
+
+// Offline-first fetch
 self.addEventListener('fetch', event => {
   event.respondWith(
     caches.match(event.request).then(res => res || fetch(event.request))
   );
 });
 
-// ✅ Handle push events
+// Handle pushes
 self.addEventListener('push', event => {
   let data = {};
-  if (event.data) {
-    try {
-      data = event.data.json();
-    } catch (e) {
-      data = { title: "📢 Credit Assist", body: event.data.text() };
-    }
-  }
-
-  const title = data.title || "📢 Credit Assist";
+  try { data = event.data ? event.data.json() : {}; } catch(e){}
+  const title = data.title || '📢 Credit Assist';
   const options = {
-    body: data.body || "You have a new notification.",
-    icon: "icons/icon-192.png",   // from your manifest
-    badge: "icons/icon-192.png",  // small badge icon
-    data: { url: data.url || "./index.html" }
+    body: data.body || 'មានការអាប់ដេតថ្មី',
+    icon: 'icons/icon-192.PNG',
+    badge: 'icons/icon-192.PNG',
+    data: { url: data.url || './index.html' }
   };
-
-  event.waitUntil(
-    self.registration.showNotification(title, options)
-  );
+  event.waitUntil(self.registration.showNotification(title, options));
 });
 
-// ✅ Handle notification click
+// Open/focus app on click
 self.addEventListener('notificationclick', event => {
   event.notification.close();
-
-  const url = event.notification.data.url || './index.html';
-
-  // Focus if already open, otherwise open new
-  event.waitUntil(
-    clients.matchAll({ type: "window", includeUncontrolled: true }).then(clientList => {
-      for (const client of clientList) {
-        if (client.url.includes(url) && "focus" in client) {
-          return client.focus();
-        }
-      }
-      if (clients.openWindow) {
-        return clients.openWindow(url);
-      }
-    })
-  );
+  const target = event.notification.data?.url || './index.html';
+  event.waitUntil((async () => {
+    const all = await clients.matchAll({ type: 'window', includeUncontrolled: true });
+    for (const c of all) {
+      if (c.url.includes(target) && 'focus' in c) return c.focus();
+    }
+    if (clients.openWindow) return clients.openWindow(target);
+  })());
 });
