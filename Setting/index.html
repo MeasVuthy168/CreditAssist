@@ -62,7 +62,7 @@
       <span>›</span>
     </div>
 
-    <!-- Push Notification Toggle -->
+    <!-- Push Notification -->
     <div id="push-setting" class="setting-item" onclick="subscribeUserToPush()">
       <span><img class="icon" src="bell.png" alt="Push" /> <span id="push-label">បើកការជូនដំណឹង</span></span>
     </div>
@@ -101,12 +101,15 @@
   <audio id="logout-audio" src="logout-sound.mp3" preload="auto"></audio>
 
   <script>
+    // ===== CONFIG =====
     const API_BASE = "https://secure-backend-tzj9.onrender.com";
     let VAPID_PUBLIC_KEY = null;
 
+    // ===== Auth guard =====
     const token = sessionStorage.getItem('token');
     if (!token) { alert("Session expired or unauthorized access."); window.location.href = "../login.html"; }
 
+    // ===== Auto logout =====
     function setupAutoLogoutEvents() {
       const AUTO_LOGOUT_MINUTES = 1;
       let logoutTimer;
@@ -133,52 +136,85 @@
       document.getElementById("profile-photo").src = API_BASE + "/" + img;
 
       setupAutoLogoutEvents();
-      checkIfSubscribed();
+      initPushUI();
       refreshBadge();
       setInterval(refreshBadge, 15000);
     });
 
+    // ===== Service Worker registration (robust path for subfolder) =====
+    async function registerSW() {
+      if (!('serviceWorker' in navigator)) throw new Error('SW not supported');
+
+      // Try "../service-worker.js" first (we're inside /Setting/)
+      try {
+        const reg = await navigator.serviceWorker.register('../service-worker.js');
+        console.log('SW registered (../):', reg.scope);
+        return reg;
+      } catch (e) {
+        console.warn('SW register ../service-worker.js failed:', e);
+      }
+
+      // Fallback to absolute root path
+      const reg = await navigator.serviceWorker.register('/service-worker.js');
+      console.log('SW registered (/):', reg.scope);
+      return reg;
+    }
+
+    // ===== Fetch VAPID key =====
     async function getVapidKey() {
       if (VAPID_PUBLIC_KEY) return VAPID_PUBLIC_KEY;
       const res = await fetch(`${API_BASE}/api/push/public-key`);
       const data = await res.json();
+      console.log('VAPID from server:', data.key, 'len=', (data.key||'').length);
+      if (!data.key || !/^[A-Za-z0-9_-]{80,}$/.test(data.key)) {
+        throw new Error("Invalid VAPID public key from server");
+      }
       VAPID_PUBLIC_KEY = data.key;
       return VAPID_PUBLIC_KEY;
     }
 
-    async function checkIfSubscribed() {
+    // ===== Init label state =====
+    async function initPushUI() {
       try {
-        if (!('serviceWorker' in navigator)) return;
-        let reg = await navigator.serviceWorker.getRegistration('../');
-        if (!reg) reg = await navigator.serviceWorker.register('../service-worker.js');
+        const reg = await registerSW();
         const sub = await reg.pushManager.getSubscription();
         if (sub) {
           document.getElementById("push-label").textContent = "✓ Already Enabled";
           document.getElementById("push-setting").onclick = null;
         }
-      } catch (e) { console.warn("checkIfSubscribed error:", e); }
+      } catch (e) {
+        console.warn('initPushUI error:', e);
+      }
     }
 
+    // ===== Subscribe (fresh) =====
     async function subscribeUserToPush() {
       try {
-        const reg = await navigator.serviceWorker.register('../service-worker.js');
+        const reg = await registerSW();
 
         const perm = await Notification.requestPermission();
         if (perm !== 'granted') { alert("Permission denied."); return; }
+
+        // Remove old/bad subscription first (prevents key mismatch)
+        const old = await reg.pushManager.getSubscription();
+        if (old) { await old.unsubscribe(); console.log('Old subscription removed'); }
 
         const key = await getVapidKey();
         const sub = await reg.pushManager.subscribe({
           userVisibleOnly: true,
           applicationServerKey: urlBase64ToUint8Array(key)
         });
+        console.log('New subscription:', sub);
 
         const res = await fetch(`${API_BASE}/api/push/subscribe`, {
           method: 'POST',
           headers: { 'Content-Type':'application/json', 'Authorization': `Bearer ${token}` },
           body: JSON.stringify({ subscription: sub })
         });
-
-        if (!res.ok) { const msg = await res.text(); throw new Error(`Backend ${res.status}: ${msg}`); }
+        if (!res.ok) {
+          const msg = await res.text();
+          throw new Error(`Backend ${res.status}: ${msg}`);
+        }
 
         document.getElementById("push-label").textContent = "✓ Already Enabled";
         document.getElementById("push-setting").onclick = null;
@@ -189,6 +225,7 @@
       }
     }
 
+    // ===== Helpers =====
     function urlBase64ToUint8Array(base64String) {
       const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
       const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
@@ -198,21 +235,28 @@
       return output;
     }
 
+    // ===== Red badge =====
     async function refreshBadge() {
       try {
         const res = await fetch(`${API_BASE}/api/notifications/status`);
         const s = await res.json();
         const username = sessionStorage.getItem("username") || "";
         const readKey = username ? `read_${username}` : null;
+
         const uploads = ["user","customer","turnover","nbcos","arreas"]
-          .map(k => s?.[k]).filter(Boolean).map(v => Date.parse(v)).filter(n => !Number.isNaN(n));
+          .map(k => s?.[k]).filter(Boolean)
+          .map(v => Date.parse(v)).filter(n => !Number.isNaN(n));
+
         const latestUpload = uploads.length ? Math.max(...uploads) : 0;
         const lastRead = readKey && s?.[readKey] ? Date.parse(s[readKey]) : 0;
+
         const show = latestUpload && (!lastRead || lastRead < latestUpload);
         const badge = document.getElementById("notif-badge");
         if (show) { badge.style.display = "inline-block"; badge.textContent = "•"; }
         else { badge.style.display = "none"; }
-      } catch (e) { console.warn("Badge check failed:", e); }
+      } catch (e) {
+        console.warn("Badge check failed:", e);
+      }
     }
   </script>
 </body>
