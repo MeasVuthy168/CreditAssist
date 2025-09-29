@@ -2,27 +2,22 @@
 <html lang="km">
 <head>
   <meta charset="UTF-8" />
+  <title>Setting</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0d2d5c" />
-  <title>Setting</title>
   <style>
-    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#f3f6fb;color:#1b1f23}
-    .header{position:sticky;top:0;z-index:10;background:#0d2d5c;color:#fff;display:flex;align-items:center;gap:8px;padding:14px 16px;font-weight:700;box-shadow:0 2px 6px rgba(0,0,0,.18)}
-    .back{color:#fff;background:transparent;border:0;font-size:20px;cursor:pointer}
-    .section{background:#fff;margin:12px;border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,.08);overflow:hidden}
-    .row{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-top:1px solid #eef1f6}
-    .row:first-child{border-top:0}
-    .row .left{display:flex;align-items:center;gap:10px}
-    .row .left img{width:22px;height:22px}
-    .danger{color:#d9534f;font-weight:700}
-    .btn{display:inline-flex;align-items:center;gap:8px;border:0;border-radius:10px;padding:10px 14px;background:#0d2d5c;color:#fff;font-weight:600;cursor:pointer}
-    .btn:disabled{opacity:.5;cursor:not-allowed}
-    .debug{background:#0b1220;color:#a6ffb5;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;border-radius:12px;margin:12px;padding:12px}
-    .debug .bar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px}
-    .d-btn{background:#1c2a48;border:1px solid #2a3c68;color:#dbe8ff;border-radius:10px;padding:8px 10px;font-weight:600;cursor:pointer}
-    .pill{display:inline-block;background:#0e1a33;color:#9ad1ff;border:1px solid #274472;border-radius:8px;padding:6px 10px;margin-left:6px;font-size:.95em}
-    .badge{position:absolute;top:-6px;right:-8px;background:#e11d48;color:#fff;font-size:10px;font-weight:700;border-radius:999px;padding:2px 6px}
-    .footer{height:72px}
+    @font-face { font-family:'Krasar'; src:url('../Krasar-Regular.ttf') format('truetype'); }
+    body{margin:0;font-family:'Krasar',Arial,sans-serif;background:#f1f4f8;color:#333;padding-bottom:72px}
+    .header{background:#0d2d5c;color:#fff;padding:14px 16px;font-size:18px;font-weight:bold;box-shadow:0 2px 5px rgba(0,0,0,.2);position:fixed;top:0;left:0;right:0;z-index:2;display:flex;align-items:center}
+    .header .back{font-size:22px;color:#fff;background:none;border:none;margin-right:12px;cursor:pointer}
+    .section{margin-top:60px}
+    .item{background:#fff;padding:16px;border-bottom:1px solid #ddd;display:flex;align-items:center;justify-content:space-between}
+    .btn{background:#eef2f7;border:1px solid #cfd6df;border-radius:8px;padding:10px 14px;font-family:inherit;cursor:pointer}
+    .btn.primary{background:#0d2d5c;color:#fff;border-color:#0d2d5c}
+    .debug{margin:16px;background:#0e1320;color:#b7ffb7;border-radius:10px;padding:12px;font-family:ui-monospace,Consolas,monospace}
+    .debug .row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+    .debug .chip{background:#20314d;color:#e5f2ff;border:1px solid #395781;border-radius:10px;padding:8px 10px;cursor:pointer}
+    .footer{position:fixed;bottom:0;left:0;right:0;height:56px;background:#0d2d5c}
   </style>
 </head>
 <body>
@@ -31,205 +26,173 @@
     <div>Setting</div>
   </div>
 
-  <!-- ACCOUNT CARD -->
-  <div class="section" id="account-card">
-    <div class="row">
-      <div class="left">
-        <img src="../icons/user.png" alt="">
-        <div>
-          <div id="user-fullname" style="font-weight:700;font-size:16px;color:#caa200">User</div>
-          <div id="user-position" style="opacity:.7">Position</div>
-        </div>
-      </div>
-      <img id="profile-photo" src="../icons/user.png" style="width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid #0d2d5c" alt="">
-    </div>
-  </div>
-
-  <!-- SETTINGS -->
   <div class="section">
-    <div class="row" onclick="location.href='userinfo.html'">
-      <div class="left"><img src="../icons/user.png" alt=""><span>ព័ត៌មានផ្ទាល់</span></div><span>›</span>
+    <div class="item">
+      <div id="pushState">✓ Enabled</div>
+      <button id="enableBtn" class="btn">Enable Push</button>
     </div>
 
-    <div class="row" onclick="location.href='about.html'">
-      <div class="left"><img src="../icons/info.png" alt=""><span>អំពី​កម្មវិធី</span></div><span>›</span>
+    <div class="debug">
+      <div style="font-weight:700;margin-bottom:8px">🔎 Push Debug</div>
+      <div class="row">
+        <button class="chip" onclick="localTest()">✏️ Local SW test</button>
+        <button class="chip" onclick="serverTest()">🧨 Server test push</button>
+        <button class="chip" onclick="fixPush()">🛠️ Fix Push / Re-enable</button>
+        <button class="chip" onclick="envInfo()">ℹ️ Env info</button>
+      </div>
+      <pre id="log" style="white-space:pre-wrap;margin:0"></pre>
     </div>
-
-    <!-- Push enable row -->
-    <div class="row">
-      <div class="left"><img src="../icons/Notification.png" alt=""><span id="push-label">បើកការជូនដំណឹង</span></div>
-      <button id="push-setting" class="btn">Enable Push</button>
-    </div>
-
-    <div class="row danger" onclick="logout()">ចាកចេញ</div>
-  </div>
-
-  <!-- Push Debug -->
-  <div class="debug">
-    <div style="font-weight:800;margin-bottom:6px">🔍 Push Debug</div>
-    <div class="bar">
-      <button class="d-btn" id="btn-local">✏️ Local SW test</button>
-      <button class="d-btn" id="btn-server">📮 Server test push</button>
-      <button class="d-btn" id="btn-env">ℹ️ Env info</button>
-      <button class="d-btn" id="btn-fix">🛠️ Fix Push / Re-enable</button>
-    </div>
-    <pre id="log" style="white-space:pre-wrap;margin:0;line-height:1.35"></pre>
   </div>
 
   <div class="footer"></div>
 
-<script>
-/* ========= CONFIG ========= */
-const API_BASE = "https://secure-backend-tzj9.onrender.com";
-const basePath = "/CreditAssist"; // GitHub Pages subpath
+  <script>
+    // ===== Configuration =====
+    const API_BASE = "https://secure-backend-tzj9.onrender.com";
+    const basePath = "/CreditAssist"; // GitHub Pages subpath
+    const token = sessionStorage.getItem('token') || '';
+    const logEl = document.getElementById('log');
 
-/* ========= Auth / profile ========= */
-const token = sessionStorage.getItem('token');
-if (!token) { alert("Session expired. Please login again."); location.href="../login.html"; }
-document.getElementById("user-fullname").textContent = sessionStorage.getItem("fullname") || "អ្នកប្រើ";
-document.getElementById("user-position").textContent = sessionStorage.getItem("userPosition") || "មិនដំណើរការ";
-const img = sessionStorage.getItem("image");
-if (img) document.getElementById("profile-photo").src = `${API_BASE}/${img}`;
-
-/* ========= Small logger ========= */
-const logEl = document.getElementById('log');
-const log = (msg) => {
-  const t = new Date().toTimeString().slice(0,8);
-  logEl.textContent = `[${t}] ${msg}\n` + logEl.textContent;
-};
-
-/* ========= Service Worker register ========= */
-async function registerSW() {
-  if (!('serviceWorker' in navigator)) throw new Error('SW not supported');
-  const reg = await navigator.serviceWorker.register(`${basePath}/service-worker.js`, { scope: `${basePath}/` });
-  console.log('SW registered scope:', reg.scope);
-  if (!navigator.serviceWorker.controller) {
-    log('SW installed but not yet controlling — reload this page once.');
-  }
-  return reg;
-}
-
-/* ========= Helpers ========= */
-function urlBase64ToUint8Array(base64String) {
-  const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
-  const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
-  const raw = atob(base64);
-  const out = new Uint8Array(raw.length);
-  for (let i = 0; i < raw.length; ++i) out[i] = raw.charCodeAt(i);
-  return out;
-}
-
-async function getVapidKey() {
-  const r = await fetch(`${API_BASE}/api/push/public-key`);
-  const j = await r.json();
-  if (!j.key) throw new Error('No VAPID key from server');
-  return j.key;
-}
-
-/* ========= Enable push flow ========= */
-async function enablePush() {
-  try {
-    const perm = await Notification.requestPermission();
-    if (perm !== 'granted') { alert('Notification permission denied'); return; }
-
-    const reg = await registerSW();
-
-    // remove previous/bad subscription
-    const old = await reg.pushManager.getSubscription();
-    if (old) { await old.unsubscribe().catch(()=>{}); }
-
-    const vapid = await getVapidKey();
-    const sub = await reg.pushManager.subscribe({
-      userVisibleOnly: true,
-      applicationServerKey: urlBase64ToUint8Array(vapid)
-    });
-
-    const resp = await fetch(`${API_BASE}/api/push/subscribe`, {
-      method: 'POST',
-      headers: { 'Content-Type':'application/json', 'Authorization': `Bearer ${token}` },
-      body: JSON.stringify({ subscription: sub })
-    });
-
-    if (!resp.ok) {
-      const t = await resp.text();
-      throw new Error(`Backend ${resp.status}: ${t}`);
+    function log(line){
+      const ts = new Date().toTimeString().slice(0,8);
+      logEl.textContent = `[${ts}] ${line}\n` + logEl.textContent;
     }
 
-    document.getElementById('push-label').textContent = "✓ Enabled";
-    document.getElementById('push-setting').disabled = true;
-    alert('Push enabled!');
-    log('subscribe → ok');
-  } catch (e) {
-    console.error(e);
-    alert(`Subscription failed: ${e.message}`);
-    log(`subscribe error: ${e.message}`);
-  }
-}
-
-/* ========= Debug actions ========= */
-async function localTest() {
-  try {
-    const reg = await registerSW();
-    const clis = await reg.getNotifications ? await reg.getNotifications() : [];
-    log(`local test → swScope=${reg.scope} notifications=${clis.length}`);
-    // send a test message to the SW
-    reg.active?.postMessage?.({ type:'LOCAL_PUSH_TEST', title:'🔔 Local test', body:'This came from the page' });
-  } catch (e) { log(`local test error: ${e.message}`); }
-}
-
-async function serverTest() {
-  try {
-    const r = await fetch(`${API_BASE}/api/push/test`, { headers: { 'Authorization': `Bearer ${token}` } });
-    const j = await r.json().catch(()=>({}));
-    log(`server test → status=${r.status} sent=${j.sent ?? 'n/a'} failed=${j.failures ?? 'n/a'}`);
-  } catch (e) { log(`server test error: ${e.message}`); }
-}
-
-async function showEnv() {
-  try {
-    const r = await fetch(`${API_BASE}/api/push/diag`, { headers: { 'Authorization': `Bearer ${token}` } });
-    const j = await r.json();
-    log(`ENV → origin=${location.origin}`);
-    log(`SW scope=${(await navigator.serviceWorker.getRegistration())?.scope || 'none'}`);
-    log(`diag: total=${j.total} noEndpoint=${j.noEndpoint} invalid=${j.invalid} vapidLen=${j.vapidPublicLen}`);
-  } catch (e) { log(`env error: ${e.message}`); }
-}
-
-async function fixPush() {
-  try {
-    // unregister all SW under this origin+scope, clear subs, then re-enable
-    const regs = await navigator.serviceWorker.getRegistrations();
-    for (const r of regs) { try { await (await r.pushManager.getSubscription())?.unsubscribe(); } catch{} }
-    for (const r of regs) { await r.unregister(); }
-    log('Cleared subscriptions and unregistered SW → re-enabling…');
-    await enablePush();
-  } catch (e) { log(`fix error: ${e.message}`); }
-}
-
-/* ========= Wire UI ========= */
-document.getElementById('push-setting').addEventListener('click', enablePush);
-document.getElementById('btn-local').addEventListener('click', localTest);
-document.getElementById('btn-server').addEventListener('click', serverTest);
-document.getElementById('btn-env').addEventListener('click', showEnv);
-document.getElementById('btn-fix').addEventListener('click', fixPush);
-
-/* ========= Logout ========= */
-function logout(){
-  sessionStorage.clear();
-  location.href = "../login.html";
-}
-
-/* ========= On load: show initial label ========= */
-window.addEventListener('load', async () => {
-  try {
-    const reg = await navigator.serviceWorker.getRegistration(`${basePath}/`);
-    const sub = await reg?.pushManager?.getSubscription();
-    if (sub) {
-      document.getElementById('push-label').textContent = "✓ Enabled";
-      document.getElementById('push-setting').disabled = true;
+    // ===== Service Worker registration (scoped to /CreditAssist/) =====
+    async function registerSW() {
+      if (!('serviceWorker' in navigator)) throw new Error('SW not supported in this browser');
+      const reg = await navigator.serviceWorker.register(`${basePath}/service-worker.js`, { scope: `${basePath}/` });
+      if (!navigator.serviceWorker.controller) {
+        log('SW installed; reload once to let it control this page.');
+      }
+      return reg;
     }
-  } catch {}
-});
-</script>
+
+    // ===== Helpers =====
+    function urlBase64ToUint8Array(base64String){
+      const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+      const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+      const raw = atob(base64);
+      const arr = new Uint8Array(raw.length);
+      for (let i=0;i<raw.length;i++) arr[i] = raw.charCodeAt(i);
+      return arr;
+    }
+
+    async function getVapidKey(){
+      const r = await fetch(`${API_BASE}/api/push/public-key`);
+      const j = await r.json();
+      if (!j.key) throw new Error("No VAPID key from server");
+      return j.key;
+    }
+
+    // ===== Enable / subscribe =====
+    async function enablePush() {
+      try {
+        // Permission
+        const perm = await Notification.requestPermission();
+        if (perm !== 'granted') { alert('Notification permission denied'); return; }
+
+        // Register SW
+        const reg = await registerSW();
+
+        // Remove any stale subscription to avoid key mismatch
+        const old = await reg.pushManager.getSubscription();
+        if (old) { await old.unsubscribe().catch(()=>{}); }
+
+        // Subscribe
+        const vapid = await getVapidKey();
+        const sub = await reg.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: urlBase64ToUint8Array(vapid)
+        });
+
+        // Serialize correctly (important!)
+        const subJSON = (sub && typeof sub.toJSON === 'function') ? sub.toJSON() : sub;
+        log(`subscribed endpoint=${subJSON && subJSON.endpoint ? subJSON.endpoint.slice(0, 48) : 'N/A'}`);
+
+        if (!subJSON || !subJSON.endpoint) {
+          throw new Error("Browser returned subscription without endpoint");
+        }
+
+        // Send to backend
+        const resp = await fetch(`${API_BASE}/api/push/subscribe`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({ subscription: subJSON })
+        });
+
+        if (!resp.ok) {
+          const t = await resp.text();
+          throw new Error(`Backend ${resp.status}: ${t}`);
+        }
+
+        document.getElementById('pushState').textContent = '✓ Enabled';
+        log('subscription saved on server');
+        alert('Push enabled!');
+      } catch (e) {
+        console.error(e);
+        log(`subscribe error: ${e.message}`);
+        alert(`Subscription failed: ${e.message}`);
+      }
+    }
+
+    // ===== Debug helpers =====
+    async function localTest(){
+      try{
+        const reg = await registerSW();
+        const sub = await reg.pushManager.getSubscription();
+        const subJSON = sub && sub.toJSON ? sub.toJSON() : sub;
+        const scope = (reg && reg.scope) || 'N/A';
+        const ep = subJSON && subJSON.endpoint ? subJSON.endpoint : '';
+        const notifPerm = (typeof Notification !== 'undefined') ? Notification.permission : 'n/a';
+        log(`local test → swScope=${scope} notifications=${notifPerm} endpoint=${ep ? ep.slice(0,48) : '(none)'}`);
+      }catch(e){ log(`local test error: ${e.message}`); }
+    }
+
+    async function serverTest(){
+      try{
+        const r = await fetch(`${API_BASE}/api/push/notify-test`, {
+          method:'POST',
+          headers:{ 'Authorization': `Bearer ${token}` }
+        });
+        const j = await r.json().catch(()=> ({}));
+        log(`server test → status=${r.status} sent=${j.sent ?? 'n/a'} failed=${j.failures ?? 'n/a'}`);
+      }catch(e){ log(`server test error: ${e.message}`); }
+    }
+
+    async function envInfo(){
+      try{
+        const reg = await navigator.serviceWorker.getRegistration(`${basePath}/`);
+        const scope = reg?.scope || '(none)';
+        log(`ENV → origin=${location.origin}\nSW scope=${scope}`);
+        const d = await fetch(`${API_BASE}/api/push/diag`, { headers:{ 'Authorization': `Bearer ${token}` }}).then(r=>r.json());
+        log(`diag: total=${d.total} noEndpoint=${d.noEndpoint} invalid=${d.invalid} vapidLen=${d.vapidPublicLen} sample=${d.sampleEndpoint || '(none)'}`);
+      }catch(e){ log(`env error: ${e.message}`); }
+    }
+
+    async function fixPush(){
+      try{
+        const reg = await registerSW();
+        const old = await reg.pushManager.getSubscription();
+        if (old) { await old.unsubscribe().catch(()=>{}); }
+        await reg.unregister();
+        log('Cleared subscriptions and unregistered SW → re-enabling…');
+        setTimeout(enablePush, 600);
+      }catch(e){ log(`Fix error: ${e.message}`); }
+    }
+
+    // Wire UI
+    document.getElementById('enableBtn').addEventListener('click', enablePush);
+
+    // Initial state
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        const reg = await navigator.serviceWorker.getRegistration(`${basePath}/`);
+        const sub = await reg?.pushManager.getSubscription();
+        if (sub) document.getElementById('pushState').textContent = '✓ Enabled';
+      } catch {}
+      log('Debug panel ready');
+    });
+  </script>
 </body>
 </html>
