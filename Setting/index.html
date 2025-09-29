@@ -2,295 +2,234 @@
 <html lang="km">
 <head>
   <meta charset="UTF-8" />
-  <title>Setting</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0d2d5c" />
+  <title>Setting</title>
   <style>
-    @font-face { font-family:'Krasar'; src:url('../Krasar-Regular.ttf') format('truetype'); }
-    :root{--blue:#0d2d5c;}
-    *{box-sizing:border-box}
-    body{margin:0;font-family:'Krasar',Arial,Helvetica,sans-serif;background:#f1f4f8;color:#222;padding-bottom:72px}
-    .header{position:fixed;top:0;left:0;right:0;height:56px;background:var(--blue);color:#fff;display:flex;align-items:center;gap:12px;padding:0 16px;font-weight:700;z-index:5;box-shadow:0 2px 8px rgba(0,0,0,.15)}
-    .back{color:#fff;background:none;border:0;font-size:22px;line-height:1;cursor:pointer}
-    .profile{margin-top:64px;background:#fff;padding:18px 16px;display:flex;gap:16px;align-items:center}
-    .profile img{width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid var(--blue)}
-    .name{color:goldenrod;font-weight:700;font-size:18px}
-    .pos{font-size:14px;color:#666}
-    .list{margin-top:10px}
-    .row{background:#fff;padding:16px;border-bottom:1px solid #e6e8ec;display:flex;align-items:center;justify-content:space-between;font-size:16px}
-    .row:hover{background:#f7f9fc}
-    .row span{display:flex;align-items:center;gap:10px}
-    .row img.icon{width:20px;height:20px}
-    .signout span{color:#d9534f;font-weight:700;text-decoration:underline}
-    .bar{position:fixed;left:0;right:0;bottom:0;height:56px;background:var(--blue);display:flex;align-items:center;justify-content:space-around;color:#fff;z-index:5;box-shadow:0 -2px 8px rgba(0,0,0,.15)}
-    .bbtn{background:none;border:0;color:#fff;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11px}
-    .badge{position:absolute;top:-4px;right:-8px;background:#e53935;color:#fff;font-size:10px;padding:2px 6px;border-radius:999px;font-weight:700}
-    /* modal */
-    .modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:20}
-    .modal.show{display:flex}
-    .card{width:92%;max-width:340px;background:#fff;border-radius:10px;padding:18px;box-shadow:0 10px 30px rgba(0,0,0,.2)}
-    .actions{display:flex;gap:10px;margin-top:14px}
-    .btn{flex:1;border:0;border-radius:8px;padding:10px 12px;font-family:'Krasar',Arial,sans-serif;font-size:16px;cursor:pointer}
-    .btn-danger{background:#d9534f;color:#fff}
-    .btn-light{background:#eef2f7}
-    /* debug panel */
-    .dbg{margin:16px;background:#0f172a;border-radius:10px;padding:12px;color:#a7f3d0}
-    .dbg .ttl{color:#93c5fd;font-weight:700;letter-spacing:.5px}
-    .dbg pre{margin:8px 0 0;white-space:pre-wrap;word-break:break-word;font-family:ui-monospace,Consolas,monospace}
-    .chip{display:inline-block;background:#1f2937;color:#d1fae5;border:1px solid #374151;border-radius:8px;padding:6px 10px;margin:4px 6px 8px 0;font-size:14px;cursor:pointer}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#f3f6fb;color:#1b1f23}
+    .header{position:sticky;top:0;z-index:10;background:#0d2d5c;color:#fff;display:flex;align-items:center;gap:8px;padding:14px 16px;font-weight:700;box-shadow:0 2px 6px rgba(0,0,0,.18)}
+    .back{color:#fff;background:transparent;border:0;font-size:20px;cursor:pointer}
+    .section{background:#fff;margin:12px;border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,.08);overflow:hidden}
+    .row{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-top:1px solid #eef1f6}
+    .row:first-child{border-top:0}
+    .row .left{display:flex;align-items:center;gap:10px}
+    .row .left img{width:22px;height:22px}
+    .danger{color:#d9534f;font-weight:700}
+    .btn{display:inline-flex;align-items:center;gap:8px;border:0;border-radius:10px;padding:10px 14px;background:#0d2d5c;color:#fff;font-weight:600;cursor:pointer}
+    .btn:disabled{opacity:.5;cursor:not-allowed}
+    .debug{background:#0b1220;color:#a6ffb5;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;border-radius:12px;margin:12px;padding:12px}
+    .debug .bar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+    .d-btn{background:#1c2a48;border:1px solid #2a3c68;color:#dbe8ff;border-radius:10px;padding:8px 10px;font-weight:600;cursor:pointer}
+    .pill{display:inline-block;background:#0e1a33;color:#9ad1ff;border:1px solid #274472;border-radius:8px;padding:6px 10px;margin-left:6px;font-size:.95em}
+    .badge{position:absolute;top:-6px;right:-8px;background:#e11d48;color:#fff;font-size:10px;font-weight:700;border-radius:999px;padding:2px 6px}
+    .footer{height:72px}
   </style>
 </head>
 <body>
-  <!-- Header -->
   <div class="header">
     <button class="back" onclick="location.href='../index.html'">←</button>
     <div>Setting</div>
   </div>
 
-  <!-- Profile -->
-  <div class="profile">
-    <img id="profile-photo" src="../icons/user.png" alt="User" />
-    <div>
-      <div class="name" id="user-fullname">User Name</div>
-      <div class="pos" id="user-position">Position</div>
+  <!-- ACCOUNT CARD -->
+  <div class="section" id="account-card">
+    <div class="row">
+      <div class="left">
+        <img src="../icons/user.png" alt="">
+        <div>
+          <div id="user-fullname" style="font-weight:700;font-size:16px;color:#caa200">User</div>
+          <div id="user-position" style="opacity:.7">Position</div>
+        </div>
+      </div>
+      <img id="profile-photo" src="../icons/user.png" style="width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid #0d2d5c" alt="">
     </div>
   </div>
 
-  <!-- Menu -->
-  <div class="list">
+  <!-- SETTINGS -->
+  <div class="section">
     <div class="row" onclick="location.href='userinfo.html'">
-      <span><img class="icon" src="user.png" alt=""> ព័ត៌មានផ្ទាល់</span><span>›</span>
+      <div class="left"><img src="../icons/user.png" alt=""><span>ព័ត៌មានផ្ទាល់</span></div><span>›</span>
     </div>
+
     <div class="row" onclick="location.href='about.html'">
-      <span><img class="icon" src="info.png" alt=""> អំពី​កម្មវិធី</span><span>›</span>
+      <div class="left"><img src="../icons/info.png" alt=""><span>អំពី​កម្មវិធី</span></div><span>›</span>
     </div>
-    <!-- Enable push -->
-    <div id="push-setting" class="row" onclick="fixPush()">
-      <span><img class="icon" src="bell.png" alt=""> <span id="push-label">បើកការជូនដំណឹង</span></span>
+
+    <!-- Push enable row -->
+    <div class="row">
+      <div class="left"><img src="../icons/Notification.png" alt=""><span id="push-label">បើកការជូនដំណឹង</span></div>
+      <button id="push-setting" class="btn">Enable Push</button>
     </div>
-    <div class="row signout" onclick="confirmLogout()">
-      <span><img class="icon" src="logout-rounded-left.png" alt=""> ចាកចេញ</span>
-    </div>
+
+    <div class="row danger" onclick="logout()">ចាកចេញ</div>
   </div>
 
-  <!-- Debug panel -->
-  <div class="dbg">
-    <div class="ttl">🔎 Push Debug</div>
-    <div>
-      <span class="chip" onclick="localSwTest()">✏️ Local SW test</span>
-      <span class="chip" onclick="serverTestPush()">📮 Server test push</span>
-      <span class="chip" onclick="showEnv()">🛈 Env info</span>
-      <span class="chip" onclick="fixPush()">🛠️ Fix Push / Re-enable</span>
+  <!-- Push Debug -->
+  <div class="debug">
+    <div style="font-weight:800;margin-bottom:6px">🔍 Push Debug</div>
+    <div class="bar">
+      <button class="d-btn" id="btn-local">✏️ Local SW test</button>
+      <button class="d-btn" id="btn-server">📮 Server test push</button>
+      <button class="d-btn" id="btn-env">ℹ️ Env info</button>
+      <button class="d-btn" id="btn-fix">🛠️ Fix Push / Re-enable</button>
     </div>
-    <pre id="log">[--] Debug panel ready</pre>
+    <pre id="log" style="white-space:pre-wrap;margin:0;line-height:1.35"></pre>
   </div>
 
-  <!-- Bottom bar -->
-  <div class="bar">
-    <button class="bbtn" onclick="location.href='../index.html'">
-      <img src="../icons/Home.png" width="24" height="24"><div>Home</div>
-    </button>
-    <button class="bbtn" onclick="location.href='../Setting/index.html'">
-      <img src="../icons/Setting.png" width="24" height="24"><div>Setting</div>
-    </button>
-    <button class="bbtn" onclick="location.href='../notifications/index.html'">
-      <div style="position:relative">
-        <img src="../icons/Notification.png" width="24" height="24">
-        <span id="notif-badge" class="badge" style="display:none;"></span>
-      </div>
-      <div>Notification</div>
-    </button>
-  </div>
+  <div class="footer"></div>
 
-  <!-- Logout modal -->
-  <div id="logoutModal" class="modal">
-    <div class="card">
-      <div>តើអ្នកប្រាកដចង់ចាកចេញពីប្រព័ន្ធមែនទេ?</div>
-      <div class="actions">
-        <button class="btn btn-danger" onclick="logout()">ចាកចេញ</button>
-        <button class="btn btn-light" onclick="closeModal()">បោះបង់</button>
-      </div>
-    </div>
-  </div>
+<script>
+/* ========= CONFIG ========= */
+const API_BASE = "https://secure-backend-tzj9.onrender.com";
+const basePath = "/CreditAssist"; // GitHub Pages subpath
 
-  <audio id="logout-audio" src="logout-sound.mp3" preload="auto"></audio>
+/* ========= Auth / profile ========= */
+const token = sessionStorage.getItem('token');
+if (!token) { alert("Session expired. Please login again."); location.href="../login.html"; }
+document.getElementById("user-fullname").textContent = sessionStorage.getItem("fullname") || "អ្នកប្រើ";
+document.getElementById("user-position").textContent = sessionStorage.getItem("userPosition") || "មិនដំណើរការ";
+const img = sessionStorage.getItem("image");
+if (img) document.getElementById("profile-photo").src = `${API_BASE}/${img}`;
 
-  <script>
-    // ========= CONFIG =========
-    const API_BASE = "https://secure-backend-tzj9.onrender.com";
-    let VAPID_PUBLIC_KEY = null;
+/* ========= Small logger ========= */
+const logEl = document.getElementById('log');
+const log = (msg) => {
+  const t = new Date().toTimeString().slice(0,8);
+  logEl.textContent = `[${t}] ${msg}\n` + logEl.textContent;
+};
 
-    // ========= Auth guard =========
-    const token = sessionStorage.getItem('token');
-    if (!token) { alert("Session expired or unauthorized."); location.href = "../login.html"; }
+/* ========= Service Worker register ========= */
+async function registerSW() {
+  if (!('serviceWorker' in navigator)) throw new Error('SW not supported');
+  const reg = await navigator.serviceWorker.register(`${basePath}/service-worker.js`, { scope: `${basePath}/` });
+  console.log('SW registered scope:', reg.scope);
+  if (!navigator.serviceWorker.controller) {
+    log('SW installed but not yet controlling — reload this page once.');
+  }
+  return reg;
+}
 
-    // ========= UI boot =========
-    document.addEventListener('DOMContentLoaded', () => {
-      document.getElementById('user-fullname').textContent = sessionStorage.getItem('fullname') || 'អ្នកប្រើ';
-      document.getElementById('user-position').textContent = sessionStorage.getItem('userPosition') || '';
-      const img = sessionStorage.getItem('image');
-      if (img) document.getElementById('profile-photo').src = API_BASE + "/" + img;
+/* ========= Helpers ========= */
+function urlBase64ToUint8Array(base64String) {
+  const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+  const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+  const raw = atob(base64);
+  const out = new Uint8Array(raw.length);
+  for (let i = 0; i < raw.length; ++i) out[i] = raw.charCodeAt(i);
+  return out;
+}
 
-      refreshBadge();
-      setInterval(refreshBadge, 15000);
-      initPushLabel();
+async function getVapidKey() {
+  const r = await fetch(`${API_BASE}/api/push/public-key`);
+  const j = await r.json();
+  if (!j.key) throw new Error('No VAPID key from server');
+  return j.key;
+}
+
+/* ========= Enable push flow ========= */
+async function enablePush() {
+  try {
+    const perm = await Notification.requestPermission();
+    if (perm !== 'granted') { alert('Notification permission denied'); return; }
+
+    const reg = await registerSW();
+
+    // remove previous/bad subscription
+    const old = await reg.pushManager.getSubscription();
+    if (old) { await old.unsubscribe().catch(()=>{}); }
+
+    const vapid = await getVapidKey();
+    const sub = await reg.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: urlBase64ToUint8Array(vapid)
     });
 
-    // ========= Logout =========
-    function confirmLogout(){ document.getElementById('logoutModal').classList.add('show'); }
-    function closeModal(){ document.getElementById('logoutModal').classList.remove('show'); }
-    function logout(){
-      const a = document.getElementById('logout-audio'); try{a&&a.play();}catch{}
-      setTimeout(()=>{ sessionStorage.clear(); location.href="../login.html"; }, 600);
+    const resp = await fetch(`${API_BASE}/api/push/subscribe`, {
+      method: 'POST',
+      headers: { 'Content-Type':'application/json', 'Authorization': `Bearer ${token}` },
+      body: JSON.stringify({ subscription: sub })
+    });
+
+    if (!resp.ok) {
+      const t = await resp.text();
+      throw new Error(`Backend ${resp.status}: ${t}`);
     }
 
-    // ========= Badge (existing logic, simplified) =========
-    async function refreshBadge(){
-      try{
-        const r = await fetch(`${API_BASE}/api/notifications/status`);
-        const s = await r.json();
-        const username = sessionStorage.getItem('username')||'';
-        const key = username ? `read_${username}` : null;
+    document.getElementById('push-label').textContent = "✓ Enabled";
+    document.getElementById('push-setting').disabled = true;
+    alert('Push enabled!');
+    log('subscribe → ok');
+  } catch (e) {
+    console.error(e);
+    alert(`Subscription failed: ${e.message}`);
+    log(`subscribe error: ${e.message}`);
+  }
+}
 
-        const uploads = ["user","customer","turnover","nbcos","arreas"]
-          .map(k => s?.[k]).filter(Boolean).map(v => Date.parse(v)).filter(n=>!Number.isNaN(n));
-        const latest = uploads.length ? Math.max(...uploads) : 0;
-        const lastRead = key && s?.[key] ? Date.parse(s[key]) : 0;
+/* ========= Debug actions ========= */
+async function localTest() {
+  try {
+    const reg = await registerSW();
+    const clis = await reg.getNotifications ? await reg.getNotifications() : [];
+    log(`local test → swScope=${reg.scope} notifications=${clis.length}`);
+    // send a test message to the SW
+    reg.active?.postMessage?.({ type:'LOCAL_PUSH_TEST', title:'🔔 Local test', body:'This came from the page' });
+  } catch (e) { log(`local test error: ${e.message}`); }
+}
 
-        const show = latest && (!lastRead || lastRead < latest);
-        const b = document.getElementById('notif-badge');
-        b.style.display = show ? 'inline-block' : 'none';
-        if (show) b.textContent = '•';
-      }catch(e){}
+async function serverTest() {
+  try {
+    const r = await fetch(`${API_BASE}/api/push/test`, { headers: { 'Authorization': `Bearer ${token}` } });
+    const j = await r.json().catch(()=>({}));
+    log(`server test → status=${r.status} sent=${j.sent ?? 'n/a'} failed=${j.failures ?? 'n/a'}`);
+  } catch (e) { log(`server test error: ${e.message}`); }
+}
+
+async function showEnv() {
+  try {
+    const r = await fetch(`${API_BASE}/api/push/diag`, { headers: { 'Authorization': `Bearer ${token}` } });
+    const j = await r.json();
+    log(`ENV → origin=${location.origin}`);
+    log(`SW scope=${(await navigator.serviceWorker.getRegistration())?.scope || 'none'}`);
+    log(`diag: total=${j.total} noEndpoint=${j.noEndpoint} invalid=${j.invalid} vapidLen=${j.vapidPublicLen}`);
+  } catch (e) { log(`env error: ${e.message}`); }
+}
+
+async function fixPush() {
+  try {
+    // unregister all SW under this origin+scope, clear subs, then re-enable
+    const regs = await navigator.serviceWorker.getRegistrations();
+    for (const r of regs) { try { await (await r.pushManager.getSubscription())?.unsubscribe(); } catch{} }
+    for (const r of regs) { await r.unregister(); }
+    log('Cleared subscriptions and unregistered SW → re-enabling…');
+    await enablePush();
+  } catch (e) { log(`fix error: ${e.message}`); }
+}
+
+/* ========= Wire UI ========= */
+document.getElementById('push-setting').addEventListener('click', enablePush);
+document.getElementById('btn-local').addEventListener('click', localTest);
+document.getElementById('btn-server').addEventListener('click', serverTest);
+document.getElementById('btn-env').addEventListener('click', showEnv);
+document.getElementById('btn-fix').addEventListener('click', fixPush);
+
+/* ========= Logout ========= */
+function logout(){
+  sessionStorage.clear();
+  location.href = "../login.html";
+}
+
+/* ========= On load: show initial label ========= */
+window.addEventListener('load', async () => {
+  try {
+    const reg = await navigator.serviceWorker.getRegistration(`${basePath}/`);
+    const sub = await reg?.pushManager?.getSubscription();
+    if (sub) {
+      document.getElementById('push-label').textContent = "✓ Enabled";
+      document.getElementById('push-setting').disabled = true;
     }
-
-    // ========= Debug log =========
-    const logEl = () => document.getElementById('log');
-    function logLine(msg){
-      const ts = new Date().toTimeString().slice(0,8);
-      logEl().textContent = `[${ts}] ${msg}\n` + logEl().textContent;
-    }
-
-    // ========= Service Worker helpers =========
-    async function registerSWAtRoot(){
-      if (!('serviceWorker' in navigator)) throw new Error('SW not supported');
-      const reg = await navigator.serviceWorker.register('/service-worker.js'); // root scope
-      return reg;
-    }
-
-    async function ensureSWControlled(){
-      const reg = await registerSWAtRoot();
-      if (!navigator.serviceWorker.controller){
-        logLine('SW installed; waiting for control then reload…');
-        await new Promise(res => navigator.serviceWorker.addEventListener('controllerchange', res, { once:true }));
-        location.reload();
-        return new Promise(()=>{}); // stop further work this run
-      }
-      return reg;
-    }
-
-    async function getVapidKey(){
-      if (VAPID_PUBLIC_KEY) return VAPID_PUBLIC_KEY;
-      const r = await fetch(`${API_BASE}/api/push/public-key`);
-      const j = await r.json();
-      if (!j?.key) throw new Error('No VAPID key from server');
-      VAPID_PUBLIC_KEY = j.key;
-      return VAPID_PUBLIC_KEY;
-    }
-
-    function base64ToUint8Array(base64){
-      const pad = '='.repeat((4-(base64.length%4))%4);
-      const b64 = (base64+pad).replace(/-/g,'+').replace(/_/g,'/');
-      const raw = atob(b64);
-      const out = new Uint8Array(raw.length);
-      for (let i=0;i<raw.length;i++) out[i]=raw.charCodeAt(i);
-      return out;
-    }
-
-    // ========= Label init =========
-    async function initPushLabel(){
-      try{
-        const reg = await registerSWAtRoot();
-        const sub = await reg.pushManager.getSubscription();
-        if (sub){
-          document.getElementById('push-label').textContent = '✓ Already Enabled';
-          document.getElementById('push-setting').onclick = null;
-        }
-      }catch(e){ logLine('initPushLabel: '+e.message); }
-    }
-
-    // ========= Fix / Re-enable push (force correct subscription) =========
-    async function fixPush(){
-      try{
-        const reg = await ensureSWControlled(); // may reload once
-
-        const perm = await Notification.requestPermission();
-        if (perm!=='granted'){ alert('Permission denied.'); return; }
-
-        // remove old/bad subscription
-        const old = await reg.pushManager.getSubscription();
-        if (old){ try{ await old.unsubscribe(); }catch{} logLine('Old subscription removed'); }
-
-        const key = await getVapidKey();
-        const sub = await reg.pushManager.subscribe({
-          userVisibleOnly:true,
-          applicationServerKey: base64ToUint8Array(key)
-        });
-        logLine('New sub ok → endpoint present');
-
-        const save = await fetch(`${API_BASE}/api/push/subscribe`,{
-          method:'POST',
-          headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`},
-          body:JSON.stringify({ subscription: sub })
-        });
-        if (!save.ok){
-          const t = await save.text();
-          throw new Error(`save ${save.status}: ${t}`);
-        }
-
-        document.getElementById('push-label').textContent = '✓ Already Enabled';
-        document.getElementById('push-setting').onclick = null;
-        alert('Push enabled with current key ✅');
-      }catch(e){
-        logLine('Fix error: '+(e?.message||e));
-        alert('Subscription failed: '+(e?.message||e));
-      }
-    }
-
-    // ========= Debug buttons =========
-    async function localSwTest(){
-      try{
-        const reg = await registerSWAtRoot();
-        const sub = await reg.pushManager.getSubscription();
-        const has = !!sub;
-        const ep = sub?.endpoint ? '…'+sub.endpoint.slice(-22) : '';
-        const swControlled = !!navigator.serviceWorker.controller;
-        logLine(`subscribed=${has} endpoint=${ep}`);
-        logLine(`perm=${Notification.permission} sw=${swControlled} scope=${reg.scope}`);
-        if (!swControlled) logLine('❌ SW not ready; reload this page once.');
-      }catch(e){ logLine('local test: '+e.message); }
-    }
-
-    async function serverTestPush(){
-      try{
-        const r = await fetch(`${API_BASE}/api/push/test`,{
-          method:'POST',
-          headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`},
-          body:JSON.stringify({ title:'🔔 Test', body:'Hello from server', url:'/index.html' })
-        });
-        const j = await r.json();
-        logLine(`server test → status=${r.status} sent=${j.sent} failed=${j.failures}`);
-      }catch(e){ logLine('server test: '+e.message); }
-    }
-
-    async function showEnv(){
-      try{
-        const reg = navigator.serviceWorker?.controller ? (await navigator.serviceWorker.getRegistration()) : await navigator.serviceWorker.getRegistration();
-        const scope = reg?.scope || '(none)';
-        logLine(`ENV → origin=${location.origin}`);
-        logLine(`SW scope=${scope}`);
-      }catch(e){ logLine('env: '+e.message); }
-    }
-  </script>
+  } catch {}
+});
+</script>
 </body>
 </html>
