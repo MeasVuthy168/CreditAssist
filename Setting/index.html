@@ -1,198 +1,177 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="km">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="utf-8" />
   <title>Setting</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0d2d5c" />
   <style>
-    @font-face { font-family:'Krasar'; src:url('../Krasar-Regular.ttf') format('truetype'); }
-    body{margin:0;font-family:'Krasar',Arial,sans-serif;background:#f1f4f8;color:#333;padding-bottom:72px}
-    .header{background:#0d2d5c;color:#fff;padding:14px 16px;font-size:18px;font-weight:bold;box-shadow:0 2px 5px rgba(0,0,0,.2);position:fixed;top:0;left:0;right:0;z-index:2;display:flex;align-items:center}
-    .header .back{font-size:22px;color:#fff;background:none;border:none;margin-right:12px;cursor:pointer}
-    .section{margin-top:60px}
-    .item{background:#fff;padding:16px;border-bottom:1px solid #ddd;display:flex;align-items:center;justify-content:space-between}
-    .btn{background:#eef2f7;border:1px solid #cfd6df;border-radius:8px;padding:10px 14px;font-family:inherit;cursor:pointer}
-    .btn.primary{background:#0d2d5c;color:#fff;border-color:#0d2d5c}
-    .debug{margin:16px;background:#0e1320;color:#b7ffb7;border-radius:10px;padding:12px;font-family:ui-monospace,Consolas,monospace}
-    .debug .row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
-    .debug .chip{background:#20314d;color:#e5f2ff;border:1px solid #395781;border-radius:10px;padding:8px 10px;cursor:pointer}
-    .footer{position:fixed;bottom:0;left:0;right:0;height:56px;background:#0d2d5c}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;background:#f5f7fb}
+    header{background:#0d2d5c;color:#fff;padding:14px 16px;font-weight:700}
+    .row{display:flex;justify-content:space-between;align-items:center;background:#fff;margin:12px;padding:16px;border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+    .btn{background:#e9eefc;border:0;padding:10px 14px;border-radius:8px;font-weight:600;cursor:pointer}
+    .panel{background:#0b1324;color:#bdf5c2;margin:12px;padding:14px;border-radius:12px}
+    .btns{display:flex;gap:10px;margin-bottom:10px}
+    .pill{background:#1f2a44;color:#d6e8ff;border:0;padding:8px 12px;border-radius:8px;cursor:pointer}
+    pre{white-space:pre-wrap;word-break:break-word;margin:0;font-family:ui-monospace,Consolas,monospace}
   </style>
 </head>
 <body>
-  <div class="header">
-    <button class="back" onclick="location.href='../index.html'">←</button>
-    <div>Setting</div>
+  <header>Setting</header>
+
+  <div class="row">
+    <div>✓ <strong>Enabled</strong></div>
+    <button id="enableBtn" class="btn">Enable Push</button>
   </div>
 
-  <div class="section">
-    <div class="item">
-      <div id="pushState">✓ Enabled</div>
-      <button id="enableBtn" class="btn">Enable Push</button>
+  <div class="panel">
+    <div class="btns">
+      <button id="localBtn" class="pill">✏️ Local SW test</button>
+      <button id="serverBtn" class="pill">🧨 Server test push</button>
+      <button id="fixBtn" class="pill">🛠️ Fix Push / Re-enable</button>
+      <button id="envBtn" class="pill">🧾 Env info</button>
     </div>
-
-    <div class="debug">
-      <div style="font-weight:700;margin-bottom:8px">🔎 Push Debug</div>
-      <div class="row">
-        <button class="chip" onclick="localTest()">✏️ Local SW test</button>
-        <button class="chip" onclick="serverTest()">🧨 Server test push</button>
-        <button class="chip" onclick="fixPush()">🛠️ Fix Push / Re-enable</button>
-        <button class="chip" onclick="envInfo()">ℹ️ Env info</button>
-      </div>
-      <pre id="log" style="white-space:pre-wrap;margin:0"></pre>
-    </div>
+    <pre id="log">[--] Debug panel ready</pre>
   </div>
 
-  <div class="footer"></div>
+<script>
+const API_BASE = "https://secure-backend-tzj9.onrender.com";
+const basePath = "/CreditAssist"; // GitHub Pages base path
+const logEl = document.getElementById('log');
+const token = () => sessionStorage.getItem('token') || '';
 
-  <script>
-    // ===== Configuration =====
-    const API_BASE = "https://secure-backend-tzj9.onrender.com";
-    const basePath = "/CreditAssist"; // GitHub Pages subpath
-    const token = sessionStorage.getItem('token') || '';
-    const logEl = document.getElementById('log');
+function log(line) {
+  const ts = new Date().toTimeString().slice(0,8);
+  logEl.textContent = `[${ts}] ${line}\n` + logEl.textContent;
+}
 
-    function log(line){
-      const ts = new Date().toTimeString().slice(0,8);
-      logEl.textContent = `[${ts}] ${line}\n` + logEl.textContent;
-    }
+async function registerSW() {
+  if (!('serviceWorker' in navigator)) throw new Error('SW not supported');
+  const reg = await navigator.serviceWorker.register(`${basePath}/service-worker.js`, { scope: `${basePath}/` });
+  if (!navigator.serviceWorker.controller) {
+    log('SW installed but not controlling yet. Reload once.');
+  }
+  return reg;
+}
 
-    // ===== Service Worker registration (scoped to /CreditAssist/) =====
-    async function registerSW() {
-      if (!('serviceWorker' in navigator)) throw new Error('SW not supported in this browser');
-      const reg = await navigator.serviceWorker.register(`${basePath}/service-worker.js`, { scope: `${basePath}/` });
-      if (!navigator.serviceWorker.controller) {
-        log('SW installed; reload once to let it control this page.');
-      }
-      return reg;
-    }
+function urlBase64ToUint8Array(b64) {
+  const padding = '='.repeat((4 - (b64.length % 4)) % 4);
+  const s = (b64 + padding).replace(/-/g, '+').replace(/_/g, '/');
+  const raw = atob(s);
+  const out = new Uint8Array(raw.length);
+  for (let i = 0; i < raw.length; i++) out[i] = raw.charCodeAt(i);
+  return out;
+}
 
-    // ===== Helpers =====
-    function urlBase64ToUint8Array(base64String){
-      const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
-      const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
-      const raw = atob(base64);
-      const arr = new Uint8Array(raw.length);
-      for (let i=0;i<raw.length;i++) arr[i] = raw.charCodeAt(i);
-      return arr;
-    }
+async function getVapidKey() {
+  const r = await fetch(`${API_BASE}/api/push/public-key`);
+  const j = await r.json();
+  if (!j.key) throw new Error('No VAPID key from server');
+  return j.key;
+}
 
-    async function getVapidKey(){
-      const r = await fetch(`${API_BASE}/api/push/public-key`);
-      const j = await r.json();
-      if (!j.key) throw new Error("No VAPID key from server");
-      return j.key;
-    }
+async function enablePush() {
+  try {
+    if (!token()) { alert('Please login again (no JWT token).'); return; }
 
-    // ===== Enable / subscribe =====
-    async function enablePush() {
-      try {
-        // Permission
-        const perm = await Notification.requestPermission();
-        if (perm !== 'granted') { alert('Notification permission denied'); return; }
+    const perm = await Notification.requestPermission();
+    if (perm !== 'granted') { alert('Notification permission denied'); return; }
 
-        // Register SW
-        const reg = await registerSW();
+    const reg = await registerSW();
+    const old = await reg.pushManager.getSubscription();
+    if (old) await old.unsubscribe().catch(()=>{});
 
-        // Remove any stale subscription to avoid key mismatch
-        const old = await reg.pushManager.getSubscription();
-        if (old) { await old.unsubscribe().catch(()=>{}); }
-
-        // Subscribe
-        const vapid = await getVapidKey();
-        const sub = await reg.pushManager.subscribe({
-          userVisibleOnly: true,
-          applicationServerKey: urlBase64ToUint8Array(vapid)
-        });
-
-        // Serialize correctly (important!)
-        const subJSON = (sub && typeof sub.toJSON === 'function') ? sub.toJSON() : sub;
-        log(`subscribed endpoint=${subJSON && subJSON.endpoint ? subJSON.endpoint.slice(0, 48) : 'N/A'}`);
-
-        if (!subJSON || !subJSON.endpoint) {
-          throw new Error("Browser returned subscription without endpoint");
-        }
-
-        // Send to backend
-        const resp = await fetch(`${API_BASE}/api/push/subscribe`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-          body: JSON.stringify({ subscription: subJSON })
-        });
-
-        if (!resp.ok) {
-          const t = await resp.text();
-          throw new Error(`Backend ${resp.status}: ${t}`);
-        }
-
-        document.getElementById('pushState').textContent = '✓ Enabled';
-        log('subscription saved on server');
-        alert('Push enabled!');
-      } catch (e) {
-        console.error(e);
-        log(`subscribe error: ${e.message}`);
-        alert(`Subscription failed: ${e.message}`);
-      }
-    }
-
-    // ===== Debug helpers =====
-    async function localTest(){
-      try{
-        const reg = await registerSW();
-        const sub = await reg.pushManager.getSubscription();
-        const subJSON = sub && sub.toJSON ? sub.toJSON() : sub;
-        const scope = (reg && reg.scope) || 'N/A';
-        const ep = subJSON && subJSON.endpoint ? subJSON.endpoint : '';
-        const notifPerm = (typeof Notification !== 'undefined') ? Notification.permission : 'n/a';
-        log(`local test → swScope=${scope} notifications=${notifPerm} endpoint=${ep ? ep.slice(0,48) : '(none)'}`);
-      }catch(e){ log(`local test error: ${e.message}`); }
-    }
-
-    async function serverTest(){
-      try{
-        const r = await fetch(`${API_BASE}/api/push/notify-test`, {
-          method:'POST',
-          headers:{ 'Authorization': `Bearer ${token}` }
-        });
-        const j = await r.json().catch(()=> ({}));
-        log(`server test → status=${r.status} sent=${j.sent ?? 'n/a'} failed=${j.failures ?? 'n/a'}`);
-      }catch(e){ log(`server test error: ${e.message}`); }
-    }
-
-    async function envInfo(){
-      try{
-        const reg = await navigator.serviceWorker.getRegistration(`${basePath}/`);
-        const scope = reg?.scope || '(none)';
-        log(`ENV → origin=${location.origin}\nSW scope=${scope}`);
-        const d = await fetch(`${API_BASE}/api/push/diag`, { headers:{ 'Authorization': `Bearer ${token}` }}).then(r=>r.json());
-        log(`diag: total=${d.total} noEndpoint=${d.noEndpoint} invalid=${d.invalid} vapidLen=${d.vapidPublicLen} sample=${d.sampleEndpoint || '(none)'}`);
-      }catch(e){ log(`env error: ${e.message}`); }
-    }
-
-    async function fixPush(){
-      try{
-        const reg = await registerSW();
-        const old = await reg.pushManager.getSubscription();
-        if (old) { await old.unsubscribe().catch(()=>{}); }
-        await reg.unregister();
-        log('Cleared subscriptions and unregistered SW → re-enabling…');
-        setTimeout(enablePush, 600);
-      }catch(e){ log(`Fix error: ${e.message}`); }
-    }
-
-    // Wire UI
-    document.getElementById('enableBtn').addEventListener('click', enablePush);
-
-    // Initial state
-    document.addEventListener('DOMContentLoaded', async () => {
-      try {
-        const reg = await navigator.serviceWorker.getRegistration(`${basePath}/`);
-        const sub = await reg?.pushManager.getSubscription();
-        if (sub) document.getElementById('pushState').textContent = '✓ Enabled';
-      } catch {}
-      log('Debug panel ready');
+    const vapid = await getVapidKey();
+    const sub = await reg.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: urlBase64ToUint8Array(vapid)
     });
-  </script>
+
+    const resp = await fetch(`${API_BASE}/api/push/subscribe`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token()}` },
+      body: JSON.stringify({ subscription: sub })
+    });
+    if (!resp.ok) {
+      const t = await resp.text();
+      throw new Error(`Backend ${resp.status}: ${t}`);
+    }
+
+    log('✅ Subscribed and saved');
+    alert('Push enabled!');
+  } catch (e) {
+    log(`subscribe error: ${e.message}`);
+    alert(`Subscription failed: ${e.message}`);
+  }
+}
+
+async function localTest() {
+  try {
+    const reg = await registerSW();
+    const sub = await reg.pushManager.getSubscription();
+    const scope = reg.scope;
+    const endpoint = sub?.endpoint || '';
+    log(`local test → swScope=${scope} notifications=${Notification.permission} endpoint=${endpoint.slice(0,60)}`);
+  } catch (e) {
+    log(`local test error: ${e.message}`);
+  }
+}
+
+async function serverTest() {
+  try {
+    // broadcast is more reliable for testing
+    const r = await fetch(`${API_BASE}/api/push/notify-all`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${token()}` }
+    });
+    const j = await r.json().catch(()=> ({}));
+    log(`server test → status=${r.status} sent=${j.sent ?? 'n/a'} failed=${j.failures ?? 'n/a'}`);
+  } catch (e) {
+    log(`server test error: ${e.message}`);
+  }
+}
+
+async function envInfo() {
+  try {
+    const reg = await navigator.serviceWorker.getRegistration(`${basePath}/`);
+    const scope = reg?.scope || '(none)';
+    const r = await fetch(`${API_BASE}/api/push/diag`, { headers: { 'Authorization': `Bearer ${token()}` }});
+    const j = await r.json().catch(()=> ({}));
+    log(`ENV → origin=${location.origin}\nSW scope=${scope}\ndiag: total=${j.total} noEndpoint=${j.noEndpoint} invalid=${j.invalid} vapidLen=${j.vapidLen}\nsample=${j.sample?.endpoint || '(none)'}`);
+  } catch (e) {
+    log(`env error: ${e.message}`);
+  }
+}
+
+async function fixPush() {
+  try {
+    // Unsubscribe all service worker subs for this scope, unregister SW, re-enable
+    const reg = await navigator.serviceWorker.getRegistration(`${basePath}/`);
+    if (reg) {
+      const sub = await reg.pushManager.getSubscription();
+      if (sub) await sub.unsubscribe().catch(()=>{});
+      await reg.unregister();
+    }
+    log('Cleared subscriptions and unregistered SW → re-enabling…');
+    await enablePush();
+  } catch (e) {
+    log(`Fix error: ${e.message}`);
+  }
+}
+
+// Wire up buttons
+document.getElementById('enableBtn').onclick = enablePush;
+document.getElementById('localBtn').onclick = localTest;
+document.getElementById('serverBtn').onclick = serverTest;
+document.getElementById('envBtn').onclick = envInfo;
+document.getElementById('fixBtn').onclick = fixPush;
+
+// Log initial env
+(async () => {
+  const reg = await navigator.serviceWorker.getRegistration(`${basePath}/`);
+  log(`SW scope=${reg?.scope || '(none)'}`);
+  log(`ENV → origin=${location.origin}`);
+})();
+</script>
 </body>
 </html>
