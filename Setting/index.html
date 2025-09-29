@@ -1,187 +1,285 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="km">
 <head>
-  <meta charset="utf-8" />
+  <meta charset="UTF-8" />
   <title>Setting</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#0d2d5c" />
   <style>
-    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;background:#f5f7fb;color:#223}
-    .bar{display:flex;justify-content:space-between;align-items:center;background:#0d2d5c;color:#fff;padding:14px 16px}
-    .wrap{max-width:940px;margin:14px auto;padding:0 12px}
-    .card{background:#fff;border-radius:12px;padding:16px;margin-bottom:16px;box-shadow:0 2px 10px rgba(0,0,0,.06)}
-    .btn{display:inline-flex;align-items:center;gap:8px;background:#e9eef8;border:1px solid #cfd9ee;border-radius:12px;padding:12px 14px;cursor:pointer}
-    .row{display:flex;gap:12px;flex-wrap:wrap}
-    .pill{font-weight:600;color:#2a6;display:inline-flex;align-items:center;gap:8px}
-    pre{background:#0b1220;color:#b7fca2;border-radius:12px;padding:14px;white-space:pre-wrap;word-break:break-word;min-height:120px}
+    @font-face { font-family:'Krasar'; src:url('../Krasar-Regular.ttf') format('truetype'); }
+
+    :root{
+      --brand:#0d2d5c;
+      --bg:#f1f4f8;
+      --card:#fff;
+      --text:#333;
+      --muted:#555;
+    }
+
+    body{margin:0;font-family:'Krasar',Arial,sans-serif;background:var(--bg);color:var(--text);padding-bottom:70px}
+    .header{background:var(--brand);color:#fff;padding:14px 16px;font-size:18px;font-weight:bold;box-shadow:0 2px 5px rgba(0,0,0,.2);position:fixed;top:0;left:0;right:0;z-index:999;display:flex;align-items:center}
+    .header .back{font-size:22px;color:#fff;background:none;border:none;margin-right:12px;cursor:pointer}
+
+    .profile-section{margin-top:60px;padding:20px;background:var(--card);display:flex;align-items:center;gap:16px}
+    .profile-section img{width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid var(--brand)}
+    .info{display:flex;flex-direction:column}
+    .info .name{font-weight:bold;font-size:18px;color:goldenrod}
+    .info .position{font-size:14px;color:var(--muted)}
+
+    .setting-section{margin-top:10px}
+    .setting-item{background:var(--card);padding:16px;border-bottom:1px solid #ddd;display:flex;align-items:center;justify-content:space-between;cursor:pointer;font-size:16px}
+    .setting-item:hover{background:#eef2f7}
+    .setting-item span{display:flex;align-items:center;gap:10px}
+    .setting-item img.icon{width:20px;height:20px}
+
+    .pill{font-size:13px;background:#eef2f7;color:#222;border-radius:999px;padding:6px 10px;min-width:64px;text-align:center}
+    .pill.on{background:#dff6e5;color:#1e7e34}
+    .pill.off{background:#fdeaea;color:#b52d2d}
+
+    .signout span{color:red;font-weight:bold;text-decoration:underline}
+    .signout img.icon{filter:brightness(0) saturate(100%) invert(19%) sepia(100%) saturate(6486%) hue-rotate(355deg) brightness(93%) contrast(104%)}
+
+    .bottom-bar{position:fixed;bottom:0;left:0;width:100%;height:56px;background:var(--brand);display:flex;justify-content:space-around;align-items:center;box-shadow:0 2px 5px rgba(0,0,0,.3);z-index:1000}
+    .bottom-btn{display:flex;flex-direction:column;align-items:center;font-size:11px;color:#fff;border:none;background:none;padding:2px}
+    .bottom-btn img{margin-bottom:2px;pointer-events:none}
+
+    .modal{display:none;position:fixed;z-index:2000;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,.5);justify-content:center;align-items:center}
+    .modal.show{display:flex}
+    @keyframes slideIn{from{transform:translateY(30px);opacity:0}to{transform:translateY(0);opacity:1}}
+    .modal-content{background:#fff;font-family:'Krasar',Arial,sans-serif;padding:20px;border-radius:8px;text-align:center;width:90%;max-width:320px;box-shadow:0 2px 10px rgba(0,0,0,.3);animation:slideIn .3s ease-out}
+    .modal-content p{font-size:16px;margin-bottom:20px;color:#333}
+    .modal-actions{display:flex;justify-content:space-between;gap:10px}
+    .confirm-btn,.cancel-btn{flex:1;padding:10px;font-family:'Krasar',Arial,sans-serif;font-size:16px;border:none;border-radius:5px;cursor:pointer}
+    .confirm-btn{background:#d9534f;color:#fff}
+    .cancel-btn{background:#f1f1f1;color:#333}
+
+    .badge{position:absolute;top:-4px;right:-8px;background:red;color:#fff;font-size:10px;padding:2px 6px;border-radius:50%;font-weight:bold}
   </style>
 </head>
 <body>
-  <div class="bar"><strong>Setting</strong></div>
-  <div class="wrap">
-
-    <div class="card">
-      <div class="row" style="justify-content:space-between;">
-        <div class="pill">✔ Enabled</div>
-        <button id="enableBtn" class="btn">Enable Push</button>
-      </div>
-    </div>
-
-    <div class="card">
-      <h3>🔎 Push Debug</h3>
-      <div class="row" style="margin:8px 0 12px">
-        <button id="localBtn" class="btn">✏️ Local SW test</button>
-        <button id="serverBtn" class="btn">🎯 Server test push</button>
-        <button id="fixBtn" class="btn">🛠️ Fix Push / Re-enable</button>
-        <button id="envBtn" class="btn">🧾 Env info</button>
-      </div>
-      <pre id="log">[--] Debug panel ready</pre>
-    </div>
-
+  <!-- Header -->
+  <div class="header">
+    <button class="back" onclick="window.location.href='../index.html'">←</button>
+    <div>Setting</div>
   </div>
 
-<script>
-const API_BASE = "https://secure-backend-tzj9.onrender.com";
-const basePath = "/CreditAssist"; // GitHub Pages repo subpath
+  <!-- Profile Section -->
+  <div class="profile-section">
+    <img id="profile-photo" src="profile.jpg" alt="User Photo">
+    <div class="info">
+      <div class="name" id="user-fullname">User Name</div>
+      <div class="position" id="user-position">Position</div>
+    </div>
+  </div>
 
-const logEl = document.getElementById('log');
-function log(msg){ logEl.textContent += (logEl.textContent ? "\n" : "") + msg; logEl.scrollTop = logEl.scrollHeight; }
-function token(){ return sessionStorage.getItem('token') || ""; }
+  <!-- Setting Items -->
+  <div class="setting-section">
+    <div class="setting-item" onclick="window.location.href='userinfo.html'">
+      <span><img class="icon" src="user.png" alt="User" />ព័ត៌មានផ្ទាល់</span>
+      <span>›</span>
+    </div>
 
-async function registerSW() {
-  if (!('serviceWorker' in navigator)) throw new Error('SW not supported');
-  const reg = await navigator.serviceWorker.register(`${basePath}/service-worker.js`, { scope: `${basePath}/` });
-  if (!navigator.serviceWorker.controller) {
-    log('SW installed; please reload once so it controls this page.');
-  }
-  return reg;
-}
+    <div class="setting-item" onclick="window.location.href='about.html'">
+      <span><img class="icon" src="info.png" alt="Info" />អំពី​កម្មវិធី</span>
+      <span>›</span>
+    </div>
 
-async function urlBase64ToUint8Array(base64String) {
-  const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
-  const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
-  const raw = atob(base64); const out = new Uint8Array(raw.length);
-  for (let i = 0; i < raw.length; ++i) out[i] = raw.charCodeAt(i);
-  return out;
-}
+    <!-- 🔔 Push notifications ON/OFF -->
+    <div class="setting-item" id="push-row" onclick="togglePush()">
+      <span><img class="icon" src="bell.png" alt="Push" />ការជូនដំណឹង</span>
+      <span id="push-pill" class="pill off">Off</span>
+    </div>
 
-async function getVapidKey() {
-  const r = await fetch(`${API_BASE}/api/push/public-key`);
-  const j = await r.json();
-  if (!j.key) throw new Error('No VAPID key from server');
-  return j.key;
-}
+    <div class="setting-item signout" onclick="confirmLogout()">
+      <span><img class="icon" src="logout-rounded-left.png" alt="Logout" />ចាកចេញ</span>
+    </div>
+  </div>
 
-async function enablePush() {
-  try {
-    const perm = await Notification.requestPermission();
-    if (perm !== 'granted') { alert('Notifications denied'); return; }
+  <!-- Bottom bar -->
+  <div class="bottom-bar">
+    <button class="bottom-btn active" onclick="window.location.href='../index.html'">
+      <img src="../icons/Home.png" width="24" height="24" /><div>Home</div>
+    </button>
+    <button class="bottom-btn" onclick="window.location.href='../Setting/index.html'">
+      <img src="../icons/Setting.png" width="24" height="24" /><div>Setting</div>
+    </button>
+    <button class="bottom-btn" onclick="window.location.href='../notifications/index.html'">
+      <div style="position: relative;">
+        <img src="../icons/Notification.png" width="24" height="24" />
+        <span id="notif-badge" class="badge" style="display:none;"></span>
+      </div>
+      <div>Notification</div>
+    </button>
+  </div>
 
-    const reg = await registerSW();
+  <!-- Logout Modal -->
+  <div id="logoutModal" class="modal">
+    <div class="modal-content">
+      <p>តើអ្នកប្រាកដចង់ចាកចេញពីប្រព័ន្ធមែនទេ?</p>
+      <div class="modal-actions">
+        <button onclick="logout()" class="confirm-btn">ចាកចេញ</button>
+        <button onclick="closeModal()" class="cancel-btn">បោះបង់</button>
+      </div>
+    </div>
+  </div>
 
-    // clean old sub
-    const old = await reg.pushManager.getSubscription();
-    if (old) await old.unsubscribe().catch(()=>{});
+  <audio id="logout-audio" src="logout-sound.mp3" preload="auto"></audio>
 
-    const key = await getVapidKey();
-    const sub = await reg.pushManager.subscribe({
-      userVisibleOnly: true,
-      applicationServerKey: await urlBase64ToUint8Array(key)
-    });
+  <script>
+    // ====== CONFIG ======
+    const API_BASE  = "https://secure-backend-tzj9.onrender.com";
+    const basePath  = "/CreditAssist"; // GitHub Pages base path
 
-    const resp = await fetch(`${API_BASE}/api/push/subscribe`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token()}` },
-      body: JSON.stringify({ subscription: sub })
-    });
-    if (!resp.ok) {
-      const t = await resp.text();
-      throw new Error(`Backend ${resp.status}: ${t}`);
+    // ====== Auth guard ======
+    const token = sessionStorage.getItem('token');
+    if (!token) { alert("Session expired or unauthorized access."); window.location.href = "../login.html"; }
+
+    // ====== Auto logout ======
+    function setupAutoLogoutEvents() {
+      const AUTO_LOGOUT_MINUTES = 1;
+      let logoutTimer;
+      function reset() {
+        clearTimeout(logoutTimer);
+        logoutTimer = setTimeout(() => {
+          sessionStorage.clear();
+          alert("Session expired due to inactivity. Please log in again.");
+          window.location.href = "../login.html";
+        }, AUTO_LOGOUT_MINUTES * 60 * 1000);
+      }
+      ['mousemove','mousedown','keydown','touchstart','touchmove','scroll'].forEach(e => document.addEventListener(e, reset, true));
+      reset();
     }
-    log('Subscribed successfully.');
-  } catch (e) {
-    log('subscribe error: ' + e.message);
-    alert('Subscription failed: ' + e.message);
-  }
-}
 
-async function serverTest() {
-  try {
-    const r = await fetch(`${API_BASE}/api/push/notify-test`, {
-      method: 'POST',
-      headers: { 'Authorization': `Bearer ${token()}` }
+    function logout(){ const a=document.getElementById("logout-audio"); if(a) a.play(); setTimeout(()=>{sessionStorage.clear();window.location.href="../login.html"},800); }
+    function confirmLogout(){ document.getElementById("logoutModal").classList.add("show"); }
+    function closeModal(){ document.getElementById("logoutModal").classList.remove("show"); }
+
+    // ====== Profile fill ======
+    document.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("user-fullname").textContent = sessionStorage.getItem("fullname") || "អ្នកប្រើ";
+      document.getElementById("user-position").textContent = sessionStorage.getItem("userPosition") || "មិនដំណើរការ";
+      const img = sessionStorage.getItem("image") || "profile.jpg";
+      document.getElementById("profile-photo").src = API_BASE + "/" + img;
     });
-    const j = await r.json();
-    log(`server test → status=${r.status} sent=${j.sent ?? 'n/a'} failed=${j.failed ?? 'n/a'} ${j.reason ? 'reason='+j.reason : ''}`);
-  } catch (e) {
-    log('server test error: ' + e.message);
-  }
-}
 
-async function envInfo() {
-  try {
-    const reg = await navigator.serviceWorker.getRegistration(`${basePath}/`);
-    const scope = reg?.scope || '(none)';
-    const r = await fetch(`${API_BASE}/api/push/diag2`, { headers: { 'Authorization': `Bearer ${token()}` }});
-    const j = await r.json().catch(()=> ({}));
-    log(`ENV → origin=${location.origin}
-SW scope=${scope}
-diag: total=${j.total} noEndpoint=${j.noEndpoint} invalid=${j.invalid} vapidLen=${j.vapidPublicLen}
-newest=${j.newest?.endpoint || '(none)'}
-validNewest=${j.validNewest?.endpoint || '(none)'}
-`);
-  } catch (e) {
-    log('env error: ' + e.message);
-  }
-}
-
-async function cleanup() {
-  try {
-    const r = await fetch(`${API_BASE}/api/push/cleanup`, {
-      method: 'POST',
-      headers: { 'Authorization': `Bearer ${token()}` }
-    });
-    const j = await r.json().catch(()=> ({}));
-    log(`cleanup → removedInvalid=${j.removedInvalid} removedNoEndpoint=${j.removedNoEndpoint}`);
-  } catch (e) {
-    log('cleanup error: ' + e.message);
-  }
-}
-
-async function fixPush() {
-  try {
-    const reg = await navigator.serviceWorker.getRegistration(`${basePath}/`);
-    if (reg) {
-      const sub = await reg.pushManager.getSubscription();
-      if (sub) await sub.unsubscribe().catch(()=>{});
-      await reg.unregister();
+    // ====== Push helpers ======
+    async function registerSW() {
+      if (!('serviceWorker' in navigator)) throw new Error('SW not supported');
+      // Ensure our SW is available under /CreditAssist/
+      try {
+        const reg = await navigator.serviceWorker.register(`${basePath}/service-worker.js`, { scope: `${basePath}/` });
+        if (!navigator.serviceWorker.controller) {
+          console.log('SW installed; reload once to take control.');
+        }
+        return reg;
+      } catch (e) {
+        // Fallback to root (in case you moved SW to /)
+        const reg = await navigator.serviceWorker.register(`/service-worker.js`);
+        return reg;
+      }
     }
-    await cleanup();
-    log('Cleared local SW + server invalid subs → re-enabling…');
-    await enablePush();
-  } catch (e) {
-    log('Fix error: ' + e.message);
-  }
-}
 
-async function localTest() {
-  try {
-    const r = await navigator.serviceWorker.getRegistration(`${basePath}/`);
-    const sub = await r?.pushManager.getSubscription();
-    const endp = sub?.endpoint || '(no sub)';
-    const noti = (await navigator.permissions.query({ name: 'notifications' })).state;
-    log(`local test → swScope=${r?.scope || '(none)'} notifications=${noti} endpoint=${endp}`);
-  } catch (e) {
-    log('local test error: ' + e.message);
-  }
-}
+    async function getVapidKey() {
+      const res = await fetch(`${API_BASE}/api/push/public-key`);
+      const data = await res.json();
+      if (!data.key) throw new Error("No VAPID key");
+      return data.key;
+    }
 
-// wire UI
-document.getElementById('enableBtn').onclick = enablePush;
-document.getElementById('serverBtn').onclick = serverTest;
-document.getElementById('envBtn').onclick = envInfo;
-document.getElementById('fixBtn').onclick = fixPush;
-document.getElementById('localBtn').onclick = localTest;
-</script>
+    function b64ToU8(base64String) {
+      const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+      const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+      const rawData = atob(base64);
+      const output = new Uint8Array(rawData.length);
+      for (let i = 0; i < rawData.length; ++i) output[i] = rawData.charCodeAt(i);
+      return output;
+    }
+
+    async function getCurrentSubscription() {
+      if (!('serviceWorker' in navigator)) return null;
+      const reg = await navigator.serviceWorker.getRegistration(`${basePath}/`);
+      const target = reg || await navigator.serviceWorker.getRegistration();
+      if (!target) return null;
+      return await target.pushManager.getSubscription();
+    }
+
+    // ====== UI state ======
+    function setPushPill(on) {
+      const pill = document.getElementById('push-pill');
+      pill.textContent = on ? 'On' : 'Off';
+      pill.classList.toggle('on',  !!on);
+      pill.classList.toggle('off', !on);
+    }
+
+    // ====== Toggle push ======
+    async function togglePush() {
+      try {
+        const perm = await Notification.requestPermission();
+        if (perm !== 'granted') { alert('Permission denied.'); return; }
+
+        const reg = await registerSW();
+        const current = await reg.pushManager.getSubscription();
+
+        if (current) {
+          // Unsubscribe + notify backend
+          const endpoint = current.endpoint;
+          await current.unsubscribe().catch(()=>{});
+          await fetch(`${API_BASE}/api/push/unsubscribe`, {
+            method: 'POST',
+            headers: { 'Content-Type':'application/json', 'Authorization': `Bearer ${token}` },
+            body: JSON.stringify({ endpoint })
+          });
+          setPushPill(false);
+          alert('🔕 បានបិទការជូនដំណឹង');
+          return;
+        }
+
+        // Subscribe
+        const vapid = await getVapidKey();
+        const sub = await reg.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: b64ToU8(vapid)
+        });
+
+        const resp = await fetch(`${API_BASE}/api/push/subscribe`, {
+          method: 'POST',
+          headers: { 'Content-Type':'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({ subscription: sub })
+        });
+        if (!resp.ok) {
+          const t = await resp.text();
+          throw new Error(`Backend ${resp.status}: ${t}`);
+        }
+        setPushPill(true);
+        alert('🔔 បានបើកការជូនដំណឹង');
+      } catch (e) {
+        console.error(e);
+        alert(`❌ មិនអាចប្ដូរបាន៖ ${e.message}`);
+      }
+    }
+    window.togglePush = togglePush;
+
+    // ====== Init on load ======
+    window.addEventListener("DOMContentLoaded", async () => {
+      setupAutoLogoutEvents();
+
+      // Fill push pill by current state
+      try {
+        const sub = await getCurrentSubscription();
+        setPushPill(!!sub);
+      } catch {
+        setPushPill(false);
+      }
+    });
+  </script>
+
+  <!-- 🔴 badge refresher (your existing shared script) -->
+  <script src="../notifications/checkNotification.js"></script>
+  <script>
+    window.addEventListener("DOMContentLoaded", () => {
+      // checkNotification() is defined in the shared script
+      if (typeof checkNotification === 'function') checkNotification();
+    });
+  </script>
 </body>
 </html>
