@@ -35,6 +35,14 @@
     .confirm-btn{background:#d9534f;color:#fff}
     .cancel-btn{background:#f1f1f1;color:#333}
     .badge{position:absolute;top:-4px;right:-8px;background:red;color:#fff;font-size:10px;padding:2px 6px;border-radius:50%;font-weight:bold}
+
+    /* ==== Debug panel ==== */
+    #pushdbg{font-family:Consolas,monospace;background:#0b0b0f;color:#9cff9c;
+      padding:10px;border-radius:6px;margin:16px 12px;max-height:220px;overflow:auto}
+    #pushdbg .h{color:#86e1ff;margin-bottom:8px}
+    #pushdbg .ln{white-space:pre;line-height:1.35}
+    #pushdbg button{margin-right:6px;margin-bottom:8px;background:#113355;color:#fff;
+      padding:6px 8px;border-radius:4px;border:none}
   </style>
 </head>
 <body>
@@ -70,6 +78,17 @@
     <div class="setting-item signout" onclick="confirmLogout()">
       <span><img class="icon" src="logout-rounded-left.png" alt="Logout" /> ចាកចេញ</span>
     </div>
+  </div>
+
+  <!-- ===== Push Debug Panel ===== -->
+  <div id="pushdbg">
+    <div class="h">🔎 Push Debug</div>
+    <div style="margin-bottom:8px">
+      <button id="btnLocal">🧪 Local SW test</button>
+      <button id="btnSrv">📤 Server test push</button>
+      <button id="btnInfo">ℹ️ Env info</button>
+    </div>
+    <div id="pushlog"></div>
   </div>
 
   <div class="bottom-bar">
@@ -139,9 +158,10 @@
       initPushUI();
       refreshBadge();
       setInterval(refreshBadge, 15000);
+      setupDebugPanel();
     });
 
-    // ===== Service Worker registration (robust path for subfolder) =====
+    // ===== Service Worker registration (works from /Setting/) =====
     async function registerSW() {
       if (!('serviceWorker' in navigator)) throw new Error('SW not supported');
 
@@ -191,6 +211,11 @@
     async function subscribeUserToPush() {
       try {
         const reg = await registerSW();
+
+        // iOS PWA shows "Notification" global; desktop iOS Safari won’t.
+        if (typeof Notification === 'undefined') {
+          throw new Error('Notifications API not available in this browser context');
+        }
 
         const perm = await Notification.requestPermission();
         if (perm !== 'granted') { alert("Permission denied."); return; }
@@ -257,6 +282,47 @@
       } catch (e) {
         console.warn("Badge check failed:", e);
       }
+    }
+
+    // ===== Debug panel logic =====
+    function setupDebugPanel(){
+      const $log = document.getElementById('pushlog');
+      const ts = ()=>{ const d=new Date(); const p=n=>String(n).padStart(2,'0'); return `[${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}]`; };
+      const line = s => { const d=document.createElement('div'); d.className='ln'; d.textContent=s; $log.prepend(d); };
+
+      // Receive logs from SW
+      try {
+        const ch = new BroadcastChannel('push-logs');
+        ch.onmessage = (e)=> line(e.data);
+      } catch(_){}
+
+      document.getElementById('btnLocal').onclick = async ()=>{
+        const reg = await navigator.serviceWorker.getRegistration('/');
+        if (!reg || !navigator.serviceWorker.controller){ line(`${ts()} ❌ SW not ready; reload this page once.`); return; }
+        navigator.serviceWorker.controller.postMessage('LOCAL_TEST_PUSH');
+        line(`${ts()} 🧪 asked SW for local test`);
+      };
+
+      document.getElementById('btnSrv').onclick = async ()=>{
+        try{
+          const r = await fetch(`${API_BASE}/api/push/test`, {
+            method:'POST',
+            headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+            body: JSON.stringify({ title:'🔔 Test from server', body:'Hello '+(sessionStorage.getItem('fullname')||''), url:'/index.html' })
+          });
+          const j = await r.json().catch(()=>({}));
+          line(`${ts()} 📤 server test → status=${r.status} sent=${j.sent} failed=${j.failed}`);
+        }catch(err){ line(`${ts()} ❌ server test error: ${err.message||err}`); }
+      };
+
+      document.getElementById('btnInfo').onclick = async ()=>{
+        const reg = await navigator.serviceWorker.getRegistration('/');
+        const sub = reg ? await reg.pushManager.getSubscription() : null;
+        line(`${ts()} ℹ️ perm=${typeof Notification==='undefined'?'n/a':Notification.permission} sw=${!!reg} scope=${reg?.scope||'-'}`);
+        line(`${ts()} ℹ️ subscribed=${!!sub} endpoint=${sub?.endpoint? sub.endpoint.slice(0,32)+'…' : '—'}`);
+      };
+
+      line(`${ts()} ✅ Debug panel ready`);
     }
   </script>
 </body>
