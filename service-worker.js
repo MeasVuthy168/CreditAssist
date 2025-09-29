@@ -1,101 +1,143 @@
-/* ===== service-worker.js ===== */
+/* Credit Assist – Service Worker
+   Place this file at the REPO ROOT:  /service-worker.js
+   It must be served from the same origin & scope as your pages.
+*/
 
-const cacheName = 'credit-assist-cache-v3';
-const assets = [
-  './','./index.html','./login.html','./manifest.json',
-  './Krasar-Regular.ttf','./LogoAC.png','./LogoAC2.PNG',
-  './icons/icon-192.PNG','./icons/icon-512.PNG'
-];
+const SW_VERSION = 'v4';
 
-/* --- Install / Activate / Fetch (unchanged basic offline) --- */
-self.addEventListener('install', e=>{
-  e.waitUntil(caches.open(cacheName).then(c=>c.addAll(assets)));
+// —————————————————————————————————————————————
+// Basic lifecycle: take control quickly
+// —————————————————————————————————————————————
+self.addEventListener('install', (event) => {
+  // Skip waiting so updates apply immediately after refresh
   self.skipWaiting();
-});
-self.addEventListener('activate', e=>{
-  e.waitUntil(caches.keys().then(keys=>Promise.all(keys.map(k=>k!==cacheName?caches.delete(k):null))));
-  self.clients.claim();
-});
-self.addEventListener('fetch', e=>{
-  e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request)));
+  // (Optional) pre-cache could go here
 });
 
-/* ---------------- Debug helpers ---------------- */
-function postLog(...args){
+self.addEventListener('activate', (event) => {
+  // Become the active SW for all pages asap
+  event.waitUntil(self.clients.claim());
+});
+
+// —————————————————————————————————————————————
+// Utilities
+// —————————————————————————————————————————————
+function toJSONSafe(text) {
   try {
-    const ch = new BroadcastChannel('push-logs');
-    const line = args.map(a => typeof a==='object' ? JSON.stringify(a) : String(a)).join(' ');
-    ch.postMessage(line);
-  } catch(_) {}
-}
-function now(){
-  const d = new Date();
-  const pad = n => String(n).padStart(2,'0');
-  return `[${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}]`;
-}
-
-/* ---------------- Push handler (VERBOSE) ---------------- */
-self.addEventListener('push', event => {
-  postLog(`${now()} 📬 [SW] push fired (hasData=${!!event.data})`);
-
-  let data = {};
-  try {
-    data = event.data ? event.data.json() : {};
+    return JSON.parse(text);
   } catch {
-    data = { title:'📣 Credit Assist', body: event.data ? event.data.text() : '' };
+    return { body: text };
+  }
+}
+
+function buildOptions(data) {
+  // Choose icons you actually have in your repo
+  // If you keep icons under /icons, these paths work on GitHub Pages.
+  const defaultIcon  = '/icons/Notification.png';
+  const defaultBadge = '/icons/Notification.png';
+
+  return {
+    body: data.body || 'New notification received.',
+    icon: data.icon || defaultIcon,
+    badge: data.badge || defaultBadge,
+    image: data.image,             // optional large image
+    tag: data.tag || 'credit-assist',
+    renotify: !!data.renotify,
+    requireInteraction: !!data.requireInteraction, // keep visible until user acts
+    data: {
+      url: data.url || '/',        // where to open on tap
+      meta: data.meta || null
+    },
+    actions: Array.isArray(data.actions) ? data.actions : []
+    // Example actions:
+    // actions: [{ action: 'open', title: 'Open App' }]
+  };
+}
+
+function showNotificationFromPayload(payload) {
+  const title = payload.title || '📢 Credit Assist';
+  const options = buildOptions(payload);
+  return self.registration.showNotification(title, options);
+}
+
+// —————————————————————————————————————————————
+// PUSH: show a notification (this is what makes it appear
+//       in Android/iOS notification shade on supported browsers)
+// —————————————————————————————————————————————
+self.addEventListener('push', (event) => {
+  let payload = {};
+
+  if (event.data) {
+    // Log for debugging in DevTools > Application > Service Workers
+    try {
+      // Read as text first so we can log the raw body if needed
+      const raw = event.data.text();
+      console.log('[SW] Push received raw:', raw);
+      payload = toJSONSafe(raw);
+    } catch (e) {
+      console.warn('[SW] Failed to parse push payload:', e);
+      payload = { body: 'You have a new message.' };
+    }
+  } else {
+    console.warn('[SW] Push event had no data.');
+    payload = { body: 'You have a new message.' };
   }
 
-  const title = data.title || '📣 Credit Assist';
-  const options = {
-    body: data.body || 'មានការអាប់ដេតថ្មី',
-    icon: '/icons/icon-192.PNG',
-    badge: '/icons/icon-192.PNG',
-    data: { url: data.url || '/index.html' },
-    tag: 'credit-assist',
-    renotify: true,
-    requireInteraction: true,
-    vibrate: [120,60,120]
-  };
+  event.waitUntil(showNotificationFromPayload(payload));
+});
+
+// —————————————————————————————————————————————
+// NOTIFICATION CLICK: open/focus a tab
+// —————————————————————————————————————————————
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+
+  const targetUrl = (event.notification && event.notification.data && event.notification.data.url) || '/';
 
   event.waitUntil((async () => {
-    try {
-      postLog(`${now()} 🔔 [SW] showNotification →`, {title, body:options.body});
-      await self.registration.showNotification(title, options);
-      postLog(`${now()} ✅ [SW] showNotification resolved`);
-    } catch (err) {
-      postLog(`${now()} ❌ [SW] showNotification ERROR`, err && err.message || String(err));
+    // Reuse an existing client if one is open to the same origin
+    const allClients = await clients.matchAll({ type: 'window', includeUncontrolled: true });
+    for (const client of allClients) {
+      try {
+        const url = new URL(client.url);
+        if (url.origin === self.location.origin) {
+          // Focus existing tab and navigate if needed
+          await client.focus();
+          if (targetUrl && url.pathname !== targetUrl) {
+            client.navigate(targetUrl);
+          }
+          return;
+        }
+      } catch (_) {}
     }
+    // Otherwise open a new tab
+    await clients.openWindow(targetUrl);
   })());
 });
 
-/* Click → focus or open */
-self.addEventListener('notificationclick', event => {
-  postLog(`${now()} 👆 [SW] notificationclick`);
-  event.notification.close();
-  const target = event.notification?.data?.url || '/index.html';
-  event.waitUntil((async ()=>{
-    const all = await clients.matchAll({ type:'window', includeUncontrolled:true });
-    for (const c of all){
-      if (c.url.includes(new URL(target, self.location.origin).pathname)) {
-        postLog(`${now()} ↪️ [SW] focus existing`);
-        return c.focus();
-      }
-    }
-    if (clients.openWindow) {
-      postLog(`${now()} ➕ [SW] openWindow ${target}`);
-      return clients.openWindow(target);
-    }
-  })());
-});
-
-/* Local test (no server) */
-self.addEventListener('message', e=>{
-  if (e.data === 'LOCAL_TEST_PUSH') {
-    postLog(`${now()} 🧪 [SW] LOCAL_TEST_PUSH`);
-    self.registration.showNotification('🔔 Local test', {
-      body:'This proves SW can show notifications.',
-      icon:'/icons/icon-192.PNG', badge:'/icons/icon-192.PNG',
-      data:{url:'/index.html'}
-    });
+// —————————————————————————————————————————————
+// OPTIONAL: Local test from a page (handy for debugging)
+// Post from the page: navigator.serviceWorker.controller.postMessage({type:'LOCAL_TEST', title:'Hello', body:'It works!', url:'/notifications/index.html'})
+// —————————————————————————————————————————————
+self.addEventListener('message', (event) => {
+  const msg = event.data || {};
+  if (msg.type === 'LOCAL_TEST') {
+    const payload = {
+      title: msg.title || '🔧 Local SW test',
+      body: msg.body || 'This is a local test notification.',
+      url: msg.url || '/'
+    };
+    event.waitUntil(showNotificationFromPayload(payload));
   }
+});
+
+// —————————————————————————————————————————————
+// OPTIONAL: Handle subscription refresh (rarely needed)
+// —————————————————————————————————————————————
+// Note: Re-subscribing here requires the appServerKey. If you want to
+// implement it, postMessage the key from the page and store it in IDB.
+self.addEventListener('pushsubscriptionchange', (event) => {
+  console.log('[SW] pushsubscriptionchange:', event);
+  // Intentionally no automatic re-subscribe here; your page logic already
+  // handles (re)subscribe with your VAPID public key.
 });
