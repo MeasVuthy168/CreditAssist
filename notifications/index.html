@@ -11,19 +11,19 @@
       src: url('https://measvuthy168.github.io/CreditAssist/Krasar-Regular.ttf') format('truetype');
     }
     body { margin:0; font-family:'Krasar',Arial,sans-serif; background:#f2f2f2; color:#333; padding-bottom:70px; }
-    .header { height:36px; background:#0d2d5c; padding:14px 16px; display:flex; align-items:center; position:fixed; top:0; left:0; right:0; z-index:1000; box-shadow:0 2px 5px rgba(0,0,0,0.2); color:#fff; }
+    .header { height:36px; background:#0d2d5c; padding:14px 16px; display:flex; align-items:center; position:fixed; top:0; left:0; right:0; z-index:1000; box-shadow:0 2px 5px rgba(0,0,0,.2); color:#fff; }
     .header .back { font-size:22px; color:#fff; background:none; border:none; margin-right:12px; cursor:pointer; }
     #notificationContainer { margin-top:72px; }
-    .card { background:#fff; margin:12px; padding:16px; border-radius:12px; box-shadow:0 2px 6px rgba(0,0,0,0.05); cursor:pointer; }
+    .card { background:#fff; margin:12px; padding:24px 16px; border-radius:12px; box-shadow:0 2px 6px rgba(0,0,0,.05); cursor:pointer; }
     .card-title { font-weight:bold; color:#0d2d5c; font-size:14px; }
     .card-date { color:gray; font-size:13px; }
     .card-message { margin-top:4px; font-size:14px; color:#222; }
-    .empty { padding:24px; text-align:center; color:#777; }
-    .bottom-bar { position:fixed; bottom:0; left:0; width:100%; height:56px; background:#0d2d5c; display:flex; justify-content:space-around; align-items:center; box-shadow:0 -2px 5px rgba(0,0,0,0.2); z-index:999; }
+    .card.read .card-title, .card.read .card-date, .card.read .card-message { color:#999 !important; }
+    .bottom-bar { position:fixed; bottom:0; left:0; width:100%; height:56px; background:#0d2d5c; display:flex; justify-content:space-around; align-items:center; box-shadow:0 -2px 5px rgba(0,0,0,.2); z-index:999; }
     .bottom-btn { display:flex; flex-direction:column; align-items:center; color:#fff; font-size:11px; border:none; background:none; }
     .bottom-btn img { margin-bottom:2px; }
     .notif-dropdown { position:relative; }
-    .notif-menu { position:absolute; top:34px; right:12px; background:#fff; border:1px solid #ddd; border-radius:6px; box-shadow:0 2px 6px rgba(0,0,0,0.1); display:none; z-index:1000; min-width:170px; }
+    .notif-menu { position:absolute; top:34px; right:12px; background:#fff; border:1px solid #ddd; border-radius:6px; box-shadow:0 2px 6px rgba(0,0,0,.1); display:none; z-index:1000; min-width:160px; }
     .notif-menu button { display:block; padding:10px 16px; width:100%; background:none; border:none; text-align:left; font-size:14px; cursor:pointer; }
     .notif-menu button:hover { background:#f0f0f0; }
     .badge { position:absolute; top:-4px; right:-8px; background:red; color:#fff; font-size:10px; padding:2px 6px; border-radius:50%; font-weight:bold; }
@@ -38,7 +38,7 @@
       <button class="menu-button" onclick="toggleMenu()">⋮</button>
       <div class="notif-menu" id="notifMenu">
         <button onclick="markAllAsRead()">Mark All as Read</button>
-        <button onclick="clearAll()">Clear All (local)</button>
+        <button onclick="clearAll()">Clear All</button>
       </div>
     </div>
   </div>
@@ -55,9 +55,9 @@
       <div>Setting</div>
     </button>
     <button class="bottom-btn" onclick="window.location.href='../notifications/index.html'">
-      <div style="position:relative;">
+      <div style="position: relative;">
         <img src="../icons/Notification.png" width="24" height="24" />
-        <span id="notif-badge" class="badge" style="display:none;"></span>
+        <span id="notif-badge" class="badge" style="display: none;"></span>
       </div>
       <div>Notification</div>
     </button>
@@ -85,23 +85,20 @@
       }, AUTO_LOGOUT_MINUTES * 60 * 1000);
     }
     function setupAutoLogoutEvents() {
-      ['mousemove','mousedown','keydown','touchstart','touchmove','scroll'].forEach(ev =>
-        document.addEventListener(ev, resetLogoutTimer, true)
-      );
+      ['mousemove','mousedown','keydown','touchstart','touchmove','scroll'].forEach(e => {
+        document.addEventListener(e, resetLogoutTimer, true);
+      });
       resetLogoutTimer();
     }
     window.addEventListener('load', setupAutoLogoutEvents);
 
-    function getUsername() {
-      try {
-        const u = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
-        return u.username || sessionStorage.getItem("username") || "";
-      } catch {
-        return sessionStorage.getItem("username") || "";
-      }
-    }
+    // User + storage keys
+    const user = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
+    const username = user.username || sessionStorage.getItem("username") || "";
+    const CLEARED_KEY = `notifClearedAt_${username}`;
 
-    const KH_TITLES = {
+    // Khmer titles and per-type routes
+    const khmerTitles = {
       user: "✔️បានធ្វើបច្ចុប្បន្នភាពទិន្នន័យរបស់ភ្នាក់ងារឥណទាន",
       customer: "✔️បានធ្វើបច្ចុប្បន្នភាពទិន្នន័យអតិថិជន",
       turnover: "✔️បានធ្វើបច្ចុប្បន្នភាពទិន្នន័យអត្រាប្រចាំឆ្នាំ",
@@ -109,152 +106,168 @@
       arreas: "✔️បានធ្វើបច្ចុប្បន្នភាពទិន្នន័យឥណទានយឺតយ៉ាវប្រចាំថ្ងៃ (Arreas T24)"
     };
 
-    // Where to go after click
-    const DEST = {
-      // NOTE: user -> no redirect (just mark read)
+    // Redirect mapping:
+    const linkMap = {
+      // 1) Arreas → daily arreas page
+      arreas: "/CreditAssist/ArreasT24/index.html",
+      // 2) Turnover → Average Turnover page (adjust if your path is different)
+      turnover: "/CreditAssist/Turnover/index.html",
+      // 3) User → no redirect (just mark read)
+      user: null,
+      // 4) Customer → Search CRM
       customer: "/CreditAssist/SVG_CRM/index.html",
-      nbcos:    "/CreditAssist/SVG_CRM/index.html",
-      turnover: "/CreditAssist/Turnover/Average/index.html",
-      arreas:   "/CreditAssist/ArreasT24/index.html"
+      // 5) NBCOS → same Search CRM
+      nbcos: "/CreditAssist/SVG_CRM/index.html"
     };
 
-    // Build per-type read key
-    const readKey = (username, type) => `read_${username}_${type}`;
-
-    async function fetchStatus() {
-      const r = await fetch(`${API_BASE}/api/notifications/status`);
-      return r.json();
-    }
-
-    async function markRead(username, type) {
-      await fetch(`${API_BASE}/api/notifications/mark-read`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, type })
-      });
-    }
-
-    function hideBadgeIfNone(leftCount) {
-      const badge = document.getElementById('notif-badge');
-      if (!badge) return;
-      if (leftCount > 0) {
-        badge.style.display = "inline-block";
-        badge.textContent = leftCount > 9 ? "9+" : leftCount;
-      } else {
-        badge.style.display = "none";
-      }
-      sessionStorage.setItem("notifUnreadCount", String(leftCount));
-    }
-
-    function toggleMenu() {
-      const menu = document.getElementById("notifMenu");
-      menu.style.display = (menu.style.display === "block") ? "none" : "block";
-    }
-
-    // Load only UNREAD items (cards)
     async function loadNotifications() {
       const container = document.getElementById('notificationContainer');
-      const username = getUsername();
-
-      container.innerHTML = '<div class="empty">កំពុងផ្ទុក...</div>';
+      const badge = document.getElementById('notif-badge');
+      container.innerHTML = '';
 
       try {
-        const data = await fetchStatus();
-        const TYPES = ["user","customer","turnover","nbcos","arreas"];
-        const cards = [];
+        const res = await fetch(`${API_BASE}/api/notifications/status`);
+        const data = await res.json();
 
-        TYPES.forEach(type => {
+        const clearedAtStr = localStorage.getItem(CLEARED_KEY);
+        const clearedAt = clearedAtStr ? new Date(clearedAtStr) : null;
+
+        const types = ['user', 'customer', 'turnover', 'nbcos', 'arreas'];
+        let unreadCount = 0;
+
+        types.forEach(type => {
           const uploadedAtStr = data[type];
           if (!uploadedAtStr) return;
 
           const uploadedAt = new Date(uploadedAtStr);
-          const perTypeReadStr = data[readKey(username, type)];
-          const perTypeRead = perTypeReadStr ? new Date(perTypeReadStr) : null;
-
-          const isUnread = !perTypeRead || uploadedAt > perTypeRead;
-          if (!isUnread) return; // skip read items — they won't show at all
+          // Filter out anything older than last "Clear All"
+          if (clearedAt && uploadedAt <= clearedAt) return;
 
           const fullname = data[`${type}Fullname`] || "Unknown";
+          const readKey = `read_${username}_${type}`;
+          const lastReadStr = data[readKey];
+          const isRead = !!lastReadStr && new Date(lastReadStr) >= uploadedAt;
+
+          if (!isRead) unreadCount++;
+
           const card = document.createElement('div');
-          card.className = 'card';
+          card.className = 'card' + (isRead ? ' read' : '');
           card.dataset.type = type;
+          card.dataset.uploadedAt = uploadedAtStr;
+
           card.innerHTML = `
-            <div class="card-title">${KH_TITLES[type] || type}</div>
+            <div class="card-title">${khmerTitles[type] || type}</div>
             <div class="card-date">${uploadedAt.toLocaleString()}</div>
             <div class="card-message">Uploaded by: ${fullname}</div>
           `;
-          // Click handler: mark read, remove card, update badge, redirect if needed
-          card.addEventListener('click', async () => {
-            try {
-              await markRead(username, type);
-            } catch (e) {
-              console.warn('markRead failed:', e);
-            }
-            card.remove();
-            // Recompute unread after removal
-            const left = document.querySelectorAll('.card').length;
-            hideBadgeIfNone(left);
-            // Redirect (user type has no redirect)
-            if (type !== 'user') {
-              const url = DEST[type] || '/CreditAssist/index.html';
-              window.location.href = url;
-            }
-          });
 
-          cards.push(card);
+          card.addEventListener('click', () => handleCardClick(card));
+          container.appendChild(card);
         });
 
-        container.innerHTML = '';
-        if (cards.length === 0) {
-          container.innerHTML = '<div class="empty">គ្មានការជូនដំណឹងថ្មីទេ</div>';
-        } else {
-          cards.forEach(c => container.appendChild(c));
+        // Update badge
+        if (badge) {
+          if (unreadCount > 0) {
+            badge.style.display = 'inline-block';
+            badge.textContent = unreadCount > 9 ? '9+' : unreadCount;
+          } else {
+            badge.style.display = 'none';
+          }
         }
 
-        hideBadgeIfNone(cards.length);
+        // Persist for other pages (badge sync)
+        sessionStorage.setItem("notifUnreadCount", String(unreadCount));
       } catch (err) {
+        container.innerHTML = '<p style="padding:12px;">Failed to load notifications.</p>';
         console.error("Error loading notifications:", err);
-        container.innerHTML = '<div class="empty">មិនអាចផ្ទុកការជូនដំណឹងបានទេ</div>';
       }
     }
 
-    async function markAllAsRead() {
-      const username = getUsername();
-      const TYPES = ["user","customer","turnover","nbcos","arreas"];
+    async function handleCardClick(card) {
+      const type = card.dataset.type;
+      const redirect = linkMap[type];
+
       try {
-        // Mark each type as read
-        await Promise.all(TYPES.map(t => markRead(username, t)));
+        // Mark this type as read (but KEEP the card on screen)
+        await fetch(`${API_BASE}/api/notifications/mark-read-type`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, type })
+        });
+        // Style as "read"
+        card.classList.add('read');
+
+        // Update badge count without reloading the whole list
+        recalcBadgeFromDOM();
+
+        // Navigate if this type has a target page
+        if (redirect) {
+          window.location.href = redirect;
+        }
       } catch (e) {
-        console.warn("markAllAsRead error:", e);
+        console.error('mark-read-type failed:', e);
+      }
+    }
+
+    function recalcBadgeFromDOM() {
+      const badge = document.getElementById('notif-badge');
+      const cards = Array.from(document.querySelectorAll('.card'));
+      const unread = cards.filter(c => !c.classList.contains('read')).length;
+      sessionStorage.setItem("notifUnreadCount", String(unread));
+      if (badge) {
+        if (unread > 0) {
+          badge.style.display = 'inline-block';
+          badge.textContent = unread > 9 ? '9+' : String(unread);
+        } else {
+          badge.style.display = 'none';
+        }
+      }
+    }
+
+    function toggleMenu() {
+      const menu = document.getElementById("notifMenu");
+      menu.style.display = menu.style.display === "block" ? "none" : "block";
+    }
+
+    // Mark all as read (keeps cards visible; just grays them out)
+    async function markAllAsRead() {
+      try {
+        await fetch(`${API_BASE}/api/notifications/mark-read-all-type`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username })
+        });
+      } catch (e) {
+        console.warn('mark-read-all-type failed:', e);
       }
       toggleMenu();
-      // Clear list & badge immediately
-      document.getElementById('notificationContainer').innerHTML = '<div class="empty">គ្មានការជូនដំណឹងថ្មីទេ</div>';
-      hideBadgeIfNone(0);
+      // Grey out everything currently shown
+      document.querySelectorAll('.card').forEach(c => c.classList.add('read'));
+      recalcBadgeFromDOM();
     }
 
+    // Clear All = hide everything until something NEWER arrives
     function clearAll() {
-      // Local-only — just clear UI. (Server will still have timestamps)
-      document.getElementById('notificationContainer').innerHTML = '<div class="empty">គ្មានការជូនដំណឹងថ្មីទេ</div>';
-      hideBadgeIfNone(0);
+      localStorage.setItem(CLEARED_KEY, new Date().toISOString());
+      const container = document.getElementById('notificationContainer');
+      container.innerHTML = '';
+      // Update badge + sync across pages
+      const badge = document.getElementById('notif-badge');
+      if (badge) badge.style.display = 'none';
+      sessionStorage.setItem("notifUnreadCount", "0");
       toggleMenu();
     }
-
-    // Init
-    window.addEventListener("DOMContentLoaded", () => {
-      loadNotifications();
-      // Refresh list every 30s to pick new uploads
-      setInterval(loadNotifications, 30000);
-    });
   </script>
 
-  <!-- shared badge logic -->
+  <!-- Shared badge updater (respects clearedAt) -->
   <script src="../notifications/checkNotification.js"></script>
   <script>
-    // keep the global badge in sync (optional)
-    document.addEventListener("DOMContentLoaded", () => {
-      if (window.checkNotification) window.checkNotification();
+    window.addEventListener("DOMContentLoaded", () => {
+      loadNotifications();
+      checkNotification(); // keep badge synced
     });
+    // Refresh the list every 30s (new uploads will reappear)
+    setInterval(loadNotifications, 30000);
   </script>
 </body>
 </html>
