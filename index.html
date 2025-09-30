@@ -805,5 +805,55 @@ function handleVoiceCommand(command) {
   localStorage.removeItem(`noShowToast_${username}`);
 }
 </script>
+
+  <script>
+/* ===== Notification badge sync (Home) ===== */
+(function syncNotifBadgeOnHome(){
+  const badge = document.getElementById('notif-badge');
+
+  function paintFromSession(){
+    if (!badge) return;
+    const n = parseInt(sessionStorage.getItem('notifUnreadCount') || '0', 10);
+    if (n > 0) {
+      badge.style.display = 'inline-block';
+      badge.textContent = n > 9 ? '9+' : String(n);
+    } else {
+      badge.style.display = 'none';
+    }
+  }
+
+  // 1) Paint immediately from last known value
+  paintFromSession();
+
+  // 2) React to broadcasts from notifications page
+  //    (that page should call localStorage.setItem('notifSync', JSON.stringify({ unread, at: Date.now() })))
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'notifSync' && e.newValue) {
+      try {
+        const payload = JSON.parse(e.newValue);
+        if (typeof payload.unread === 'number') {
+          // Keep the same single source of truth in sessionStorage
+          sessionStorage.setItem('notifUnreadCount', String(payload.unread));
+          paintFromSession();
+        }
+      } catch(_) {}
+    }
+  });
+
+  // 3) When tab becomes visible, verify with server via shared checker
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden && typeof window.checkNotification === 'function') {
+      window.checkNotification();
+      // repaint shortly after the fetch completes
+      setTimeout(paintFromSession, 150);
+    }
+  });
+
+  // 4) Also repaint a moment after load (in case checkNotification updated it)
+  window.addEventListener('DOMContentLoaded', () => {
+    setTimeout(paintFromSession, 150);
+  });
+})();
+</script>    
 </body>
 </html>
