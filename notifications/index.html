@@ -11,7 +11,7 @@
       src: url('https://measvuthy168.github.io/CreditAssist/Krasar-Regular.ttf') format('truetype');
     }
     body { margin:0; font-family:'Krasar',Arial,sans-serif; background:#f2f2f2; color:#333; padding-bottom:70px; }
-    .header { height:36px; background:#0d2d5c; padding:14px 16px; display:flex; align-items:center; position:fixed; top:0; left:0; right:0; z-index:1000; box-shadow:0 2px 5px rgba(0,0,0,.2); color:#fff; }
+    .header { height:36px; background:#0d2d5c; padding:14px 16px; display:flex; align-items:center; position:fixed; top:0; left:0; right:0; z-index:1000; box-shadow:0 2px 5px rgba(0,0,0,0.2); color:#fff; }
     .header .back { font-size:22px; color:#fff; background:none; border:none; margin-right:12px; cursor:pointer; }
     #notificationContainer { margin-top:72px; }
     .card { background:#fff; margin:12px; padding:24px 16px; border-radius:12px; box-shadow:0 2px 6px rgba(0,0,0,.05); cursor:pointer; }
@@ -19,7 +19,7 @@
     .card-date { color:gray; font-size:13px; }
     .card-message { margin-top:4px; font-size:14px; color:#222; }
     .card.read .card-title, .card.read .card-date, .card.read .card-message { color:#999 !important; }
-    .bottom-bar { position:fixed; bottom:0; left:0; width:100%; height:56px; background:#0d2d5c; display:flex; justify-content:space-around; align-items:center; box-shadow:0 -2px 5px rgba(0,0,0,.2); z-index:999; }
+    .bottom-bar { position:fixed; bottom:0; left:0; width:100%; height:56px; background:#0d2d5c; display:flex; justify-content:space-around; align-items:center; box-shadow:0 -2px 5px rgba(0,0,0,0.2); z-index:999; }
     .bottom-btn { display:flex; flex-direction:column; align-items:center; color:#fff; font-size:11px; border:none; background:none; }
     .bottom-btn img { margin-bottom:2px; }
     .notif-dropdown { position:relative; }
@@ -65,15 +65,26 @@
 
   <script>
     const API_BASE = "https://secure-backend-tzj9.onrender.com";
+    // Ensure links work both on GitHub Pages (/CreditAssist) and local (/)
+    const BASE_PATH = location.pathname.startsWith("/CreditAssist") ? "/CreditAssist" : "";
 
-    // Auth guard
-    const token = sessionStorage.getItem('token');
-    if (!token) {
-      alert("Session expired or unauthorized access.");
-      window.location.href = "../login.html";
+    // ===== Username helpers & keys =====
+    function getUsername() {
+      try {
+        const u = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
+        return u.username || sessionStorage.getItem("username") || "";
+      } catch {
+        return sessionStorage.getItem("username") || "";
+      }
     }
+    const username = getUsername();
+    if (!sessionStorage.getItem('token')) { alert("Session expired or unauthorized access."); window.location.href = "../login.html"; }
 
-    // Auto logout
+    const CLEARED_KEY = `notifClearedAt_${username}`;
+    // Local read cache (front-end safety net)
+    const localReadKey = (type) => `notifLocalRead_${username}_${type}`;
+
+    // ===== Auto logout =====
     const AUTO_LOGOUT_MINUTES = 1;
     let logoutTimer;
     function resetLogoutTimer() {
@@ -92,13 +103,8 @@
     }
     window.addEventListener('load', setupAutoLogoutEvents);
 
-    // User + storage keys
-    const user = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
-    const username = user.username || sessionStorage.getItem("username") || "";
-    const CLEARED_KEY = `notifClearedAt_${username}`;
-
-    // Khmer titles and per-type routes
-    const khmerTitles = {
+    // Khmer titles
+    const KH_TITLES = {
       user: "✔️បានធ្វើបច្ចុប្បន្នភាពទិន្នន័យរបស់ភ្នាក់ងារឥណទាន",
       customer: "✔️បានធ្វើបច្ចុប្បន្នភាពទិន្នន័យអតិថិជន",
       turnover: "✔️បានធ្វើបច្ចុប្បន្នភាពទិន្នន័យអត្រាប្រចាំឆ្នាំ",
@@ -106,18 +112,13 @@
       arreas: "✔️បានធ្វើបច្ចុប្បន្នភាពទិន្នន័យឥណទានយឺតយ៉ាវប្រចាំថ្ងៃ (Arreas T24)"
     };
 
-    // Redirect mapping:
-    const linkMap = {
-      // 1) Arreas → daily arreas page
-      arreas: "/CreditAssist/ArreasT24/index.html",
-      // 2) Turnover → Average Turnover page (adjust if your path is different)
-      turnover: "/CreditAssist/Turnover/index.html",
-      // 3) User → no redirect (just mark read)
-      user: null,
-      // 4) Customer → Search CRM
-      customer: "/CreditAssist/SVG_CRM/index.html",
-      // 5) NBCOS → same Search CRM
-      nbcos: "/CreditAssist/SVG_CRM/index.html"
+    // Redirect mapping (exactly as you wanted)
+    const LINK_MAP = {
+      arreas: `${BASE_PATH}/ArreasT24/index.html`,        // 1) go to daily arrears
+      turnover: `${BASE_PATH}/AverageTurnover/index.html`, // 2) go to Average Turnover page (change if your path is different)
+      user: null,                                          // 3) just mark as read, no redirect
+      customer: `${BASE_PATH}/SVG_CRM/index.html`,         // 4) go to Search CRM
+      nbcos: `${BASE_PATH}/SVG_CRM/index.html`             // 5) go to Search CRM
     };
 
     async function loadNotifications() {
@@ -130,34 +131,39 @@
         const data = await res.json();
 
         const clearedAtStr = localStorage.getItem(CLEARED_KEY);
-        const clearedAt = clearedAtStr ? new Date(clearedAtStr) : null;
+        const clearedAt = clearedAtStr ? Date.parse(clearedAtStr) : 0;
 
-        const types = ['user', 'customer', 'turnover', 'nbcos', 'arreas'];
+        const TYPES = ['user', 'customer', 'turnover', 'nbcos', 'arreas'];
         let unreadCount = 0;
 
-        types.forEach(type => {
-          const uploadedAtStr = data[type];
-          if (!uploadedAtStr) return;
+        TYPES.forEach(type => {
+          const upStr = data[type];
+          if (!upStr) return;
 
-          const uploadedAt = new Date(uploadedAtStr);
-          // Filter out anything older than last "Clear All"
-          if (clearedAt && uploadedAt <= clearedAt) return;
+          const upTs = Date.parse(upStr);
+          if (clearedAt && upTs <= clearedAt) return; // hidden due to Clear All
 
           const fullname = data[`${type}Fullname`] || "Unknown";
-          const readKey = `read_${username}_${type}`;
-          const lastReadStr = data[readKey];
-          const isRead = !!lastReadStr && new Date(lastReadStr) >= uploadedAt;
 
+          // Server-side per-type read
+          const readServerStr = data[`read_${username}_${type}`];
+          const readServerTs = readServerStr ? Date.parse(readServerStr) : 0;
+
+          // Local read cache (if server write lags, keep it read in UI)
+          const readLocalStr = localStorage.getItem(localReadKey(type));
+          const readLocalTs = readLocalStr ? Date.parse(readLocalStr) : 0;
+
+          const isRead = Math.max(readServerTs, readLocalTs) >= upTs;
           if (!isRead) unreadCount++;
 
           const card = document.createElement('div');
           card.className = 'card' + (isRead ? ' read' : '');
           card.dataset.type = type;
-          card.dataset.uploadedAt = uploadedAtStr;
+          card.dataset.uploadedAt = upStr;
 
           card.innerHTML = `
-            <div class="card-title">${khmerTitles[type] || type}</div>
-            <div class="card-date">${uploadedAt.toLocaleString()}</div>
+            <div class="card-title">${KH_TITLES[type] || type}</div>
+            <div class="card-date">${new Date(upTs).toLocaleString()}</div>
             <div class="card-message">Uploaded by: ${fullname}</div>
           `;
 
@@ -165,42 +171,43 @@
           container.appendChild(card);
         });
 
-        // Update badge
+        // Badge
         if (badge) {
           if (unreadCount > 0) {
             badge.style.display = 'inline-block';
-            badge.textContent = unreadCount > 9 ? '9+' : unreadCount;
+            badge.textContent = unreadCount > 9 ? '9+' : String(unreadCount);
           } else {
             badge.style.display = 'none';
           }
         }
-
-        // Persist for other pages (badge sync)
         sessionStorage.setItem("notifUnreadCount", String(unreadCount));
       } catch (err) {
-        container.innerHTML = '<p style="padding:12px;">Failed to load notifications.</p>';
         console.error("Error loading notifications:", err);
+        container.innerHTML = '<p style="padding:12px;">Failed to load notifications.</p>';
       }
     }
 
     async function handleCardClick(card) {
       const type = card.dataset.type;
-      const redirect = linkMap[type];
+      const uploadedAt = card.dataset.uploadedAt;
+      const redirect = LINK_MAP[type];
 
       try {
-        // Mark this type as read (but KEEP the card on screen)
+        // 1) Mark read on server (per type)
         await fetch(`${API_BASE}/api/notifications/mark-read-type`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ username, type })
         });
-        // Style as "read"
-        card.classList.add('read');
 
-        // Update badge count without reloading the whole list
+        // 2) Mark in local cache immediately (so it stays read on reload even if server write delays)
+        localStorage.setItem(localReadKey(type), uploadedAt);
+
+        // 3) Update UI
+        card.classList.add('read');
         recalcBadgeFromDOM();
 
-        // Navigate if this type has a target page
+        // 4) Redirect if mapping exists
         if (redirect) {
           window.location.href = redirect;
         }
@@ -229,7 +236,6 @@
       menu.style.display = menu.style.display === "block" ? "none" : "block";
     }
 
-    // Mark all as read (keeps cards visible; just grays them out)
     async function markAllAsRead() {
       try {
         await fetch(`${API_BASE}/api/notifications/mark-read-all-type`, {
@@ -237,37 +243,43 @@
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ username })
         });
+        // Also set local cache for currently visible cards
+        document.querySelectorAll('.card').forEach(c => {
+          c.classList.add('read');
+          const t = c.dataset.type;
+          const up = c.dataset.uploadedAt;
+          localStorage.setItem(localReadKey(t), up);
+        });
+        recalcBadgeFromDOM();
       } catch (e) {
         console.warn('mark-read-all-type failed:', e);
       }
       toggleMenu();
-      // Grey out everything currently shown
-      document.querySelectorAll('.card').forEach(c => c.classList.add('read'));
-      recalcBadgeFromDOM();
     }
 
-    // Clear All = hide everything until something NEWER arrives
     function clearAll() {
       localStorage.setItem(CLEARED_KEY, new Date().toISOString());
-      const container = document.getElementById('notificationContainer');
-      container.innerHTML = '';
-      // Update badge + sync across pages
+      document.getElementById('notificationContainer').innerHTML = '';
       const badge = document.getElementById('notif-badge');
       if (badge) badge.style.display = 'none';
       sessionStorage.setItem("notifUnreadCount", "0");
       toggleMenu();
     }
+
+    // Init
+    window.addEventListener("DOMContentLoaded", () => {
+      loadNotifications();
+    });
+    // Refresh list every 30s so new uploads reappear
+    setInterval(loadNotifications, 30000);
   </script>
 
-  <!-- Shared badge updater (respects clearedAt) -->
+  <!-- Shared badge updater (respects clearedAt & local read) -->
   <script src="../notifications/checkNotification.js"></script>
   <script>
     window.addEventListener("DOMContentLoaded", () => {
-      loadNotifications();
-      checkNotification(); // keep badge synced
+      checkNotification();
     });
-    // Refresh the list every 30s (new uploads will reappear)
-    setInterval(loadNotifications, 30000);
   </script>
 </body>
 </html>
