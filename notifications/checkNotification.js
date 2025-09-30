@@ -1,9 +1,8 @@
 // notifications/checkNotification.js
-// Per-type unread counting + shared badge + optional toast
+// Per-type unread counting + shared badge + one-time toast per upload
 
 const API_BASE = "https://secure-backend-tzj9.onrender.com";
 
-// Khmer labels for nicer toast messages (optional)
 const KH_LABELS = {
   user: "ទិន្នន័យរបស់ភ្នាក់ងារឥណទាន",
   customer: "ទិន្នន័យអតិថិជន",
@@ -12,31 +11,33 @@ const KH_LABELS = {
   arreas: "ទិន្នន័យឥណទានយឺតយ៉ាវប្រចាំថ្ងៃ (Arreas T24)"
 };
 
-// ===== Toast helpers (use only if the page has #toast and #toastMessage) =====
+// ===== Toast helpers (only used when the page has the elements) =====
 function showToast(message) {
   const toast = document.getElementById("toast");
   const toastMessage = document.getElementById("toastMessage");
-  if (!toast || !toastMessage) return; // page has no toast
-
+  if (!toast || !toastMessage) return; // page has no toast UI
   const checkbox = document.getElementById("toastNoShowAgain");
   if (checkbox) checkbox.checked = false;
-
   toastMessage.textContent = message;
   toast.style.display = "block";
 }
 
 function hideToast() {
   const checkbox = document.getElementById("toastNoShowAgain");
-  // persist per-user "no-show" preference
   const username = getUsername();
   if (checkbox && checkbox.checked && username) {
     localStorage.setItem(`noShowToast_${username}`, "true");
   }
   const toast = document.getElementById("toast");
   if (toast) toast.style.display = "none";
+
+  // Also persist that we acknowledged the latest batch
+  const latestKey = `latestUploadTs_${username}`;
+  const lastToastKey = `lastToastShown_${username}`;
+  const latest = sessionStorage.getItem(latestKey);
+  if (latest) localStorage.setItem(lastToastKey, latest);
 }
 
-// ===== Small helper =====
 function getUsername() {
   try {
     const user = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
@@ -46,40 +47,36 @@ function getUsername() {
   }
 }
 
-// ===== Main checker (call this on pages that show the badge) =====
+// ===== Main checker =====
 async function checkNotification() {
   try {
     const username = getUsername();
     const badge = document.getElementById("notif-badge");
 
-    // If no username, hide badge & bail out
     if (!username) {
       if (badge) badge.style.display = "none";
       sessionStorage.setItem("notifUnreadCount", "0");
       return;
     }
 
-    // Load server status (timestamps for uploads + per-type reads)
     const res = await fetch(`${API_BASE}/api/notifications/status`);
     const data = await res.json();
 
-    // Consider these types
     const TYPES = ["user", "customer", "turnover", "nbcos", "arreas"];
 
-    // Build per-type read map like read_<username>_<type>
+    // Per-type read timestamps from server
     const readTimes = Object.fromEntries(
       TYPES.map(t => [t, data[`read_${username}_${t}`] ? new Date(data[`read_${username}_${t}`]) : null])
     );
 
-    // Count unread types and track latest for toast de-dup
+    // Compute unread types, count, and newest upload time (ISO string)
     let unreadCount = 0;
     let newestTs = "";
     const unreadTypes = [];
 
     TYPES.forEach(t => {
       const uploadedStr = data[t];
-      if (!uploadedStr) return; // nothing uploaded yet
-
+      if (!uploadedStr) return;
       const uploadedAt = new Date(uploadedStr);
       const lastRead = readTimes[t];
 
@@ -91,7 +88,7 @@ async function checkNotification() {
       }
     });
 
-    // Update badge UI + persist count for other tabs/pages
+    // Update badge + persist count for other pages
     sessionStorage.setItem("notifUnreadCount", String(unreadCount));
     if (badge) {
       if (unreadCount > 0) {
@@ -102,35 +99,48 @@ async function checkNotification() {
       }
     }
 
-    // ===== Toast logic (optional; only if the page has toast elements) =====
-    const toast = document.getElementById("toast");
-    const toastMessage = document.getElementById("toastMessage");
-    if (toast && toastMessage && unreadCount > 0) {
-      const noShowKey = `noShowToast_${username}`;
-      const lastToastKey = `lastToastShown_${username}`;
-      const noShow = localStorage.getItem(noShowKey);
-      const lastToast = localStorage.getItem(lastToastKey);
+    // Save the latest upload timestamp in sessionStorage so hideToast() can ack it
+    const latestKey = `latestUploadTs_${username}`;
+    if (newestTs) sessionStorage.setItem(latestKey, newestTs);
 
-      // Only show if user didn't opt-out OR there's a new upload after the last toast
-      if (noShow !== "true" || lastToast !== newestTs) {
-        // Optional: include short list of unread types in Khmer
-        const labelPreview = unreadTypes
-          .slice(0, 2) // show at most 2 labels to keep it short
-          .map(t => KH_LABELS[t] || t)
-          .join(" , ");
+    // ===== Toast logic (show once per upload batch) =====
+    const lastToastKey = `lastToastShown_${username}`;
+    const noShowKey = `noShowToast_${username}`;
+    const noShow = localStorage.getItem(noShowKey);
+    const lastToast = localStorage.getItem(lastToastKey);
 
-        const extra = unreadTypes.length > 2 ? ` និង​ទៀត` : "";
-        const message = `លោកគ្រូ/អ្នកគ្រូ មានការជូនដំណឹងថ្មីចំនួន ${unreadCount} សារ (${labelPreview}${extra})`;
+    // IMPORTANT: Even if there is no toast UI on this page, we want to
+    // ack the current newest batch so the toast doesn't pop up again on
+    // another page upon reload. So if there's no toast UI, we
+    // automatically set lastToastShown to newestTs right away.
+    const hasToastUI = !!document.getElementById("toast");
 
-        showToast(message);
-        localStorage.setItem(lastToastKey, newestTs);
-        // reset "noShow" if there is a new message (so users see it again)
-        localStorage.removeItem(noShowKey);
+    if (unreadCount > 0 && newestTs) {
+      if (!hasToastUI) {
+        // No toast elements on this page → mark as seen to avoid repeat toasts until next upload
+        if (lastToast !== newestTs) {
+          localStorage.setItem(lastToastKey, newestTs);
+        }
+      } else {
+        // Page has toast UI; show it once per batch unless user opted out
+        if (noShow !== "true" && lastToast !== newestTs) {
+          const labelPreview = unreadTypes
+            .slice(0, 2)
+            .map(t => KH_LABELS[t] || t)
+            .join(" , ");
+          const extra = unreadTypes.length > 2 ? ` និង​ទៀត` : "";
+          const message = `លោកគ្រូ/អ្នកគ្រូ មានការជូនដំណឹងថ្មីចំនួន ${unreadCount} សារ (${labelPreview}${extra})`;
+
+          showToast(message);
+
+          // Mark this batch as shown immediately so it won't appear again on reload
+          localStorage.setItem(lastToastKey, newestTs);
+        }
       }
     }
   } catch (err) {
     console.error("Notification fetch error:", err);
-    // Fallback to stored count so the badge doesn't flicker off on errors
+    // Keep badge steady if API fails
     const badge = document.getElementById("notif-badge");
     if (badge) {
       const stored = parseInt(sessionStorage.getItem("notifUnreadCount") || "0", 10);
@@ -144,7 +154,6 @@ async function checkNotification() {
   }
 }
 
-// Expose hideToast globally if your close button uses it
-window.hideToast = hideToast;
-// Expose checkNotification for pages that call it manually
+// Expose to window for pages that call it
 window.checkNotification = checkNotification;
+window.hideToast = hideToast;
