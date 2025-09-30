@@ -1,150 +1,100 @@
-// notifications/checkNotification.js
-// Per-type unread counting + shared badge + optional toast
-
+// notifications/checkNotification.js  (OLD schema: single read_<username>)
 const API_BASE = "https://secure-backend-tzj9.onrender.com";
 
-// Khmer labels for nicer toast messages (optional)
-const KH_LABELS = {
-  user: "ទិន្នន័យរបស់ភ្នាក់ងារឥណទាន",
-  customer: "ទិន្នន័យអតិថិជន",
-  turnover: "ទិន្នន័យអត្រាប្រចាំឆ្នាំ",
-  nbcos: "ទិន្នន័យឥណទានសកម្ម (NBC)",
-  arreas: "ទិន្នន័យឥណទានយឺតយ៉ាវប្រចាំថ្ងៃ (Arreas T24)"
-};
-
-// ===== Toast helpers (use only if the page has #toast and #toastMessage) =====
-function showToast(message) {
-  const toast = document.getElementById("toast");
-  const toastMessage = document.getElementById("toastMessage");
-  if (!toast || !toastMessage) return; // page has no toast
-
-  const checkbox = document.getElementById("toastNoShowAgain");
-  if (checkbox) checkbox.checked = false;
-
-  toastMessage.textContent = message;
-  toast.style.display = "block";
-}
-
-function hideToast() {
-  const checkbox = document.getElementById("toastNoShowAgain");
-  // persist per-user "no-show" preference
-  const username = getUsername();
-  if (checkbox && checkbox.checked && username) {
-    localStorage.setItem(`noShowToast_${username}`, "true");
-  }
-  const toast = document.getElementById("toast");
-  if (toast) toast.style.display = "none";
-}
-
-// ===== Small helper =====
 function getUsername() {
+  // Prefer an explicit key; fall back to loggedInUser
+  const u1 = sessionStorage.getItem("username");
+  if (u1) return u1;
   try {
-    const user = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
-    return user.username || sessionStorage.getItem("username") || "";
+    const u = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
+    return u.username || "";
   } catch {
-    return sessionStorage.getItem("username") || "";
+    return "";
   }
 }
 
-// ===== Main checker (call this on pages that show the badge) =====
-async function checkNotification() {
-  try {
-    const username = getUsername();
-    const badge = document.getElementById("notif-badge");
+// Optional toast helpers (no-op if page has no toast)
+function showToast(message){
+  const t=document.getElementById("toast"), m=document.getElementById("toastMessage");
+  if(!t||!m) return; const cb=document.getElementById("toastNoShowAgain"); if(cb) cb.checked=false;
+  m.textContent=message; t.style.display="block";
+}
+function hideToast(){
+  const cb=document.getElementById("toastNoShowAgain");
+  const username=getUsername();
+  if(cb && cb.checked && username){ localStorage.setItem(`noShowToast_${username}`,"true"); }
+  const t=document.getElementById("toast"); if(t) t.style.display="none";
+}
+window.hideToast = hideToast;
 
-    // If no username, hide badge & bail out
-    if (!username) {
-      if (badge) badge.style.display = "none";
-      sessionStorage.setItem("notifUnreadCount", "0");
-      return;
-    }
+async function checkNotification(){
+  const badge = document.getElementById("notif-badge");
+  const username = getUsername();
 
-    // Load server status (timestamps for uploads + per-type reads)
+  if (!badge) return;               // nothing to update
+  if (!username) {                  // cannot compute read key
+    badge.style.display = "none";
+    sessionStorage.setItem("notifUnreadCount","0");
+    return;
+  }
+
+  try{
     const res = await fetch(`${API_BASE}/api/notifications/status`);
     const data = await res.json();
 
-    // Consider these types
-    const TYPES = ["user", "customer", "turnover", "nbcos", "arreas"];
+    // Old schema: one read timestamp per user
+    const lastReadRaw = data[`read_${username}`];
+    const lastRead = lastReadRaw ? new Date(lastReadRaw) : null;
 
-    // Build per-type read map like read_<username>_<type>
-    const readTimes = Object.fromEntries(
-      TYPES.map(t => [t, data[`read_${username}_${t}`] ? new Date(data[`read_${username}_${t}`]) : null])
-    );
+    // Uploaded types we care about
+    const TYPES = ["user","customer","turnover","nbcos","arreas"];
 
-    // Count unread types and track latest for toast de-dup
-    let unreadCount = 0;
+    let unread = 0;
     let newestTs = "";
-    const unreadTypes = [];
 
-    TYPES.forEach(t => {
-      const uploadedStr = data[t];
-      if (!uploadedStr) return; // nothing uploaded yet
-
-      const uploadedAt = new Date(uploadedStr);
-      const lastRead = readTimes[t];
-
+    for (const t of TYPES){
+      const ts = data[t];
+      if(!ts) continue;
+      const uploadedAt = new Date(ts);
       const isNew = !lastRead || uploadedAt > lastRead;
       if (isNew) {
-        unreadCount++;
-        unreadTypes.push(t);
-        if (!newestTs || uploadedAt > new Date(newestTs)) newestTs = uploadedStr;
-      }
-    });
-
-    // Update badge UI + persist count for other tabs/pages
-    sessionStorage.setItem("notifUnreadCount", String(unreadCount));
-    if (badge) {
-      if (unreadCount > 0) {
-        badge.style.display = "inline-block";
-        badge.textContent = unreadCount > 9 ? "9+" : unreadCount;
-      } else {
-        badge.style.display = "none";
+        unread++;
+        if(!newestTs || uploadedAt > new Date(newestTs)) newestTs = ts;
       }
     }
 
-    // ===== Toast logic (optional; only if the page has toast elements) =====
+    sessionStorage.setItem("notifUnreadCount", String(unread));
+    if (unread > 0){
+      badge.style.display = "inline-block";
+      badge.textContent = unread > 9 ? "9+" : unread;
+    } else {
+      badge.style.display = "none";
+    }
+
+    // Optional toast support (only shows if the page actually has a toast)
     const toast = document.getElementById("toast");
     const toastMessage = document.getElementById("toastMessage");
-    if (toast && toastMessage && unreadCount > 0) {
+    if (toast && toastMessage && unread > 0){
       const noShowKey = `noShowToast_${username}`;
       const lastToastKey = `lastToastShown_${username}`;
       const noShow = localStorage.getItem(noShowKey);
       const lastToast = localStorage.getItem(lastToastKey);
-
-      // Only show if user didn't opt-out OR there's a new upload after the last toast
-      if (noShow !== "true" || lastToast !== newestTs) {
-        // Optional: include short list of unread types in Khmer
-        const labelPreview = unreadTypes
-          .slice(0, 2) // show at most 2 labels to keep it short
-          .map(t => KH_LABELS[t] || t)
-          .join(" , ");
-
-        const extra = unreadTypes.length > 2 ? ` និង​ទៀត` : "";
-        const message = `លោកគ្រូ/អ្នកគ្រូ មានការជូនដំណឹងថ្មីចំនួន ${unreadCount} សារ (${labelPreview}${extra})`;
-
-        showToast(message);
+      if (noShow !== "true" || lastToast !== newestTs){
+        showToast(`លោកគ្រូ/អ្នកគ្រូ មានការជូនដំណឹងថ្មីចំនួន ${unread} សារ`);
         localStorage.setItem(lastToastKey, newestTs);
-        // reset "noShow" if there is a new message (so users see it again)
         localStorage.removeItem(noShowKey);
       }
     }
-  } catch (err) {
-    console.error("Notification fetch error:", err);
-    // Fallback to stored count so the badge doesn't flicker off on errors
-    const badge = document.getElementById("notif-badge");
-    if (badge) {
-      const stored = parseInt(sessionStorage.getItem("notifUnreadCount") || "0", 10);
-      if (stored > 0) {
-        badge.style.display = "inline-block";
-        badge.textContent = stored > 9 ? "9+" : stored;
-      } else {
-        badge.style.display = "none";
-      }
+  }catch(e){
+    console.error("Notification fetch error:", e);
+    // fallback to stored count so badge doesn't flicker off
+    const stored = parseInt(sessionStorage.getItem("notifUnreadCount") || "0", 10);
+    if (stored > 0){
+      badge.style.display = "inline-block";
+      badge.textContent = stored > 9 ? "9+" : stored;
+    } else {
+      badge.style.display = "none";
     }
   }
 }
-
-// Expose hideToast globally if your close button uses it
-window.hideToast = hideToast;
-// Expose checkNotification for pages that call it manually
 window.checkNotification = checkNotification;
