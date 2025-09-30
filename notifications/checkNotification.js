@@ -9,6 +9,9 @@ function getUsername() {
     return sessionStorage.getItem("username") || "";
   }
 }
+const usernameCN = getUsername();
+const CLEARED_KEY_CN = `notifClearedAt_${usernameCN}`;
+const localReadKeyCN = (type) => `notifLocalRead_${usernameCN}_${type}`;
 
 function showToast(message) {
   const toast = document.getElementById("toast");
@@ -21,10 +24,9 @@ function showToast(message) {
 }
 
 function hideToast() {
-  const username = getUsername();
   const cb = document.getElementById("toastNoShowAgain");
-  if (cb && cb.checked && username) {
-    localStorage.setItem(`noShowToast_${username}`, "true");
+  if (cb && cb.checked && usernameCN) {
+    localStorage.setItem(`noShowToast_${usernameCN}`, "true");
   }
   const toast = document.getElementById("toast");
   if (toast) toast.style.display = "none";
@@ -32,26 +34,22 @@ function hideToast() {
 
 async function checkNotification() {
   try {
-    const username = getUsername();
     const badge = document.getElementById("notif-badge");
-
-    if (!username) {
+    if (!usernameCN) {
       if (badge) badge.style.display = "none";
       sessionStorage.setItem("notifUnreadCount", "0");
       return;
     }
 
-    const clearedAtStr = localStorage.getItem(`notifClearedAt_${username}`);
-    const clearedAt = clearedAtStr ? new Date(clearedAtStr) : null;
+    const clearedAtStr = localStorage.getItem(CLEARED_KEY_CN);
+    const clearedAt = clearedAtStr ? Date.parse(clearedAtStr) : 0;
 
     const res = await fetch(`${API_BASE}/api/notifications/status`);
     const data = await res.json();
 
     const TYPES = ["user", "customer", "turnover", "nbcos", "arreas"];
-
-    // Per-type reads
     const readTimes = Object.fromEntries(
-      TYPES.map(t => [t, data[`read_${username}_${t}`] ? new Date(data[`read_${username}_${t}`]) : null])
+      TYPES.map(t => [t, data[`read_${usernameCN}_${t}`] ? Date.parse(data[`read_${usernameCN}_${t}`]) : 0])
     );
 
     let unreadCount = 0;
@@ -69,21 +67,24 @@ async function checkNotification() {
     TYPES.forEach(t => {
       const upStr = data[t];
       if (!upStr) return;
-      const uploadedAt = new Date(upStr);
+      const upTs = Date.parse(upStr);
 
-      // Ignore uploads older/equal to last Clear All
-      if (clearedAt && uploadedAt <= clearedAt) return;
+      // Respect "Clear All"
+      if (clearedAt && upTs <= clearedAt) return;
 
-      const lastRead = readTimes[t];
-      const isNew = !lastRead || uploadedAt > lastRead;
+      // Local cache can mark as read immediately
+      const localTs = Date.parse(localStorage.getItem(localReadKeyCN(t)) || "") || 0;
+      const lastReadTs = Math.max(readTimes[t], localTs);
+
+      const isNew = lastReadTs < upTs;
       if (isNew) {
         unreadCount++;
         unreadTypes.push(t);
-        if (!newestTs || uploadedAt > new Date(newestTs)) newestTs = upStr;
+        if (!newestTs || upTs > Date.parse(newestTs)) newestTs = upStr;
       }
     });
 
-    // Badge + persist count for other pages
+    // Update badge + persist for other pages
     sessionStorage.setItem("notifUnreadCount", String(unreadCount));
     if (badge) {
       if (unreadCount > 0) {
@@ -94,12 +95,12 @@ async function checkNotification() {
       }
     }
 
-    // Optional toast if the page has it
+    // Optional toast (if the DOM has the toast elements)
     const toast = document.getElementById("toast");
     const toastMessage = document.getElementById("toastMessage");
     if (toast && toastMessage && unreadCount > 0) {
-      const noShowKey = `noShowToast_${username}`;
-      const lastToastKey = `lastToastShown_${username}`;
+      const noShowKey = `noShowToast_${usernameCN}`;
+      const lastToastKey = `lastToastShown_${usernameCN}`;
       const noShow = localStorage.getItem(noShowKey);
       const lastToast = localStorage.getItem(lastToastKey);
 
@@ -127,6 +128,6 @@ async function checkNotification() {
   }
 }
 
-// Export for pages
+// Expose to pages
 window.checkNotification = checkNotification;
 window.hideToast = hideToast;
