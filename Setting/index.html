@@ -14,8 +14,8 @@
       --card:#fff;
       --text:#333;
       --muted:#555;
-      --green:#1e7e34;
-      --red:#b52d2d;
+      --ok:#1e7e34;
+      --danger:#b52d2d;
     }
 
     body{margin:0;font-family:'Krasar',Arial,sans-serif;background:var(--bg);color:var(--text);padding-bottom:70px}
@@ -23,54 +23,48 @@
     .header .back{font-size:22px;color:#fff;background:none;border:none;margin-right:12px;cursor:pointer}
 
     .profile-section{margin-top:60px;padding:20px;background:var(--card);display:flex;align-items:center;gap:16px}
-    .profile-section img{width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid var(--brand)}
+    .profile-section img{width:72px;height:72px;border-radius:50%;object-fit:cover;border:2px solid var(--brand)}
     .info{display:flex;flex-direction:column}
     .info .name{font-weight:bold;font-size:18px;color:goldenrod}
     .info .position{font-size:14px;color:var(--muted)}
 
     .setting-section{margin-top:10px}
-    .setting-item{background:var(--card);padding:16px;border-bottom:1px solid #ddd;display:flex;align-items:center;justify-content:space-between;font-size:16px}
-    .setting-item:hover{background:#eef2f7}
-    .setting-item span{display:flex;align-items:center;gap:10px}
-    .setting-item img.icon{width:20px;height:20px}
-
-    /* Modern toggle */
-    .toggle{
-      --w:56px; --h:30px;
-      position:relative; width:var(--w); height:var(--h);
-      background:#e5e7eb; border-radius:999px; cursor:pointer; transition:.2s ease;
-      box-shadow: inset 0 0 0 1px rgba(0,0,0,.05);
+    .setting-item{
+      background:var(--card);
+      padding:16px;
+      border-bottom:1px solid #e7e7e7;
+      display:flex;
+      align-items:center;
+      gap:12px;
     }
-    .toggle.on{ background:#d1fae5; }
-    .toggle .dot{
-      position:absolute; top:3px; left:3px; width:24px; height:24px; border-radius:50%;
-      background:#fff; box-shadow:0 1px 3px rgba(0,0,0,.2); transition:transform .2s ease;
+    .setting-item .left{
+      display:flex; align-items:center; gap:10px; font-size:16px; flex:1 1 auto;
     }
-    .toggle.on .dot{ transform: translateX(26px); }
-    .toggle-label{
-      min-width:68px; text-align:right; font-size:13px; margin-left:10px;
+    .setting-item .left img{width:20px;height:20px}
+    .setting-item .chev{margin-left:auto;color:#999}
+    .setting-item.clickable{cursor:pointer}
+    .setting-item.clickable:hover{background:#eef2f7}
+
+    /* ------- Pretty iOS-like switch ------- */
+    .switch{
+      position:relative; width:52px; height:30px; background:#e8e8e8;
+      border-radius:999px; transition:.25s; flex:0 0 auto; margin-left:auto; /* <-- pushes to far right */
+      box-shadow:inset 0 0 0 1px rgba(0,0,0,.06);
     }
-    .lbl-on{color:var(--green); display:none;}
-    .lbl-off{color:var(--red); display:inline;}
-    .toggle.on ~ .toggle-label .lbl-on{display:inline;}
-    .toggle.on ~ .toggle-label .lbl-off{display:none;}
+    .switch::after{
+      content:""; position:absolute; top:3px; left:3px; width:24px; height:24px; background:#fff;
+      border-radius:50%; box-shadow:0 1px 2px rgba(0,0,0,.25); transition:.25s;
+    }
+    .switch.on{background:#dff6e5; box-shadow:inset 0 0 0 1px rgba(30,126,52,.15)}
+    .switch.on::after{left:25px}
+    .state-text{min-width:28px; text-align:right; font-size:14px; margin-left:10px}
+    .state-text.on{color:var(--ok)}
+    .state-text.off{color:var(--danger)}
 
-    .signout span{color:red;font-weight:bold;text-decoration:underline}
-    .signout img.icon{filter:brightness(0) saturate(100%) invert(19%) sepia(100%) saturate(6486%) hue-rotate(355deg) brightness(93%) contrast(104%)}
-
+    .signout{color:red;font-weight:bold}
     .bottom-bar{position:fixed;bottom:0;left:0;width:100%;height:56px;background:var(--brand);display:flex;justify-content:space-around;align-items:center;box-shadow:0 2px 5px rgba(0,0,0,.3);z-index:1000}
     .bottom-btn{display:flex;flex-direction:column;align-items:center;font-size:11px;color:#fff;border:none;background:none;padding:2px}
     .bottom-btn img{margin-bottom:2px;pointer-events:none}
-
-    .modal{display:none;position:fixed;z-index:2000;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,.5);justify-content:center;align-items:center}
-    .modal.show{display:flex}
-    @keyframes slideIn{from{transform:translateY(30px);opacity:0}to{transform:translateY(0);opacity:1}}
-    .modal-content{background:#fff;font-family:'Krasar',Arial,sans-serif;padding:20px;border-radius:8px;text-align:center;width:90%;max-width:320px;box-shadow:0 2px 10px rgba(0,0,0,.3);animation:slideIn .3s ease-out}
-    .modal-content p{font-size:16px;margin-bottom:20px;color:#333}
-    .modal-actions{display:flex;justify-content:space-between;gap:10px}
-    .confirm-btn,.cancel-btn{flex:1;padding:10px;font-family:'Krasar',Arial,sans-serif;font-size:16px;border:none;border-radius:5px;cursor:pointer}
-    .confirm-btn{background:#d9534f;color:#fff}
-    .cancel-btn{background:#f1f1f1;color:#333}
 
     .badge{position:absolute;top:-4px;right:-8px;background:red;color:#fff;font-size:10px;padding:2px 6px;border-radius:50%;font-weight:bold}
   </style>
@@ -82,7 +76,7 @@
     <div>Setting</div>
   </div>
 
-  <!-- Profile Section -->
+  <!-- Profile -->
   <div class="profile-section">
     <img id="profile-photo" src="profile.jpg" alt="User Photo">
     <div class="info">
@@ -91,40 +85,35 @@
     </div>
   </div>
 
-  <!-- Setting Items -->
+  <!-- Items -->
   <div class="setting-section">
-    <div class="setting-item" onclick="window.location.href='userinfo.html'">
-      <span><img class="icon" src="user.png" alt="User" />ព័ត៌មានផ្ទាល់</span>
-      <span>›</span>
+    <div class="setting-item clickable" onclick="window.location.href='userinfo.html'">
+      <div class="left"><img src="user.png" alt="">ព័ត៌មានផ្ទាល់</div>
+      <div class="chev">›</div>
     </div>
 
-    <div class="setting-item" onclick="window.location.href='about.html'">
-      <span><img class="icon" src="info.png" alt="Info" />អំពី​កម្មវិធី</span>
-      <span>›</span>
+    <div class="setting-item clickable" onclick="window.location.href='about.html'">
+      <div class="left"><img src="info.png" alt="">អំពី​កម្មវិធី</div>
+      <div class="chev">›</div>
     </div>
 
-    <!-- 🔔 Push notifications ON/OFF -->
+    <!-- Push row -->
     <div class="setting-item">
-      <span><img class="icon" src="bell.png" alt="Push" />ការជូនដំណឹង</span>
-      <div style="display:flex;align-items:center;gap:10px;">
-        <div id="push-toggle" class="toggle" role="switch" aria-checked="false" tabindex="0">
-          <div class="dot"></div>
-        </div>
-        <div class="toggle-label">
-          <span class="lbl-on">On</span>
-          <span class="lbl-off">Off</span>
-        </div>
-      </div>
+      <div class="left"><img src="bell.png" alt="">ការជូនដំណឹង</div>
+
+      <!-- SWITCH pinned to the far right -->
+      <div id="pushSwitch" class="switch" onclick="togglePush()"></div>
+      <div id="pushState" class="state-text off">Off</div>
     </div>
 
-    <div class="setting-item signout" onclick="confirmLogout()">
-      <span><img class="icon" src="logout-rounded-left.png" alt="Logout" />ចាកចេញ</span>
+    <div class="setting-item clickable" onclick="confirmLogout()">
+      <div class="left signout"><img src="logout-rounded-left.png" alt="">ចាកចេញ</div>
     </div>
   </div>
 
   <!-- Bottom bar -->
   <div class="bottom-bar">
-    <button class="bottom-btn active" onclick="window.location.href='../index.html'">
+    <button class="bottom-btn" onclick="window.location.href='../index.html'">
       <img src="../icons/Home.png" width="24" height="24" /><div>Home</div>
     </button>
     <button class="bottom-btn" onclick="window.location.href='../Setting/index.html'">
@@ -139,13 +128,13 @@
     </button>
   </div>
 
-  <!-- Logout Modal -->
-  <div id="logoutModal" class="modal">
-    <div class="modal-content">
-      <p>តើអ្នកប្រាកដចង់ចាកចេញពីប្រព័ន្ធមែនទេ?</p>
-      <div class="modal-actions">
-        <button onclick="logout()" class="confirm-btn">ចាកចេញ</button>
-        <button onclick="closeModal()" class="cancel-btn">បោះបង់</button>
+  <!-- Modal (simple) -->
+  <div id="logoutModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:2000;align-items:center;justify-content:center;">
+    <div style="background:#fff;border-radius:10px;padding:18px 16px;width:90%;max-width:320px;text-align:center;">
+      <div style="margin-bottom:12px;">តើអ្នកប្រាកដចង់ចាកចេញពីប្រព័ន្ធមែនទេ?</div>
+      <div style="display:flex;gap:10px;">
+        <button onclick="logout()" style="flex:1;background:#d9534f;color:#fff;border:none;border-radius:6px;padding:10px 0;">ចាកចេញ</button>
+        <button onclick="closeModal()" style="flex:1;background:#f1f1f1;border:none;border-radius:6px;padding:10px 0;">បោះបង់</button>
       </div>
     </div>
   </div>
@@ -153,35 +142,15 @@
   <audio id="logout-audio" src="logout-sound.mp3" preload="auto"></audio>
 
   <script>
-    // ====== CONFIG ======
-    const API_BASE  = "https://secure-backend-tzj9.onrender.com";
-    const basePath  = "/CreditAssist"; // GitHub Pages base path
+    // ===== Base config
+    const API_BASE = "https://secure-backend-tzj9.onrender.com";
+    const basePath = "/CreditAssist";
 
-    // ====== Auth guard ======
+    // ===== Auth guard
     const token = sessionStorage.getItem('token');
     if (!token) { alert("Session expired or unauthorized access."); window.location.href = "../login.html"; }
 
-    // ====== Auto logout ======
-    function setupAutoLogoutEvents() {
-      const AUTO_LOGOUT_MINUTES = 1;
-      let logoutTimer;
-      function reset() {
-        clearTimeout(logoutTimer);
-        logoutTimer = setTimeout(() => {
-          sessionStorage.clear();
-          alert("Session expired due to inactivity. Please log in again.");
-          window.location.href = "../login.html";
-        }, AUTO_LOGOUT_MINUTES * 60 * 1000);
-      }
-      ['mousemove','mousedown','keydown','touchstart','touchmove','scroll'].forEach(e => document.addEventListener(e, reset, true));
-      reset();
-    }
-
-    function logout(){ const a=document.getElementById("logout-audio"); if(a) a.play(); setTimeout(()=>{sessionStorage.clear();window.location.href="../login.html"},800); }
-    function confirmLogout(){ document.getElementById("logoutModal").classList.add("show"); }
-    function closeModal(){ document.getElementById("logoutModal").classList.remove("show"); }
-
-    // ====== Profile fill ======
+    // ===== Fill profile
     document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("user-fullname").textContent = sessionStorage.getItem("fullname") || "អ្នកប្រើ";
       document.getElementById("user-position").textContent = sessionStorage.getItem("userPosition") || "មិនដំណើរការ";
@@ -189,182 +158,98 @@
       document.getElementById("profile-photo").src = API_BASE + "/" + img;
     });
 
-    // ====== Service Worker registration (GitHub Pages scope) ======
+    // ===== Auto logout
+    (function setupAutoLogout(){
+      const MIN = 1; let t;
+      function reset(){ clearTimeout(t); t=setTimeout(()=>{ sessionStorage.clear(); alert("Session expired."); location.href="../login.html"; }, MIN*60*1000); }
+      ['mousemove','mousedown','keydown','touchstart','touchmove','scroll'].forEach(e=>document.addEventListener(e,reset,true));
+      reset();
+    })();
+
+    // ===== Logout modal
+    function logout(){ const a=document.getElementById("logout-audio"); if(a) a.play(); setTimeout(()=>{sessionStorage.clear();location.href="../login.html"},600); }
+    function confirmLogout(){ document.getElementById('logoutModal').style.display='flex'; }
+    function closeModal(){ document.getElementById('logoutModal').style.display='none'; }
+
+    // ===== Push helpers
+    function setSwitch(on){
+      const sw = document.getElementById('pushSwitch');
+      const st = document.getElementById('pushState');
+      sw.classList.toggle('on', !!on);
+      st.classList.toggle('on', !!on);
+      st.classList.toggle('off', !on);
+      st.textContent = on ? 'On' : 'Off';
+    }
+
     async function registerSW() {
       if (!('serviceWorker' in navigator)) throw new Error('SW not supported');
       try {
         const reg = await navigator.serviceWorker.register(`${basePath}/service-worker.js`, { scope: `${basePath}/` });
-        if (!navigator.serviceWorker.controller) console.log('SW installed; reload once to take control.');
         return reg;
-      } catch (e) {
-        // fallback to root scope if needed
+      } catch {
         return await navigator.serviceWorker.register(`/service-worker.js`);
       }
     }
-
-    // ====== VAPID key fetch ======
     async function getVapidKey() {
-      const res = await fetch(`${API_BASE}/api/push/public-key`);
-      const data = await res.json();
-      if (!data.key) throw new Error("No VAPID key");
-      return data.key;
+      const r = await fetch(`${API_BASE}/api/push/public-key`);
+      const j = await r.json();
+      if (!j.key) throw new Error('No VAPID key');
+      return j.key;
     }
-
-    function b64ToU8(base64String) {
-      const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
-      const base64 = (base64String + padding).replace(/-/g,'+').replace(/_/g,'/');
-      const rawData = atob(base64);
-      const output = new Uint8Array(rawData.length);
-      for (let i=0;i<rawData.length;++i) output[i] = rawData.charCodeAt(i);
-      return output;
-    }
-
-    async function getCurrentSubscription() {
+    function b64ToU8(b64){const pad='='.repeat((4-(b64.length%4))%4);const s=(b64+pad).replace(/-/g,'+').replace(/_/g,'/');const r=atob(s);const o=new Uint8Array(r.length);for(let i=0;i<r.length;i++)o[i]=r.charCodeAt(i);return o;}
+    async function getCurrentSubscription(){
       if (!('serviceWorker' in navigator)) return null;
-      let reg = await navigator.serviceWorker.getRegistration(`${basePath}/`);
-      if (!reg) reg = await navigator.serviceWorker.getRegistration();
-      if (!reg) return null;
-      return await reg.pushManager.getSubscription();
+      const reg = await navigator.serviceWorker.getRegistration(`${basePath}/`);
+      const target = reg || await navigator.serviceWorker.getRegistration();
+      return target ? target.pushManager.getSubscription() : null;
     }
 
-    function setToggle(on) {
-      const el = document.getElementById('push-toggle');
-      el.classList.toggle('on', !!on);
-      el.setAttribute('aria-checked', on ? 'true' : 'false');
-    }
+    // Toggle push
+    async function togglePush(){
+      try{
+        const perm = await Notification.requestPermission();
+        if (perm !== 'granted') { alert('Permission denied.'); return; }
 
-    async function enablePush() {
-      const perm = await Notification.requestPermission();
-      if (perm !== 'granted') { alert('Permission denied.'); return false; }
+        const reg = await registerSW();
+        const current = await reg.pushManager.getSubscription();
 
-      const reg = await registerSW();
-
-      // Clean old/bad subscription first
-      const old = await reg.pushManager.getSubscription();
-      if (old) { try { await old.unsubscribe(); } catch(_){} }
-
-      const vapid = await getVapidKey();
-      const sub = await reg.pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey: b64ToU8(vapid)
-      });
-
-      const resp = await fetch(`${API_BASE}/api/push/subscribe`, {
-        method:'POST',
-        headers:{ 'Content-Type':'application/json', 'Authorization': `Bearer ${token}` },
-        body:JSON.stringify({ subscription: sub })
-      });
-      if (!resp.ok) {
-        const t = await resp.text();
-        throw new Error(`Backend ${resp.status}: ${t}`);
-      }
-      return true;
-    }
-
-    async function disablePush() {
-      let reg = await navigator.serviceWorker.getRegistration(`${basePath}/`);
-      if (!reg) reg = await navigator.serviceWorker.getRegistration();
-      if (!reg) return true;
-
-      const current = await reg.pushManager.getSubscription();
-      if (!current) return true;
-
-      const endpoint = current.endpoint;
-      try { await current.unsubscribe(); } catch(_){}
-
-      await fetch(`${API_BASE}/api/push/unsubscribe`, {
-        method:'POST',
-        headers:{ 'Content-Type':'application/json', 'Authorization': `Bearer ${token}` },
-        body:JSON.stringify({ endpoint })
-      });
-      return true;
-    }
-
-    async function togglePush() {
-      const el = document.getElementById('push-toggle');
-      const isOn = el.classList.contains('on');
-
-      try {
-        if (isOn) {
-          await disablePush();
-          setToggle(false);
-          alert('🔕 បានបិទការជូនដំណឹង');
-        } else {
-          const ok = await enablePush();
-          if (ok) { setToggle(true); alert('🔔 បានបើកការជូនដំណឹង'); }
+        if (current){
+          const endpoint = current.endpoint;
+          await current.unsubscribe().catch(()=>{});
+          await fetch(`${API_BASE}/api/push/unsubscribe`, {
+            method:'POST', headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`},
+            body: JSON.stringify({ endpoint })
+          });
+          setSwitch(false);
+          return;
         }
-      } catch (e) {
-        console.error(e);
-        alert(`❌ មិនអាចប្ដូរបាន៖ ${e.message}`);
+
+        const vapid = await getVapidKey();
+        const sub = await reg.pushManager.subscribe({ userVisibleOnly:true, applicationServerKey:b64ToU8(vapid) });
+        const resp = await fetch(`${API_BASE}/api/push/subscribe`, {
+          method:'POST', headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`},
+          body: JSON.stringify({ subscription: sub })
+        });
+        if (!resp.ok){ throw new Error('Backend subscribe failed'); }
+        setSwitch(true);
+      }catch(e){
+        console.error(e); alert('Push setup failed: '+e.message);
       }
     }
+    window.togglePush = togglePush;
 
-    // ====== INIT ======
-    window.addEventListener("DOMContentLoaded", async () => {
-      setupAutoLogoutEvents();
-
-      // Init toggle state from current subscription
-      try {
-        const sub = await getCurrentSubscription();
-        setToggle(!!sub);
-      } catch { setToggle(false); }
-
-      // Toggle handlers (click + keyboard)
-      const tg = document.getElementById('push-toggle');
-      tg.addEventListener('click', togglePush);
-      tg.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); togglePush(); }
-      });
+    // Init switch to current state
+    window.addEventListener('DOMContentLoaded', async ()=>{
+      try{ const sub = await getCurrentSubscription(); setSwitch(!!sub); } catch{ setSwitch(false); }
     });
   </script>
 
-  <!-- 🔴 Shared badge refresher & cross-tab sync -->
+  <!-- Badge script -->
   <script src="../notifications/checkNotification.js"></script>
   <script>
-    (function syncNotifBadgeAcrossPages(){
-      const badge = document.getElementById('notif-badge');
-
-      function paintFromSession(){
-        const n = parseInt(sessionStorage.getItem('notifUnreadCount') || '0', 10);
-        if (!badge) return;
-        if (n > 0) {
-          badge.style.display = 'inline-block';
-          badge.textContent = n > 9 ? '9+' : String(n);
-        } else {
-          badge.style.display = 'none';
-        }
-      }
-
-      // 1) paint immediately from session cache
-      paintFromSession();
-
-      // 2) respond to cross-tab broadcasts (from notifications page)
-      window.addEventListener('storage', (e) => {
-        if (e.key === 'notifSync') {
-          try {
-            const payload = JSON.parse(e.newValue || '{}');
-            if (typeof payload.unread === 'number') {
-              sessionStorage.setItem('notifUnreadCount', String(payload.unread));
-              paintFromSession();
-            }
-          } catch (_){}
-        }
-      });
-
-      // 3) also verify with server when tab visible
-      document.addEventListener('visibilitychange', () => {
-        if (!document.hidden && typeof window.checkNotification === 'function') {
-          window.checkNotification();
-          setTimeout(paintFromSession, 150);
-        }
-      });
-
-      // 4) run the shared checker once on load too
-      window.addEventListener('DOMContentLoaded', () => {
-        if (typeof window.checkNotification === 'function') window.checkNotification();
-        setTimeout(paintFromSession, 150);
-      });
-    })();
+    window.addEventListener('DOMContentLoaded', () => {
+      if (typeof checkNotification === 'function') checkNotification();
+    });
   </script>
 </body>
 </html>
