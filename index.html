@@ -8,70 +8,89 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <style>
     @font-face { font-family: 'Krasar'; src: url('Krasar-Regular.ttf') format('truetype'); }
+
     body { font-family: 'Krasar', Arial, sans-serif; background-color: #002c5f; color: white; margin: 0; padding: 0; }
+
     .header { display:flex; justify-content:space-between; align-items:center; background:#0d2d5c; padding:10px 16px; position:fixed; top:0; left:0; right:0; z-index:1000; }
     .header img.logo { height:35px; }
+
     .profile { display:flex; flex-direction:column; align-items:center; text-decoration:none; }
     .profile-wrapper { position:relative; width:64px; height:64px; }
-    .spinner-arc { position:absolute; inset:0; border-radius:50%; background:conic-gradient(#ffd700 0% 25%, transparent 25% 100%); animation:spin 1.8s linear infinite; z-index:1; }
-    .profile-wrapper img { width:calc(100% - 2px); height:calc(100% - 2px); border-radius:50%; object-fit:cover; background:white; z-index:2; margin:1px; position:relative; }
-    @keyframes spin { to { transform: rotate(360deg);} }
+    .spinner-arc { position:absolute; top:0; left:0; width:100%; height:100%; border-radius:50%; background:conic-gradient(#ffd700 0% 25%, transparent 25% 100%); animation: spin 1.8s linear infinite; z-index:1; }
+    .profile-wrapper img { width:calc(100% - 2px); height:calc(100% - 2px); border-radius:50%; object-fit:cover; background:#fff; z-index:2; margin:1px; position:relative; }
+    @keyframes spin { to { transform: rotate(360deg); } }
     .welcome { font-size:13px; color:#ffd700; text-align:center; line-height:1.2; white-space:nowrap; }
 
     .main-box { background:transparent; border-radius:16px; padding:5px; width:96%; max-width:400px; color:#002c5f; margin:100px auto 20px; height:calc(100vh - 140px); box-sizing:border-box; overflow-y:auto; }
     .content { padding:0; }
+
     .menu-grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:14px; justify-items:center; }
-    .menu-item { background:linear-gradient(to bottom, #002c5f 0%, #001a3d 100%); border-radius:16px; border:1px solid #ffd700; padding:10px 6px; width:100%; max-width:100px; aspect-ratio:1/1; box-shadow:0 2px 6px rgba(0,0,0,0.2); color:white; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; text-align:center; position:relative; overflow:hidden; user-select:none; transition:all .3s ease; }
-    .menu-item img { width:36px; height:36px; margin-bottom:6px; animation:bounce .4s ease; pointer-events:none; }
-    .menu-item:hover { background:linear-gradient(to bottom, #001a3d 0%, #000f2c 100%); box-shadow:0 0 12px rgba(255, 215, 0, 0.6); border:1.5px solid #ffd700; }
+    .menu-item {
+      background: linear-gradient(to bottom, #002c5f 0%, #001a3d 100%);
+      border-radius:16px; border:1px solid #ffd700; padding:10px 6px; width:100%; max-width:100px; aspect-ratio:1/1;
+      box-shadow:0 2px 6px rgba(0,0,0,0.2); color:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center;
+      cursor:pointer; text-align:center; position:relative; overflow:hidden; user-select:none; transition:all .3s ease;
+    }
+    .menu-item img { width:36px; height:36px; margin-bottom:6px; animation: bounce .4s ease; pointer-events:none; }
+    .menu-item:hover { background: linear-gradient(to bottom, #001a3d 0%, #000f2c 100%); box-shadow:0 0 12px rgba(255,215,0,.6); border:1.5px solid #ffd700; }
     .menu-item:hover img { transform:scale(1.15); }
     .menu-item .label { font-size:14px; font-weight:bold; }
     @keyframes bounce { 0%{transform:scale(.8);opacity:0} 60%{transform:scale(1.1);opacity:1} 100%{transform:scale(1)} }
+
     .ripple { position:absolute; border-radius:50%; background:rgba(0,44,95,.3); transform:scale(0); animation:ripple-animation .6s ease-out; pointer-events:none; z-index:0; }
-    @keyframes ripple-animation { to{ transform:scale(4); opacity:0; } }
+    @keyframes ripple-animation { to { transform:scale(4); opacity:0; } }
 
-    .bottom-bar { position:fixed; bottom:0; left:0; width:100%; height:56px; background:#0d2d5c; display:flex; justify-content:space-around; align-items:center; box-shadow:0 2px 5px rgba(0,0,0,0.3); z-index:1000; }
-    .bottom-btn { display:flex; flex-direction:column; align-items:center; font-size:11px; color:white; border:none; background:none; padding:2px; }
+    .bottom-bar { position:fixed; bottom:0; left:0; width:100%; height:56px; background:#0d2d5c; display:flex; justify-content:space-around; align-items:center; box-shadow:0 2px 5px rgba(0,0,0,.3); z-index:1000; }
+    .bottom-btn { display:flex; flex-direction:column; align-items:center; font-size:11px; color:#fff; border:none; background:none; padding:2px; }
     .bottom-btn img { margin-bottom:2px; pointer-events:none; }
-    .bottom-btn.active { filter:brightness(1.2) drop-shadow(0 0 3px #ffd700); }
+    .bottom-btn.active { filter: brightness(1.2) drop-shadow(0 0 3px #ffd700); }
 
-    .robot-box { position:fixed; left:16px; right:16px; bottom:76px; background:linear-gradient(to bottom, #002c5f 0%, #001a3d 100%); border:1px solid #d4af37; border-radius:12px; padding:10px 16px 70px; font-family:'Krasar', sans-serif; color:white; height:40px; display:flex; overflow:hidden; flex-direction:column; box-shadow:0 0 10px rgba(212,175,55,0.4); z-index:999; }
+    .robot-box {
+      position: fixed; left:16px; right:16px; bottom:76px;
+      background: linear-gradient(to bottom, #002c5f 0%, #001a3d 100%);
+      border:1px solid #d4af37; border-radius:12px; padding:10px 16px 70px;
+      font-family:'Krasar', sans-serif; color:#fff; height:40px; display:flex; overflow:hidden; flex-direction:column;
+      box-shadow:0 0 10px rgba(212,175,55,.4); z-index:999;
+    }
     .robot-box img { width:50px; height:50px; margin-right:15px; flex-shrink:0; }
     .robot-message { display:flex; align-items:flex-start; font-size:14px; line-height:1.6; margin-bottom:8px; word-break:break-word; color:#ffd700; flex:1; overflow-y:auto; }
-    .flicker { animation:flicker 2s infinite; }
+    .flicker { animation: flicker 2s infinite; }
     @keyframes flicker { 0%,100%{color:#ffd700} 20%{color:#fff} 40%{color:#ffda6b} 60%{color:#ffd700} 80%{color:#ffe87e} }
-    .robot-float { animation:floatBot 2.8s ease-in-out infinite; }
+    .robot-float { animation: floatBot 2.8s ease-in-out infinite; }
     @keyframes floatBot { 0%{transform:translateY(0)} 50%{transform:translateY(-10px)} 100%{transform:translateY(0)} }
 
-    .mic-btn { position:absolute; bottom:10px; right:10px; width:50px; height:50px; background:#0d2d5c; border:2px solid white; border-radius:50%; box-shadow:0 4px 12px rgba(0,0,0,.4); display:flex; align-items:center; justify-content:center; padding:0; }
+    .mic-btn { position:absolute; bottom:10px; right:10px; width:50px; height:50px; background:#0d2d5c; border:2px solid #fff; border-radius:50%; box-shadow:0 4px 12px rgba(0,0,0,.4); display:flex; align-items:center; justify-content:center; padding:0; }
     .mic-btn img { width:24px; height:24px; object-fit:contain; filter:invert(100%); padding-left:14px; }
     .mic-float { position:absolute; right:18px; bottom:12px; z-index:2; }
-
     img { pointer-events:none; -webkit-user-drag:none; user-drag:none; }
 
-    .voice-overlay { position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:2000; display:none; justify-content:center; align-items:center; }
-    .voice-box { background:white; border-radius:18px; width:90%; max-width:350px; padding:24px 20px; text-align:center; font-family:'Krasar', sans-serif; color:#0d2d5c; box-shadow:0 6px 20px rgba(0,0,0,.3); }
+    .voice-overlay { position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:2000; display:flex; justify-content:center; align-items:center; }
+    .voice-box { background:#fff; border-radius:18px; width:90%; max-width:350px; padding:24px 20px; text-align:center; font-family:'Krasar', sans-serif; color:#0d2d5c; box-shadow:0 6px 20px rgba(0,0,0,.3); }
     .voice-greet { font-size:18px; font-weight:bold; margin-bottom:6px; }
     .voice-question { font-size:16px; margin-bottom:20px; }
     .voice-tip { font-size:13px; color:gray; }
     .voice-mic-btn { border:none; background:none; padding:0; margin:0 auto 14px; cursor:pointer; position:relative; }
     .mic-ring { width:72px; height:72px; background:#ffd700; border-radius:50%; display:flex; align-items:center; justify-content:center; }
     .mic-core { width:52px; height:52px; background:#0d2d5c; border-radius:50%; display:flex; align-items:center; justify-content:center; }
-    .voice-stop-icon { width:20px; height:20px; background:white; border-radius:4px; }
-    @keyframes micGlow { 0%{box-shadow:0 0 0 0 rgba(13,45,92,.7);} 70%{box-shadow:0 0 0 10px rgba(13,45,92,0);} 100%{box-shadow:0 0 0 0 rgba(13,45,92,0);} }
-    .voice-mic-btn.listening, .mic-btn.listening { animation:micGlow 1.2s infinite; }
+    .voice-stop-icon { width:20px; height:20px; background:#fff; border-radius:4px; }
+    @keyframes micGlow { 0%{box-shadow:0 0 0 0 rgba(13,45,92,.7)} 70%{box-shadow:0 0 0 10px rgba(13,45,92,0)} 100%{box-shadow:0 0 0 0 rgba(13,45,92,0)} }
+    .voice-mic-btn.listening, .mic-btn.listening { animation: micGlow 1.2s infinite; }
 
-    .badge { position:absolute; top:-4px; right:-8px; background:red; color:white; font-size:10px; padding:2px 6px; border-radius:50%; font-weight:bold; }
+    .badge { position:absolute; top:-4px; right:-8px; background:red; color:#fff; font-size:10px; padding:2px 6px; border-radius:50%; font-weight:bold; }
 
-    .toast-full { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); width:85%; max-width:480px; background:rgba(13,45,92,.5); color:white; z-index:9999; padding:18px 20px 16px; font-family:'Krasar', sans-serif; display:none; animation:slideUp .4s ease; box-shadow:0 8px 20px rgba(0,0,0,.3); border-radius:26px; backdrop-filter:blur(4px); }
-    .toast-content { display:flex; flex-direction:column; align-items:flex-start; gap:12px; }
-    .toast-text { width:100%; }
-    .toast-title { color:#ffd700; text-align:center; font-weight:bold; font-size:18px; margin-bottom:4px; }
-    .toast-message { text-align:center; font-size:16px; color:white; margin-bottom:6px; text-shadow:0 1px 2px rgba(0,0,0,.2); }
-    .toast-checkbox { font-size:13px; }
-    .toast-actions { width:100%; display:flex; justify-content:space-between; gap:8px; margin-top:8px; }
-    .toast-actions button { flex:1; background:rgba(13,45,92,.5); color:#ffd700; border:none; padding:8px 12px; font-size:14px; border-radius:10px; cursor:pointer; }
-    @keyframes slideUp { from{ transform:translateY(100%);} to{ transform:translateY(0);} }
+    .toast-full {
+      position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); width:85%; max-width:480px;
+      background:rgba(13,45,92,.5); color:#fff; z-index:9999; padding:18px 20px 16px; font-family:'Krasar', sans-serif;
+      display:none; animation:slideUp .4s ease; box-shadow:0 8px 20px rgba(0,0,0,.3); border-radius:26px; backdrop-filter:blur(4px);
+    }
+    .toast-content{display:flex; flex-direction:column; align-items:flex-start; gap:12px;}
+    .toast-text{width:100%;}
+    .toast-title{color:#ffd700; text-align:center; font-weight:bold; font-size:18px; margin-bottom:4px;}
+    .toast-message{text-align:center; font-size:16px; color:#fff; margin-bottom:6px; text-shadow:0 1px 2px rgba(0,0,0,.2);}
+    .toast-checkbox{font-size:13px;}
+    .toast-actions{width:100%; display:flex; justify-content:space-between; gap:8px; margin-top:8px;}
+    .toast-actions button{flex:1; background:rgba(13,45,92,.5); color:#ffd700; border:none; padding:8px 12px; font-size:14px; border-radius:10px; cursor:pointer;}
+    @keyframes slideUp { from { transform: translateY(100%);} to { transform: translateY(0);} }
   </style>
 </head>
 <body oncontextmenu="return false;">
@@ -88,7 +107,7 @@
   </div>
 
   <!-- Voice Assistant Popup -->
-  <div id="voiceOverlay" class="voice-overlay">
+  <div id="voiceOverlay" class="voice-overlay" style="display:none;">
     <div class="voice-box">
       <div class="voice-greet" id="voiceGreeting">សួស្តី ...</div>
       <div class="voice-question">តើខ្ញុំអាចជួយអ្វីបាន?</div>
@@ -98,7 +117,7 @@
       </button>
 
       <div class="voice-tip">សាកល្បងនិយាយ <strong>"ស្វែងរក"</strong></div>
-      <div id="liveSubtitle" style="font-size: 15px; color: #555; min-height: 24px;"></div>
+      <div id="liveSubtitle" style="font-size:15px; color:#555; min-height:24px;"></div>
     </div>
   </div>
 
@@ -111,10 +130,10 @@
         <div class="menu-item" data-href="Loan-Calculator/index.html"><img src="icons/loan.PNG"><div class="label">គណនាឥណទាន</div></div>
         <div class="menu-item" data-href="Average-Debit-Turnover/index.html"><img src="icons/turnover.PNG"><div class="label">Average Turnover</div></div>
         <div class="menu-item" data-href="ArreasT24/index.html"><img src="icons/overdue.PNG"><div class="label">Daily Arreas</div></div>
-        <div class="menu-item" data-href=" SpotCheckLoan/reportSpotcheck.html "><img src="icons/check.PNG "><div class="label">Spot Check</div></div>
+        <div class="menu-item" data-href=" SpotCheckLoan/reportSpotcheck.html "><img src="icons/check.PNG"><div class="label">Spot Check</div></div>
         <div class="menu-item" data-href=""><img src="icons/officer.PNG"><div class="label">Officer Task</div></div>
         <div class="menu-item" data-href=""><img src="icons/landClassisfy.PNG"><div class="label">ចំណាត់ថ្នាក់ដីធ្លី</div></div>
-        <div class="menu-item" data-href="docsearch/index.html"><img src="icons/principle.PNG"><div class="label">ស្វែងរកឯកសារ</div></div
+        <div class="menu-item" data-href="docsearch/index.html"><img src="icons/principle.PNG"><div class="label">ស្វែងរកឯកសារ</div></div>
       </div>
 
       <!-- Robot Box -->
@@ -143,6 +162,7 @@
         </button>
       </div>
 
+      <!-- Toast -->
       <div id="toast" class="toast-full">
         <div class="toast-content">
           <div class="toast-text">
@@ -179,25 +199,27 @@ function resetLogoutTimer() {
   }, AUTO_LOGOUT_MINUTES * 60 * 1000);
 }
 function setupAutoLogoutEvents() {
-  ['mousemove','mousedown','keydown','touchstart','touchmove','scroll'].forEach(e => {
-    document.addEventListener(e, resetLogoutTimer, true);
+  ['mousemove','mousedown','keydown','touchstart','touchmove','scroll'].forEach(event => {
+    document.addEventListener(event, resetLogoutTimer, true);
   });
   resetLogoutTimer();
 }
 window.addEventListener('load', setupAutoLogoutEvents);
 
-// ✅ Load Profile Info and Robot Message
+// ✅ Load Profile Info & Robot Message
 document.addEventListener('DOMContentLoaded', () => {
   const name = sessionStorage.getItem("fullname") || "អ្នកប្រើ";
   const imgPath = sessionStorage.getItem("image") || "profile/non-image.jpg";
   const profilePhoto = document.getElementById("profile-photo");
+
   document.getElementById("welcome").textContent = "សួស្តី, " + name;
   profilePhoto.src = "https://secure-backend-tzj9.onrender.com/" + imgPath;
-  profilePhoto.onerror = function() { this.onerror = null; this.src = "icons/default-profile.png"; };
+  profilePhoto.onerror = function(){ this.onerror=null; this.src="icons/default-profile.png"; };
+
   loadRobotMessage();
 });
 
-// ✅ Load Robot Message API
+// ✅ Robot Message API
 async function loadRobotMessage() {
   try {
     const res = await fetch("https://secure-backend-tzj9.onrender.com/api/robot-message", {
@@ -211,26 +233,28 @@ async function loadRobotMessage() {
   }
 }
 
-// ✅ Menu Ripple + Nav
+// ✅ Menu Ripple + Navigate
 document.querySelectorAll(".menu-item").forEach(item => {
   const href = item.getAttribute("data-href");
   item.addEventListener("click", function (e) {
     e.preventDefault();
     if (navigator.vibrate) navigator.vibrate(50);
+
     const ripple = document.createElement("span");
     ripple.className = "ripple";
     const rect = this.getBoundingClientRect();
     const size = Math.max(rect.width, rect.height);
     ripple.style.width = ripple.style.height = size + "px";
-    ripple.style.left = (e.clientX - rect.left - size/2) + "px";
-    ripple.style.top = (e.clientY - rect.top - size/2) + "px";
+    ripple.style.left = (e.clientX - rect.left - size / 2) + "px";
+    ripple.style.top  = (e.clientY - rect.top  - size / 2) + "px";
     this.appendChild(ripple);
     setTimeout(() => ripple.remove(), 600);
+
     if (href) window.location.href = href; else alert("Coming soon!");
   });
 });
 
-// ✅ Voice Assistant
+// ✅ Voice Assistant (hidden on iOS / unsupported)
 const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 const speechSupported = !!SpeechRecognition;
@@ -245,34 +269,37 @@ window.addEventListener('DOMContentLoaded', () => {
   recognition.continuous = false;
   recognition.interimResults = true;
 
-  recognition.onstart = () => { document.getElementById("liveSubtitle").textContent = "កំពុងស្តាប់..."; };
+  recognition.onstart  = () => { document.getElementById("liveSubtitle").textContent = "កំពុងស្តាប់..."; };
   recognition.onresult = (event) => {
     let finalTranscript = "";
     for (let i = event.resultIndex; i < event.results.length; i++) {
       const transcript = event.results[i][0].transcript;
-      if (event.results[i].isFinal) finalTranscript += transcript;
-      else document.getElementById("liveSubtitle").textContent = transcript;
+      if (event.results[i].isFinal) { finalTranscript += transcript; }
+      else { document.getElementById("liveSubtitle").textContent = transcript; }
     }
     if (finalTranscript.trim()) handleVoiceCommand(finalTranscript.toLowerCase());
   };
-  recognition.onend = () => { document.getElementById("liveSubtitle").textContent = ""; };
+  recognition.onend   = () => { document.getElementById("liveSubtitle").textContent = ""; };
   recognition.onerror = (event) => { console.error("Speech error:", event.error); if (event.error !== "not-allowed") alert("បញ្ហាក្នុងការស្ដាប់សម្លេង: " + event.error); };
 
   const overlay = document.getElementById("voiceOverlay");
   const stopMicBtn = document.getElementById("stopMic");
+
   if (micButton) {
     micButton.addEventListener('pointerdown', () => {
       overlay.style.display = "flex";
       stopMicBtn.classList.add("listening");
       micButton.classList.add("listening");
-      try { recognition.start(); } catch {}
+      try { recognition.start(); } catch (e) { /* already started */ }
     });
+
     const stopListening = () => {
       recognition.stop();
       overlay.style.display = "none";
       stopMicBtn.classList.remove("listening");
       micButton.classList.remove("listening");
     };
+
     micButton.addEventListener('pointerup', stopListening);
     micButton.addEventListener('pointercancel', stopListening);
     stopMicBtn.addEventListener("click", stopListening);
@@ -289,51 +316,43 @@ function handleVoiceCommand(command) {
 }
 </script>
 
-<!-- ✅ Shared notification checker -->
+<!-- ✅ Shared notification logic -->
 <script src="notifications/checkNotification.js"></script>
 <script>
-  window.addEventListener('load', () => {
-    setupAutoLogoutEvents();
-    // Fetch server, update sessionStorage.notifUnreadCount and the badge
-    checkNotification();
-  });
-
-  // Toast helpers used by checkNotification.js on this page
-  function showToast(message, uploadTime = "") {
-    const user = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
-    const username = user.username || "guest";
-    const toast = document.getElementById("toast");
-    const toastMessage = document.getElementById("toastMessage");
-    const checkbox = document.getElementById("toastNoShowAgain");
-    if (checkbox) checkbox.checked = false;
-    toastMessage.textContent = message;
-    toast.style.display = "block";
-    if (uploadTime) {
-      localStorage.setItem(`lastToastShown_${username}`, uploadTime);
-      localStorage.removeItem(`noShowToast_${username}`);
-    }
-  }
-  function hideToast() {
-    const user = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
-    const username = user.username || "guest";
-    const checkbox = document.getElementById("toastNoShowAgain");
-    if (checkbox && checkbox.checked) localStorage.setItem(`noShowToast_${username}`, "true");
-    document.getElementById("toast").style.display = "none";
-  }
-  function resetToastPreference() {
-    const username = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}").username || "guest";
+// Toast helpers (use by checkNotification.js in this page)
+function showToast(message, uploadTime = "") {
+  const user = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
+  const username = user.username || "guest";
+  const toast = document.getElementById("toast");
+  const toastMessage = document.getElementById("toastMessage");
+  const checkbox = document.getElementById("toastNoShowAgain");
+  if (checkbox) checkbox.checked = false;
+  toastMessage.textContent = message;
+  toast.style.display = "block";
+  if (uploadTime) {
+    localStorage.setItem(`lastToastShown_${username}`, uploadTime);
     localStorage.removeItem(`noShowToast_${username}`);
   }
-</script>
+}
+function hideToast() {
+  const user = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
+  const username = user.username || "guest";
+  const checkbox = document.getElementById("toastNoShowAgain");
+  if (checkbox && checkbox.checked) localStorage.setItem(`noShowToast_${username}`, "true");
+  document.getElementById("toast").style.display = "none";
+}
+function resetToastPreference() {
+  const username = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}").username || "guest";
+  localStorage.removeItem(`noShowToast_${username}`);
+}
 
-<!-- ✅ Tiny listener to keep Home badge in sync with Notifications page -->
-<script>
-(function syncNotifBadgeOnHome(){
+// ===== Badge sync (read → hide immediately) =====
+(function notifBadgeSync(){
   const badge = document.getElementById('notif-badge');
 
-  function paintFromSession(){
-    if (!badge) return;
+  function paint() {
     const n = parseInt(sessionStorage.getItem('notifUnreadCount') || '0', 10);
+    if (!badge) return;
     if (n > 0) {
       badge.style.display = 'inline-block';
       badge.textContent = n > 9 ? '9+' : String(n);
@@ -342,32 +361,35 @@ function handleVoiceCommand(command) {
     }
   }
 
-  // Paint immediately
-  paintFromSession();
+  // Paint immediately from cache
+  paint();
 
-  // React to cross-tab broadcasts from Notifications page
+  // Cross-tab broadcast listener (notifications page writes notifSync)
   window.addEventListener('storage', (e) => {
-    if (e.key === 'notifSync' && e.newValue) {
+    if (e.key === 'notifSync') {
       try {
-        const payload = JSON.parse(e.newValue);
+        const payload = JSON.parse(e.newValue || '{}');
         if (typeof payload.unread === 'number') {
           sessionStorage.setItem('notifUnreadCount', String(payload.unread));
-          paintFromSession();
+          paint();
         }
       } catch(_) {}
     }
   });
 
-  // Verify with server when tab becomes visible
+  // Verify with server when visible
   document.addEventListener('visibilitychange', () => {
     if (!document.hidden && typeof window.checkNotification === 'function') {
       window.checkNotification();
-      setTimeout(paintFromSession, 150);
+      setTimeout(paint, 120);
     }
   });
 
-  // Repaint shortly after DOM ready in case checker already ran
-  window.addEventListener('DOMContentLoaded', () => setTimeout(paintFromSession, 150));
+  // Initial server check on load
+  window.addEventListener('DOMContentLoaded', () => {
+    if (typeof window.checkNotification === 'function') window.checkNotification();
+    setTimeout(paint, 120);
+  });
 })();
 </script>
 </body>
