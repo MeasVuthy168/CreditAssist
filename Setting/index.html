@@ -8,13 +8,7 @@
   <style>
     @font-face { font-family:'Krasar'; src:url('../Krasar-Regular.ttf') format('truetype'); }
 
-    :root{
-      --brand:#0d2d5c;
-      --bg:#f1f4f8;
-      --card:#fff;
-      --text:#333;
-      --muted:#555;
-    }
+    :root{ --brand:#0d2d5c; --bg:#f1f4f8; --card:#fff; --text:#333; --muted:#555; }
 
     body{margin:0;font-family:'Krasar',Arial,sans-serif;background:var(--bg);color:var(--text);padding-bottom:70px}
     .header{background:var(--brand);color:#fff;padding:14px 16px;font-size:18px;font-weight:bold;box-shadow:0 2px 5px rgba(0,0,0,.2);position:fixed;top:0;left:0;right:0;z-index:999;display:flex;align-items:center}
@@ -57,13 +51,11 @@
   </style>
 </head>
 <body>
-  <!-- Header -->
   <div class="header">
     <button class="back" onclick="window.location.href='../index.html'">←</button>
     <div>Setting</div>
   </div>
 
-  <!-- Profile -->
   <div class="profile-section">
     <img id="profile-photo" src="profile.jpg" alt="User Photo">
     <div class="info">
@@ -72,7 +64,6 @@
     </div>
   </div>
 
-  <!-- Settings -->
   <div class="setting-section">
     <div class="setting-item" onclick="window.location.href='userinfo.html'">
       <span><img class="icon" src="user.png" alt="User" />ព័ត៌មានផ្ទាល់</span>
@@ -95,7 +86,6 @@
     </div>
   </div>
 
-  <!-- Bottom bar -->
   <div class="bottom-bar">
     <button class="bottom-btn" onclick="window.location.href='../index.html'">
       <img src="../icons/Home.png" width="24" height="24" /><div>Home</div>
@@ -112,7 +102,6 @@
     </button>
   </div>
 
-  <!-- Logout Modal -->
   <div id="logoutModal" class="modal">
     <div class="modal-content">
       <p>តើអ្នកប្រាកដចង់ចាកចេញពីប្រព័ន្ធមែនទេ?</p>
@@ -126,15 +115,14 @@
   <audio id="logout-audio" src="logout-sound.mp3" preload="auto"></audio>
 
   <script>
-    // ===== CONFIG =====
     const API_BASE  = "https://secure-backend-tzj9.onrender.com";
-    const basePath  = "/CreditAssist"; // GitHub Pages base path
+    const basePath  = "/CreditAssist";
 
-    // ===== Auth guard =====
+    // Guard
     const token = sessionStorage.getItem('token');
     if (!token) { alert("Session expired or unauthorized access."); window.location.href = "../login.html"; }
 
-    // ===== Auto logout =====
+    // Auto logout
     function setupAutoLogoutEvents() {
       const AUTO_LOGOUT_MINUTES = 1;
       let logoutTimer;
@@ -154,124 +142,79 @@
     function confirmLogout(){ document.getElementById("logoutModal").classList.add("show"); }
     function closeModal(){ document.getElementById("logoutModal").classList.remove("show"); }
 
-    // ===== Profile fill =====
+    // Profile + ensure username key
     document.addEventListener("DOMContentLoaded", () => {
-      document.getElementById("user-fullname").textContent = sessionStorage.getItem("fullname") || "អ្នកប្រើ";
-      document.getElementById("user-position").textContent = sessionStorage.getItem("userPosition") || "មិនដំណើរការ";
-      const img = sessionStorage.getItem("image") || "profile.jpg";
-      document.getElementById("profile-photo").src = API_BASE + "/" + img;
+      const name = sessionStorage.getItem("fullname") || "អ្នកប្រើ";
+      const position = sessionStorage.getItem("userPosition") || "មិនដំណើរការ";
+      const image = sessionStorage.getItem("image") || "profile.jpg";
+      document.getElementById("user-fullname").textContent = name;
+      document.getElementById("user-position").textContent = position;
+      document.getElementById("profile-photo").src = API_BASE + "/" + image;
+
+      // 🔑 ensure sessionStorage.username exists for the badge logic
+      try {
+        const u = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
+        if (u.username && !sessionStorage.getItem("username")) {
+          sessionStorage.setItem("username", u.username);
+        }
+      } catch {}
     });
 
-    // ===== Push helpers =====
+    // Push helpers (unchanged)
     async function registerSW() {
       if (!('serviceWorker' in navigator)) throw new Error('SW not supported');
-      try {
-        const reg = await navigator.serviceWorker.register(`${basePath}/service-worker.js`, { scope: `${basePath}/` });
-        if (!navigator.serviceWorker.controller) console.log('SW installed; reload once to take control.');
-        return reg;
-      } catch (e) {
-        // fallback if you later move the SW to root
-        return await navigator.serviceWorker.register(`/service-worker.js`);
-      }
+      try { return await navigator.serviceWorker.register(`${basePath}/service-worker.js`, { scope: `${basePath}/` }); }
+      catch { return await navigator.serviceWorker.register(`/service-worker.js`); }
     }
-
     async function getVapidKey() {
-      const res = await fetch(`${API_BASE}/api/push/public-key`);
-      const data = await res.json();
-      if (!data.key) throw new Error("No VAPID key");
-      return data.key;
+      const r = await fetch(`${API_BASE}/api/push/public-key`);
+      const j = await r.json(); if (!j.key) throw new Error("No VAPID key"); return j.key;
     }
+    function b64ToU8(s){const p='='.repeat((4-(s.length%4))%4);const b=(s+p).replace(/-/g,'+').replace(/_/g,'/');const r=atob(b);const o=new Uint8Array(r.length);for(let i=0;i<r.length;i++)o[i]=r.charCodeAt(i);return o;}
+    async function getCurrentSubscription(){if(!('serviceWorker'in navigator))return null;const scoped=await navigator.serviceWorker.getRegistration(`${basePath}/`);const reg=scoped||await navigator.serviceWorker.getRegistration();if(!reg)return null;return await reg.pushManager.getSubscription();}
+    function setPushPill(on){const el=document.getElementById('push-pill');el.textContent=on?'On':'Off';el.classList.toggle('on',!!on);el.classList.toggle('off',!on);}
 
-    function b64ToU8(base64String) {
-      const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
-      const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
-      const rawData = atob(base64);
-      const output = new Uint8Array(rawData.length);
-      for (let i = 0; i < rawData.length; ++i) output[i] = rawData.charCodeAt(i);
-      return output;
-    }
+    async function togglePush(){
+      try{
+        const perm=await Notification.requestPermission();
+        if(perm!=='granted'){alert('Permission denied.');return;}
+        const reg=await registerSW();
+        const current=await reg.pushManager.getSubscription();
 
-    async function getCurrentSubscription() {
-      if (!('serviceWorker' in navigator)) return null;
-      // Try scoped reg first (GitHub Pages path), then any reg
-      const scoped = await navigator.serviceWorker.getRegistration(`${basePath}/`);
-      const reg = scoped || await navigator.serviceWorker.getRegistration();
-      if (!reg) return null;
-      return await reg.pushManager.getSubscription();
-    }
-
-    function setPushPill(on) {
-      const pill = document.getElementById('push-pill');
-      pill.textContent = on ? 'On' : 'Off';
-      pill.classList.toggle('on',  !!on);
-      pill.classList.toggle('off', !on);
-    }
-
-    // Toggle subscriptions
-    async function togglePush() {
-      try {
-        const perm = await Notification.requestPermission();
-        if (perm !== 'granted') { alert('Permission denied.'); return; }
-
-        const reg = await registerSW();
-        const current = await reg.pushManager.getSubscription();
-
-        if (current) {
-          // Unsubscribe + tell backend
-          const endpoint = current.endpoint;
+        if(current){
+          const endpoint=current.endpoint;
           await current.unsubscribe().catch(()=>{});
-          await fetch(`${API_BASE}/api/push/unsubscribe`, {
-            method: 'POST',
-            headers: { 'Content-Type':'application/json', 'Authorization': `Bearer ${token}` },
-            body: JSON.stringify({ endpoint })
+          await fetch(`${API_BASE}/api/push/unsubscribe`,{
+            method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`},
+            body:JSON.stringify({endpoint})
           });
-          setPushPill(false);
-          alert('🔕 បានបិទការជូនដំណឹង');
-          return;
+          setPushPill(false); alert('🔕 បានបិទការជូនដំណឹង'); return;
         }
 
-        // Subscribe
-        const vapid = await getVapidKey();
-        const sub = await reg.pushManager.subscribe({
-          userVisibleOnly: true,
-          applicationServerKey: b64ToU8(vapid)
+        const vapid=await getVapidKey();
+        const sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64ToU8(vapid)});
+        const resp=await fetch(`${API_BASE}/api/push/subscribe`,{
+          method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`},
+          body:JSON.stringify({subscription:sub})
         });
-
-        const resp = await fetch(`${API_BASE}/api/push/subscribe`, {
-          method: 'POST',
-          headers: { 'Content-Type':'application/json', 'Authorization': `Bearer ${token}` },
-          body: JSON.stringify({ subscription: sub })
-        });
-        if (!resp.ok) throw new Error(`Backend ${resp.status}`);
-        setPushPill(true);
-        alert('🔔 បានបើកការជូនដំណឹង');
-      } catch (e) {
-        console.error(e);
-        alert(`❌ មិនអាចប្ដូរបាន៖ ${e.message}`);
-      }
+        if(!resp.ok) throw new Error(`Backend ${resp.status}`);
+        setPushPill(true); alert('🔔 បានបើកការជូនដំណឹង');
+      }catch(e){console.error(e);alert(`❌ មិនអាចប្ដូរបាន៖ ${e.message}`);}
     }
-    window.togglePush = togglePush;
+    window.togglePush=togglePush;
 
-    // Init
     window.addEventListener("DOMContentLoaded", async () => {
       setupAutoLogoutEvents();
-      try {
-        const sub = await getCurrentSubscription();
-        setPushPill(!!sub);
-      } catch {
-        setPushPill(false);
-      }
+      try{ const sub=await getCurrentSubscription(); setPushPill(!!sub); }catch{ setPushPill(false); }
     });
   </script>
 
-  <!-- Shared badge/notification script (OLD schema) -->
+  <!-- OLD-SCHEMA badge script -->
   <script src="../notifications/checkNotification.js"></script>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       if (typeof checkNotification === "function") checkNotification();
-      setInterval(() => {
-        if (typeof checkNotification === "function") checkNotification();
-      }, 30000);
+      setInterval(() => { if (typeof checkNotification === "function") checkNotification(); }, 30000);
     });
   </script>
 </body>
