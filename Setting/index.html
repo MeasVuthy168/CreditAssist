@@ -3,170 +3,149 @@
 <head>
   <meta charset="UTF-8" />
   <title>Setting</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#0d2d5c" />
   <style>
     @font-face { font-family:'Krasar'; src:url('../Krasar-Regular.ttf') format('truetype'); }
+
     :root{
       --brand:#0d2d5c;
       --bg:#f1f4f8;
       --card:#fff;
       --text:#333;
-      --muted:#666;
-      --ok:#1e7e34;
-      --danger:#b52d2d;
-      --shadow:0 2px 6px rgba(0,0,0,.08);
+      --muted:#555;
+      --green:#1e7e34;
+      --red:#b52d2d;
     }
-    *{box-sizing:border-box}
-    body{margin:0;font-family:'Krasar',Arial,sans-serif;background:var(--bg);color:var(--text);padding-bottom:72px}
 
-    .header{position:fixed;top:0;left:0;right:0;height:56px;background:var(--brand);color:#fff;
-      display:flex;align-items:center;gap:10px;padding:0 16px;z-index:1000;box-shadow:0 2px 5px rgba(0,0,0,.2)}
-    .header .back{font-size:22px;color:#fff;background:none;border:none;cursor:pointer}
-    .header h1{margin:0;font-size:18px;font-weight:700}
+    body{margin:0;font-family:'Krasar',Arial,sans-serif;background:var(--bg);color:var(--text);padding-bottom:70px}
+    .header{background:var(--brand);color:#fff;padding:14px 16px;font-size:18px;font-weight:bold;box-shadow:0 2px 5px rgba(0,0,0,.2);position:fixed;top:0;left:0;right:0;z-index:999;display:flex;align-items:center}
+    .header .back{font-size:22px;color:#fff;background:none;border:none;margin-right:12px;cursor:pointer}
 
-    .container{margin-top:64px}
+    .profile-section{margin-top:60px;padding:20px;background:var(--card);display:flex;align-items:center;gap:16px}
+    .profile-section img{width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid var(--brand)}
+    .info{display:flex;flex-direction:column}
+    .info .name{font-weight:bold;font-size:18px;color:goldenrod}
+    .info .position{font-size:14px;color:var(--muted)}
 
-    .profile{
-      display:flex;gap:16px;align-items:center;background:var(--card);margin:12px;border-radius:12px;padding:16px;box-shadow:var(--shadow)
+    .setting-section{margin-top:10px}
+    .setting-item{background:var(--card);padding:16px;border-bottom:1px solid #ddd;display:flex;align-items:center;justify-content:space-between;font-size:16px}
+    .setting-item:hover{background:#eef2f7}
+    .setting-item span{display:flex;align-items:center;gap:10px}
+    .setting-item img.icon{width:20px;height:20px}
+
+    /* Modern toggle */
+    .toggle{
+      --w:56px; --h:30px;
+      position:relative; width:var(--w); height:var(--h);
+      background:#e5e7eb; border-radius:999px; cursor:pointer; transition:.2s ease;
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,.05);
     }
-    .profile img{width:72px;height:72px;border-radius:50%;object-fit:cover;border:2px solid var(--brand)}
-    .profile .nm{font-weight:700;color:goldenrod;font-size:18px}
-    .profile .pos{color:var(--muted);font-size:14px;margin-top:2px}
-
-    .group{margin:12px}
-    .card{
-      background:var(--card);border-radius:12px;box-shadow:var(--shadow);overflow:hidden
+    .toggle.on{ background:#d1fae5; }
+    .toggle .dot{
+      position:absolute; top:3px; left:3px; width:24px; height:24px; border-radius:50%;
+      background:#fff; box-shadow:0 1px 3px rgba(0,0,0,.2); transition:transform .2s ease;
     }
-    .row{
-      padding:16px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #eee;cursor:pointer
+    .toggle.on .dot{ transform: translateX(26px); }
+    .toggle-label{
+      min-width:68px; text-align:right; font-size:13px; margin-left:10px;
     }
-    .row:last-child{border-bottom:none}
-    .row .left{display:flex;align-items:center;gap:10px}
-    .row .left img{width:20px;height:20px}
-    .row .left .title{font-size:15px}
-    .row .chev{color:#bbb}
+    .lbl-on{color:var(--green); display:none;}
+    .lbl-off{color:var(--red); display:inline;}
+    .toggle.on ~ .toggle-label .lbl-on{display:inline;}
+    .toggle.on ~ .toggle-label .lbl-off{display:none;}
 
-    /* Pretty iOS/Material style switch */
-    .switch{position:relative;width:52px;height:30px}
-    .switch input{display:none}
-    .track{
-      position:absolute;inset:0;border-radius:999px;background:#e9eef5;border:1px solid #d7dfeb;transition:.25s ease;box-shadow:inset 0 0 0 1px rgba(0,0,0,.02)
-    }
-    .thumb{
-      position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;
-      background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.2);transition:.25s ease
-    }
-    input:checked + .track{background:#dff6e5;border-color:#c7ecd3}
-    input:checked ~ .thumb{left:25px}
-    .switch-label{font-size:12px;color:var(--muted);text-align:right;margin-top:2px}
-    .switch-label.on{color:var(--ok)}
-    .switch-label.off{color:var(--danger)}
+    .signout span{color:red;font-weight:bold;text-decoration:underline}
+    .signout img.icon{filter:brightness(0) saturate(100%) invert(19%) sepia(100%) saturate(6486%) hue-rotate(355deg) brightness(93%) contrast(104%)}
 
-    .bottom-bar{position:fixed;left:0;right:0;bottom:0;height:56px;background:var(--brand);
-      display:flex;justify-content:space-around;align-items:center;box-shadow:0 -2px 5px rgba(0,0,0,.2);z-index:1000}
-    .bottom-btn{display:flex;flex-direction:column;align-items:center;color:#fff;font-size:11px;background:none;border:none}
-    .bottom-btn img{margin-bottom:2px}
+    .bottom-bar{position:fixed;bottom:0;left:0;width:100%;height:56px;background:var(--brand);display:flex;justify-content:space-around;align-items:center;box-shadow:0 2px 5px rgba(0,0,0,.3);z-index:1000}
+    .bottom-btn{display:flex;flex-direction:column;align-items:center;font-size:11px;color:#fff;border:none;background:none;padding:2px}
+    .bottom-btn img{margin-bottom:2px;pointer-events:none}
 
-    .badge{position:absolute;top:-4px;right:-8px;background:red;color:#fff;font-size:10px;padding:2px 6px;border-radius:50%;font-weight:700}
+    .modal{display:none;position:fixed;z-index:2000;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,.5);justify-content:center;align-items:center}
+    .modal.show{display:flex}
+    @keyframes slideIn{from{transform:translateY(30px);opacity:0}to{transform:translateY(0);opacity:1}}
+    .modal-content{background:#fff;font-family:'Krasar',Arial,sans-serif;padding:20px;border-radius:8px;text-align:center;width:90%;max-width:320px;box-shadow:0 2px 10px rgba(0,0,0,.3);animation:slideIn .3s ease-out}
+    .modal-content p{font-size:16px;margin-bottom:20px;color:#333}
+    .modal-actions{display:flex;justify-content:space-between;gap:10px}
+    .confirm-btn,.cancel-btn{flex:1;padding:10px;font-family:'Krasar',Arial,sans-serif;font-size:16px;border:none;border-radius:5px;cursor:pointer}
+    .confirm-btn{background:#d9534f;color:#fff}
+    .cancel-btn{background:#f1f1f1;color:#333}
 
-    /* toast (optional, if you add it later) */
-    #toast{display:none;position:fixed;left:12px;right:12px;bottom:70px;background:#fff;border-radius:10px;
-      box-shadow:var(--shadow);padding:12px;font-size:14px;z-index:1200}
+    .badge{position:absolute;top:-4px;right:-8px;background:red;color:#fff;font-size:10px;padding:2px 6px;border-radius:50%;font-weight:bold}
   </style>
 </head>
 <body>
+  <!-- Header -->
   <div class="header">
-    <button class="back" onclick="location.href='../index.html'">←</button>
-    <h1>Setting</h1>
+    <button class="back" onclick="window.location.href='../index.html'">←</button>
+    <div>Setting</div>
   </div>
 
-  <div class="container">
-    <!-- Profile -->
-    <div class="profile">
-      <img id="profile-photo" src="profile.jpg" alt="User">
-      <div>
-        <div class="nm" id="user-fullname">User Name</div>
-        <div class="pos" id="user-position">Position</div>
-      </div>
-    </div>
-
-    <!-- Menu -->
-    <div class="group">
-      <div class="card">
-        <div class="row" onclick="location.href='userinfo.html'">
-          <div class="left">
-            <img src="user.png" alt="">
-            <div class="title">ព័ត៌មានផ្ទាល់</div>
-          </div>
-          <div class="chev">›</div>
-        </div>
-
-        <div class="row" onclick="location.href='about.html'">
-          <div class="left">
-            <img src="info.png" alt="">
-            <div class="title">អំពី​កម្មវិធី</div>
-          </div>
-          <div class="chev">›</div>
-        </div>
-
-        <!-- Push notification toggle -->
-        <div class="row" style="cursor:default">
-          <div class="left">
-            <img src="bell.png" alt="">
-            <div class="title">ការជូនដំណឹង</div>
-          </div>
-
-          <!-- switch -->
-          <div style="display:flex;flex-direction:column;align-items:end">
-            <label class="switch">
-              <input id="push-toggle" type="checkbox" />
-              <span class="track"></span>
-              <span class="thumb"></span>
-            </label>
-            <div id="push-state" class="switch-label off">Off</div>
-          </div>
-        </div>
-
-        <div class="row" onclick="confirmLogout()">
-          <div class="left">
-            <img src="logout-rounded-left.png" alt="">
-            <div class="title" style="color:#b52d2d;font-weight:700;text-decoration:underline">ចាកចេញ</div>
-          </div>
-        </div>
-      </div>
+  <!-- Profile Section -->
+  <div class="profile-section">
+    <img id="profile-photo" src="profile.jpg" alt="User Photo">
+    <div class="info">
+      <div class="name" id="user-fullname">User Name</div>
+      <div class="position" id="user-position">Position</div>
     </div>
   </div>
 
-  <!-- Bottom Bar -->
+  <!-- Setting Items -->
+  <div class="setting-section">
+    <div class="setting-item" onclick="window.location.href='userinfo.html'">
+      <span><img class="icon" src="user.png" alt="User" />ព័ត៌មានផ្ទាល់</span>
+      <span>›</span>
+    </div>
+
+    <div class="setting-item" onclick="window.location.href='about.html'">
+      <span><img class="icon" src="info.png" alt="Info" />អំពី​កម្មវិធី</span>
+      <span>›</span>
+    </div>
+
+    <!-- 🔔 Push notifications ON/OFF -->
+    <div class="setting-item">
+      <span><img class="icon" src="bell.png" alt="Push" />ការជូនដំណឹង</span>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div id="push-toggle" class="toggle" role="switch" aria-checked="false" tabindex="0">
+          <div class="dot"></div>
+        </div>
+        <div class="toggle-label">
+          <span class="lbl-on">On</span>
+          <span class="lbl-off">Off</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="setting-item signout" onclick="confirmLogout()">
+      <span><img class="icon" src="logout-rounded-left.png" alt="Logout" />ចាកចេញ</span>
+    </div>
+  </div>
+
+  <!-- Bottom bar -->
   <div class="bottom-bar">
-    <button class="bottom-btn" onclick="location.href='../index.html'">
-      <img src="../icons/Home.png" width="24" height="24" alt=""><div>Home</div>
+    <button class="bottom-btn active" onclick="window.location.href='../index.html'">
+      <img src="../icons/Home.png" width="24" height="24" /><div>Home</div>
     </button>
-    <button class="bottom-btn" onclick="location.href='../Setting/index.html'">
-      <img src="../icons/Setting.png" width="24" height="24" alt=""><div>Setting</div>
+    <button class="bottom-btn" onclick="window.location.href='../Setting/index.html'">
+      <img src="../icons/Setting.png" width="24" height="24" /><div>Setting</div>
     </button>
-    <button class="bottom-btn" onclick="location.href='../notifications/index.html'">
-      <div style="position:relative">
-        <img src="../icons/Notification.png" width="24" height="24" alt="">
-        <span id="notif-badge" class="badge" style="display:none"></span>
+    <button class="bottom-btn" onclick="window.location.href='../notifications/index.html'">
+      <div style="position: relative;">
+        <img src="../icons/Notification.png" width="24" height="24" />
+        <span id="notif-badge" class="badge" style="display:none;"></span>
       </div>
       <div>Notification</div>
     </button>
   </div>
 
-  <!-- Optional toast shell (kept hidden; your checkNotification.js can use it) -->
-  <div id="toast">
-    <div id="toastMessage"></div>
-  </div>
-
-  <!-- Logout modal (simple inline) -->
-  <div id="logoutModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1200;align-items:center;justify-content:center">
-    <div style="background:#fff;padding:20px;border-radius:10px;min-width:260px;text-align:center;box-shadow:var(--shadow)">
-      <div style="font-size:16px;margin-bottom:12px">តើអ្នកប្រាកដចង់ចាកចេញពីប្រព័ន្ធមែនទេ?</div>
-      <div style="display:flex;gap:10px;justify-content:center">
-        <button onclick="logout()" style="background:#d9534f;color:#fff;border:none;border-radius:6px;padding:10px 14px">ចាកចេញ</button>
-        <button onclick="closeModal()" style="background:#f1f1f1;color:#333;border:none;border-radius:6px;padding:10px 14px">បោះបង់</button>
+  <!-- Logout Modal -->
+  <div id="logoutModal" class="modal">
+    <div class="modal-content">
+      <p>តើអ្នកប្រាកដចង់ចាកចេញពីប្រព័ន្ធមែនទេ?</p>
+      <div class="modal-actions">
+        <button onclick="logout()" class="confirm-btn">ចាកចេញ</button>
+        <button onclick="closeModal()" class="cancel-btn">បោះបង់</button>
       </div>
     </div>
   </div>
@@ -174,191 +153,217 @@
   <audio id="logout-audio" src="logout-sound.mp3" preload="auto"></audio>
 
   <script>
-    // ===== CONFIG =====
-    const API_BASE = "https://secure-backend-tzj9.onrender.com";
-    const basePath = "/CreditAssist"; // GitHub Pages base path
+    // ====== CONFIG ======
+    const API_BASE  = "https://secure-backend-tzj9.onrender.com";
+    const basePath  = "/CreditAssist"; // GitHub Pages base path
 
-    // ===== Token guard =====
+    // ====== Auth guard ======
     const token = sessionStorage.getItem('token');
-    if (!token) { alert("Session expired or unauthorized access."); location.href = "../login.html"; }
+    if (!token) { alert("Session expired or unauthorized access."); window.location.href = "../login.html"; }
 
-    // ===== Auto logout =====
-    (function setupAutoLogout() {
+    // ====== Auto logout ======
+    function setupAutoLogoutEvents() {
       const AUTO_LOGOUT_MINUTES = 1;
-      let timer;
+      let logoutTimer;
       function reset() {
-        clearTimeout(timer);
-        timer = setTimeout(() => { sessionStorage.clear(); alert("Session expired due to inactivity. Please log in again."); location.href = "../login.html"; }, AUTO_LOGOUT_MINUTES * 60 * 1000);
+        clearTimeout(logoutTimer);
+        logoutTimer = setTimeout(() => {
+          sessionStorage.clear();
+          alert("Session expired due to inactivity. Please log in again.");
+          window.location.href = "../login.html";
+        }, AUTO_LOGOUT_MINUTES * 60 * 1000);
       }
       ['mousemove','mousedown','keydown','touchstart','touchmove','scroll'].forEach(e => document.addEventListener(e, reset, true));
       reset();
-    })();
+    }
 
-    // ===== Profile fill =====
+    function logout(){ const a=document.getElementById("logout-audio"); if(a) a.play(); setTimeout(()=>{sessionStorage.clear();window.location.href="../login.html"},800); }
+    function confirmLogout(){ document.getElementById("logoutModal").classList.add("show"); }
+    function closeModal(){ document.getElementById("logoutModal").classList.remove("show"); }
+
+    // ====== Profile fill ======
     document.addEventListener("DOMContentLoaded", () => {
-      const name = sessionStorage.getItem("fullname") || "អ្នកប្រើ";
-      const position = sessionStorage.getItem("userPosition") || "មិនដំណើរការ";
-      const image = sessionStorage.getItem("image") || "profile.jpg";
-      document.getElementById("user-fullname").textContent = name;
-      document.getElementById("user-position").textContent = position;
-      document.getElementById("profile-photo").src = API_BASE + "/" + image;
-
-      // Also ensure username exists for notification scripts
-      try {
-        if (!sessionStorage.getItem('username')) {
-          const u = JSON.parse(sessionStorage.getItem('loggedInUser') || '{}');
-          if (u && u.username) sessionStorage.setItem('username', u.username);
-        }
-      } catch {}
+      document.getElementById("user-fullname").textContent = sessionStorage.getItem("fullname") || "អ្នកប្រើ";
+      document.getElementById("user-position").textContent = sessionStorage.getItem("userPosition") || "មិនដំណើរការ";
+      const img = sessionStorage.getItem("image") || "profile.jpg";
+      document.getElementById("profile-photo").src = API_BASE + "/" + img;
     });
 
-    // ===== Logout helpers =====
-    function logout(){ const a=document.getElementById("logout-audio"); if(a) a.play(); setTimeout(()=>{sessionStorage.clear();location.href="../login.html"},800); }
-    function confirmLogout(){ document.getElementById("logoutModal").style.display='flex'; }
-    function closeModal(){ document.getElementById("logoutModal").style.display='none'; }
-
-    // ===== SW + Push helpers =====
+    // ====== Service Worker registration (GitHub Pages scope) ======
     async function registerSW() {
       if (!('serviceWorker' in navigator)) throw new Error('SW not supported');
       try {
         const reg = await navigator.serviceWorker.register(`${basePath}/service-worker.js`, { scope: `${basePath}/` });
-        if (!navigator.serviceWorker.controller) console.log('SW installed (reload once to take control).');
+        if (!navigator.serviceWorker.controller) console.log('SW installed; reload once to take control.');
         return reg;
       } catch (e) {
-        // Fallback to root if needed
+        // fallback to root scope if needed
         return await navigator.serviceWorker.register(`/service-worker.js`);
       }
     }
+
+    // ====== VAPID key fetch ======
     async function getVapidKey() {
-      const r = await fetch(`${API_BASE}/api/push/public-key`);
-      const j = await r.json();
-      if (!j.key) throw new Error('No VAPID key from server');
-      return j.key;
+      const res = await fetch(`${API_BASE}/api/push/public-key`);
+      const data = await res.json();
+      if (!data.key) throw new Error("No VAPID key");
+      return data.key;
     }
+
     function b64ToU8(base64String) {
       const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
-      const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+      const base64 = (base64String + padding).replace(/-/g,'+').replace(/_/g,'/');
       const rawData = atob(base64);
       const output = new Uint8Array(rawData.length);
-      for (let i = 0; i < rawData.length; ++i) output[i] = rawData.charCodeAt(i);
+      for (let i=0;i<rawData.length;++i) output[i] = rawData.charCodeAt(i);
       return output;
     }
-    async function getCurrentSub() {
+
+    async function getCurrentSubscription() {
       if (!('serviceWorker' in navigator)) return null;
-      const reg = await navigator.serviceWorker.getRegistration(`${basePath}/`);
-      const target = reg || await navigator.serviceWorker.getRegistration();
-      if (!target) return null;
-      return await target.pushManager.getSubscription();
+      let reg = await navigator.serviceWorker.getRegistration(`${basePath}/`);
+      if (!reg) reg = await navigator.serviceWorker.getRegistration();
+      if (!reg) return null;
+      return await reg.pushManager.getSubscription();
     }
 
-    // ===== Switch UI state =====
-    const pushToggle = document.getElementById('push-toggle');
-    const pushState  = document.getElementById('push-state');
-    function setSwitch(on) {
-      pushToggle.checked = !!on;
-      pushState.textContent = on ? 'On' : 'Off';
-      pushState.classList.toggle('on', !!on);
-      pushState.classList.toggle('off', !on);
+    function setToggle(on) {
+      const el = document.getElementById('push-toggle');
+      el.classList.toggle('on', !!on);
+      el.setAttribute('aria-checked', on ? 'true' : 'false');
     }
 
-    // Enable push
     async function enablePush() {
       const perm = await Notification.requestPermission();
-      if (perm !== 'granted') { alert('បានបដិសេធសិទ្ធិក្នុងការជូនដំណឹង'); setSwitch(false); return; }
-      const reg  = await registerSW();
+      if (perm !== 'granted') { alert('Permission denied.'); return false; }
 
-      // clean possible stale sub
+      const reg = await registerSW();
+
+      // Clean old/bad subscription first
       const old = await reg.pushManager.getSubscription();
-      if (old) { try{ await old.unsubscribe(); }catch{} }
+      if (old) { try { await old.unsubscribe(); } catch(_){} }
 
       const vapid = await getVapidKey();
-      const sub   = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64ToU8(vapid) });
+      const sub = await reg.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: b64ToU8(vapid)
+      });
 
       const resp = await fetch(`${API_BASE}/api/push/subscribe`, {
-        method: 'POST',
-        headers: { 'Content-Type':'application/json', 'Authorization': `Bearer ${token}` },
-        body: JSON.stringify({ subscription: sub })
+        method:'POST',
+        headers:{ 'Content-Type':'application/json', 'Authorization': `Bearer ${token}` },
+        body:JSON.stringify({ subscription: sub })
       });
       if (!resp.ok) {
-        setSwitch(false);
-        const t = await resp.text(); throw new Error(`Backend ${resp.status}: ${t}`);
+        const t = await resp.text();
+        throw new Error(`Backend ${resp.status}: ${t}`);
       }
-      setSwitch(true);
-      alert('🔔 បានបើកការជូនដំណឹង');
+      return true;
     }
 
-    // Disable push
     async function disablePush() {
-      const reg = await registerSW();
-      const sub = await reg.pushManager.getSubscription();
-      if (sub) {
-        const endpoint = sub.endpoint;
-        try { await sub.unsubscribe(); } catch {}
-        await fetch(`${API_BASE}/api/push/unsubscribe`, {
-          method: 'POST',
-          headers: { 'Content-Type':'application/json', 'Authorization': `Bearer ${token}` },
-          body: JSON.stringify({ endpoint })
-        }).catch(()=>{});
-      }
-      setSwitch(false);
-      alert('🔕 បានបិទការជូនដំណឹង');
+      let reg = await navigator.serviceWorker.getRegistration(`${basePath}/`);
+      if (!reg) reg = await navigator.serviceWorker.getRegistration();
+      if (!reg) return true;
+
+      const current = await reg.pushManager.getSubscription();
+      if (!current) return true;
+
+      const endpoint = current.endpoint;
+      try { await current.unsubscribe(); } catch(_){}
+
+      await fetch(`${API_BASE}/api/push/unsubscribe`, {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json', 'Authorization': `Bearer ${token}` },
+        body:JSON.stringify({ endpoint })
+      });
+      return true;
     }
 
-    // Toggle handler
-    pushToggle.addEventListener('change', async (e) => {
-      try {
-        if (e.target.checked) await enablePush();
-        else await disablePush();
-      } catch (err) {
-        console.error(err);
-        alert('❌ មិនអាចប្ដូរបាន៖ ' + (err.message || err));
-        // revert UI on failure
-        setSwitch(!(e.target.checked));
-      }
-    });
+    async function togglePush() {
+      const el = document.getElementById('push-toggle');
+      const isOn = el.classList.contains('on');
 
-    // Init switch by current subscription
-    (async function initPushSwitch(){
       try {
-        const sub = await getCurrentSub();
-        setSwitch(!!sub);
-      } catch {
-        setSwitch(false);
+        if (isOn) {
+          await disablePush();
+          setToggle(false);
+          alert('🔕 បានបិទការជូនដំណឹង');
+        } else {
+          const ok = await enablePush();
+          if (ok) { setToggle(true); alert('🔔 បានបើកការជូនដំណឹង'); }
+        }
+      } catch (e) {
+        console.error(e);
+        alert(`❌ មិនអាចប្ដូរបាន៖ ${e.message}`);
       }
-    })();
+    }
+
+    // ====== INIT ======
+    window.addEventListener("DOMContentLoaded", async () => {
+      setupAutoLogoutEvents();
+
+      // Init toggle state from current subscription
+      try {
+        const sub = await getCurrentSubscription();
+        setToggle(!!sub);
+      } catch { setToggle(false); }
+
+      // Toggle handlers (click + keyboard)
+      const tg = document.getElementById('push-toggle');
+      tg.addEventListener('click', togglePush);
+      tg.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); togglePush(); }
+      });
+    });
   </script>
 
-  <!-- Shared badge + toast logic -->
+  <!-- 🔴 Shared badge refresher & cross-tab sync -->
   <script src="../notifications/checkNotification.js"></script>
   <script>
-    // Robust badge init just for Setting page (handles timing races)
-    (function initNotifBadgeOnSetting() {
-      const badgeEl = document.getElementById('notif-badge');
+    (function syncNotifBadgeAcrossPages(){
+      const badge = document.getElementById('notif-badge');
 
-      // Ensure username exists (some pages only set loggedInUser)
-      try {
-        if (!sessionStorage.getItem('username')) {
-          const u = JSON.parse(sessionStorage.getItem('loggedInUser') || '{}');
-          if (u && u.username) sessionStorage.setItem('username', u.username);
-        }
-      } catch {}
-
-      function paintFromCache() {
-        if (!badgeEl) return;
+      function paintFromSession(){
         const n = parseInt(sessionStorage.getItem('notifUnreadCount') || '0', 10);
-        if (n > 0) { badgeEl.style.display = 'inline-block'; badgeEl.textContent = n > 9 ? '9+' : String(n); }
-        else { badgeEl.style.display = 'none'; }
+        if (!badge) return;
+        if (n > 0) {
+          badge.style.display = 'inline-block';
+          badge.textContent = n > 9 ? '9+' : String(n);
+        } else {
+          badge.style.display = 'none';
+        }
       }
-      paintFromCache();
 
-      function safeCheck() {
+      // 1) paint immediately from session cache
+      paintFromSession();
+
+      // 2) respond to cross-tab broadcasts (from notifications page)
+      window.addEventListener('storage', (e) => {
+        if (e.key === 'notifSync') {
+          try {
+            const payload = JSON.parse(e.newValue || '{}');
+            if (typeof payload.unread === 'number') {
+              sessionStorage.setItem('notifUnreadCount', String(payload.unread));
+              paintFromSession();
+            }
+          } catch (_){}
+        }
+      });
+
+      // 3) also verify with server when tab visible
+      document.addEventListener('visibilitychange', () => {
+        if (!document.hidden && typeof window.checkNotification === 'function') {
+          window.checkNotification();
+          setTimeout(paintFromSession, 150);
+        }
+      });
+
+      // 4) run the shared checker once on load too
+      window.addEventListener('DOMContentLoaded', () => {
         if (typeof window.checkNotification === 'function') window.checkNotification();
-        else paintFromCache();
-      }
-      setTimeout(safeCheck, 250);
-      document.addEventListener('visibilitychange', () => { if (!document.hidden) safeCheck(); });
-      setInterval(safeCheck, 30000);
-      setInterval(paintFromCache, 2000);
+        setTimeout(paintFromSession, 150);
+      });
     })();
   </script>
 </body>
