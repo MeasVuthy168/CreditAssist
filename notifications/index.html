@@ -10,30 +10,85 @@
       font-family: 'Krasar';
       src: url('https://measvuthy168.github.io/CreditAssist/Krasar-Regular.ttf') format('truetype');
     }
-    body { margin:0; font-family:'Krasar',Arial,sans-serif; background:#f2f2f2; color:#333; padding-bottom:70px; }
-    .header { height:36px; background:#0d2d5c; padding:14px 16px; display:flex; align-items:center; position:fixed; top:0; left:0; right:0; z-index:1000; box-shadow:0 2px 5px rgba(0,0,0,0.2); color:#fff; }
-    .header .back { font-size:22px; color:#fff; background:none; border:none; margin-right:12px; cursor:pointer; }
-    #notificationContainer { margin-top:72px; }
-    .card { background:#fff; margin:12px; padding:24px 16px; border-radius:12px; box-shadow:0 2px 6px rgba(0,0,0,.05); cursor:pointer; }
-    .card-title { font-weight:bold; color:#0d2d5c; font-size:14px; }
-    .card-date { color:gray; font-size:13px; }
-    .card-message { margin-top:4px; font-size:14px; color:#222; }
-    .card.read .card-title, .card.read .card-date, .card.read .card-message { color:#999 !important; }
-    .bottom-bar { position:fixed; bottom:0; left:0; width:100%; height:56px; background:#0d2d5c; display:flex; justify-content:space-around; align-items:center; box-shadow:0 -2px 5px rgba(0,0,0,0.2); z-index:999; }
-    .bottom-btn { display:flex; flex-direction:column; align-items:center; color:#fff; font-size:11px; border:none; background:none; }
-    .bottom-btn img { margin-bottom:2px; }
-    .notif-dropdown { position:relative; }
-    .notif-menu { position:absolute; top:34px; right:12px; background:#fff; border:1px solid #ddd; border-radius:6px; box-shadow:0 2px 6px rgba(0,0,0,.1); display:none; z-index:1000; min-width:160px; }
-    .notif-menu button { display:block; padding:10px 16px; width:100%; background:none; border:none; text-align:left; font-size:14px; cursor:pointer; }
-    .notif-menu button:hover { background:#f0f0f0; }
-    .badge { position:absolute; top:-4px; right:-8px; background:red; color:#fff; font-size:10px; padding:2px 6px; border-radius:50%; font-weight:bold; }
-    .menu-button { font-size:28px; background:transparent; border:none; color:#fff; cursor:pointer; padding:4px; }
+    body {
+      margin: 0;
+      font-family: 'Krasar', Arial, sans-serif;
+      background: #f2f2f2;
+      color: #333;
+      padding-bottom: 70px;
+    }
+    .header {
+      height: 36px;
+      background-color: #0d2d5c;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      color: white;
+    }
+    .header .back {
+      font-size: 22px;
+      color: white;
+      background: none;
+      border: none;
+      margin-right: 12px;
+      cursor: pointer;
+    }
+    #notificationContainer { margin-top: 72px; }
+    .card {
+      background: white;
+      margin: 12px;
+      padding: 24px 16px;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      cursor: pointer;
+    }
+    .card-title { font-weight: bold; color: #0d2d5c; font-size: 14px; }
+    .card-date { color: gray; font-size: 13px; }
+    .card-message { margin-top: 4px; font-size: 14px; color: #222; }
+    .card.read .card-title,
+    .card.read .card-date,
+    .card.read .card-message { color: #999 !important; }
+    .bottom-bar {
+      position: fixed;
+      bottom: 0; left: 0;
+      width: 100%; height: 56px;
+      background: #0d2d5c;
+      display: flex; justify-content: space-around; align-items: center;
+      box-shadow: 0 -2px 5px rgba(0,0,0,0.2);
+      z-index: 999;
+    }
+    .bottom-btn { display: flex; flex-direction: column; align-items: center; color: white; font-size: 11px; border: none; background: none; }
+    .bottom-btn img { margin-bottom: 2px; }
+    .notif-dropdown { position: relative; }
+    .notif-menu {
+      position: absolute; top: 34px; right: 12px;
+      background: white; border: 1px solid #ddd;
+      border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      display: none; z-index: 1000; min-width: 160px;
+    }
+    .notif-menu button {
+      display: block; padding: 10px 16px; width: 100%;
+      background: none; border: none; text-align: left; font-size: 14px; cursor: pointer;
+    }
+    .notif-menu button:hover { background: #f0f0f0; }
+    .badge {
+      position: absolute; top: -4px; right: -8px;
+      background: red; color: white;
+      font-size: 10px; padding: 2px 6px; border-radius: 50%; font-weight: bold;
+    }
+    .menu-button {
+      font-size: 28px; background: transparent; border: none; color: white; cursor: pointer; padding: 4px;
+    }
   </style>
 </head>
 <body>
   <div class="header">
     <button class="back" onclick="window.location.href='../index.html'">←</button>
-    <div style="flex:1; font-size:17px; font-weight:bold;">ការជូនដំណឹង</div>
+    <div style="flex: 1; font-size: 17px; font-weight: bold;">ការជូនដំណឹង</div>
     <div class="notif-dropdown">
       <button class="menu-button" onclick="toggleMenu()">⋮</button>
       <div class="notif-menu" id="notifMenu">
@@ -47,12 +102,10 @@
 
   <div class="bottom-bar">
     <button class="bottom-btn" onclick="location.href='../index.html'">
-      <img src="../icons/Home.png" width="24" height="24" />
-      <div>Home</div>
+      <img src="../icons/Home.png" width="24" height="24" /><div>Home</div>
     </button>
     <button class="bottom-btn" onclick="location.href='../Setting/index.html'">
-      <img src="../icons/Setting.png" width="24" height="24" />
-      <div>Setting</div>
+      <img src="../icons/Setting.png" width="24" height="24" /><div>Setting</div>
     </button>
     <button class="bottom-btn" onclick="window.location.href='../notifications/index.html'">
       <div style="position: relative;">
@@ -64,47 +117,10 @@
   </div>
 
   <script>
-    const API_BASE = "https://secure-backend-tzj9.onrender.com";
-    // Ensure links work both on GitHub Pages (/CreditAssist) and local (/)
-    const BASE_PATH = location.pathname.startsWith("/CreditAssist") ? "/CreditAssist" : "";
+    const user = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
+    const username = user.username || "";
 
-    // ===== Username helpers & keys =====
-    function getUsername() {
-      try {
-        const u = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
-        return u.username || sessionStorage.getItem("username") || "";
-      } catch {
-        return sessionStorage.getItem("username") || "";
-      }
-    }
-    const username = getUsername();
-    if (!sessionStorage.getItem('token')) { alert("Session expired or unauthorized access."); window.location.href = "../login.html"; }
-
-    const CLEARED_KEY = `notifClearedAt_${username}`;
-    // Local read cache (front-end safety net)
-    const localReadKey = (type) => `notifLocalRead_${username}_${type}`;
-
-    // ===== Auto logout =====
-    const AUTO_LOGOUT_MINUTES = 1;
-    let logoutTimer;
-    function resetLogoutTimer() {
-      clearTimeout(logoutTimer);
-      logoutTimer = setTimeout(() => {
-        sessionStorage.clear();
-        alert("Session expired due to inactivity. Please log in again.");
-        window.location.href = "../login.html";
-      }, AUTO_LOGOUT_MINUTES * 60 * 1000);
-    }
-    function setupAutoLogoutEvents() {
-      ['mousemove','mousedown','keydown','touchstart','touchmove','scroll'].forEach(e => {
-        document.addEventListener(e, resetLogoutTimer, true);
-      });
-      resetLogoutTimer();
-    }
-    window.addEventListener('load', setupAutoLogoutEvents);
-
-    // Khmer titles
-    const KH_TITLES = {
+    const khmerTitles = {
       user: "✔️បានធ្វើបច្ចុប្បន្នភាពទិន្នន័យរបស់ភ្នាក់ងារឥណទាន",
       customer: "✔️បានធ្វើបច្ចុប្បន្នភាពទិន្នន័យអតិថិជន",
       turnover: "✔️បានធ្វើបច្ចុប្បន្នភាពទិន្នន័យអត្រាប្រចាំឆ្នាំ",
@@ -112,13 +128,12 @@
       arreas: "✔️បានធ្វើបច្ចុប្បន្នភាពទិន្នន័យឥណទានយឺតយ៉ាវប្រចាំថ្ងៃ (Arreas T24)"
     };
 
-    // Redirect mapping (exactly as you wanted)
-    const LINK_MAP = {
-      arreas: `${BASE_PATH}/ArreasT24/index.html`,        // 1) go to daily arrears
-      turnover: `${BASE_PATH}/AverageTurnover/index.html`, // 2) go to Average Turnover page (change if your path is different)
-      user: null,                                          // 3) just mark as read, no redirect
-      customer: `${BASE_PATH}/SVG_CRM/index.html`,         // 4) go to Search CRM
-      nbcos: `${BASE_PATH}/SVG_CRM/index.html`             // 5) go to Search CRM
+    const redirectLinks = {
+      arreas: "/CreditAssist/ArreasT24/index.html",
+      turnover: "/CreditAssist/Turnover/index.html",
+      customer: "/CreditAssist/SVG_CRM/index.html",
+      nbcos: "/CreditAssist/SVG_CRM/index.html",
+      user: null
     };
 
     async function loadNotifications() {
@@ -127,107 +142,53 @@
       container.innerHTML = '';
 
       try {
-        const res = await fetch(`${API_BASE}/api/notifications/status`);
+        const res = await fetch("https://secure-backend-tzj9.onrender.com/api/notifications/status");
         const data = await res.json();
+        const readStatus = data[`read_${username}`] || {};
 
-        const clearedAtStr = localStorage.getItem(CLEARED_KEY);
-        const clearedAt = clearedAtStr ? Date.parse(clearedAtStr) : 0;
+        let count = 0;
 
-        const TYPES = ['user', 'customer', 'turnover', 'nbcos', 'arreas'];
-        let unreadCount = 0;
-
-        TYPES.forEach(type => {
-          const upStr = data[type];
-          if (!upStr) return;
-
-          const upTs = Date.parse(upStr);
-          if (clearedAt && upTs <= clearedAt) return; // hidden due to Clear All
-
+        ['arreas', 'turnover', 'customer', 'nbcos', 'user'].forEach(type => {
+          const uploadedAt = data[type];
           const fullname = data[`${type}Fullname`] || "Unknown";
 
-          // Server-side per-type read
-          const readServerStr = data[`read_${username}_${type}`];
-          const readServerTs = readServerStr ? Date.parse(readServerStr) : 0;
+          if (uploadedAt) {
+            const dateObj = new Date(uploadedAt);
+            const readTime = readStatus[type] ? new Date(readStatus[type]) : null;
+            const isNew = !readTime || dateObj > readTime;
+            if (isNew) count++;
 
-          // Local read cache (if server write lags, keep it read in UI)
-          const readLocalStr = localStorage.getItem(localReadKey(type));
-          const readLocalTs = readLocalStr ? Date.parse(readLocalStr) : 0;
+            const card = document.createElement('div');
+            card.className = 'card' + (isNew ? '' : ' read');
+            card.innerHTML = `
+              <div class="card-title">${khmerTitles[type] || type}</div>
+              <div class="card-date">${dateObj.toLocaleString()}</div>
+              <div class="card-message">Uploaded by: ${fullname}</div>
+            `;
+            card.onclick = async () => {
+              // mark as read on server
+              await fetch("https://secure-backend-tzj9.onrender.com/api/notifications/mark-read-type", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ username, type })
+              });
 
-          const isRead = Math.max(readServerTs, readLocalTs) >= upTs;
-          if (!isRead) unreadCount++;
-
-          const card = document.createElement('div');
-          card.className = 'card' + (isRead ? ' read' : '');
-          card.dataset.type = type;
-          card.dataset.uploadedAt = upStr;
-
-          card.innerHTML = `
-            <div class="card-title">${KH_TITLES[type] || type}</div>
-            <div class="card-date">${new Date(upTs).toLocaleString()}</div>
-            <div class="card-message">Uploaded by: ${fullname}</div>
-          `;
-
-          card.addEventListener('click', () => handleCardClick(card));
-          container.appendChild(card);
-        });
-
-        // Badge
-        if (badge) {
-          if (unreadCount > 0) {
-            badge.style.display = 'inline-block';
-            badge.textContent = unreadCount > 9 ? '9+' : String(unreadCount);
-          } else {
-            badge.style.display = 'none';
+              card.classList.add("read");
+              // redirect if applicable
+              if (redirectLinks[type]) {
+                window.location.href = redirectLinks[type];
+              }
+            };
+            container.appendChild(card);
           }
-        }
-        sessionStorage.setItem("notifUnreadCount", String(unreadCount));
-      } catch (err) {
-        console.error("Error loading notifications:", err);
-        container.innerHTML = '<p style="padding:12px;">Failed to load notifications.</p>';
-      }
-    }
-
-    async function handleCardClick(card) {
-      const type = card.dataset.type;
-      const uploadedAt = card.dataset.uploadedAt;
-      const redirect = LINK_MAP[type];
-
-      try {
-        // 1) Mark read on server (per type)
-        await fetch(`${API_BASE}/api/notifications/mark-read-type`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ username, type })
         });
 
-        // 2) Mark in local cache immediately (so it stays read on reload even if server write delays)
-        localStorage.setItem(localReadKey(type), uploadedAt);
+        badge.style.display = count > 0 ? 'inline-block' : 'none';
+        badge.textContent = count > 9 ? '9+' : count;
 
-        // 3) Update UI
-        card.classList.add('read');
-        recalcBadgeFromDOM();
-
-        // 4) Redirect if mapping exists
-        if (redirect) {
-          window.location.href = redirect;
-        }
-      } catch (e) {
-        console.error('mark-read-type failed:', e);
-      }
-    }
-
-    function recalcBadgeFromDOM() {
-      const badge = document.getElementById('notif-badge');
-      const cards = Array.from(document.querySelectorAll('.card'));
-      const unread = cards.filter(c => !c.classList.contains('read')).length;
-      sessionStorage.setItem("notifUnreadCount", String(unread));
-      if (badge) {
-        if (unread > 0) {
-          badge.style.display = 'inline-block';
-          badge.textContent = unread > 9 ? '9+' : String(unread);
-        } else {
-          badge.style.display = 'none';
-        }
+      } catch (err) {
+        container.innerHTML = '<p style="padding:12px;">Failed to load notifications.</p>';
+        console.error("Error loading notifications:", err);
       }
     }
 
@@ -237,49 +198,23 @@
     }
 
     async function markAllAsRead() {
-      try {
-        await fetch(`${API_BASE}/api/notifications/mark-read-all-type`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ username })
-        });
-        // Also set local cache for currently visible cards
-        document.querySelectorAll('.card').forEach(c => {
-          c.classList.add('read');
-          const t = c.dataset.type;
-          const up = c.dataset.uploadedAt;
-          localStorage.setItem(localReadKey(t), up);
-        });
-        recalcBadgeFromDOM();
-      } catch (e) {
-        console.warn('mark-read-all-type failed:', e);
-      }
+      await fetch("https://secure-backend-tzj9.onrender.com/api/notifications/mark-all-read", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username })
+      });
       toggleMenu();
+      loadNotifications();
     }
 
     function clearAll() {
-      localStorage.setItem(CLEARED_KEY, new Date().toISOString());
       document.getElementById('notificationContainer').innerHTML = '';
-      const badge = document.getElementById('notif-badge');
-      if (badge) badge.style.display = 'none';
-      sessionStorage.setItem("notifUnreadCount", "0");
+      document.getElementById('notif-badge').style.display = 'none';
       toggleMenu();
     }
 
-    // Init
-    window.addEventListener("DOMContentLoaded", () => {
-      loadNotifications();
-    });
-    // Refresh list every 30s so new uploads reappear
+    window.addEventListener("DOMContentLoaded", loadNotifications);
     setInterval(loadNotifications, 30000);
-  </script>
-
-  <!-- Shared badge updater (respects clearedAt & local read) -->
-  <script src="../notifications/checkNotification.js"></script>
-  <script>
-    window.addEventListener("DOMContentLoaded", () => {
-      checkNotification();
-    });
   </script>
 </body>
 </html>
