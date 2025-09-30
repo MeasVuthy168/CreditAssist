@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="km">
 <head>
@@ -9,481 +7,71 @@
   <meta name="theme-color" content="#0d2d5c" />
   <meta name="apple-mobile-web-app-capable" content="yes">
   <style>
-    @font-face {
-      font-family: 'Krasar';
-      src: url('Krasar-Regular.ttf') format('truetype');
-    }
+    @font-face { font-family: 'Krasar'; src: url('Krasar-Regular.ttf') format('truetype'); }
+    body { font-family: 'Krasar', Arial, sans-serif; background-color: #002c5f; color: white; margin: 0; padding: 0; }
+    .header { display:flex; justify-content:space-between; align-items:center; background:#0d2d5c; padding:10px 16px; position:fixed; top:0; left:0; right:0; z-index:1000; }
+    .header img.logo { height:35px; }
+    .profile { display:flex; flex-direction:column; align-items:center; text-decoration:none; }
+    .profile-wrapper { position:relative; width:64px; height:64px; }
+    .spinner-arc { position:absolute; inset:0; border-radius:50%; background:conic-gradient(#ffd700 0% 25%, transparent 25% 100%); animation:spin 1.8s linear infinite; z-index:1; }
+    .profile-wrapper img { width:calc(100% - 2px); height:calc(100% - 2px); border-radius:50%; object-fit:cover; background:white; z-index:2; margin:1px; position:relative; }
+    @keyframes spin { to { transform: rotate(360deg);} }
+    .welcome { font-size:13px; color:#ffd700; text-align:center; line-height:1.2; white-space:nowrap; }
 
-    body {
-      font-family: 'Krasar', Arial, sans-serif;
-      background-color: #002c5f;
-      color: white;
-      margin: 0;
-      padding: 0;
-    }
+    .main-box { background:transparent; border-radius:16px; padding:5px; width:96%; max-width:400px; color:#002c5f; margin:100px auto 20px; height:calc(100vh - 140px); box-sizing:border-box; overflow-y:auto; }
+    .content { padding:0; }
+    .menu-grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:14px; justify-items:center; }
+    .menu-item { background:linear-gradient(to bottom, #002c5f 0%, #001a3d 100%); border-radius:16px; border:1px solid #ffd700; padding:10px 6px; width:100%; max-width:100px; aspect-ratio:1/1; box-shadow:0 2px 6px rgba(0,0,0,0.2); color:white; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; text-align:center; position:relative; overflow:hidden; user-select:none; transition:all .3s ease; }
+    .menu-item img { width:36px; height:36px; margin-bottom:6px; animation:bounce .4s ease; pointer-events:none; }
+    .menu-item:hover { background:linear-gradient(to bottom, #001a3d 0%, #000f2c 100%); box-shadow:0 0 12px rgba(255, 215, 0, 0.6); border:1.5px solid #ffd700; }
+    .menu-item:hover img { transform:scale(1.15); }
+    .menu-item .label { font-size:14px; font-weight:bold; }
+    @keyframes bounce { 0%{transform:scale(.8);opacity:0} 60%{transform:scale(1.1);opacity:1} 100%{transform:scale(1)} }
+    .ripple { position:absolute; border-radius:50%; background:rgba(0,44,95,.3); transform:scale(0); animation:ripple-animation .6s ease-out; pointer-events:none; z-index:0; }
+    @keyframes ripple-animation { to{ transform:scale(4); opacity:0; } }
 
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background-color: #0d2d5c;
-      padding: 10px 16px;
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 1000;
-      /*box-shadow: 0 2px 5px rgba(0,0,0,0.3);*/
-    }
+    .bottom-bar { position:fixed; bottom:0; left:0; width:100%; height:56px; background:#0d2d5c; display:flex; justify-content:space-around; align-items:center; box-shadow:0 2px 5px rgba(0,0,0,0.3); z-index:1000; }
+    .bottom-btn { display:flex; flex-direction:column; align-items:center; font-size:11px; color:white; border:none; background:none; padding:2px; }
+    .bottom-btn img { margin-bottom:2px; pointer-events:none; }
+    .bottom-btn.active { filter:brightness(1.2) drop-shadow(0 0 3px #ffd700); }
 
-    .header img.logo {
-      height: 35px;
-    }
+    .robot-box { position:fixed; left:16px; right:16px; bottom:76px; background:linear-gradient(to bottom, #002c5f 0%, #001a3d 100%); border:1px solid #d4af37; border-radius:12px; padding:10px 16px 70px; font-family:'Krasar', sans-serif; color:white; height:40px; display:flex; overflow:hidden; flex-direction:column; box-shadow:0 0 10px rgba(212,175,55,0.4); z-index:999; }
+    .robot-box img { width:50px; height:50px; margin-right:15px; flex-shrink:0; }
+    .robot-message { display:flex; align-items:flex-start; font-size:14px; line-height:1.6; margin-bottom:8px; word-break:break-word; color:#ffd700; flex:1; overflow-y:auto; }
+    .flicker { animation:flicker 2s infinite; }
+    @keyframes flicker { 0%,100%{color:#ffd700} 20%{color:#fff} 40%{color:#ffda6b} 60%{color:#ffd700} 80%{color:#ffe87e} }
+    .robot-float { animation:floatBot 2.8s ease-in-out infinite; }
+    @keyframes floatBot { 0%{transform:translateY(0)} 50%{transform:translateY(-10px)} 100%{transform:translateY(0)} }
 
-    .profile {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-decoration: none;
-    }
+    .mic-btn { position:absolute; bottom:10px; right:10px; width:50px; height:50px; background:#0d2d5c; border:2px solid white; border-radius:50%; box-shadow:0 4px 12px rgba(0,0,0,.4); display:flex; align-items:center; justify-content:center; padding:0; }
+    .mic-btn img { width:24px; height:24px; object-fit:contain; filter:invert(100%); padding-left:14px; }
+    .mic-float { position:absolute; right:18px; bottom:12px; z-index:2; }
 
-    .profile-wrapper {
-      position: relative;
-      width: 64px;
-      height: 64px;
-    }
+    img { pointer-events:none; -webkit-user-drag:none; user-drag:none; }
 
-    .spinner-arc {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      background: conic-gradient(#ffd700 0% 25%, transparent 25% 100%);
-      animation: spin 1.8s linear infinite;
-      z-index: 1;
-    }
+    .voice-overlay { position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:2000; display:none; justify-content:center; align-items:center; }
+    .voice-box { background:white; border-radius:18px; width:90%; max-width:350px; padding:24px 20px; text-align:center; font-family:'Krasar', sans-serif; color:#0d2d5c; box-shadow:0 6px 20px rgba(0,0,0,.3); }
+    .voice-greet { font-size:18px; font-weight:bold; margin-bottom:6px; }
+    .voice-question { font-size:16px; margin-bottom:20px; }
+    .voice-tip { font-size:13px; color:gray; }
+    .voice-mic-btn { border:none; background:none; padding:0; margin:0 auto 14px; cursor:pointer; position:relative; }
+    .mic-ring { width:72px; height:72px; background:#ffd700; border-radius:50%; display:flex; align-items:center; justify-content:center; }
+    .mic-core { width:52px; height:52px; background:#0d2d5c; border-radius:50%; display:flex; align-items:center; justify-content:center; }
+    .voice-stop-icon { width:20px; height:20px; background:white; border-radius:4px; }
+    @keyframes micGlow { 0%{box-shadow:0 0 0 0 rgba(13,45,92,.7);} 70%{box-shadow:0 0 0 10px rgba(13,45,92,0);} 100%{box-shadow:0 0 0 0 rgba(13,45,92,0);} }
+    .voice-mic-btn.listening, .mic-btn.listening { animation:micGlow 1.2s infinite; }
 
-    .profile-wrapper img {
-      width: calc(100% - 2px);
-      height: calc(100% - 2px);
-      border-radius: 50%;
-      object-fit: cover;
-      background-color: white;
-      z-index: 2;
-      margin: 1px;
-      position: relative;
-    }
+    .badge { position:absolute; top:-4px; right:-8px; background:red; color:white; font-size:10px; padding:2px 6px; border-radius:50%; font-weight:bold; }
 
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    .welcome {
-      font-size: 13px;
-      color: #ffd700;
-      text-align: center;
-      line-height: 1.2;
-      white-space: nowrap;
-    }
-
-    .main-box {
-      background-color: transparent;
-      border-radius: 16px;
-      padding: 5px;
-      width: 96%;
-      max-width: 400px;
-      color: #002c5f;
-      margin: 100px auto 20px;
-      /* box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25); */
-      height: calc(100vh - 140px);
-      box-sizing: border-box;
-      overflow-y: auto;
-    }
-
-    .content {
-      padding: 0;
-    }
-
-    .menu-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 14px;
-      justify-items: center;
-    }
-
-    .menu-item {
-  /* Changed solid background to gradient from #002c5f to darker #001a3d */
-  background: linear-gradient(to bottom, #002c5f 0%, #001a3d 100%);
-  
-  /* Kept original styles below */
-  border-radius: 16px;
-  border: 1px solid #ffd700;
-  padding: 10px 6px;
-  width: 100%;
-  max-width: 100px;
-  aspect-ratio: 1/1;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-  color: white;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
-  user-select: none;
-  transition: all 0.3s ease;
-}
-
-.menu-item img {
-  width: 36px;
-  height: 36px;
-  margin-bottom: 6px;
-  animation: bounce 0.4s ease;
-  pointer-events: none;
-}
-  
-.menu-item:hover {
-  /* Changed hover background to darker gradient from #001a3d to #000f2c */
-  background: linear-gradient(to bottom, #001a3d 0%, #000f2c 100%);
-  
-  /* Kept original hover effects below */
-  box-shadow: 0 0 12px rgba(255, 215, 0, 0.6);
-  border: 1.5px solid #ffd700;
-}
-
-    .menu-item:hover img {
-      transform: scale(1.15);
-    }
-
-    .menu-item .label {
-      font-size: 14px;
-      font-weight: bold;
-    }
-
-    @keyframes bounce {
-      0% { transform: scale(0.8); opacity: 0; }
-      60% { transform: scale(1.1); opacity: 1; }
-      100% { transform: scale(1); }
-    }
-
-    .ripple {
-      position: absolute;
-      border-radius: 50%;
-      background: rgba(0, 44, 95, 0.3);
-      transform: scale(0);
-      animation: ripple-animation 0.6s ease-out;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    @keyframes ripple-animation {
-      to {
-        transform: scale(4);
-        opacity: 0;
-      }
-    }
-
-    .bottom-bar {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 56px;
-      background: #0d2d5c;
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-      z-index: 1000;
-    }
-
-    .bottom-btn {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      font-size: 11px;
-      color: white;
-      border: none;
-      background: none;
-      padding: 2px;
-    }
-
-   .bottom-btn img {
-  margin-bottom: 2px;
-  pointer-events: none;
-}
-
-    .bottom-btn.active {
-  filter: brightness(1.2) drop-shadow(0 0 3px #ffd700);
-}
-    .robot-box {
-  position: fixed;
-  left: 16px;
-  right: 16px;
-  bottom: 76px; /* ✅ Make sure it FLOATS ABOVE the bottom bar (56px + small gap) */
-  background: linear-gradient(to bottom, #002c5f 0%, #001a3d 100%);
-  border: 1px solid #d4af37;
-  border-radius: 12px;
-  padding: 10px 16px 70px; /* ✅ Padding bottom to reserve space for microphone */
-  font-family: 'Krasar', sans-serif;
-  color: white;
-  height: 40px; /* ✅ FIXED HEIGHT */
-  /*overflow-y: auto; /* ✅ SCROLL when too much text */
-  display: flex;
-  overflow: hidden;
-  flex-direction: column;
-  box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
-  z-index: 999; /* Make sure it's above most things */
-}
-    .robot-box img {
-      width: 50px;
-      height: 50px;
-      margin-right: 15px;
-      flex-shrink: 0;
-    }
-
-    .robot-message {
-      display: flex;
-      align-items: flex-start;
-      font-size: 14px;
-      line-height: 1.6;
-      margin-bottom: 8px;
-      word-break: break-word;
-      color: #ffd700;
-      flex: 1; /* ✅ Fill available space */
-      overflow-y: auto; /* ✅ Scroll the text inside */
-    }   
-        .flicker {
-      animation: flicker 2s infinite;
-    }
-    
-    @keyframes flicker {
-      0%, 100% { color: #ffd700; }
-      20% { color: #ffffff; }
-      40% { color: #ffda6b; }
-      60% { color: #ffd700; }
-      80% { color: #ffe87e; }
-    }
-
-    .robot-float {
-      animation: floatBot 2.8s ease-in-out infinite;
-    }
-    
-    @keyframes floatBot {
-      0%   { transform: translateY(0); }
-      50%  { transform: translateY(-10px); }
-      100% { transform: translateY(0); }
-    }
-
-    .mic-btn {
-      position: absolute;
-      bottom: 10px;
-      right: 10px;
-      width: 50px;
-      height: 50px;
-      background-color: #0d2d5c;
-      border: 2px solid white; /* Optional for better contrast */
-      border-radius: 50%;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0;
-    }
-
-    .mic-btn img {
-      width: 24px;
-      height: 24px;
-      object-fit: contain;
-      filter: invert(100%);
-      padding-left: 14PX
-    }
-    .mic-float {
-      position: absolute;
-      right: 18px;
-      bottom: 12px;
-      z-index: 2;
-    }
-
-    img {
-      pointer-events: none;
-      -webkit-user-drag: none;
-      user-drag: none;
-    }
-    .voice-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.6);
-  z-index: 2000;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.voice-box {
-  background: white;
-  border-radius: 18px;
-  width: 90%;
-  max-width: 350px;
-  padding: 24px 20px;
-  text-align: center;
-  font-family: 'Krasar', sans-serif;
-  color: #0d2d5c;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-}
-
-.voice-greet {
-  font-size: 18px;
-  font-weight: bold;
-  margin-bottom: 6px;
-}
-
-.voice-question {
-  font-size: 16px;
-  margin-bottom: 20px;
-}
-
-.voice-tip {
-  font-size: 13px;
-  color: gray;
-}
-
-/* Mic button layout */
-.voice-mic-btn {
-  border: none;
-  background: none;
-  padding: 0;
-  margin: 0 auto 14px;
-  cursor: pointer;
-  position: relative;
-}
-
-.mic-ring {
-  width: 72px;
-  height: 72px;
-  background-color: #ffd700;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.mic-core {
-  width: 52px;
-  height: 52px;
-  background-color: #0d2d5c;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.voice-stop-icon {
-  width: 20px;
-  height: 20px;
-  background-color: white;
-  border-radius: 4px;
-}
-/* Mic glow animation (optional reuse for listening) */
-@keyframes micGlow {
-  0% { box-shadow: 0 0 0 0 rgba(13, 45, 92, 0.7); }
-  70% { box-shadow: 0 0 0 10px rgba(13, 45, 92, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(13, 45, 92, 0); }
-}
-
-.voice-mic-btn.listening,
-.mic-btn.listening {
-  animation: micGlow 1.2s infinite;
-}
-    .badge {
-  position: absolute;
-  top: -4px;
-  right: -8px;
-  background: red;
-  color: white;
-  font-size: 10px;
-  padding: 2px 6px;
-  border-radius: 50%;
-  font-weight: bold;
-}
-
-  .toast-full {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 85%;
-  max-width: 480px;
-  background: rgba(13, 45, 92, 0.5); /* #0d2d5c with 50% transparency */
-  color: white;
-  z-index: 9999;
-  padding: 18px 20px 16px;
-  font-family: 'Krasar', sans-serif;
-  display: none;
-  animation: slideUp 0.4s ease;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-  border-radius: 26px;
-  backdrop-filter: blur(4px);
-}
-
-.toast-content {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 12px;
-}
-
-.toast-text {
-  width: 100%;
-}
-
-.toast-title {
-  color: #ffd700;
-  text-align: center;
-  font-weight: bold;
-  font-size: 18px;
-  margin-bottom: 4px;
-}
-
-.toast-message {
-  text-align: center;
-  font-size: 16px;
-  color: white;
-  margin-bottom: 6px;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-}
-
-.toast-checkbox {
-  font-size: 13px;
-}
-
-.toast-actions {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  gap: 8px;
-  margin-top: 8px;
-}
-
-.toast-actions button {
-  flex: 1;
-  background: rgba(13, 45, 92, 0.5); /* #0d2d5c with 50% transparency */
-  color: #ffd700;
-  border: none;
-  padding: 8px 12px;
-  font-size: 14px;
-  border-radius: 10px;
-  cursor: pointer;
-}  
-
-@keyframes slideUp {
-  from { transform: translateY(100%); }
-  to { transform: translateY(0); }
-}
+    .toast-full { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); width:85%; max-width:480px; background:rgba(13,45,92,.5); color:white; z-index:9999; padding:18px 20px 16px; font-family:'Krasar', sans-serif; display:none; animation:slideUp .4s ease; box-shadow:0 8px 20px rgba(0,0,0,.3); border-radius:26px; backdrop-filter:blur(4px); }
+    .toast-content { display:flex; flex-direction:column; align-items:flex-start; gap:12px; }
+    .toast-text { width:100%; }
+    .toast-title { color:#ffd700; text-align:center; font-weight:bold; font-size:18px; margin-bottom:4px; }
+    .toast-message { text-align:center; font-size:16px; color:white; margin-bottom:6px; text-shadow:0 1px 2px rgba(0,0,0,.2); }
+    .toast-checkbox { font-size:13px; }
+    .toast-actions { width:100%; display:flex; justify-content:space-between; gap:8px; margin-top:8px; }
+    .toast-actions button { flex:1; background:rgba(13,45,92,.5); color:#ffd700; border:none; padding:8px 12px; font-size:14px; border-radius:10px; cursor:pointer; }
+    @keyframes slideUp { from{ transform:translateY(100%);} to{ transform:translateY(0);} }
   </style>
 </head>
 <body oncontextmenu="return false;">
@@ -498,33 +86,26 @@
       <div class="welcome" id="welcome">សួស្តី</div>
     </a>
   </div>
-  
-<!-- Voice Assistant Popup -->
-<div id="voiceOverlay" class="voice-overlay" style="display: none;">
-  <div class="voice-box">
-    <div class="voice-greet" id="voiceGreeting">សួស្តី ...</div>
-    <div class="voice-question">តើខ្ញុំអាចជួយអ្វីបាន?</div>
 
-    <button id="stopMic" class="voice-mic-btn">
-      <div class="mic-ring">
-        <div class="mic-core">
-          <div class="voice-stop-icon"></div>
-        </div>
-      </div>
-    </button>
+  <!-- Voice Assistant Popup -->
+  <div id="voiceOverlay" class="voice-overlay">
+    <div class="voice-box">
+      <div class="voice-greet" id="voiceGreeting">សួស្តី ...</div>
+      <div class="voice-question">តើខ្ញុំអាចជួយអ្វីបាន?</div>
 
-    <div class="voice-tip">សាកល្បងនិយាយ <strong>"ស្វែងរក"</strong></div>
+      <button id="stopMic" class="voice-mic-btn">
+        <div class="mic-ring"><div class="mic-core"><div class="voice-stop-icon"></div></div></div>
+      </button>
 
-    <!-- ✅ Live subtitle display -->
-    <div id="liveSubtitle" style="font-size: 15px; color: #555; min-height: 24px;"></div>
+      <div class="voice-tip">សាកល្បងនិយាយ <strong>"ស្វែងរក"</strong></div>
+      <div id="liveSubtitle" style="font-size: 15px; color: #555; min-height: 24px;"></div>
+    </div>
   </div>
-</div>
-  
+
   <!-- Main Box -->
   <div class="main-box">
-    <!-- Content -->
     <div class="content">
-    <div class="menu-grid">
+      <div class="menu-grid">
         <div class="menu-item" data-href="SVG_CRM/index.html"><img src="icons/search.PNG"><div class="label">ស្វែងរកអតិថិជន</div></div>
         <div class="menu-item" data-href="RetiredCalculator/index.html"><img src="icons/retirement.PNG"><div class="label">ចំនួនខែចូលនិវត្តន៍</div></div>
         <div class="menu-item" data-href="Loan-Calculator/index.html"><img src="icons/loan.PNG"><div class="label">គណនាឥណទាន</div></div>
@@ -533,66 +114,58 @@
         <div class="menu-item" data-href=" SpotCheckLoan/reportSpotcheck.html "><img src="icons/check.PNG "><div class="label">Spot Check</div></div>
         <div class="menu-item" data-href=""><img src="icons/officer.PNG"><div class="label">Officer Task</div></div>
         <div class="menu-item" data-href=""><img src="icons/landClassisfy.PNG"><div class="label">ចំណាត់ថ្នាក់ដីធ្លី</div></div>
-       <!-- <div class="menu-item" data-href=""><img src="icons/principle.PNG"><div class="label">ស្វែងរកឯកសារ</div></div>-->
         <div class="menu-item" data-href="docsearch/index.html"><img src="icons/principle.PNG"><div class="label">ស្វែងរកឯកសារ</div></div
-    </div>
+      </div>
 
-         <!-- Robot Box -->
+      <!-- Robot Box -->
       <div class="robot-box">
-        <div style="display: flex; align-items: center;">
+        <div style="display:flex; align-items:center;">
           <img class="robot-float" src="icons/Robot.svg" alt="Robot">
           <div class="robot-message flicker" id="robotMessage">កំពុងផ្ទុកសារ...</div>
         </div>
+        <button class="mic-btn mic-float"><img src="icons/mic.svg" alt="Mic" /></button>
+      </div>
 
-        <!-- ✅ Mic button always visible and floats inside bottom-right -->
-        <button class="mic-btn mic-float">
-          <img src="icons/mic.svg" alt="Mic" />
+      <!-- Footer -->
+      <div class="bottom-bar">
+        <button class="bottom-btn active" onclick="window.location.href='index.html'">
+          <img src="icons/Home.png" width="24" height="24" /><div>Home</div>
+        </button>
+        <button class="bottom-btn" onclick="window.location.href='Setting/index.html'">
+          <img src="icons/Setting.png" width="24" height="24" /><div>Setting</div>
+        </button>
+        <button class="bottom-btn" onclick="window.location.href='notifications/index.html'">
+          <div style="position: relative;">
+            <img src="icons/Notification.png" width="24" height="24" />
+            <span id="notif-badge" class="badge" style="display: none;"></span>
+          </div>
+          <div>Notification</div>
         </button>
       </div>
 
-      
-    
-      <!-- Footer -->
-  <div class="bottom-bar">
-  <button class="bottom-btn active" onclick="window.location.href='index.html'">
-    <img src="icons/Home.png" width="24" height="24" /><div>Home</div>
-  </button>
-  <button class="bottom-btn" onclick="window.location.href='Setting/index.html'">
-    <img src="icons/Setting.png" width="24" height="24" /><div>Setting</div>
-  </button>
-  <button class="bottom-btn" onclick="window.location.href='notifications/index.html'">
-  <div style="position: relative;">
-    <img src="icons/Notification.png" width="24" height="24" />
-    <span id="notif-badge" class="badge" style="display: none;"></span>
+      <div id="toast" class="toast-full">
+        <div class="toast-content">
+          <div class="toast-text">
+            <div class="toast-title">🔔ការជូនដំណឹង</div>
+            <div class="toast-message" id="toastMessage">You have a new update.</div>
+            <label class="toast-checkbox">
+              <input type="checkbox" id="toastNoShowAgain" />
+              មិនបង្ហាញម្តងទៀត
+            </label>
+          </div>
+          <div class="toast-actions">
+            <button onclick="hideToast()">បិទ</button>
+            <button onclick="window.location.href='notifications/index.html'">មើលលម្អិត</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-  <div>Notification</div>
-</button>
-</div>
 
-  <div id="toast" class="toast-full">
-  <div class="toast-content">
-    <div class="toast-text">
-      <div class="toast-title">🔔ការជូនដំណឹង</div>
-      <div class="toast-message" id="toastMessage">You have a new update.</div>
-      <label class="toast-checkbox">
-        <input type="checkbox" id="toastNoShowAgain" />
-        មិនបង្ហាញម្តងទៀត
-      </label>
-    </div>
-    <div class="toast-actions">
-      <button onclick="hideToast()">បិទ</button>
-      <button onclick="window.location.href='notifications/index.html'">មើលលម្អិត</button>
-    </div>
-  </div>
-</div>
-    
 <script>
 // ✅ Check Token
 const token = sessionStorage.getItem('token');
-if (!token) {
-  alert("Session expired or unauthorized access.");
-  window.location.href = "login.html";
-}
+if (!token) { alert("Session expired or unauthorized access."); window.location.href = "login.html"; }
 
 // ✅ Auto Logout Timer
 const AUTO_LOGOUT_MINUTES = 10;
@@ -605,15 +178,12 @@ function resetLogoutTimer() {
     window.location.href = "login.html";
   }, AUTO_LOGOUT_MINUTES * 60 * 1000);
 }
-
-// Attach reset to more events
 function setupAutoLogoutEvents() {
-  ['mousemove', 'mousedown', 'keydown', 'touchstart', 'touchmove', 'scroll'].forEach(event => {
-    document.addEventListener(event, resetLogoutTimer, true);
+  ['mousemove','mousedown','keydown','touchstart','touchmove','scroll'].forEach(e => {
+    document.addEventListener(e, resetLogoutTimer, true);
   });
-  resetLogoutTimer(); // Start countdown immediately
+  resetLogoutTimer();
 }
-
 window.addEventListener('load', setupAutoLogoutEvents);
 
 // ✅ Load Profile Info and Robot Message
@@ -621,15 +191,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const name = sessionStorage.getItem("fullname") || "អ្នកប្រើ";
   const imgPath = sessionStorage.getItem("image") || "profile/non-image.jpg";
   const profilePhoto = document.getElementById("profile-photo");
-
   document.getElementById("welcome").textContent = "សួស្តី, " + name;
-
   profilePhoto.src = "https://secure-backend-tzj9.onrender.com/" + imgPath;
-  profilePhoto.onerror = function() {
-    this.onerror = null;
-    this.src = "icons/default-profile.png"; // fallback
-  };
-
+  profilePhoto.onerror = function() { this.onerror = null; this.src = "icons/default-profile.png"; };
   loadRobotMessage();
 });
 
@@ -647,29 +211,26 @@ async function loadRobotMessage() {
   }
 }
 
-// ✅ Menu Button Ripple and Navigation
+// ✅ Menu Ripple + Nav
 document.querySelectorAll(".menu-item").forEach(item => {
   const href = item.getAttribute("data-href");
   item.addEventListener("click", function (e) {
     e.preventDefault();
     if (navigator.vibrate) navigator.vibrate(50);
-
     const ripple = document.createElement("span");
     ripple.className = "ripple";
     const rect = this.getBoundingClientRect();
     const size = Math.max(rect.width, rect.height);
     ripple.style.width = ripple.style.height = size + "px";
-    ripple.style.left = (e.clientX - rect.left - size / 2) + "px";
-    ripple.style.top = (e.clientY - rect.top - size / 2) + "px";
+    ripple.style.left = (e.clientX - rect.left - size/2) + "px";
+    ripple.style.top = (e.clientY - rect.top - size/2) + "px";
     this.appendChild(ripple);
     setTimeout(() => ripple.remove(), 600);
-
-    if (href) window.location.href = href;
-    else alert("Coming soon!");
+    if (href) window.location.href = href; else alert("Coming soon!");
   });
 });
 
-// ✅ Voice Assistant Setup
+// ✅ Voice Assistant
 const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 const speechSupported = !!SpeechRecognition;
@@ -677,137 +238,96 @@ let recognition;
 
 window.addEventListener('DOMContentLoaded', () => {
   const micButton = document.querySelector('.mic-btn');
-  if (isIOS || !speechSupported) {
-    if (micButton) micButton.style.display = "none";
-    return;
-  }
+  if (isIOS || !speechSupported) { if (micButton) micButton.style.display = "none"; return; }
 
   recognition = new SpeechRecognition();
   recognition.lang = 'km-KH';
   recognition.continuous = false;
   recognition.interimResults = true;
 
-  recognition.onstart = () => {
-    document.getElementById("liveSubtitle").textContent = "កំពុងស្តាប់...";
-  };
-
+  recognition.onstart = () => { document.getElementById("liveSubtitle").textContent = "កំពុងស្តាប់..."; };
   recognition.onresult = (event) => {
     let finalTranscript = "";
     for (let i = event.resultIndex; i < event.results.length; i++) {
       const transcript = event.results[i][0].transcript;
-      if (event.results[i].isFinal) {
-        finalTranscript += transcript;
-      } else {
-        document.getElementById("liveSubtitle").textContent = transcript;
-      }
+      if (event.results[i].isFinal) finalTranscript += transcript;
+      else document.getElementById("liveSubtitle").textContent = transcript;
     }
-
-    if (finalTranscript.trim()) {
-      handleVoiceCommand(finalTranscript.toLowerCase());
-    }
+    if (finalTranscript.trim()) handleVoiceCommand(finalTranscript.toLowerCase());
   };
-
-  recognition.onend = () => {
-    document.getElementById("liveSubtitle").textContent = "";
-  };
-
-  recognition.onerror = (event) => {
-    console.error("Speech error:", event.error);
-    if (event.error !== "not-allowed") {
-      alert("បញ្ហាក្នុងការស្ដាប់សម្លេង: " + event.error);
-    }
-  };
+  recognition.onend = () => { document.getElementById("liveSubtitle").textContent = ""; };
+  recognition.onerror = (event) => { console.error("Speech error:", event.error); if (event.error !== "not-allowed") alert("បញ្ហាក្នុងការស្ដាប់សម្លេង: " + event.error); };
 
   const overlay = document.getElementById("voiceOverlay");
   const stopMicBtn = document.getElementById("stopMic");
-
   if (micButton) {
     micButton.addEventListener('pointerdown', () => {
       overlay.style.display = "flex";
       stopMicBtn.classList.add("listening");
       micButton.classList.add("listening");
-      try {
-        recognition.start();
-      } catch (e) {
-        console.log("Already recording");
-      }
+      try { recognition.start(); } catch {}
     });
-
     const stopListening = () => {
       recognition.stop();
       overlay.style.display = "none";
       stopMicBtn.classList.remove("listening");
       micButton.classList.remove("listening");
     };
-
     micButton.addEventListener('pointerup', stopListening);
     micButton.addEventListener('pointercancel', stopListening);
     stopMicBtn.addEventListener("click", stopListening);
   }
 });
 
-// ✅ Handle Voice Command
 function handleVoiceCommand(command) {
   let found = false;
   document.querySelectorAll('.menu-item').forEach(item => {
     const labelText = item.querySelector('.label')?.textContent?.toLowerCase() || '';
-    if (labelText.includes(command)) {
-      found = true;
-      item.click();
-    }
+    if (labelText.includes(command)) { found = true; item.click(); }
   });
-
   if (!found) alert(`កម្មវិធី "${command}" មិនមានទេ!`);
 }
 </script>
-  
+
+<!-- ✅ Shared notification checker -->
 <script src="notifications/checkNotification.js"></script>
 <script>
   window.addEventListener('load', () => {
     setupAutoLogoutEvents();
+    // Fetch server, update sessionStorage.notifUnreadCount and the badge
     checkNotification();
   });
 
-  // ✅ Toast Functions
+  // Toast helpers used by checkNotification.js on this page
   function showToast(message, uploadTime = "") {
-  const user = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
-  const username = user.username || "guest";
-
-  const toast = document.getElementById("toast");
-  const toastMessage = document.getElementById("toastMessage");
-  const checkbox = document.getElementById("toastNoShowAgain");
-
-  if (checkbox) checkbox.checked = false;
-
-  toastMessage.textContent = message;
-  toast.style.display = "block";
-
-  if (uploadTime) {
-    localStorage.setItem(`lastToastShown_${username}`, uploadTime);
+    const user = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
+    const username = user.username || "guest";
+    const toast = document.getElementById("toast");
+    const toastMessage = document.getElementById("toastMessage");
+    const checkbox = document.getElementById("toastNoShowAgain");
+    if (checkbox) checkbox.checked = false;
+    toastMessage.textContent = message;
+    toast.style.display = "block";
+    if (uploadTime) {
+      localStorage.setItem(`lastToastShown_${username}`, uploadTime);
+      localStorage.removeItem(`noShowToast_${username}`);
+    }
+  }
+  function hideToast() {
+    const user = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
+    const username = user.username || "guest";
+    const checkbox = document.getElementById("toastNoShowAgain");
+    if (checkbox && checkbox.checked) localStorage.setItem(`noShowToast_${username}`, "true");
+    document.getElementById("toast").style.display = "none";
+  }
+  function resetToastPreference() {
+    const username = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}").username || "guest";
     localStorage.removeItem(`noShowToast_${username}`);
   }
-}
-
-  function hideToast() {
-  const user = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
-  const username = user.username || "guest";
-
-  const checkbox = document.getElementById("toastNoShowAgain");
-  if (checkbox.checked) {
-    localStorage.setItem(`noShowToast_${username}`, "true");
-  }
-
-  document.getElementById("toast").style.display = "none";
-}
-
-  function resetToastPreference() {
-  const username = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}").username || "guest";
-  localStorage.removeItem(`noShowToast_${username}`);
-}
 </script>
 
-  <script>
-/* ===== Notification badge sync (Home) ===== */
+<!-- ✅ Tiny listener to keep Home badge in sync with Notifications page -->
+<script>
 (function syncNotifBadgeOnHome(){
   const badge = document.getElementById('notif-badge');
 
@@ -822,17 +342,15 @@ function handleVoiceCommand(command) {
     }
   }
 
-  // 1) Paint immediately from last known value
+  // Paint immediately
   paintFromSession();
 
-  // 2) React to broadcasts from notifications page
-  //    (that page should call localStorage.setItem('notifSync', JSON.stringify({ unread, at: Date.now() })))
+  // React to cross-tab broadcasts from Notifications page
   window.addEventListener('storage', (e) => {
     if (e.key === 'notifSync' && e.newValue) {
       try {
         const payload = JSON.parse(e.newValue);
         if (typeof payload.unread === 'number') {
-          // Keep the same single source of truth in sessionStorage
           sessionStorage.setItem('notifUnreadCount', String(payload.unread));
           paintFromSession();
         }
@@ -840,20 +358,17 @@ function handleVoiceCommand(command) {
     }
   });
 
-  // 3) When tab becomes visible, verify with server via shared checker
+  // Verify with server when tab becomes visible
   document.addEventListener('visibilitychange', () => {
     if (!document.hidden && typeof window.checkNotification === 'function') {
       window.checkNotification();
-      // repaint shortly after the fetch completes
       setTimeout(paintFromSession, 150);
     }
   });
 
-  // 4) Also repaint a moment after load (in case checkNotification updated it)
-  window.addEventListener('DOMContentLoaded', () => {
-    setTimeout(paintFromSession, 150);
-  });
+  // Repaint shortly after DOM ready in case checker already ran
+  window.addEventListener('DOMContentLoaded', () => setTimeout(paintFromSession, 150));
 })();
-</script>    
+</script>
 </body>
 </html>
