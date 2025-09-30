@@ -1,133 +1,116 @@
-// notifications/checkNotification.js
-const API_BASE = "https://secure-backend-tzj9.onrender.com";
+<!-- Place this file at: /notifications/checkNotification.js -->
+<script>
+// ====== CONFIG ======
+const BACKEND = "https://secure-backend-tzj9.onrender.com";
+const TYPES = ['user', 'customer', 'turnover', 'nbcos', 'arreas'];
 
-function getUsername() {
-  try {
-    const u = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
-    return u.username || sessionStorage.getItem("username") || "";
-  } catch {
-    return sessionStorage.getItem("username") || "";
-  }
-}
-const usernameCN = getUsername();
-const CLEARED_KEY_CN = `notifClearedAt_${usernameCN}`;
-const localReadKeyCN = (type) => `notifLocalRead_${usernameCN}_${type}`;
-
+// ====== Toast helpers (same IDs you already use) ======
 function showToast(message) {
   const toast = document.getElementById("toast");
-  const msg = document.getElementById("toastMessage");
-  if (!toast || !msg) return;
-  const cb = document.getElementById("toastNoShowAgain");
-  if (cb) cb.checked = false;
-  msg.textContent = message;
+  const toastMessage = document.getElementById("toastMessage");
+  if (!toast || !toastMessage) return;
+  const checkbox = document.getElementById("toastNoShowAgain");
+  if (checkbox) checkbox.checked = false;
+  toastMessage.textContent = message;
   toast.style.display = "block";
 }
 
 function hideToast() {
-  const cb = document.getElementById("toastNoShowAgain");
-  if (cb && cb.checked && usernameCN) {
-    localStorage.setItem(`noShowToast_${usernameCN}`, "true");
+  const checkbox = document.getElementById("toastNoShowAgain");
+  const user = getUser();
+  const username = user.username || "";
+  if (checkbox && checkbox.checked) {
+    localStorage.setItem(`noShowToast_${username}`, "true");
   }
   const toast = document.getElementById("toast");
   if (toast) toast.style.display = "none";
 }
 
+// ====== Small utilities ======
+function getUser() {
+  // Try structured object first, then fallbacks
+  try {
+    const u = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
+    if (u && (u.username || u.user || u.name)) return u;
+  } catch {}
+  return {
+    username: sessionStorage.getItem("username") || "",
+    fullname: sessionStorage.getItem("fullname") || "",
+    position: sessionStorage.getItem("userPosition") || ""
+  };
+}
+
+function maxDateStr(a, b) {
+  if (!a) return b || null;
+  if (!b) return a || null;
+  return (new Date(a) > new Date(b)) ? a : b;
+}
+
+// ====== Main badge + optional toast updater ======
 async function checkNotification() {
   try {
-    const badge = document.getElementById("notif-badge");
-    if (!usernameCN) {
-      if (badge) badge.style.display = "none";
-      sessionStorage.setItem("notifUnreadCount", "0");
-      return;
-    }
+    const user = getUser();
+    const username = user.username || "";
 
-    const clearedAtStr = localStorage.getItem(CLEARED_KEY_CN);
-    const clearedAt = clearedAtStr ? Date.parse(clearedAtStr) : 0;
-
-    const res = await fetch(`${API_BASE}/api/notifications/status`);
+    // Pull server status
+    const res = await fetch(`${BACKEND}/api/notifications/status`);
     const data = await res.json();
 
-    const TYPES = ["user", "customer", "turnover", "nbcos", "arreas"];
-    const readTimes = Object.fromEntries(
-      TYPES.map(t => [t, data[`read_${usernameCN}_${t}`] ? Date.parse(data[`read_${usernameCN}_${t}`]) : 0])
-    );
+    // Per-user read map + clearedAt (cross-device)
+    const readMap = data[`read_${username}`] || {};
+    const clearedAt = readMap.clearedAt ? new Date(readMap.clearedAt) : null;
 
+    // Compute unread count using per-type read and clearedAt
     let unreadCount = 0;
-    let newestTs = "";
-    const unreadTypes = [];
+    let latestTrigger = null; // latest upload among unread (for toast de-dupe)
 
-    const KH_LABELS = {
-      user: "ទិន្នន័យរបស់ភ្នាក់ងារឥណទាន",
-      customer: "ទិន្នន័យអតិថិជន",
-      turnover: "ទិន្នន័យអត្រាប្រចាំឆ្នាំ",
-      nbcos: "ទិន្នន័យឥណទានសកម្ម (NBC)",
-      arreas: "ទិន្នន័យឥណទានយឺតយ៉ាវប្រចាំថ្ងៃ (Arreas T24)"
-    };
+    TYPES.forEach(type => {
+      const upStr = data[type];
+      if (!upStr) return; // never uploaded
 
-    TYPES.forEach(t => {
-      const upStr = data[t];
-      if (!upStr) return;
-      const upTs = Date.parse(upStr);
+      const uploadedAt = new Date(upStr);
+      // If cleared, skip anything older-or-equal than clearedAt
+      if (clearedAt && uploadedAt <= clearedAt) return;
 
-      // Respect "Clear All"
-      if (clearedAt && upTs <= clearedAt) return;
+      const readStr = readMap[type] || null;
+      const readAt = readStr ? new Date(readStr) : null;
 
-      // Local cache can mark as read immediately
-      const localTs = Date.parse(localStorage.getItem(localReadKeyCN(t)) || "") || 0;
-      const lastReadTs = Math.max(readTimes[t], localTs);
-
-      const isNew = lastReadTs < upTs;
-      if (isNew) {
+      const isUnread = !readAt || uploadedAt > readAt;
+      if (isUnread) {
         unreadCount++;
-        unreadTypes.push(t);
-        if (!newestTs || upTs > Date.parse(newestTs)) newestTs = upStr;
+        latestTrigger = maxDateStr(latestTrigger, upStr);
       }
     });
 
-    // Update badge + persist for other pages
-    sessionStorage.setItem("notifUnreadCount", String(unreadCount));
+    // Update badge (if present)
+    const badge = document.getElementById("notif-badge");
     if (badge) {
       if (unreadCount > 0) {
-        badge.style.display = "inline-block";
         badge.textContent = unreadCount > 9 ? "9+" : String(unreadCount);
+        badge.style.display = "inline-block";
       } else {
         badge.style.display = "none";
       }
     }
 
-    // Optional toast (if the DOM has the toast elements)
-    const toast = document.getElementById("toast");
-    const toastMessage = document.getElementById("toastMessage");
-    if (toast && toastMessage && unreadCount > 0) {
-      const noShowKey = `noShowToast_${usernameCN}`;
-      const lastToastKey = `lastToastShown_${usernameCN}`;
-      const noShow = localStorage.getItem(noShowKey);
-      const lastToast = localStorage.getItem(lastToastKey);
-
-      if (noShow !== "true" || lastToast !== newestTs) {
-        const labelPreview = unreadTypes.slice(0, 2).map(t => KH_LABELS[t] || t).join(" , ");
-        const extra = unreadTypes.length > 2 ? " និង​ទៀត" : "";
-        const msg = `លោកគ្រូ/អ្នកគ្រូ មានការជូនដំណឹងថ្មីចំនួន ${unreadCount} សារ (${labelPreview}${extra})`;
-        showToast(msg);
-        localStorage.setItem(lastToastKey, newestTs);
-        localStorage.removeItem(noShowKey);
+    // Optional: toast (per-user preference)
+    const noShow = localStorage.getItem(`noShowToast_${username}`);
+    const lastToast = localStorage.getItem(`lastToastShown_${username}`);
+    if (unreadCount > 0 && latestTrigger) {
+      // Only show toast if the latest unread upload changed OR user didn't ask to hide
+      if (noShow !== "true" || lastToast !== latestTrigger) {
+        showToast(`លោកគ្រូអ្នកគ្រូមានការជូនដំណឹងថ្មីចំនួន ${unreadCount} សារ`);
+        localStorage.setItem(`lastToastShown_${username}`, latestTrigger);
+        // reset per new content so user can tick again
+        localStorage.removeItem(`noShowToast_${username}`);
       }
     }
   } catch (err) {
-    console.error("Notification fetch error:", err);
-    const badge = document.getElementById("notif-badge");
-    if (badge) {
-      const stored = parseInt(sessionStorage.getItem("notifUnreadCount") || "0", 10);
-      if (stored > 0) {
-        badge.style.display = "inline-block";
-        badge.textContent = stored > 9 ? "9+" : String(stored);
-      } else {
-        badge.style.display = "none";
-      }
-    }
+    console.error("checkNotification error:", err);
   }
 }
 
-// Expose to pages
+// Optionally export the helpers if some pages need them:
 window.checkNotification = checkNotification;
 window.hideToast = hideToast;
+</script>
