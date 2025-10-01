@@ -92,6 +92,11 @@
       background: transparent;
       font-size: 16px;
       color: white;
+      -moz-appearance: textfield;
+    }
+    .age-input-wrap input::-webkit-outer-spin-button,
+    .age-input-wrap input::-webkit-inner-spin-button {
+      -webkit-appearance: none; margin: 0;
     }
 
     .suffix {
@@ -186,24 +191,24 @@
   <table>
     <tr>
       <th>ថ្ងៃខែឆ្នាំកំណើត</th>
-      <td><input type="date" id="dob" value="1989-09-14"></td>
+      <td><input type="date" id="dob" value="1989-09-14" autocomplete="bday"></td>
     </tr>
     <tr>
       <th>អាយុចូលនិវត្តន៍</th>
       <td>
         <div class="age-input-wrap">
-          <input type="number" id="retirementAge" value="55" min="0" max="100">
+          <input type="number" id="retirementAge" value="55" min="40" max="100" inputmode="numeric" pattern="[0-9]*">
           <span class="suffix">ឆ្នាំ</span>
         </div>
       </td>
     </tr>
     <tr>
       <th>ថ្ងៃខែឆ្នាំបច្ចុប្បន្ន</th>
-      <td><input type="date" id="currentDate"></td>
+      <td><input type="date" id="currentDate" autocomplete="off"></td>
     </tr>
     <tr>
       <th>ចំនួនខែដែលនៅសល់</th>
-      <td id="monthsLeft"></td>
+      <td id="monthsLeft">—</td>
     </tr>
   </table>
   <div id="description"></div>
@@ -228,19 +233,17 @@
   </button>
 </div>
 
-
-<!-- Load notification checker -->
+<!-- Load notification checker (safe if absent) -->
 <script src="../notifications/checkNotification.js"></script>
-  
+
 <script>
-// Token Protection
+// =================== Auth & Auto Logout ===================
 const token = sessionStorage.getItem('token');
 if (!token) {
   alert("Session expired or unauthorized access.");
   window.location.href = "../login.html";
 }
 
-// Auto Logout Timer
 const AUTO_LOGOUT_MINUTES = 10;
 let logoutTimer;
 function resetLogoutTimer() {
@@ -259,27 +262,61 @@ function setupAutoLogoutEvents() {
 }
 window.addEventListener('load', setupAutoLogoutEvents);
 </script>
-  
+
 <script>
-// Set max date limits
-function setMaxDateToToday() {
-  const today = new Date().toISOString().split("T")[0];
-  document.getElementById("dob").max = today;
-  document.getElementById("currentDate").max = today;
-  document.getElementById("currentDate").value = today;
+// =================== Date Helpers (robust) ===================
+function parseYMD(value) {
+  // Expect "YYYY-MM-DD" and construct local date to avoid timezone shifts
+  if (!value || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return null;
+  const [y, m, d] = value.split('-').map(n => parseInt(n, 10));
+  const dt = new Date(y, m - 1, d);
+  // Validate (Date auto-correct can create a different day if invalid)
+  return (dt && dt.getFullYear() === y && dt.getMonth() === (m - 1) && dt.getDate() === d) ? dt : null;
 }
 
-// Main calculation
+function setMaxDateToToday() {
+  const todayStr = new Date().toISOString().split("T")[0];
+  const dobEl = document.getElementById("dob");
+  const curEl = document.getElementById("currentDate");
+  if (dobEl) dobEl.max = todayStr;
+  if (curEl) {
+    curEl.max = todayStr;
+    if (!curEl.value) curEl.value = todayStr;
+  }
+}
+
+function pad2(n) { return String(n).padStart(2, '0'); }
+
+// =================== Main calculation ===================
 function calculateMonthsLeft() {
-  const dob = new Date(document.getElementById("dob").value);
-  const retirementAge = parseInt(document.getElementById("retirementAge").value);
-  const current = new Date(document.getElementById("currentDate").value);
+  const dobEl = document.getElementById("dob");
+  const ageEl = document.getElementById("retirementAge");
+  const curEl = document.getElementById("currentDate");
+  const monthsLeftEl = document.getElementById("monthsLeft");
+  const descEl = document.getElementById("description");
 
-  const retirementDate = new Date(dob);
-  retirementDate.setFullYear(retirementDate.getFullYear() + retirementAge);
+  // Clear previous styling
+  descEl.classList.remove("retired");
 
-  const description = document.getElementById("description");
+  // Validate inputs
+  const dob = parseYMD(dobEl.value);
+  const current = parseYMD(curEl.value);
+  let retirementAge = parseInt(ageEl.value, 10);
 
+  if (!retirementAge || retirementAge < 40) retirementAge = 40;
+  if (retirementAge > 100) retirementAge = 100;
+  ageEl.value = retirementAge; // normalize UI
+
+  if (!dob || !current) {
+    monthsLeftEl.textContent = "—";
+    descEl.textContent = "សូមបញ្ចូលកាលបរិច្ឆេទអោយបានត្រឹមត្រូវ។";
+    return;
+  }
+
+  // Compute retirement date
+  const retirementDate = new Date(dob.getFullYear() + retirementAge, dob.getMonth(), dob.getDate());
+
+  // If already retired
   if (retirementDate < current) {
     let years = current.getFullYear() - retirementDate.getFullYear();
     let months = current.getMonth() - retirementDate.getMonth();
@@ -287,57 +324,64 @@ function calculateMonthsLeft() {
 
     if (days < 0) {
       months -= 1;
-      const prevMonth = new Date(current.getFullYear(), current.getMonth(), 0);
-      days += prevMonth.getDate();
+      // last day count of previous month from *current*
+      const prevMonthDays = new Date(current.getFullYear(), current.getMonth(), 0).getDate();
+      days += prevMonthDays;
     }
-
     if (months < 0) {
       years -= 1;
       months += 12;
     }
 
-    document.getElementById("monthsLeft").textContent = "មិនមានចំនួនខែដែលនៅសល់";
-
-    description.classList.add("retired");
-    description.innerHTML = `បានចូលនិវត្តន៍ចំនួន 
-      <span class="highlight">${String(years).padStart(2, '0')}</span> ឆ្នាំ 
-      <span class="highlight">${String(months).padStart(2, '0')}</span> ខែ 
-      និង <span class="highlight">${String(days).padStart(2, '0')}</span> ថ្ងៃ ហើយ`;
+    monthsLeftEl.textContent = "មិនមានចំនួនខែដែលនៅសល់";
+    descEl.classList.add("retired");
+    descEl.innerHTML = `បានចូលនិវត្តន៍ចំនួន 
+      <span class="highlight">${pad2(years)}</span> ឆ្នាំ 
+      <span class="highlight">${pad2(months)}</span> ខែ 
+      និង <span class="highlight">${pad2(days)}</span> ថ្ងៃ ហើយ`;
     return;
   }
 
+  // Not retired yet: difference from current -> retirementDate
   let years = retirementDate.getFullYear() - current.getFullYear();
   let months = retirementDate.getMonth() - current.getMonth();
   let days = retirementDate.getDate() - current.getDate();
 
   if (days < 0) {
     months -= 1;
-    const prevMonth = new Date(retirementDate.getFullYear(), retirementDate.getMonth(), 0);
-    days += prevMonth.getDate();
+    // last day count of previous month from *retirementDate*
+    const prevMonthDays = new Date(retirementDate.getFullYear(), retirementDate.getMonth(), 0).getDate();
+    days += prevMonthDays;
   }
-
   if (months < 0) {
     years -= 1;
     months += 12;
   }
 
   const totalMonthsLeft = years * 12 + months;
+  monthsLeftEl.textContent = `${totalMonthsLeft} ខែ`;
 
-  document.getElementById("monthsLeft").textContent = totalMonthsLeft + " ខែ";
-
-  description.classList.remove("retired");
-  description.innerHTML = `នៅសល់ <span class="highlight">${String(years).padStart(2, '0')}</span> ឆ្នាំ 
-     <span class="highlight">${String(months).padStart(2, '0')}</span> ខែ 
-     និង <span class="highlight">${String(days).padStart(2, '0')}</span> ថ្ងៃទៀត`;
+  descEl.innerHTML = `នៅសល់ <span class="highlight">${pad2(years)}</span> ឆ្នាំ 
+     <span class="highlight">${pad2(months)}</span> ខែ 
+     និង <span class="highlight">${pad2(days)}</span> ថ្ងៃទៀត`;
 }
 
-// Initialize on load
+// =================== Init ===================
 window.addEventListener("DOMContentLoaded", () => {
   setMaxDateToToday();
   calculateMonthsLeft();
-  checkNotification();
+
+  // Safe notification badge refresh (if the helper exists)
+  if (typeof window.checkNotification === 'function') {
+    try { window.checkNotification(); } catch (_) {}
+  }
+
+  // Live updates on input and change
   ["dob", "retirementAge", "currentDate"].forEach(id => {
-    document.getElementById(id).addEventListener("change", calculateMonthsLeft);
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener("input", calculateMonthsLeft);
+    el.addEventListener("change", calculateMonthsLeft);
   });
 });
 </script>
