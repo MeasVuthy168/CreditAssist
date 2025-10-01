@@ -10,106 +10,166 @@
       font-family: 'Krasar';
       src: url('https://measvuthy168.github.io/CreditAssist/Krasar-Regular.ttf') format('truetype');
     }
+
     :root{
-      --bg:#1c2331; --panel:#2c3545; --input:#1f2733; --brand:#0d2d5c;
-      --text:#ffffff; --muted:#cfcfcf; --line:#555; --accent:#3399ff;
+      --brand:#0d2d5c;
+      --bg:#0f1b2c;
+      --panel:#1b2638;
+      --field:#21344c;
+      --field-border:#3c5068;
+      --text:#e6eefb;
+      --muted:#a8b5c7;
+      --accent:#49a2ff;
+      --danger:#ff6b6b;
     }
+
+    *{box-sizing:border-box}
     body{font-family:'Krasar',Arial,sans-serif;background:var(--bg);color:var(--text);margin:0;padding-bottom:70px}
 
-    /* Header (kept) */
-    .header{background:var(--brand);padding:14px 16px;display:flex;align-items:center;position:fixed;top:0;left:0;right:0;z-index:1000;box-shadow:0 2px 5px rgba(0,0,0,.2)}
+    /* Header */
+    .header{
+      background:var(--brand);
+      padding:14px 16px;
+      display:flex;
+      align-items:center;
+      position:fixed;left:0;right:0;top:0;z-index:1000;
+      box-shadow:0 2px 5px rgba(0,0,0,.25);
+    }
     .header .back{font-size:22px;color:#fff;background:none;border:none;margin-right:12px;cursor:pointer}
-    .header .title{font-size:17px;font-weight:bold;color:#fff}
+    .header .title{font-size:17px;font-weight:bold;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
-    /* Panel & layout */
-    .container{max-width:760px;margin:80px auto 0;background:var(--panel);padding:18px;border-radius:12px}
-    .form-row{display:flex;align-items:center;gap:12px;margin-bottom:14px}
-    .form-row label{flex:0 0 170px;color:var(--muted);font-size:15px;white-space:nowrap}
-    .field{flex:1;display:flex;align-items:center;gap:10px;min-width:0}      /* ✅ prevent overflow */
-    .box{flex:1;display:flex;align-items:center;background:var(--input);border:1px solid var(--line);border-radius:8px;height:46px;padding:0 10px;box-sizing:border-box}
-    .box input[type="date"], .box input[type="number"]{flex:1;border:none;background:transparent;color:#fff;font-size:16px;outline:none}
-    .units{flex:0 0 auto;color:#cfd6e1;font-size:14px;white-space:nowrap}
+    /* Panel */
+    .panel{
+      max-width:720px;margin:80px auto 0;background:var(--panel);
+      border-radius:16px;padding:18px 14px;
+    }
 
-    /* Slider block */
-    .age-wrap{flex:1;display:flex;align-items:center;gap:10px;min-width:0}
-    .age-slider{flex:1;min-width:0;height:4px;appearance:none;background:#385173;border-radius:999px;outline:none}
-    .age-slider::-webkit-slider-thumb{appearance:none;width:22px;height:22px;border-radius:50%;background:#fff;border:2px solid #3a5a93;box-shadow:0 2px 6px rgba(0,0,0,.35);cursor:pointer}
-    .age-num{flex:0 0 86px;display:flex;align-items:center;justify-content:center;background:#21344c;border:1px solid #3c5068;border-radius:8px;height:46px;font-weight:bold;box-sizing:border-box} /* ✅ fixed width; no spill */
+    /* Row layout */
+    .form-row{display:flex;align-items:center;gap:10px;margin:10px 6px}
+    .form-row label{
+      flex:0 0 140px;               /* ✅ one-line Khmer label */
+      color:var(--muted);
+      font-size:15px;
+      white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    }
+    .field{
+      flex:1;display:flex;flex-direction:column;gap:8px;min-width:0;
+    }
 
-    .result-row{display:flex;align-items:center;gap:12px;margin-top:6px}
-    .result-title{flex:0 0 170px;color:var(--muted);font-size:15px;white-space:nowrap}
-    .result-box{flex:1;height:46px;display:flex;align-items:center;padding:0 10px;border-radius:8px;background:transparent;border:1px dashed #4a5568}
-    #monthsLeft{font-weight:bold}
+    .box{
+      width:100%;height:48px;background:var(--field);
+      border:1px solid var(--field-border);border-radius:10px;
+      display:flex;align-items:center;justify-content:center;
+      font-size:17px;color:#fff;
+      padding:0 12px;
+    }
+    .box input[type="date"]{
+      width:100%;height:100%;border:none;background:transparent;color:#fff;font-family:'Krasar',sans-serif;font-size:16px;outline:none;
+    }
 
-    #description{margin-top:16px;font-size:18px;color:#f0f0f0}
-    .highlight{color:var(--accent);font-weight:bold}
-    .retired{color:#ff8080 !important;font-weight:bold}
+    /* ===== Age slider + numeric input ===== */
+    .age-wrap{display:flex;align-items:center;gap:12px;min-width:0}
+    .age-slider{
+      flex:1;appearance:none;height:6px;border-radius:999px;background:#385173;outline:none;
+    }
+    .age-slider::-webkit-slider-thumb{
+      appearance:none;width:22px;height:22px;border-radius:50%;background:#fff;border:2px solid #2f4378;
+      box-shadow:0 2px 6px rgba(0,0,0,.3);
+    }
+    .age-slider::-moz-range-thumb{
+      width:22px;height:22px;border-radius:50%;background:#fff;border:2px solid #2f4378;
+      box-shadow:0 2px 6px rgba(0,0,0,.3);
+    }
 
-    footer{text-align:center;font-size:14px;color:#aaa;margin-top:22px}
+    .age-num{
+      flex:0 0 110px;height:48px;background:var(--field);
+      border:1px solid var(--field-border);border-radius:10px;
+      display:flex;align-items:center;justify-content:center;gap:6px;padding:0 10px;
+    }
+    .age-num input{
+      width:56px;border:none;background:transparent;color:#fff;font-size:17px;text-align:center;outline:none;
+    }
+    .units{color:var(--muted);font-size:14px;white-space:nowrap}
 
-    /* Bottom bar (kept) */
-    .bottom-bar{position:fixed;bottom:0;left:0;width:100%;height:56px;background:var(--brand);display:flex;justify-content:space-around;align-items:center;z-index:1000}
-    .bottom-btn{display:flex;flex-direction:column;align-items:center;font-size:11px;color:#fff;border:none;background:none}
+    .result-box{margin:10px 6px;padding:14px;border:1px dashed #3f5471;border-radius:12px;background:#162234}
+    .result-title{color:var(--muted);font-size:14px;margin-bottom:6px}
+    .months-big{font-size:22px;font-weight:bold}
+    .desc{margin-top:6px;font-size:18px}
+    .desc .num{color:var(--accent);font-weight:bold}
+    .desc.retired{color:var(--danger)}
+    .foot-note{margin:14px 6px 0;color:#90a0b8;font-size:14px;line-height:1.6}
+
+    /* Bottom bar */
+    .bottom-bar{position:fixed;bottom:0;left:0;width:100%;height:56px;background:var(--brand);display:flex;justify-content:space-around;align-items:center;z-index:1000;box-shadow:0 2px 5px rgba(0,0,0,.3)}
+    .bottom-btn{display:flex;flex-direction:column;align-items:center;font-size:11px;color:#fff;background:none;border:none}
     .bottom-btn img{margin-bottom:2px;pointer-events:none}
     .badge{position:absolute;top:-4px;right:-8px;background:red;color:#fff;font-size:10px;padding:2px 6px;border-radius:50%;font-weight:bold}
 
-    @media print{.header,.bottom-bar{display:none!important}}
+    @media (max-width:420px){
+      .form-row label{flex:0 0 120px}
+      .age-num{flex-basis:100px}
+    }
+
+    @media print{.header,.bottom-bar{display:none !important}}
   </style>
 </head>
 <body>
 
-  <!-- Header (kept) -->
+  <!-- Header -->
   <div class="header">
     <button class="back" onclick="window.location.href='../index.html'">←</button>
     <div class="title">ការគណនាចំនួនខែចូលនិវត្តន៍</div>
   </div>
 
-  <div class="container">
-    <!-- DOB -->
+  <!-- Panel -->
+  <div class="panel">
+
     <div class="form-row">
       <label for="dob">ថ្ងៃខែឆ្នាំកំណើត</label>
       <div class="field">
         <div class="box">
-          <input type="date" id="dob" value="1989-09-14">
+          <input type="date" id="dob" />
         </div>
       </div>
     </div>
 
-    <!-- Retirement age (slider + numeric) -->
     <div class="form-row">
       <label for="retirementAge">អាយុចូលនិវត្តន៍</label>
       <div class="field">
         <div class="age-wrap">
+          <!-- Longer slider -->
           <input id="retirementAge" class="age-slider" type="range" min="0" max="60" value="55" step="1">
-          <div class="age-num"><span id="ageDisplay">55</span> ឆ្នាំ</div>
+          <!-- Editable number box -->
+          <div class="age-num">
+            <input type="number" id="ageInput" min="0" max="60" value="55"> ឆ្នាំ
+          </div>
         </div>
         <div class="units">(0–60)</div>
       </div>
     </div>
 
-    <!-- Current date (✅ can be future now) -->
     <div class="form-row">
       <label for="currentDate">ថ្ងៃខែឆ្នាំបច្ចុប្បន្ន</label>
       <div class="field">
         <div class="box">
-          <input type="date" id="currentDate">
+          <input type="date" id="currentDate" />
         </div>
       </div>
     </div>
 
-    <!-- Months left -->
-    <div class="result-row">
+    <div class="result-box">
       <div class="result-title">ចំនួនខែដែលនៅសល់</div>
-      <div class="result-box"><span id="monthsLeft">-</span></div>
+      <div id="monthsLeft" class="months-big">—</div>
+      <div id="description" class="desc"></div>
     </div>
 
-    <!-- Description -->
-    <div id="description"></div>
-
-    <footer>💡គោលបំណងស្វែងរករយៈពេលផ្តល់ឥណទានអោយបានត្រឹមត្រូវតាមគោលការណ៍ សម្រាប់ឥណទានប្រើប្រាស់ផ្ទាល់ខ្លួនដែលធានាដោយប្រាក់បៀវត្សរ៍ ។</footer>
+    <div class="foot-note">
+      💡 គោលបំណង៖ កំណត់រយៈពេលផ្តល់ឥណទានឲ្យបានត្រឹមត្រូវតាមគោលការណ៍ សម្រាប់ឥណទានប្រើប្រាស់ផ្ទាល់ខ្លួន
+      ដែលធានាដោយប្រាក់បៀវត្សា៕
+    </div>
   </div>
 
-  <!-- Bottom bar (kept) -->
+  <!-- Bottom bar -->
   <div class="bottom-bar">
     <button class="bottom-btn" onclick="location.href='../index.html'">
       <img src="../icons/Home.png" width="24" height="24" />
@@ -128,92 +188,134 @@
     </button>
   </div>
 
-  <!-- Notification badge helper -->
+  <!-- Shared badge helper -->
   <script src="../notifications/checkNotification.js"></script>
 
   <script>
-    // ===== Security (kept)
+    // ===== Auth guard
     const token = sessionStorage.getItem('token');
     if (!token) { alert("Session expired or unauthorized access."); window.location.href = "../login.html"; }
 
-    // ===== Auto logout (kept)
+    // ===== Auto logout
     const AUTO_LOGOUT_MINUTES = 10;
     let logoutTimer;
-    function resetLogoutTimer(){
+    function resetLogoutTimer() {
       clearTimeout(logoutTimer);
-      logoutTimer = setTimeout(()=>{
+      logoutTimer = setTimeout(() => {
         sessionStorage.clear();
         alert("Session expired. Please log in again.");
-        window.location.href="../login.html";
-      }, AUTO_LOGOUT_MINUTES*60*1000);
+        window.location.href = "../login.html";
+      }, AUTO_LOGOUT_MINUTES * 60 * 1000);
     }
-    function setupAutoLogoutEvents(){
-      ['mousemove','mousedown','keydown','touchstart','touchmove','scroll'].forEach(e=>{
-        document.addEventListener(e, resetLogoutTimer, true);
-      });
+    function setupAutoLogoutEvents() {
+      ['mousemove','mousedown','keydown','touchstart','touchmove','scroll'].forEach(e =>
+        document.addEventListener(e, resetLogoutTimer, true)
+      );
       resetLogoutTimer();
     }
     window.addEventListener('load', setupAutoLogoutEvents);
 
-    // ===== Dates init
-    function initDates(){
-      const todayISO = new Date().toISOString().split("T")[0];
-      const dob = document.getElementById("dob");
-      const cur = document.getElementById("currentDate");
-      dob.max = todayISO;           // DOB cannot be in the future
-      cur.value = todayISO;         // start at today (✅ no max -> can pick future)
+    // ===== Date initial values
+    function initDates() {
+      const todayStr = new Date().toISOString().split("T")[0];
+      const dobEl = document.getElementById("dob");
+      const curEl = document.getElementById("currentDate");
+
+      // DOB: cannot be in the future
+      dobEl.max = todayStr;
+      if (!dobEl.value) dobEl.value = "1989-09-14";
+
+      // Current date: allowed to be > today (no max)
+      if (!curEl.value) curEl.value = todayStr;
     }
 
-    // ===== Calculation
-    function calculateMonthsLeft(){
-      const dobVal = document.getElementById("dob").value;
-      const age = parseInt(document.getElementById("retirementAge").value || "0", 10);
-      const curVal = document.getElementById("currentDate").value;
-      if (!dobVal || !curVal || isNaN(age)) return;
+    // ===== Calculation helpers
+    function clamp(n, min, max) { return Math.min(Math.max(n, min), max); }
 
-      const dob = new Date(dobVal);
-      const current = new Date(curVal);
+    function monthDiffDetailed(from, to) {
+      // returns {years, months, days, totalMonths, negative}
+      let negative = false;
+      let a = new Date(from), b = new Date(to);
+      if (b < a) { negative = true; [a,b] = [b,a]; }
+
+      let years = b.getFullYear() - a.getFullYear();
+      let months = b.getMonth() - a.getMonth();
+      let days = b.getDate() - a.getDate();
+
+      if (days < 0) {
+        months -= 1;
+        // days in previous month of b
+        const prevB = new Date(b.getFullYear(), b.getMonth(), 0);
+        days += prevB.getDate();
+      }
+      if (months < 0) {
+        years -= 1;
+        months += 12;
+      }
+      const totalMonths = years * 12 + months;
+      return { years, months, days, totalMonths, negative };
+    }
+
+    function calculateMonthsLeft() {
+      const dob = new Date(document.getElementById("dob").value);
+      const age = parseInt(document.getElementById("ageInput").value || "0", 10);
+      const current = new Date(document.getElementById("currentDate").value);
+      if (!dob || isNaN(dob.getTime())) return;
+      if (!current || isNaN(current.getTime())) return;
 
       const retirementDate = new Date(dob);
       retirementDate.setFullYear(retirementDate.getFullYear() + age);
 
       const desc = document.getElementById("description");
-      const monthsLeftEl = document.getElementById("monthsLeft");
+      const monthsBox = document.getElementById("monthsLeft");
 
-      if (retirementDate < current) {
-        let years = current.getFullYear() - retirementDate.getFullYear();
-        let months = current.getMonth() - retirementDate.getMonth();
-        let days = current.getDate() - retirementDate.getDate();
-        if (days < 0) { months -= 1; const pm = new Date(current.getFullYear(), current.getMonth(), 0); days += pm.getDate(); }
-        if (months < 0) { years -= 1; months += 12; }
-
-        monthsLeftEl.textContent = "មិនមានចំនួនខែដែលនៅសល់";
+      if (current >= retirementDate) {
+        // Already retired
+        const d = monthDiffDetailed(retirementDate, current);
+        monthsBox.textContent = "មិនមានចំនួនខែដែលនៅសល់";
         desc.classList.add("retired");
-        desc.innerHTML = `បានចូលនិវត្តន៍ចំនួន <span class="highlight">${String(years).padStart(2,'0')}</span> ឆ្នាំ <span class="highlight">${String(months).padStart(2,'0')}</span> ខែ និង <span class="highlight">${String(days).padStart(2,'0')}</span> ថ្ងៃ ហើយ`;
-        return;
+        desc.innerHTML = `បានចូលនិវត្តន៍ចំនួន <span class="num">${String(d.years).padStart(2,'0')}</span> ឆ្នាំ
+          <span class="num">${String(d.months).padStart(2,'0')}</span> ខែ
+          និង <span class="num">${String(d.days).padStart(2,'0')}</span> ថ្ងៃ ហើយ`;
+      } else {
+        const d = monthDiffDetailed(current, retirementDate);
+        monthsBox.textContent = `${d.totalMonths} ខែ`;
+        desc.classList.remove("retired");
+        desc.innerHTML = `នៅសល់ <span class="num">${String(d.years).padStart(2,'0')}</span> ឆ្នាំ
+          <span class="num">${String(d.months).padStart(2,'0')}</span> ខែ
+          និង <span class="num">${String(d.days).padStart(2,'0')}</span> ថ្ងៃទៀត`;
       }
-
-      let years = retirementDate.getFullYear() - current.getFullYear();
-      let months = retirementDate.getMonth() - current.getMonth();
-      let days = retirementDate.getDate() - current.getDate();
-      if (days < 0) { months -= 1; const pm = new Date(retirementDate.getFullYear(), retirementDate.getMonth(), 0); days += pm.getDate(); }
-      if (months < 0) { years -= 1; months += 12; }
-
-      const totalMonthsLeft = years * 12 + months;
-      monthsLeftEl.textContent = `${totalMonthsLeft} ខែ`;
-      desc.classList.remove("retired");
-      desc.innerHTML = `នៅសល់ <span class="highlight">${String(years).padStart(2,'0')}</span> ឆ្នាំ <span class="highlight">${String(months).padStart(2,'0')}</span> ខែ និង <span class="highlight">${String(days).padStart(2,'0')}</span> ថ្ងៃទៀត`;
     }
 
-    // ===== Wire up
+    // ===== Age controls sync
+    function initAgeControls() {
+      const slider = document.getElementById("retirementAge");
+      const input = document.getElementById("ageInput");
+
+      function setVal(v) {
+        const n = clamp(parseInt(v || "0", 10), 0, 60);
+        slider.value = n;
+        input.value = n;
+        calculateMonthsLeft();
+      }
+      slider.addEventListener("input", () => setVal(slider.value));
+      input.addEventListener("input", () => setVal(input.value));
+      setVal(slider.value);
+    }
+
+    // ===== Init
     window.addEventListener("DOMContentLoaded", () => {
       initDates();
-      const slider = document.getElementById("retirementAge");
-      const ageDisplay = document.getElementById("ageDisplay");
-      slider.addEventListener("input", () => { ageDisplay.textContent = slider.value; calculateMonthsLeft(); });
-      ["dob","currentDate"].forEach(id=>document.getElementById(id).addEventListener("change", calculateMonthsLeft));
+      initAgeControls();
       calculateMonthsLeft();
+
+      // Badge
       if (typeof checkNotification === 'function') checkNotification();
+
+      // Recalculate when dates change
+      ["dob","currentDate"].forEach(id => {
+        document.getElementById(id).addEventListener("change", calculateMonthsLeft);
+      });
     });
   </script>
 </body>
