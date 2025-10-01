@@ -10,143 +10,112 @@
       font-family: 'Krasar';
       src: url('https://measvuthy168.github.io/CreditAssist/Krasar-Regular.ttf') format('truetype');
     }
-
     :root{
       --bg:#1c2331;
-      --card:#2c3545;
-      --ink:#ffffff;
-      --muted:#cfd4dc;
+      --panel:#2c3545;
+      --input:#1f2733;
       --brand:#0d2d5c;
+      --text:#ffffff;
+      --muted:#cfcfcf;
+      --line:#555;
       --accent:#3399ff;
     }
+    body{font-family:'Krasar',Arial,sans-serif;background:var(--bg);color:var(--text);margin:0;padding-bottom:70px}
 
-    *{box-sizing:border-box}
-    body{
-      font-family:'Krasar', Arial, sans-serif;
-      background-color:var(--bg);
-      color:var(--ink);
-      margin:0;
-      padding-bottom:70px;
-    }
+    /* Header (kept) */
+    .header{background:var(--brand);padding:14px 16px;display:flex;align-items:center;position:fixed;top:0;left:0;right:0;z-index:1000;box-shadow:0 2px 5px rgba(0,0,0,.2)}
+    .header .back{font-size:22px;color:#fff;background:none;border:none;margin-right:12px;cursor:pointer}
+    .header .title{font-size:17px;font-weight:bold;color:#fff}
 
-    /* Header */
-    .header{
-      background-color:var(--brand);
-      padding:14px 16px;
-      display:flex;
-      align-items:center;
-      position:fixed; inset:0 0 auto 0;
-      z-index:1000;
-      box-shadow:0 2px 5px rgba(0,0,0,.2);
-    }
-    .header .back{
-      font-size:22px; color:#fff; background:none; border:none; margin-right:12px; cursor:pointer;
-    }
-    .header .title{font-size:17px; font-weight:bold; color:#fff}
+    /* Panel & layout */
+    .container{max-width:760px;margin:80px auto 0;background:var(--panel);padding:18px;border-radius:12px}
+    .form-row{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+    .form-row label{flex:0 0 170px;color:var(--muted);font-size:15px;white-space:nowrap} /* ✅ one-line labels */
+    .field{flex:1;display:flex;align-items:center;gap:10px}
+    .box{flex:1;display:flex;align-items:center;background:var(--input);border:1px solid var(--line);border-radius:8px;height:46px;padding:0 10px;box-sizing:border-box}
+    .box input[type="date"], .box input[type="number"]{flex:1;border:none;background:transparent;color:#fff;font-size:16px;outline:none}
+    .units{color:#cfd6e1;font-size:14px;white-space:nowrap}
 
-    /* Card */
-    .container{
-      max-width:700px;
-      margin:80px auto 0;
-      background:var(--card);
-      padding:20px;
-      border-radius:12px;
-    }
-    table{width:100%; border-collapse:collapse}
-    th,td{padding:12px 10px; font-size:16px; vertical-align:middle}
-    th{color:var(--muted); font-weight:bold; width:42%}
+    /* Slider block */
+    .age-wrap{flex:1;display:flex;align-items:center;gap:10px}
+    .age-slider{flex:1;height:4px;appearance:none;background:#385173;border-radius:999px;outline:none}
+    .age-slider::-webkit-slider-thumb{appearance:none;width:22px;height:22px;border-radius:50%;background:#fff;border:2px solid #3a5a93;box-shadow:0 2px 6px rgba(0,0,0,.35);cursor:pointer}
+    .age-num{width:92px;display:flex;align-items:center;justify-content:center;background:#21344c;border:1px solid #3c5068;border-radius:8px;height:46px;font-weight:bold}
 
-    input[type="date"]{
-      width:100%; height:44px; font-size:16px;
-      background:#1f2733; color:#fff; border:1px solid #555; border-radius:6px; padding:0 10px;
-    }
+    .result-row{display:flex;align-items:center;gap:12px;margin-top:6px}
+    .result-title{flex:0 0 170px;color:var(--muted);font-size:15px;white-space:nowrap}
+    .result-box{flex:1;height:46px;display:flex;align-items:center;padding:0 10px;border-radius:8px;background:transparent;border:1px dashed #4a5568}
+    #monthsLeft{font-weight:bold}
 
-    /* Age control: slider + number box */
-    .age-row{
-      display:flex; align-items:center; gap:12px;
-      background:#1f2733; border:1px solid #555; border-radius:6px; padding:10px;
-    }
-    .age-row input[type="range"]{
-      flex:1;
-      accent-color:var(--accent);
-    }
-    .num-wrap{
-      display:flex; align-items:center; gap:8px;
-      background:#111923; border:1px solid #46505c; border-radius:6px; padding:6px 10px;
-    }
-    .num-wrap input[type="number"]{
-      width:72px; background:transparent; border:none; color:#fff; font-size:16px; text-align:center;
-      appearance:textfield;
-    }
-    /* Remove spin buttons on some browsers */
-    .num-wrap input[type="number"]::-webkit-outer-spin-button,
-    .num-wrap input[type="number"]::-webkit-inner-spin-button{ -webkit-appearance: none; margin: 0; }
-    .suffix{color:var(--muted); white-space:nowrap}
+    #description{margin-top:16px;font-size:18px;color:#f0f0f0}
+    .highlight{color:var(--accent);font-weight:bold}
+    .retired{color:#ff8080 !important;font-weight:bold}
 
-    #monthsLeft{font-weight:bold; color:#fff; font-size:16px}
-    #description{text-align:center; font-size:18px; margin-top:15px; color:#f0f0f0}
-    .highlight{color:var(--accent); font-weight:bold}
-    .retired{color:#ff6666!important; font-weight:bold}
+    footer{text-align:center;font-size:14px;color:#aaa;margin-top:22px}
 
-    footer{text-align:center; font-size:14px; color:#aaa; margin-top:40px}
+    /* Bottom bar (kept) */
+    .bottom-bar{position:fixed;bottom:0;left:0;width:100%;height:56px;background:var(--brand);display:flex;justify-content:space-around;align-items:center;z-index:1000}
+    .bottom-btn{display:flex;flex-direction:column;align-items:center;font-size:11px;color:#fff;border:none;background:none}
+    .bottom-btn img{margin-bottom:2px;pointer-events:none}
+    .badge{position:absolute;top:-4px;right:-8px;background:red;color:#fff;font-size:10px;padding:2px 6px;border-radius:50%;font-weight:bold}
 
-    /* Bottom bar */
-    .bottom-bar{
-      position:fixed; left:0; right:0; bottom:0; height:56px;
-      background:var(--brand); display:flex; justify-content:space-around; align-items:center; z-index:1000;
-    }
-    .bottom-btn{display:flex; flex-direction:column; align-items:center; font-size:11px; color:#fff; border:none; background:none}
-    .bottom-btn img{margin-bottom:2px; pointer-events:none}
-    .badge{position:absolute; top:-4px; right:-8px; background:red; color:#fff; font-size:10px; padding:2px 6px; border-radius:50%; font-weight:bold}
-
-    @media print {.header,.bottom-bar{display:none!important}}
+    @media print{.header,.bottom-bar{display:none!important}}
   </style>
 </head>
 <body>
 
+  <!-- Header (kept) -->
   <div class="header">
     <button class="back" onclick="window.location.href='../index.html'">←</button>
     <div class="title">ការគណនាចំនួនខែចូលនិវត្តន៍</div>
   </div>
 
   <div class="container">
-    <table>
-      <tr>
-        <th>ថ្ងៃខែឆ្នាំកំណើត</th>
-        <td><input type="date" id="dob" value="1989-09-14"></td>
-      </tr>
+    <!-- DOB -->
+    <div class="form-row">
+      <label for="dob">ថ្ងៃខែឆ្នាំកំណើត</label>
+      <div class="field">
+        <div class="box">
+          <input type="date" id="dob" value="1989-09-14">
+        </div>
+      </div>
+    </div>
 
-      <tr>
-        <th>អាយុចូលនិវត្តន៍</th>
-        <td>
-          <div class="age-row" aria-label="អាយុចូលនិវត្តន៍">
-            <!-- slider -->
-            <input type="range" id="retirementAgeSlider" min="0" max="60" step="1" value="55" aria-label="ជ្រើសរើសអាយុ"/>
-            <!-- number box -->
-            <div class="num-wrap">
-              <input type="number" id="retirementAge" min="0" max="60" value="55" inputmode="numeric" aria-label="បញ្ចូលអាយុ"/>
-              <span class="suffix">ឆ្នាំ (០–៦០)</span>
-            </div>
-          </div>
-        </td>
-      </tr>
+    <!-- Retirement age (slider + numeric) -->
+    <div class="form-row">
+      <label for="retirementAge">អាយុចូលនិវត្តន៍</label>
+      <div class="field">
+        <div class="age-wrap">
+          <input id="retirementAge" class="age-slider" type="range" min="0" max="60" value="55" step="1">
+          <div class="age-num"><span id="ageDisplay">55</span> ឆ្នាំ</div>
+        </div>
+        <div class="units"> (0–60)</div>
+      </div>
+    </div>
 
-      <tr>
-        <th>ថ្ងៃខែឆ្នាំបច្ចុប្បន្ន</th>
-        <td><input type="date" id="currentDate"></td>
-      </tr>
+    <!-- Current date -->
+    <div class="form-row">
+      <label for="currentDate">ថ្ងៃខែឆ្នាំបច្ចុប្បន្ន</label>
+      <div class="field">
+        <div class="box">
+          <input type="date" id="currentDate">
+        </div>
+      </div>
+    </div>
 
-      <tr>
-        <th>ចំនួនខែដែលនៅសល់</th>
-        <td id="monthsLeft"></td>
-      </tr>
-    </table>
+    <!-- Months left -->
+    <div class="result-row">
+      <div class="result-title">ចំនួនខែដែលនៅសល់</div>
+      <div class="result-box"><span id="monthsLeft">-</span></div>
+    </div>
 
+    <!-- Description -->
     <div id="description"></div>
 
-    <footer>💡 គោលបំណង៖ កំណត់រយៈពេលឥណទានឱ្យត្រឹមត្រូវសម្រាប់ឥណទានប្រើប្រាស់ផ្ទាល់ខ្លួនដែលធានាដោយប្រាក់បៀវត្ស។</footer>
+    <footer>💡គោលបំណងស្វែងរករយៈពេលផ្តល់ឥណទានអោយបានត្រឹមត្រូវតាមគោលការណ៍ សម្រាប់ឥណទានប្រើប្រាស់ផ្ទាល់ខ្លួនដែលធានាដោយប្រាក់បៀវត្សរ៍ ។</footer>
   </div>
 
+  <!-- Bottom bar (kept) -->
   <div class="bottom-bar">
     <button class="bottom-btn" onclick="location.href='../index.html'">
       <img src="../icons/Home.png" width="24" height="24" />
@@ -165,134 +134,120 @@
     </button>
   </div>
 
-  <!-- Shared badge logic -->
+  <!-- Notification badge helper -->
   <script src="../notifications/checkNotification.js"></script>
 
   <script>
-    // ===== Token guard
+    // ===== Security (kept)
     const token = sessionStorage.getItem('token');
     if (!token) { alert("Session expired or unauthorized access."); window.location.href = "../login.html"; }
 
-    // ===== Auto logout
-    (function setupAutoLogout(){
-      const AUTO_LOGOUT_MINUTES = 10;
-      let timer;
-      function reset() {
-        clearTimeout(timer);
-        timer = setTimeout(() => {
-          sessionStorage.clear();
-          alert("Session expired due to inactivity. Please log in again.");
-          window.location.href = "../login.html";
-        }, AUTO_LOGOUT_MINUTES * 60 * 1000);
-      }
-      ['mousemove','mousedown','keydown','touchstart','touchmove','scroll'].forEach(e => document.addEventListener(e, reset, true));
-      reset();
-    })();
+    // ===== Auto logout (kept)
+    const AUTO_LOGOUT_MINUTES = 10;
+    let logoutTimer;
+    function resetLogoutTimer(){
+      clearTimeout(logoutTimer);
+      logoutTimer = setTimeout(()=>{
+        sessionStorage.clear();
+        alert("Session expired. Please log in again.");
+        window.location.href="../login.html";
+      }, AUTO_LOGOUT_MINUTES*60*1000);
+    }
+    function setupAutoLogoutEvents(){
+      ['mousemove','mousedown','keydown','touchstart','touchmove','scroll'].forEach(e=>{
+        document.addEventListener(e, resetLogoutTimer, true);
+      });
+      resetLogoutTimer();
+    }
+    window.addEventListener('load', setupAutoLogoutEvents);
 
-    // ===== Helpers
-    function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
-
-    function setMaxDateToToday() {
+    // ===== Dates init
+    function setMaxDateToToday(){
       const today = new Date();
-      const iso = today.toISOString().slice(0,10);
-      document.getElementById("dob").max = iso;
-      document.getElementById("currentDate").max = iso;
-      document.getElementById("currentDate").value = iso;
+      const iso = today.toISOString().split("T")[0];
+      const dob = document.getElementById("dob");
+      const cur = document.getElementById("currentDate");
+      dob.max = iso; cur.max = iso; cur.value = iso;
     }
 
-    // Accurate month/day difference
-    function diffYMD(from, to) {
-      // from <= to
-      let y = to.getFullYear() - from.getFullYear();
-      let m = to.getMonth() - from.getMonth();
-      let d = to.getDate() - from.getDate();
+    // ===== Calculation
+    function calculateMonthsLeft(){
+      const dobVal = document.getElementById("dob").value;
+      const age = parseInt(document.getElementById("retirementAge").value || "0", 10);
+      const curVal = document.getElementById("currentDate").value;
 
-      if (d < 0) {
-        // borrow days from previous month of 'to'
-        const prev = new Date(to.getFullYear(), to.getMonth(), 0);
-        d += prev.getDate();
-        m -= 1;
-      }
-      if (m < 0) {
-        m += 12;
-        y -= 1;
-      }
-      return { y, m, d };
-    }
+      if (!dobVal || !curVal || isNaN(age)) return;
 
-    function calculateMonthsLeft() {
-      const dobStr = document.getElementById("dob").value;
-      const currentStr = document.getElementById("currentDate").value;
-      const age = clamp(parseInt(document.getElementById("retirementAge").value || "0", 10), 0, 60);
+      const dob = new Date(dobVal);
+      const current = new Date(curVal);
 
-      // protect against empty inputs
-      if (!dobStr || !currentStr) return;
-
-      const dob = new Date(dobStr);
-      const current = new Date(currentStr);
-
-      // retirement date = dob + age years
       const retirementDate = new Date(dob);
       retirementDate.setFullYear(retirementDate.getFullYear() + age);
 
+      const desc = document.getElementById("description");
       const monthsLeftEl = document.getElementById("monthsLeft");
-      const descEl = document.getElementById("description");
 
-      if (retirementDate <= current) {
-        // already retired
-        const { y, m, d } = diffYMD(retirementDate, current);
+      // Already retired
+      if (retirementDate < current) {
+        let years = current.getFullYear() - retirementDate.getFullYear();
+        let months = current.getMonth() - retirementDate.getMonth();
+        let days = current.getDate() - retirementDate.getDate();
+
+        if (days < 0) {
+          months -= 1;
+          const prevMonth = new Date(current.getFullYear(), current.getMonth(), 0);
+          days += prevMonth.getDate();
+        }
+        if (months < 0) { years -= 1; months += 12; }
+
         monthsLeftEl.textContent = "មិនមានចំនួនខែដែលនៅសល់";
-        descEl.classList.add("retired");
-        descEl.innerHTML =
-          `បានចូលនិវត្តន៍ចំនួន <span class="highlight">${String(y).padStart(2,'0')}</span> ឆ្នាំ ` +
-          `<span class="highlight">${String(m).padStart(2,'0')}</span> ខែ ` +
-          `និង <span class="highlight">${String(d).padStart(2,'0')}</span> ថ្ងៃ ហើយ`;
+        desc.classList.add("retired");
+        desc.innerHTML =
+          `បានចូលនិវត្តន៍ចំនួន <span class="highlight">${String(years).padStart(2,'0')}</span> ឆ្នាំ `+
+          `<span class="highlight">${String(months).padStart(2,'0')}</span> ខែ `+
+          `និង <span class="highlight">${String(days).padStart(2,'0')}</span> ថ្ងៃ ហើយ`;
         return;
       }
 
-      // time left
-      const { y, m, d } = diffYMD(current, retirementDate);
-      const totalMonths = y * 12 + m;
-      monthsLeftEl.textContent = `${totalMonths} ខែ`;
-      descEl.classList.remove("retired");
-      descEl.innerHTML =
-        `នៅសល់ <span class="highlight">${String(y).padStart(2,'0')}</span> ឆ្នាំ ` +
-        `<span class="highlight">${String(m).padStart(2,'0')}</span> ខែ ` +
-        `និង <span class="highlight">${String(d).padStart(2,'0')}</span> ថ្ងៃទៀត`;
+      // Not yet retired
+      let years = retirementDate.getFullYear() - current.getFullYear();
+      let months = retirementDate.getMonth() - current.getMonth();
+      let days = retirementDate.getDate() - current.getDate();
+
+      if (days < 0) {
+        months -= 1;
+        const prevMonth = new Date(retirementDate.getFullYear(), retirementDate.getMonth(), 0);
+        days += prevMonth.getDate();
+      }
+      if (months < 0) { years -= 1; months += 12; }
+
+      const totalMonthsLeft = years * 12 + months;
+      monthsLeftEl.textContent = `${totalMonthsLeft} ខែ`;
+
+      desc.classList.remove("retired");
+      desc.innerHTML =
+        `នៅសល់ <span class="highlight">${String(years).padStart(2,'0')}</span> ឆ្នាំ `+
+        `<span class="highlight">${String(months).padStart(2,'0')}</span> ខែ `+
+        `និង <span class="highlight">${String(days).padStart(2,'0')}</span> ថ្ងៃទៀត`;
     }
 
-    // ===== Bind UI
+    // ===== Wire up
     window.addEventListener("DOMContentLoaded", () => {
       setMaxDateToToday();
+      const slider = document.getElementById("retirementAge");
+      const ageDisplay = document.getElementById("ageDisplay");
 
-      const slider = document.getElementById("retirementAgeSlider");
-      const number = document.getElementById("retirementAge");
-
-      // keep both in sync
-      function syncFromSlider(){
-        number.value = slider.value;
+      slider.addEventListener("input", () => {
+        ageDisplay.textContent = slider.value;
         calculateMonthsLeft();
-      }
-      function syncFromNumber(){
-        const v = clamp(parseInt(number.value || "0", 10), 0, 60);
-        number.value = v;
-        slider.value = v;
-        calculateMonthsLeft();
-      }
-
-      slider.addEventListener("input", syncFromSlider);
-      number.addEventListener("input", syncFromNumber);
-      document.getElementById("dob").addEventListener("change", calculateMonthsLeft);
-      document.getElementById("currentDate").addEventListener("change", calculateMonthsLeft);
-
-      // initial calc
-      syncFromNumber();
-
-      // notification badge
-      if (typeof checkNotification === 'function') checkNotification();
-      document.addEventListener('visibilitychange', () => {
-        if (!document.hidden && typeof checkNotification === 'function') checkNotification();
       });
+
+      ["dob","currentDate"].forEach(id=>{
+        document.getElementById(id).addEventListener("change", calculateMonthsLeft);
+      });
+
+      calculateMonthsLeft();
+      if (typeof checkNotification === 'function') checkNotification();
     });
   </script>
 </body>
