@@ -29,9 +29,25 @@
     .info .position{font-size:14px;color:var(--muted)}
 
     .setting-section{margin-top:10px}
-    .setting-item{background:var(--card);padding:16px;border-bottom:1px solid #ddd;display:flex;align-items:center;justify-content:space-between;font-size:16px}
+    .setting-item{
+      background:var(--card);
+      padding:16px;
+      border-bottom:1px solid #ddd;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-size:16px
+    }
     .setting-item:hover{background:#eef2f7}
-    .setting-item span{display:flex;align-items:center;gap:10px}
+    .setting-item .left{display:flex;align-items:center;gap:10px}
+    .setting-item .right{
+      margin-left:auto;               /* push to far right */
+      display:flex;
+      align-items:center;
+      gap:10px;
+      min-width:120px;                /* keeps layout stable */
+      justify-content:flex-end;       /* hug the edge */
+    }
     .setting-item img.icon{width:20px;height:20px}
 
     /* Modern toggle */
@@ -40,6 +56,7 @@
       position:relative; width:var(--w); height:var(--h);
       background:#e5e7eb; border-radius:999px; cursor:pointer; transition:.2s ease;
       box-shadow: inset 0 0 0 1px rgba(0,0,0,.05);
+      outline:none;
     }
     .toggle.on{ background:#d1fae5; }
     .toggle .dot{
@@ -48,12 +65,12 @@
     }
     .toggle.on .dot{ transform: translateX(26px); }
     .toggle-label{
-      min-width:68px; text-align:right; font-size:13px; margin-left:10px;
+      min-width:44px; text-align:right; font-size:13px; user-select:none;
     }
     .lbl-on{color:var(--green); display:none;}
     .lbl-off{color:var(--red); display:inline;}
-    .toggle.on ~ .toggle-label .lbl-on{display:inline;}
-    .toggle.on ~ .toggle-label .lbl-off{display:none;}
+    .toggle.on + .toggle-label .lbl-on{display:inline;}
+    .toggle.on + .toggle-label .lbl-off{display:none;}
 
     .signout span{color:red;font-weight:bold;text-decoration:underline}
     .signout img.icon{filter:brightness(0) saturate(100%) invert(19%) sepia(100%) saturate(6486%) hue-rotate(355deg) brightness(93%) contrast(104%)}
@@ -94,19 +111,19 @@
   <!-- Setting Items -->
   <div class="setting-section">
     <div class="setting-item" onclick="window.location.href='userinfo.html'">
-      <span><img class="icon" src="user.png" alt="User" />ព័ត៌មានផ្ទាល់</span>
-      <span>›</span>
+      <div class="left"><img class="icon" src="user.png" alt="User" />ព័ត៌មានផ្ទាល់</div>
+      <div>›</div>
     </div>
 
     <div class="setting-item" onclick="window.location.href='about.html'">
-      <span><img class="icon" src="info.png" alt="Info" />អំពី​កម្មវិធី</span>
-      <span>›</span>
+      <div class="left"><img class="icon" src="info.png" alt="Info" />អំពី​កម្មវិធី</div>
+      <div>›</div>
     </div>
 
-    <!-- 🔔 Push notifications ON/OFF -->
+    <!-- 🔔 Push notifications ON/OFF (toggle pinned right) -->
     <div class="setting-item">
-      <span><img class="icon" src="bell.png" alt="Push" />ការជូនដំណឹង</span>
-      <div style="display:flex;align-items:center;gap:10px;">
+      <div class="left"><img class="icon" src="bell.png" alt="Push" />ការជូនដំណឹង</div>
+      <div class="right">
         <div id="push-toggle" class="toggle" role="switch" aria-checked="false" tabindex="0">
           <div class="dot"></div>
         </div>
@@ -118,7 +135,7 @@
     </div>
 
     <div class="setting-item signout" onclick="confirmLogout()">
-      <span><img class="icon" src="logout-rounded-left.png" alt="Logout" />ចាកចេញ</span>
+      <div class="left"><img class="icon" src="logout-rounded-left.png" alt="Logout" />ចាកចេញ</div>
     </div>
   </div>
 
