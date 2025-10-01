@@ -11,14 +11,8 @@
       src: url('https://measvuthy168.github.io/CreditAssist/Krasar-Regular.ttf') format('truetype');
     }
     :root{
-      --bg:#1c2331;
-      --panel:#2c3545;
-      --input:#1f2733;
-      --brand:#0d2d5c;
-      --text:#ffffff;
-      --muted:#cfcfcf;
-      --line:#555;
-      --accent:#3399ff;
+      --bg:#1c2331; --panel:#2c3545; --input:#1f2733; --brand:#0d2d5c;
+      --text:#ffffff; --muted:#cfcfcf; --line:#555; --accent:#3399ff;
     }
     body{font-family:'Krasar',Arial,sans-serif;background:var(--bg);color:var(--text);margin:0;padding-bottom:70px}
 
@@ -30,17 +24,17 @@
     /* Panel & layout */
     .container{max-width:760px;margin:80px auto 0;background:var(--panel);padding:18px;border-radius:12px}
     .form-row{display:flex;align-items:center;gap:12px;margin-bottom:14px}
-    .form-row label{flex:0 0 170px;color:var(--muted);font-size:15px;white-space:nowrap} /* ✅ one-line labels */
-    .field{flex:1;display:flex;align-items:center;gap:10px}
+    .form-row label{flex:0 0 170px;color:var(--muted);font-size:15px;white-space:nowrap}
+    .field{flex:1;display:flex;align-items:center;gap:10px;min-width:0}      /* ✅ prevent overflow */
     .box{flex:1;display:flex;align-items:center;background:var(--input);border:1px solid var(--line);border-radius:8px;height:46px;padding:0 10px;box-sizing:border-box}
     .box input[type="date"], .box input[type="number"]{flex:1;border:none;background:transparent;color:#fff;font-size:16px;outline:none}
-    .units{color:#cfd6e1;font-size:14px;white-space:nowrap}
+    .units{flex:0 0 auto;color:#cfd6e1;font-size:14px;white-space:nowrap}
 
     /* Slider block */
-    .age-wrap{flex:1;display:flex;align-items:center;gap:10px}
-    .age-slider{flex:1;height:4px;appearance:none;background:#385173;border-radius:999px;outline:none}
+    .age-wrap{flex:1;display:flex;align-items:center;gap:10px;min-width:0}
+    .age-slider{flex:1;min-width:0;height:4px;appearance:none;background:#385173;border-radius:999px;outline:none}
     .age-slider::-webkit-slider-thumb{appearance:none;width:22px;height:22px;border-radius:50%;background:#fff;border:2px solid #3a5a93;box-shadow:0 2px 6px rgba(0,0,0,.35);cursor:pointer}
-    .age-num{width:92px;display:flex;align-items:center;justify-content:center;background:#21344c;border:1px solid #3c5068;border-radius:8px;height:46px;font-weight:bold}
+    .age-num{flex:0 0 86px;display:flex;align-items:center;justify-content:center;background:#21344c;border:1px solid #3c5068;border-radius:8px;height:46px;font-weight:bold;box-sizing:border-box} /* ✅ fixed width; no spill */
 
     .result-row{display:flex;align-items:center;gap:12px;margin-top:6px}
     .result-title{flex:0 0 170px;color:var(--muted);font-size:15px;white-space:nowrap}
@@ -89,11 +83,11 @@
           <input id="retirementAge" class="age-slider" type="range" min="0" max="60" value="55" step="1">
           <div class="age-num"><span id="ageDisplay">55</span> ឆ្នាំ</div>
         </div>
-        <div class="units"> (0–60)</div>
+        <div class="units">(0–60)</div>
       </div>
     </div>
 
-    <!-- Current date -->
+    <!-- Current date (✅ can be future now) -->
     <div class="form-row">
       <label for="currentDate">ថ្ងៃខែឆ្នាំបច្ចុប្បន្ន</label>
       <div class="field">
@@ -162,12 +156,12 @@
     window.addEventListener('load', setupAutoLogoutEvents);
 
     // ===== Dates init
-    function setMaxDateToToday(){
-      const today = new Date();
-      const iso = today.toISOString().split("T")[0];
+    function initDates(){
+      const todayISO = new Date().toISOString().split("T")[0];
       const dob = document.getElementById("dob");
       const cur = document.getElementById("currentDate");
-      dob.max = iso; cur.max = iso; cur.value = iso;
+      dob.max = todayISO;           // DOB cannot be in the future
+      cur.value = todayISO;         // start at today (✅ no max -> can pick future)
     }
 
     // ===== Calculation
@@ -175,7 +169,6 @@
       const dobVal = document.getElementById("dob").value;
       const age = parseInt(document.getElementById("retirementAge").value || "0", 10);
       const curVal = document.getElementById("currentDate").value;
-
       if (!dobVal || !curVal || isNaN(age)) return;
 
       const dob = new Date(dobVal);
@@ -187,65 +180,38 @@
       const desc = document.getElementById("description");
       const monthsLeftEl = document.getElementById("monthsLeft");
 
-      // Already retired
       if (retirementDate < current) {
         let years = current.getFullYear() - retirementDate.getFullYear();
         let months = current.getMonth() - retirementDate.getMonth();
         let days = current.getDate() - retirementDate.getDate();
-
-        if (days < 0) {
-          months -= 1;
-          const prevMonth = new Date(current.getFullYear(), current.getMonth(), 0);
-          days += prevMonth.getDate();
-        }
+        if (days < 0) { months -= 1; const pm = new Date(current.getFullYear(), current.getMonth(), 0); days += pm.getDate(); }
         if (months < 0) { years -= 1; months += 12; }
 
         monthsLeftEl.textContent = "មិនមានចំនួនខែដែលនៅសល់";
         desc.classList.add("retired");
-        desc.innerHTML =
-          `បានចូលនិវត្តន៍ចំនួន <span class="highlight">${String(years).padStart(2,'0')}</span> ឆ្នាំ `+
-          `<span class="highlight">${String(months).padStart(2,'0')}</span> ខែ `+
-          `និង <span class="highlight">${String(days).padStart(2,'0')}</span> ថ្ងៃ ហើយ`;
+        desc.innerHTML = `បានចូលនិវត្តន៍ចំនួន <span class="highlight">${String(years).padStart(2,'0')}</span> ឆ្នាំ <span class="highlight">${String(months).padStart(2,'0')}</span> ខែ និង <span class="highlight">${String(days).padStart(2,'0')}</span> ថ្ងៃ ហើយ`;
         return;
       }
 
-      // Not yet retired
       let years = retirementDate.getFullYear() - current.getFullYear();
       let months = retirementDate.getMonth() - current.getMonth();
       let days = retirementDate.getDate() - current.getDate();
-
-      if (days < 0) {
-        months -= 1;
-        const prevMonth = new Date(retirementDate.getFullYear(), retirementDate.getMonth(), 0);
-        days += prevMonth.getDate();
-      }
+      if (days < 0) { months -= 1; const pm = new Date(retirementDate.getFullYear(), retirementDate.getMonth(), 0); days += pm.getDate(); }
       if (months < 0) { years -= 1; months += 12; }
 
       const totalMonthsLeft = years * 12 + months;
       monthsLeftEl.textContent = `${totalMonthsLeft} ខែ`;
-
       desc.classList.remove("retired");
-      desc.innerHTML =
-        `នៅសល់ <span class="highlight">${String(years).padStart(2,'0')}</span> ឆ្នាំ `+
-        `<span class="highlight">${String(months).padStart(2,'0')}</span> ខែ `+
-        `និង <span class="highlight">${String(days).padStart(2,'0')}</span> ថ្ងៃទៀត`;
+      desc.innerHTML = `នៅសល់ <span class="highlight">${String(years).padStart(2,'0')}</span> ឆ្នាំ <span class="highlight">${String(months).padStart(2,'0')}</span> ខែ និង <span class="highlight">${String(days).padStart(2,'0')}</span> ថ្ងៃទៀត`;
     }
 
     // ===== Wire up
     window.addEventListener("DOMContentLoaded", () => {
-      setMaxDateToToday();
+      initDates();
       const slider = document.getElementById("retirementAge");
       const ageDisplay = document.getElementById("ageDisplay");
-
-      slider.addEventListener("input", () => {
-        ageDisplay.textContent = slider.value;
-        calculateMonthsLeft();
-      });
-
-      ["dob","currentDate"].forEach(id=>{
-        document.getElementById(id).addEventListener("change", calculateMonthsLeft);
-      });
-
+      slider.addEventListener("input", () => { ageDisplay.textContent = slider.value; calculateMonthsLeft(); });
+      ["dob","currentDate"].forEach(id=>document.getElementById(id).addEventListener("change", calculateMonthsLeft));
       calculateMonthsLeft();
       if (typeof checkNotification === 'function') checkNotification();
     });
