@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>អុកចត្រង្គ (Khmer Chess)</title>
+<style>
+  :root{
+    --blue:#0d2d5c;
+    --wood:#c59a6c;
+    --wood2:#b18559;
+    --grid:#814f23;
+    --white:#fff;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,"Krasar",sans-serif;background:#f5f7fb;color:#222}
+  /* Header (Credit Assist style) */
+  .header{
+    position:fixed;top:0;left:0;right:0;height:56px;background:var(--blue);
+    color:#fff;display:flex;align-items:center;gap:12px;padding:0 12px;z-index:5
+  }
+  .back-btn{
+    width:40px;height:40px;border:none;border-radius:10px;background:#ffffff1a;color:#fff;
+    font-size:20px;display:flex;align-items:center;justify-content:center
+  }
+  .title{font-weight:600;font-size:16px;margin:0}
+  /* Bottom bar (Home button) */
+  .bottom-bar{
+    position:fixed;left:0;right:0;bottom:0;height:56px;background:#fff;border-top:1px solid #e8ebf2;
+    display:flex;align-items:center;justify-content:flex-start;padding:0 12px;z-index:4
+  }
+  .home-btn{
+    background:#fff;border:1px solid #d7dce7;border-radius:24px;padding:8px 14px;font-weight:600
+  }
+  /* Layout */
+  .wrap{padding:72px 12px 76px;display:grid;grid-template-columns:1fr;gap:14px;max-width:960px;margin:0 auto}
+  .board-wrap{
+    background:linear-gradient(#d9b07f,#be915f);
+    border:3px solid var(--grid);border-radius:12px;padding:10px;
+    box-shadow:0 2px 10px rgba(0,0,0,.06)
+  }
+  .board{
+    width:100%;max-width:540px;aspect-ratio:1/1;margin:0 auto;display:grid;grid-template-columns:repeat(8,1fr);
+    border:3px solid var(--grid);border-radius:8px;overflow:hidden
+  }
+  .sq{
+    position:relative;display:flex;align-items:center;justify-content:center;
+    font-size:clamp(18px,6vw,34px);user-select:none;touch-action:manipulation;cursor:pointer
+  }
+  .sq.dark{background:var(--wood2)}
+  .sq.light{background:var(--wood)}
+  .sq::after{
+    content:"";position:absolute;inset:0;border:1px solid #00000010
+  }
+  .sq.sel{outline:3px solid #3aa3ff;outline-offset:-3px}
+  .sq.target{box-shadow:inset 0 0 0 4px #2bd18b88}
+  .sq.last{box-shadow:inset 0 0 0 4px #ffcc0088}
+  .piece{line-height:1;filter:drop-shadow(0 1px 0 rgba(0,0,0,.15))}
+  /* Info / controls */
+  .panel{display:grid;gap:10px}
+  .row{display:flex;gap:8px;flex-wrap:wrap}
+  .btn{
+    background:#fff;border:1px solid #d7dce7;border-radius:10px;padding:10px 14px;font-weight:600
+  }
+  .badge{background:#eef3ff;border:1px solid #d6e0ff;padding:6px 10px;border-radius:999px}
+  .moves{background:#fff;border:1px solid #e7eaf1;border-radius:10px;padding:10px;height:150px;overflow:auto;font-size:13px}
+  .players{display:flex;justify-content:space-between;font-weight:700}
+  .note{font-size:12px;opacity:.8}
+  @media(min-width:900px){
+    .wrap{grid-template-columns:1fr 320px}
+    .panel{position:sticky;top:72px;height:fit-content}
+  }
+</style>
+<!-- If you already downloaded the library, uncomment the next line and host it locally
+<script src="./lib/khmerchess.min.js"></script>
+-->
+</head>
+<body>
+  <div class="header">
+    <button class="back-btn" onclick="location.href='game.html'">←</button>
+    <h1 class="title">អុកចត្រង្គ (Khmer Chess)</h1>
+  </div>
+
+  <div class="wrap">
+    <div class="board-wrap">
+      <div id="board" class="board"></div>
+    </div>
+    <div class="panel">
+      <div class="players">
+        <div>⬆️ Black (ខ្មៅ)</div>
+        <div>White (ស) ⬇️</div>
+      </div>
+      <div class="row">
+        <button class="btn" id="undoBtn">↩ Undo</button>
+        <button class="btn" id="resetBtn">♻ Restart</button>
+        <span class="badge" id="turnBadge">Turn: ស (White)</span>
+      </div>
+      <div class="moves" id="moveList"></div>
+      <div class="note">Tip: Tap a piece → tap a target square. Long-press (0.5s) on a square to clear selection.</div>
+    </div>
+  </div>
+
+  <div class="bottom-bar">
+    <button class="home-btn" onclick="location.href='../index.html'">🏠 Home</button>
+  </div>
+
+<script>
+/* -------------------------------------------------------
+   Khmer Chess v1 (UI + basic movement shell)
+   - Two-tap move (select → target)
+   - Undo, Restart, Move list
+   - Ready to hook KhmerChess engine for rule validation
+   ----------------------------------------------------- */
+
+/* Piece set (temporary glyphs). Replace with PNGs later by turning glyphs into <img> tags. */
+const GLYPH = {
+  // White (ស)
+  W_KHON:  "♖", // ខុន (Rook-like)
+  W_NEARY: "♗", // នារី (Bishop-like / variant)
+  W_NEANG: "♕", // នាង (Queen-like, 1 step in Khmer chess)
+  W_KING:  "♔", // ព្រះមហាក្សត្រ
+  W_TOUK:  "⛂", // ទោគ (Pawn)
+  // Black (ខ្មៅ)
+  B_KHON:  "♜",
+  B_NEARY: "♝",
+  B_NEANG: "♛",
+  B_KING:  "♚",
+  B_TOUK:  "⛀",
+};
+/* Optional: point to PNGs (same keys). Example:
+const PNG = { W_KHON:'icons/khmerchess/white_khon.png', ... }
+*/
+
+/* Board model: 8×8 [r][c], r=0 is top (Black side). This is a **common Khmer starting layout** approximation. 
+   You can adjust to your preferred variant easily. */
+const START = [
+  // r0 (top Black back rank)
+  ["B_KHON","B_NEARY","B_NEANG","B_KING","B_NEANG","B_NEARY","B_KHON",null],
+  // r1 (often empty or special set depending on rule set)
+  [null,null,null,null,null,null,null,null],
+  // r2 (Black pawns / ទោគ)
+  ["B_TOUK","B_TOUK","B_TOUK","B_TOUK","B_TOUK","B_TOUK","B_TOUK","B_TOUK"],
+  // r3
+  [null,null,null,null,null,null,null,null],
+  // r4
+  [null,null,null,null,null,null,null,null],
+  // r5 (White pawns)
+  ["W_TOUK","W_TOUK","W_TOUK","W_TOUK","W_TOUK","W_TOUK","W_TOUK","W_TOUK"],
+  // r6
+  [null,null,null,null,null,null,null,null],
+  // r7 (bottom White back rank)
+  [null,"W_KHON","W_NEARY","W_NEANG","W_KING","W_NEARY","W_KHON",null],
+];
+
+/* State */
+let board = JSON.parse(JSON.stringify(START));
+let whiteTurn = true; // White moves first
+let sel = null;       // {r,c}
+let lastMove = null;  // {from:{r,c}, to:{r,c}, captured}
+let history = [];     // stack of moves for Undo
+
+const elBoard   = document.getElementById('board');
+const elMoves   = document.getElementById('moveList');
+const elTurn    = document.getElementById('turnBadge');
+const undoBtn   = document.getElementById('undoBtn');
+const resetBtn  = document.getElementById('resetBtn');
+
+/* Build squares */
+for(let r=0;r<8;r++){
+  for(let c=0;c<8;c++){
+    const sq = document.createElement('div');
+    sq.className = 'sq ' + ((r+c)%2===0?'light':'dark');
+    sq.dataset.r = r; sq.dataset.c = c;
+    sq.addEventListener('click', onSquareClick);
+    let pressTimer;
+    sq.addEventListener('touchstart', ()=>{ pressTimer=setTimeout(clearSelection,500); }, {passive:true});
+    sq.addEventListener('touchend', ()=> clearTimeout(pressTimer));
+    elBoard.appendChild(sq);
+  }
+}
+render();
+
+/* Square click handler: two-tap move (no strict rule validation here) */
+function onSquareClick(e){
+  const r = +e.currentTarget.dataset.r;
+  const c = +e.currentTarget.dataset.c;
+  const piece = board[r][c];
+
+  if(!sel){
+    if(!piece) return; // nothing to select
+    // Only allow selecting current side
+    if(whiteTurn && !String(piece).startsWith('W_')) return;
+    if(!whiteTurn && !String(piece).startsWith('B_')) return;
+    sel = {r,c};
+    render();
+    return;
+  }
+
+  // tapped same side piece -> change selection
+  if(piece && sameSide(piece, board[sel.r][sel.c])){
+    sel = {r,c};
+    render();
+    return;
+  }
+
+  // Attempt move (UI-level). 
+  // TODO: Hook KhmerChess engine here to validate sel -> (r,c) before committing.
+  commitMove(sel, {r,c});
+  sel = null;
+  whiteTurn = !whiteTurn;
+  render();
+}
+
+function sameSide(a,b){
+  return (String(a).startsWith('W_') && String(b).startsWith('W_')) ||
+         (String(a).startsWith('B_') && String(b).startsWith('B_'));
+}
+
+function commitMove(from, to){
+  const moving = board[from.r][from.c];
+  const captured = board[to.r][to.c] || null;
+
+  // Push to history for Undo
+  history.push({from, to, moving, captured, whiteTurn});
+
+  // Move piece
+  board[to.r][to.c] = moving;
+  board[from.r][from.c] = null;
+  lastMove = {from, to, captured};
+
+  // Very simple promotion example (optional): if a White pawn reaches r=0 or Black pawn r=7 → promote to Neang
+  if(moving === 'W_TOUK' && to.r===0){ board[to.r][to.c]='W_NEANG'; }
+  if(moving === 'B_TOUK' && to.r===7){ board[to.r][to.c]='B_NEANG'; }
+
+  // Add to move list (algebraic-ish)
+  const name = prettyPiece(moving);
+  const moveText = `${whiteTurn?'ស':'ខ្មៅ'}: ${name} ${coord(from)} → ${coord(to)}${captured? ' ×':''}`;
+  const p = document.createElement('div');
+  p.textContent = moveText;
+  elMoves.appendChild(p);
+  elMoves.scrollTop = elMoves.scrollHeight;
+}
+
+function undo(){
+  if(history.length===0) return;
+  const mv = history.pop();
+  board[mv.from.r][mv.from.c] = mv.moving;
+  board[mv.to.r][mv.to.c] = mv.captured;
+  whiteTurn = mv.whiteTurn; // restore turn at time of move
+  lastMove = null;
+  // remove last move text
+  if(elMoves.lastChild) elMoves.removeChild(elMoves.lastChild);
+  render();
+}
+
+function reset(){
+  board = JSON.parse(JSON.stringify(START));
+  whiteTurn = true;
+  sel = null;
+  lastMove = null;
+  history = [];
+  elMoves.innerHTML = '';
+  render();
+}
+
+undoBtn.onclick = undo;
+resetBtn.onclick = reset;
+
+function clearSelection(){
+  sel = null; render();
+}
+
+function render(){
+  // update squares
+  [...elBoard.children].forEach((sq)=>{
+    const r = +sq.dataset.r, c = +sq.dataset.c;
+    const key = board[r][c];
+    sq.innerHTML = '';
+    if(key){
+      const el = document.createElement('div');
+      el.className = 'piece';
+      el.textContent = GLYPH[key] || '?';
+      // If using PNGs later:
+      // const el = document.createElement('img');
+      // el.src = PNG[key]; el.alt = key; el.className='piece';
+      sq.appendChild(el);
+    }
+    sq.classList.remove('sel','target','last');
+    if(sel && sel.r===r && sel.c===c) sq.classList.add('sel');
+    if(lastMove && ((lastMove.from.r===r && lastMove.from.c===c) || (lastMove.to.r===r && lastMove.to.c===c))){
+      sq.classList.add('last');
+    }
+  });
+  elTurn.textContent = 'Turn: ' + (whiteTurn ? 'ស (White)' : 'ខ្មៅ (Black)');
+}
+
+function prettyPiece(key){
+  const map = {
+    W_KHON:'Khon (ខុន)', W_NEARY:'Neary (នារី)', W_NEANG:'Neang (នាង)', W_KING:'King (ព្រះមហាក្សត្រ)', W_TOUK:'Touk (ទោគ)',
+    B_KHON:'Khon (ខុន)', B_NEARY:'Neary (នារី)', B_NEANG:'Neang (នាង)', B_KING:'King (ព្រះមហាក្សត្រ)', B_TOUK:'Touk (ទោគ)',
+  };
+  return map[key] || key;
+}
+function coord(p){ return String.fromCharCode(97+p.c) + (8-p.r); }
+
+/* ------------------- KhmerChess engine hook (optional) -------------------
+   If you include khmerchess.min.js, you can create a game instance and
+   validate moves before commitMove(). Example (pseudo):
+
+   const KC = new KhmerChess.Game();
+   KC.reset(); // sync START
+
+   // Inside onSquareClick before commitMove:
+   if(KC.canMove(sel.r, sel.c, r, c)){
+       KC.move(sel.r, sel.c, r, c);
+       commitMove(sel, {r,c});
+       ...
+   } else {
+       // show invalid
+   }
+
+   You will also want to sync KC state with our 'board' for render().
+--------------------------------------------------------------------------*/
+</script>
+</body>
+</html>
