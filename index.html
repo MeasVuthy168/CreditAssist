@@ -88,38 +88,46 @@
       white-space: nowrap;
     }
 
-    .main-box {
-      background-color: transparent;
-      border-radius: 16px;
-      padding: 5px;
-      width: 96%;
-      max-width: 400px;
-      color: #002c5f;
-      margin: 100px auto 20px;
-      /* box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25); */
-      height: calc(100vh - 140px);
-      box-sizing: border-box;
-      overflow-y: auto;
-    }
+    .main-box{
+  background-color: transparent;
+  border-radius: 16px;
+  padding: 5px 12px;      /* a little side padding */
+  width: 100%;            /* was 96% */
+  max-width: 100%;        /* was 400px */
+  color: #002c5f;
+  margin: 100px auto 20px;
+  height: calc(100vh - 140px);
+  box-sizing: border-box;
+  overflow-y: auto;
+}
 
     .content {
       padding: 0;
     }
 
-.menu-grid {
+.menu-grid{
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-  gap: 14px;
-  justify-items: stretch; /* stretch tiles to fill columns */
+  grid-template-columns: repeat(3, minmax(86px, 1fr)); /* smaller cells */
+  gap: 10px;                                          /* tighter gap */
+  justify-items: stretch;
+  align-items: stretch;
+  padding-bottom: 4px;
 }
 
-.menu-item {
+/* 4 columns when there’s room (big phones / tablets) */
+@media (min-width: 420px){
+  .menu-grid{
+    grid-template-columns: repeat(4, minmax(90px, 1fr));
+  }
+}
+
+.menu-item{
   background: linear-gradient(to bottom, #002c5f 0%, #001a3d 100%);
-  border-radius: 16px;
+  border-radius: 14px;              /* a bit tighter radius */
   border: 1px solid #ffd700;
-  padding: 10px 6px;
+  padding: 8px 6px;                 /* less padding */
   width: 100%;
-  aspect-ratio: 1/1;       /* perfect square */
+  aspect-ratio: 1/1;                /* square */
   box-shadow: 0 2px 6px rgba(0,0,0,0.2);
   color: white;
   display: flex;
@@ -131,24 +139,30 @@
   position: relative;
   overflow: hidden;
   user-select: none;
-  transition: all 0.3s ease;
+  transition: transform .12s ease, box-shadow .12s ease;
 }
 
-.menu-item img {
-  width: 36px;
-  height: 36px;
-  margin-bottom: 6px;
-  animation: bounce 0.4s ease;
+.menu-item img{
+  width: 28px;                      /* was 36 */
+  height: 28px;
+  margin-bottom: 4px;
+  animation: none;                  /* remove bounce to save space */
   pointer-events: none;
 }
-  
-.menu-item:hover {
-  /* Changed hover background to darker gradient from #001a3d to #000f2c */
+
+.menu-item .label{
+  font-size: 12px;                  /* was 14 */
+  line-height: 1.15;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Optional: smaller hover glow */
+.menu-item:hover{
   background: linear-gradient(to bottom, #001a3d 0%, #000f2c 100%);
-  
-  /* Kept original hover effects below */
-  box-shadow: 0 0 12px rgba(255, 215, 0, 0.6);
-  border: 1.5px solid #ffd700;
+  box-shadow: 0 0 8px rgba(255,215,0,.45);
+  border-width: 1px;
 }
 
     .menu-item:hover img {
