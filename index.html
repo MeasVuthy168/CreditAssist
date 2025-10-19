@@ -106,24 +106,20 @@
       padding: 0;
     }
 
-    .menu-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 14px;
-      justify-items: center;
-    }
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 14px;
+  justify-items: stretch; /* stretch tiles to fill columns */
+}
 
-    .menu-item {
-  /* Changed solid background to gradient from #002c5f to darker #001a3d */
+.menu-item {
   background: linear-gradient(to bottom, #002c5f 0%, #001a3d 100%);
-  
-  /* Kept original styles below */
   border-radius: 16px;
   border: 1px solid #ffd700;
   padding: 10px 6px;
   width: 100%;
-  max-width: 100px;
-  aspect-ratio: 1/1;
+  aspect-ratio: 1/1;       /* perfect square */
   box-shadow: 0 2px 6px rgba(0,0,0,0.2);
   color: white;
   display: flex;
@@ -525,18 +521,57 @@
     <!-- Content -->
     <div class="content">
     <div class="menu-grid">
-        <div class="menu-item" data-href="SVG_CRM/index.html"><img src="icons/search.PNG"><div class="label">ស្វែងរកអតិថិជន</div></div>
-        <div class="menu-item" data-href="RetiredCalculator/index.html"><img src="icons/retirement.PNG"><div class="label">ចំនួនខែចូលនិវត្តន៍</div></div>
-        <div class="menu-item" data-href="Loan-Calculator/index.html"><img src="icons/loan.PNG"><div class="label">គណនាឥណទាន</div></div>
-        <div class="menu-item" data-href="Average-Debit-Turnover/index.html"><img src="icons/turnover.PNG"><div class="label">Average Turnover</div></div>
-        <div class="menu-item" data-href="ArreasT24/index.html"><img src="icons/overdue.PNG"><div class="label">Daily Arreas</div></div>
-        <div class="menu-item" data-href=" SpotCheckLoan/reportSpotcheck.html "><img src="icons/check.PNG "><div class="label">Spot Check</div></div>
-        <div class="menu-item" data-href=""><img src="icons/officer.PNG"><div class="label">Officer Task</div></div>
-        <div class="menu-item" data-href=""><img src="icons/landClassisfy.PNG"><div class="label">ចំណាត់ថ្នាក់ដីធ្លី</div></div>
-        <div class="menu-item" data-href="games/chaktrang.html"><img src="icons/principle.PNG"><div class="label">ស្វែងរកឯកសារ</div></div
-        <div class="menu-item" data-href="docsearch/index.html"><img src="icons/principle.PNG"><div class="label">ស្វែងរកឯកសារ</div></div
-    </div>
+  <div class="menu-item" data-href="SVG_CRM/index.html">
+    <img src="icons/search.PNG" alt="">
+    <div class="label">ស្វែងរកអតិថិជន</div>
+  </div>
 
+  <div class="menu-item" data-href="RetiredCalculator/index.html">
+    <img src="icons/retirement.PNG" alt="">
+    <div class="label">ចំនួនខែចូលនិវត្តន៍</div>
+  </div>
+
+  <div class="menu-item" data-href="Loan-Calculator/index.html">
+    <img src="icons/loan.PNG" alt="">
+    <div class="label">គណនាឥណទាន</div>
+  </div>
+
+  <div class="menu-item" data-href="Average-Debit-Turnover/index.html">
+    <img src="icons/turnover.PNG" alt="">
+    <div class="label">Average Turnover</div>
+  </div>
+
+  <div class="menu-item" data-href="ArreasT24/index.html">
+    <img src="icons/overdue.PNG" alt="">
+    <div class="label">Daily Arreas</div>
+  </div>
+
+  <div class="menu-item" data-href="SpotCheckLoan/reportSpotcheck.html">
+    <img src="icons/check.PNG" alt="">
+    <div class="label">Spot Check</div>
+  </div>
+
+  <div class="menu-item" data-href="">
+    <img src="icons/officer.PNG" alt="">
+    <div class="label">Officer Task</div>
+  </div>
+
+  <div class="menu-item" data-href="">
+    <img src="icons/landClassisfy.PNG" alt="">
+    <div class="label">ចំណាត់ថ្នាក់ដីធ្លី</div>
+  </div>
+
+  <!-- 🟨 Khmer Chess tile -->
+  <div class="menu-item" data-href="games/chaktrang.html">
+    <img src="icons/chess.png" alt="">
+    <div class="label">អុកចត្រង្គ</div>
+  </div>
+
+  <div class="menu-item" data-href="docsearch/index.html">
+    <img src="icons/principle.PNG" alt="">
+    <div class="label">ស្វែងរកឯកសារ</div>
+  </div>
+</div>
          <!-- Robot Box -->
       <div class="robot-box">
         <div style="display: flex; align-items: center;">
