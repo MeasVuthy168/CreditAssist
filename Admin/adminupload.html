@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="km">
 <head>
@@ -8,56 +7,57 @@
   <meta name="theme-color" content="#0d2d5c" />
   <style>
    @font-face {
-  font-family: 'Krasar';
-  src: url('../Krasar-Regular.ttf') format('truetype');
-}
+    font-family: 'Krasar';
+    src: url('../Krasar-Regular.ttf') format('truetype');
+   }
     body {
       margin: 0;
       font-family: 'Krasar', Arial, sans-serif;
       background: #1c2331;
       padding-top: 60px;
     }
-  
+
     .header {
-  background-color: #0d2d5c;
-  color: white;
-  font-size: 18px;
-  font-weight: bold;
-  padding: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-  z-index: 999;
-}
+      background-color: #0d2d5c;
+      color: white;
+      font-size: 18px;
+      font-weight: bold;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      z-index: 999;
+    }
 
-.close-btn {
-  background: transparent;
-  border: none;
-  color: white;
-  font-size: 24px;
-  cursor: pointer;
-}
+    .close-btn {
+      background: transparent;
+      border: none;
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+    }
 
-.header-title {
-  flex: 1;
-  text-align: center;
-  font-weight: bold;
-}
+    .header-title {
+      flex: 1;
+      text-align: center;
+      font-weight: bold;
+    }
 
-.dashboard-link {
-  font-size: 15px;
-  font-weight: bold;
-  color: white;
-  cursor: pointer;
-  white-space: nowrap;
-}
+    .dashboard-link {
+      font-size: 15px;
+      font-weight: bold;
+      color: white;
+      cursor: pointer;
+      white-space: nowrap;
+    }
 
-.dashboard-link:hover {
-  text-decoration: underline;
-}
+    .dashboard-link:hover {
+      text-decoration: underline;
+    }
+
     .admin-box, .upload-box {
       text-align: left;
       background: white;
@@ -68,7 +68,7 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
 
-      .log-box {
+    .log-box {
       text-align: left;
       background: transparent;
       padding: 20px 10px;
@@ -77,12 +77,14 @@
       color: white;
       font-size: 14px;
     }
+
     .admin-title {
       font-weight: bold;
       color: #0d2d5c;
       font-size: 16px;
       margin-bottom: 10px;
     }
+
     .admin-textarea {
       width: 100%;
       height: 90px;
@@ -96,6 +98,7 @@
       box-sizing: border-box;
       background: #f1f1f1;
     }
+
     .admin-btn, .upload-btn {
       margin-top: 12px;
       width: 100%;
@@ -107,9 +110,11 @@
       font-size: 16px;
       cursor: pointer;
     }
+
     .admin-btn:hover, .upload-btn:hover {
       background: #09306d;
     }
+
     .upload-box-title {
       text-align: left;
       font-size: 17px;
@@ -117,6 +122,7 @@
       color: #0d2d5c;
       margin-bottom: 10px;
     }
+
     .upload-label {
       margin-top: 16px;
       display: flex;
@@ -125,25 +131,30 @@
       color: #0d2d5c;
       font-weight: bold;
     }
+
     .uploader, .timestamp {
       font-size: 13px;
       color: #555;
       margin-bottom: 2px;
     }
+
     input[type="file"] {
       width: 100%;
     }
+
     .file-info {
       font-size: 14px;
       margin-bottom: 8px;
       color: #333;
     }
+
     .progress-container {
       height: 10px;
       background: #ddd;
       border-radius: 5px;
       margin: 4px 0 16px;
     }
+
     .progress-bar {
       height: 100%;
       width: 0;
@@ -151,6 +162,7 @@
       border-radius: 5px;
       transition: width 0.3s ease;
     }
+
     #overlay {
       position: fixed;
       top: 0; left: 0;
@@ -161,6 +173,7 @@
       justify-content: center;
       z-index: 2000;
     }
+
     #overlay span {
       background: white;
       padding: 16px 32px;
@@ -169,64 +182,64 @@
       font-weight: bold;
       box-shadow: 0 4px 12px rgba(0,0,0,0.25);
     }
-.spinner {
-  width: 16px;
-  height: 16px;
-  border: 3px solid #ccc;
-  border-top: 3px solid #0d2d5c;
-  border-radius: 50%;
-  animation: spin 0.7s linear infinite;
-  display: inline-block;
-  vertical-align: middle;
-}
 
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
+    .spinner {
+      width: 16px;
+      height: 16px;
+      border: 3px solid #ccc;
+      border-top: 3px solid #0d2d5c;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: inline-block;
+      vertical-align: middle;
+    }
 
- .icon-title {
-  width: 20px;
-  height: 20px;
-  vertical-align: middle;
-  margin-right: 6px;
-}
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
 
-  .meta-row {
-  display: flex;
-  justify-content: space-between;
-  font-size: 12px;
-  color: #555;
-  width: 100%;
-  margin-bottom: 6px;
-}
+    .icon-title {
+      width: 20px;
+      height: 20px;
+      vertical-align: middle;
+      margin-right: 6px;
+    }
 
-.report-date {
-  color: #888;
-  font-style: italic;
-}
+    .meta-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: #555;
+      width: 100%;
+      margin-bottom: 6px;
+    }
 
- .label-row {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
+    .report-date {
+      color: #888;
+      font-style: italic;
+    }
 
-.edit-btn {
-  background-color: #0d2d5c;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  padding: 2px 10px;
-  font-size: 12px;
-  cursor: pointer;
-  transition: background 0.3s;
-}
+    .label-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
 
-.edit-btn:hover {
-  background-color: #09306d;
-}   
-    
-</style>
+    .edit-btn {
+      background-color: #0d2d5c;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 2px 10px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .edit-btn:hover {
+      background-color: #09306d;
+    }
+  </style>
 </head>
 
 <body>
@@ -243,76 +256,72 @@
   </div>
 
   <!-- User Data -->
-<label class="upload-label">
-  <div class="label-row">
-    <button class="edit-btn" onclick="window.location.href='officer.html'">Edit</button>
-    <img src="../icons/amd_user.png" class="icon-title" alt="user" />
-    <span>ទិន្នន័យបុគ្គលិក</span>
-  </div>
-  <div class="uploader" id="by-user">Uploaded by: –</div>
-  <div class="meta-row">
-    <span id="ts-user">–</span>
-    <!--<span class="report-date" id="report-user">Last Report: –</span> -->
-  </div>
-</label>
-<input type="file" id="userFile" accept=".xlsx" onchange="showPreview('userFile', 'userPreview')" />
-<div class="file-info" id="userPreview"></div>
-<div class="progress-container"><div class="progress-bar" id="userProgress"></div></div>
+  <label class="upload-label">
+    <div class="label-row">
+      <button class="edit-btn" onclick="window.location.href='officer.html'">Edit</button>
+      <img src="../icons/amd_user.png" class="icon-title" alt="user" />
+      <span>ទិន្នន័យបុគ្គលិក</span>
+    </div>
+    <div class="uploader" id="by-user">Uploaded by: –</div>
+    <div class="meta-row">
+      <span id="ts-user">–</span>
+    </div>
+  </label>
+  <input type="file" id="userFile" accept=".xlsx" onchange="showPreview('userFile', 'userPreview')" />
+  <div class="file-info" id="userPreview"></div>
+  <div class="progress-container"><div class="progress-bar" id="userProgress"></div></div>
 
-  
-<!-- Customer Data -->
-<label class="upload-label">
-  <div><img src="../icons/adm_customer.png" class="icon-title" alt="customer" /> ទិន្នន័យអតិថិជន</div>
-  <div class="uploader" id="by-customer">Uploaded by: –</div>
-  <div class="meta-row">
-    <span id="ts-customer">–</span>
-    <!--<span class="report-date" id="report-customer">Last Report: –</span>-->
-  </div>
-</label>
-<input type="file" id="customerFile" accept=".xlsx" onchange="showPreview('customerFile', 'customerPreview')" />
-<div class="file-info" id="customerPreview"></div>
-<div class="progress-container"><div class="progress-bar" id="customerProgress"></div></div>
+  <!-- Customer Data -->
+  <label class="upload-label">
+    <div><img src="../icons/adm_customer.png" class="icon-title" alt="customer" /> ទិន្នន័យអតិថិជន</div>
+    <div class="uploader" id="by-customer">Uploaded by: –</div>
+    <div class="meta-row">
+      <span id="ts-customer">–</span>
+    </div>
+  </label>
+  <input type="file" id="customerFile" accept=".xlsx" onchange="showPreview('customerFile', 'customerPreview')" />
+  <div class="file-info" id="customerPreview"></div>
+  <div class="progress-container"><div class="progress-bar" id="customerProgress"></div></div>
 
-<!-- Turnover Data -->
-<label class="upload-label">
-  <div><img src="../icons/adm_turnover.png" class="icon-title" alt="turnover" /> ទិន្នន័យDebitTurnover</div>
-  <div class="uploader" id="by-turnover">Uploaded by: –</div>
-  <div class="meta-row">
-    <span id="ts-turnover">–</span>
-    <span class="report-date" id="report-turnover">Last Report: –</span>
-  </div>
-</label>
-<input type="file" id="turnoverFile" accept=".xlsx" onchange="showPreview('turnoverFile', 'turnoverPreview')" />
-<div class="file-info" id="turnoverPreview"></div>
-<div class="progress-container"><div class="progress-bar" id="turnoverProgress"></div></div>
+  <!-- Turnover Data -->
+  <label class="upload-label">
+    <div><img src="../icons/adm_turnover.png" class="icon-title" alt="turnover" /> ទិន្នន័យDebitTurnover</div>
+    <div class="uploader" id="by-turnover">Uploaded by: –</div>
+    <div class="meta-row">
+      <span id="ts-turnover">–</span>
+      <span class="report-date" id="report-turnover">Last Report: –</span>
+    </div>
+  </label>
+  <input type="file" id="turnoverFile" accept=".xlsx" onchange="showPreview('turnoverFile', 'turnoverPreview')" />
+  <div class="file-info" id="turnoverPreview"></div>
+  <div class="progress-container"><div class="progress-bar" id="turnoverProgress"></div></div>
 
-<!-- NBCOS Data -->
-<label class="upload-label">
-  <div><img src="../icons/adm_loan.png" class="icon-title" alt="loan" /> ទិន្នន័យLoanOutstanding(Android Only)</div>
-  <div class="uploader" id="by-nbcos">Uploaded by: –</div>
-  <div class="meta-row">
-    <span id="ts-nbcos">–</span>
-    <span class="report-date" id="report-nbcos">Last Report: –</span>
-  </div>
-</label>
-<input type="file" id="nbcosFile" accept=".xlsx" onchange="showPreview('nbcosFile', 'nbcosPreview')" />
-<div class="file-info" id="nbcosPreview"></div>
-<div class="progress-container"><div class="progress-bar" id="nbcosProgress"></div></div>
+  <!-- NBCOS Data -->
+  <label class="upload-label">
+    <div><img src="../icons/adm_loan.png" class="icon-title" alt="loan" /> ទិន្នន័យLoanOutstanding(Android Only)</div>
+    <div class="uploader" id="by-nbcos">Uploaded by: –</div>
+    <div class="meta-row">
+      <span id="ts-nbcos">–</span>
+      <span class="report-date" id="report-nbcos">Last Report: –</span>
+    </div>
+  </label>
+  <input type="file" id="nbcosFile" accept=".xlsx" onchange="showPreview('nbcosFile', 'nbcosPreview')" />
+  <div class="file-info" id="nbcosPreview"></div>
+  <div class="progress-container"><div class="progress-bar" id="nbcosProgress"></div></div>
 
-<!-- Arreas Data -->
-<label class="upload-label">
-  <div><img src="../icons/adm_arreasT24.png" class="icon-title" alt="arreas" /> ទិន្នន័យArreas T24</div>
-  <div class="uploader" id="by-arreas">Uploaded by: –</div>
-  <div class="meta-row">
-    <span id="ts-arreas">–</span>
-    <span class="report-date" id="report-arreas">Last Report: –</span>
-  </div>
-</label>
-<input type="file" id="arreasFile" accept=".xlsx" onchange="showPreview('arreasFile', 'arreasPreview')" />
-<div class="file-info" id="arreasPreview"></div>
-<div class="progress-container"><div class="progress-bar" id="arreasProgress"></div></div>
-  
-  <!-- Upload Button -->
+  <!-- Arreas Data -->
+  <label class="upload-label">
+    <div><img src="../icons/adm_arreasT24.png" class="icon-title" alt="arreas" /> ទិន្នន័យArreas T24</div>
+    <div class="uploader" id="by-arreas">Uploaded by: –</div>
+    <div class="meta-row">
+      <span id="ts-arreas">–</span>
+      <span class="report-date" id="report-arreas">Last Report: –</span>
+    </div>
+  </label>
+  <input type="file" id="arreasFile" accept=".xlsx" onchange="showPreview('arreasFile', 'arreasPreview')" />
+  <div class="file-info" id="arreasPreview"></div>
+  <div class="progress-container"><div class="progress-bar" id="arreasProgress"></div></div>
+
   <button class="upload-btn" onclick="uploadFiles()">🗃️ Upload to Backend (MongoDB)</button>
 </div>
 
@@ -330,11 +339,10 @@
 <div class="log-box" id="uploadLog"></div>
 <div id="overlay"><span>កំពុងបញ្ជូនទិន្នន័យ...សូមរង់ចាំ</span></div>
 
-
-  
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
 <script>
+const API_BASE = "https://secure-backend-tzj9.onrender.com";
 const token = sessionStorage.getItem('token');
 
 if (!token || isTokenExpired(token)) {
@@ -355,7 +363,7 @@ function isTokenExpired(token) {
 function sanitizeKeys(obj) {
   const newObj = {};
   for (const key in obj) {
-    const safeKey = key.replace(/\./g, "_"); // Replace dot with underscore
+    const safeKey = key.replace(/\./g, "_");
     newObj[safeKey] = obj[key];
   }
   return newObj;
@@ -374,14 +382,17 @@ const allowedColumns = {
     'CO_BORROWER', 'GUARANTOR', 'LOAN_REFERENCE', 'PROFESSION', 'NOTE',
     'Restructure Covid Date', 'MEMBER_REF_CBC', 'Branch-OK', 'Credit Officer',
     'Product Type', 'ABCM', 'OS by Amount', 'GovEmplyee/FactWorker', 'Address',
-    'UniqueCIF', 'UniqueCIF_Branch', 'UniqueCIF_CO', 'Amount_Paid_Old'],
+    'UniqueCIF', 'UniqueCIF_Branch', 'UniqueCIF_CO', 'Amount_Paid_Old'
+  ],
   arreasFile: [
     'Loan Number', 'Customer', 'Location', 'DisDate', 'Prn_OS', 'Int_OS',
     'Prn_Due', 'Int_Due', 'Penalty', 'Arreas', 'Day', 'Balnce',
     'Tell', 'CIF', 'Occu', 'Ministry', 'Branch', 'CO_ID', 'CO_Response', 'CCY', 'OS_USD', 'OS_Classify',
-    'Team_Leader', 'CIF_អ្នករួមខ្ចី', 'Blocking', 'Class', 'PD', 'Concate', 'Product', 'Report_Date']
+    'Team_Leader', 'CIF_អ្នករួមខ្ចី', 'Blocking', 'Class', 'PD', 'Concate', 'Product', 'Report_Date'
+  ]
 };
-// ✅ expectedFirstHeaders → for validating the first column name before trimming 
+
+// ✅ expectedFirstHeaders → validate first column
 const expectedFirstHeaders = {
   userFile: "username",
   customerFile: "No",
@@ -389,7 +400,7 @@ const expectedFirstHeaders = {
   nbcosFile: "LD_CIF_OS",
   arreasFile: "No_T24"
 };
-  
+
 function showPreview(fileInputId, previewId) {
   const fileInput = document.getElementById(fileInputId);
   const preview = document.getElementById(previewId);
@@ -410,16 +421,16 @@ function showPreview(fileInputId, previewId) {
       const sheet = workbook.Sheets[firstSheetName];
       let json = XLSX.utils.sheet_to_json(sheet, { defval: "" });
 
-// ✅ Remove duplicates for customerFile by CIF
-if (fileInputId === "customerFile") {
-  const seenCIF = new Set();
-  json = json.filter(row => {
-    const cif = (row["CIF"] || "").toString().trim();
-    if (!cif || seenCIF.has(cif)) return false;
-    seenCIF.add(cif);
-    return true;
-  });
-}
+      // ✅ Remove duplicates for customerFile by CIF
+      if (fileInputId === "customerFile") {
+        const seenCIF = new Set();
+        json = json.filter(row => {
+          const cif = (row["CIF"] || "").toString().trim();
+          if (!cif || seenCIF.has(cif)) return false;
+          seenCIF.add(cif);
+          return true;
+        });
+      }
 
       if (!json || json.length === 0) {
         preview.innerHTML = '❌ No rows found.';
@@ -441,23 +452,23 @@ if (fileInputId === "customerFile") {
       const allowed = allowedColumns[fileInputId];
       if (allowed) {
         const trimmed = json.map(row => {
-  const filtered = {};
-  const normalizedRow = {};
-  Object.keys(row).forEach(k => {
-    normalizedRow[k.trim()] = row[k];
-  });
+          const filtered = {};
+          const normalizedRow = {};
+          Object.keys(row).forEach(k => {
+            normalizedRow[k.trim()] = row[k];
+          });
 
-  for (const key of allowed) {
-  const sanitizedKey = key.replace(/\./g, "_");
+          for (const key of allowed) {
+            const sanitizedKey = key.replace(/\./g, "_");
+            const originalVal =
+              normalizedRow[key] !== undefined ? normalizedRow[key] :
+              normalizedRow[key.replace(/_/g, ".")];
 
-  // Try to find value using original dot-format and sanitized format
-  const originalVal = normalizedRow[key] !== undefined ? normalizedRow[key] : normalizedRow[key.replace(/_/g, ".")];
+            filtered[sanitizedKey] = originalVal !== undefined ? originalVal : "";
+          }
 
-  filtered[sanitizedKey] = originalVal !== undefined ? originalVal : "";
-}
-
-  return sanitizeKeys(filtered); // sanitize any remaining dot-keys
-});
+          return sanitizeKeys(filtered);
+        }).filter(r => Object.values(r).some(v => v !== ''));
 
         const newSheet = XLSX.utils.json_to_sheet(trimmed);
         const newWorkbook = XLSX.utils.book_new();
@@ -510,13 +521,11 @@ function logMessage(msg) {
 
 async function loadTimestamps() {
   try {
-    const res = await fetch("https://secure-backend-tzj9.onrender.com/api/admin/upload-timestamps", {
+    const res = await fetch(`${API_BASE}/api/admin/upload-timestamps`, {
       headers: { Authorization: `Bearer ${token}` }
     });
     const data = await res.json();
     ['user', 'customer', 'turnover', 'nbcos', 'arreas'].forEach(label => {
-
-      
       const date = data[label];
       const fullname = data[`${label}Fullname`] || "–";
       const dateBox = document.getElementById('ts-' + label);
@@ -529,6 +538,9 @@ async function loadTimestamps() {
   }
 }
 
+/* ============================================================
+   ✅ Existing single-file upload (for user/customer/turnover/arreas)
+   ============================================================ */
 async function uploadSingleFile(file, label, progressBarId, fileInputId, previewId) {
   const progressBar = document.getElementById(progressBarId);
   const preview = document.getElementById(previewId);
@@ -537,26 +549,26 @@ async function uploadSingleFile(file, label, progressBarId, fileInputId, preview
   const formData = new FormData();
   const fullname = sessionStorage.getItem("fullname") || "Unknown";
 
-let fileToSend = fileInput.processedFile || file;
+  let fileToSend = fileInput.processedFile || file;
 
-if (fileInput.processedFile) {
-  // Set a name for processed Blob, so multer can recognize it
-  fileToSend = new File([fileInput.processedFile], "nbcos.xlsx", { type: file.type });
-}
+  if (fileInput.processedFile) {
+    // Give a file name for multer
+    fileToSend = new File([fileInput.processedFile], `${label}.xlsx`, { type: file.type });
+  }
 
-if (!fileToSend || !(fileToSend instanceof Blob)) {
-  preview.textContent = '';
-  logMessage(`❌ File "${label}" is invalid or not processed correctly.`);
-  resetFile(fileInputId, previewId, progressBarId);
-  reject();
-  return;
-}
+  if (!fileToSend || !(fileToSend instanceof Blob)) {
+    preview.textContent = '';
+    logMessage(`❌ File "${label}" is invalid or not processed correctly.`);
+    resetFile(fileInputId, previewId, progressBarId);
+    throw new Error("Invalid file blob");
+  }
 
-formData.append(label, fileToSend);
-formData.append("fullname", fullname);
+  formData.append(label, fileToSend);
+  formData.append("fullname", fullname);
+
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", "https://secure-backend-tzj9.onrender.com/api/admin/upload");
+    xhr.open("POST", `${API_BASE}/api/admin/upload`);
     xhr.setRequestHeader("Authorization", `Bearer ${token}`);
 
     xhr.upload.onprogress = (event) => {
@@ -568,42 +580,33 @@ formData.append("fullname", fullname);
     };
 
     xhr.onload = () => {
-  if (xhr.status === 200) {
-    progressBar.style.width = `100%`;
-    const extension = file.name.split('.').pop();
-    const baseName = file.name.substring(0, file.name.lastIndexOf('.'));
-    const sizeKB = (file.size / 1024).toFixed(1);
-    preview.textContent = `${baseName}.${extension} (${sizeKB} KB)`;
-    logMessage(`✅ ${label} upload complete.`);
-      // ✅ Reset progress bar after short delay
-    setTimeout(() => {
-      progressBar.style.width = "0%";
-    }, 500);
-    
-    resolve();
-  } else {
-    resetFile(fileInputId, previewId, progressBarId);
+      if (xhr.status === 200) {
+        progressBar.style.width = `100%`;
+        const extension = file.name.split('.').pop();
+        const baseName = file.name.substring(0, file.name.lastIndexOf('.'));
+        const sizeKB = (file.size / 1024).toFixed(1);
+        preview.textContent = `${baseName}.${extension} (${sizeKB} KB)`;
+        logMessage(`✅ ${label} upload complete.`);
 
-    let response = {};
-    try {
-      response = JSON.parse(xhr.responseText);
-    } catch (e) {
-      response.message = xhr.statusText;
-    }
+        setTimeout(() => { progressBar.style.width = "0%"; }, 500);
+        resolve();
+      } else {
+        resetFile(fileInputId, previewId, progressBarId);
 
-    logMessage(`❌ Failed to upload ${label}: ${response.message}`);
-    if (response.logs) {
-      response.logs.forEach(log => logMessage(log));
-    }
+        let response = {};
+        try { response = JSON.parse(xhr.responseText); }
+        catch (e) { response.message = xhr.statusText; }
 
-    reject();
-  }
-};
+        logMessage(`❌ Failed to upload ${label}: ${response.message || "Unknown error"}`);
+        if (response.logs) response.logs.forEach(l => logMessage(l));
+        reject(new Error(response.message || "Upload failed"));
+      }
+    };
 
     xhr.onerror = () => {
       resetFile(fileInputId, previewId, progressBarId);
       logMessage(`❌ Network error during ${label} upload`);
-      reject();
+      reject(new Error("Network error"));
     };
 
     xhr.send(formData);
@@ -616,6 +619,109 @@ function resetFile(fileInputId, previewId, progressBarId) {
   document.getElementById(progressBarId).style.width = "0%";
 }
 
+/* ============================================================
+   ✅ NEW: NBCOS chunk upload (Fix for 17k+ rows)
+   ============================================================ */
+const NBCOS_CHUNK_SIZE = 2500;
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+async function parseXlsxBlobToRows(blob) {
+  const buf = await blob.arrayBuffer();
+  const wb = XLSX.read(buf, { type: "array" });
+  const sheet = wb.Sheets[wb.SheetNames[0]];
+  let json = XLSX.utils.sheet_to_json(sheet, { raw: true, defval: "" });
+
+  // normalize keys
+  json = json.map(row => {
+    const normalized = {};
+    Object.keys(row).forEach(k => normalized[k.trim()] = row[k]);
+    return normalized;
+  });
+
+  // trim to allowed columns for nbcos
+  const allowed = allowedColumns.nbcosFile;
+  const trimmed = json.map(row => {
+    const out = {};
+    for (const key of allowed) out[key] = row[key] !== undefined ? row[key] : "";
+    return out;
+  }).filter(r => Object.values(r).some(v => v !== "" && v !== null && v !== undefined));
+
+  return trimmed;
+}
+
+async function uploadNBCOSInChunks(fileInputId, progressBarId, previewId) {
+  const fileInput = document.getElementById(fileInputId);
+  const progressBar = document.getElementById(progressBarId);
+  const preview = document.getElementById(previewId);
+
+  const fullname = sessionStorage.getItem("fullname") || "Unknown";
+  const originalFile = fileInput.files[0];
+  const blob = fileInput.processedFile || originalFile;
+
+  if (!blob) throw new Error("No NBCOS file selected");
+
+  preview.textContent = "Reading NBCOS rows...";
+  logMessage("📄 Reading NBCOS Excel...");
+
+  const rowsAll = await parseXlsxBlobToRows(blob);
+  const totalRows = rowsAll.length;
+  if (!totalRows) throw new Error("NBCOS file has no rows");
+
+  const totalChunks = Math.ceil(totalRows / NBCOS_CHUNK_SIZE);
+  const uploadId = `nbcos_${Date.now()}`;
+
+  logMessage(`🚀 NBCOS chunk upload start: ${totalRows} rows, ${totalChunks} chunks`);
+  preview.textContent = `Preparing ${totalRows} rows...`;
+
+  for (let chunkIndex = 0; chunkIndex < totalChunks; chunkIndex++) {
+    const start = chunkIndex * NBCOS_CHUNK_SIZE;
+    const rows = rowsAll.slice(start, start + NBCOS_CHUNK_SIZE);
+
+    let ok = false;
+    for (let attempt = 1; attempt <= 3 && !ok; attempt++) {
+      try {
+        preview.textContent = `Uploading chunk ${chunkIndex + 1}/${totalChunks} (try ${attempt})...`;
+
+        const res = await fetch(`${API_BASE}/api/admin/nbcos/upload-chunk`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          },
+          body: JSON.stringify({ uploadId, chunkIndex, totalChunks, rows, fullname })
+        });
+
+        if (!res.ok) {
+          const txt = await res.text().catch(() => "");
+          throw new Error(`HTTP ${res.status}: ${txt}`);
+        }
+
+        const data = await res.json().catch(() => ({}));
+        if (data.logs && Array.isArray(data.logs)) data.logs.forEach(l => logMessage(l));
+
+        ok = true;
+      } catch (e) {
+        logMessage(`⚠️ NBCOS chunk ${chunkIndex + 1} failed: ${e.message}`);
+        if (attempt < 3) await sleep(800);
+      }
+    }
+
+    if (!ok) throw new Error(`NBCOS upload failed at chunk ${chunkIndex + 1}/${totalChunks}`);
+
+    const percent = Math.round(((chunkIndex + 1) / totalChunks) * 100);
+    progressBar.style.width = `${percent}%`;
+  }
+
+  preview.textContent = `✅ NBCOS uploaded (${totalRows} rows)`;
+  logMessage("✅ NBCOS upload complete.");
+
+  setTimeout(() => { progressBar.style.width = "0%"; }, 600);
+}
+
+/* ============================================================
+   ✅ Upload All (NBCOS uses chunk, others use /upload)
+   ============================================================ */
 async function uploadFiles() {
   const user = document.getElementById('userFile').files[0];
   const customer = document.getElementById('customerFile').files[0];
@@ -634,29 +740,32 @@ async function uploadFiles() {
     if (user) await uploadSingleFile(user, "user", "userProgress", "userFile", "userPreview");
     if (customer) await uploadSingleFile(customer, "customer", "customerProgress", "customerFile", "customerPreview");
     if (turnover) await uploadSingleFile(turnover, "turnover", "turnoverProgress", "turnoverFile", "turnoverPreview");
-    if (nbcos) await uploadSingleFile(nbcos, "nbcos", "nbcosProgress", "nbcosFile", "nbcosPreview");
+
+    // ✅ NBCOS: stable chunk upload
+    if (nbcos) await uploadNBCOSInChunks("nbcosFile", "nbcosProgress", "nbcosPreview");
+
     if (arreas) await uploadSingleFile(arreas, "arreas", "arreasProgress", "arreasFile", "arreasPreview");
 
     logMessage("✅ All uploads completed.");
     alert("✅ All files uploaded successfully.");
 
-    // Refresh timestamps and latest report dates
     await loadTimestamps();
     await fetchLatestTurnoverReportDate();
     await fetchLatestNbcosReportDate();
     await fetchLatestArreasReportDate();
-
   } catch (err) {
     alert("❌ Some uploads failed. Check logs.");
   }
 
   document.getElementById("overlay").style.display = "none";
 }
-  
 
+/* ============================================================
+   Robot Message + report dates (unchanged)
+   ============================================================ */
 async function loadRobotMessage(userPosition) {
   try {
-    const res = await fetch("https://secure-backend-tzj9.onrender.com/api/robot-message", {
+    const res = await fetch(`${API_BASE}/api/robot-message`, {
       headers: { Authorization: `Bearer ${token}` }
     });
     const data = await res.json();
@@ -674,7 +783,7 @@ async function postRobotMessage() {
   if (!msg) return;
 
   try {
-    const res = await fetch("https://secure-backend-tzj9.onrender.com/api/robot-message", {
+    const res = await fetch(`${API_BASE}/api/robot-message`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -694,10 +803,9 @@ async function postRobotMessage() {
   }
 }
 
-
 async function fetchLatestArreasReportDate() {
   try {
-    const res = await fetch("https://secure-backend-tzj9.onrender.com/api/arreas-t24", {
+    const res = await fetch(`${API_BASE}/api/arreas-t24`, {
       headers: { Authorization: `Bearer ${token}` }
     });
 
@@ -726,11 +834,10 @@ async function fetchLatestArreasReportDate() {
     document.getElementById("report-arreas").textContent = "Last Report: –";
   }
 }
-  
 
-  async function fetchLatestNbcosReportDate() {
+async function fetchLatestNbcosReportDate() {
   try {
-    const res = await fetch("https://secure-backend-tzj9.onrender.com/api/nbcos/latest-disburse", {
+    const res = await fetch(`${API_BASE}/api/nbcos/latest-disburse`, {
       headers: { Authorization: `Bearer ${token}` }
     });
 
@@ -757,7 +864,7 @@ async function fetchLatestArreasReportDate() {
 
 async function fetchLatestTurnoverReportDate() {
   try {
-    const res = await fetch("https://secure-backend-tzj9.onrender.com/api/turnover/latest-month", {
+    const res = await fetch(`${API_BASE}/api/turnover/latest-month`, {
       headers: { Authorization: `Bearer ${token}` }
     });
 
@@ -776,16 +883,14 @@ async function fetchLatestTurnoverReportDate() {
   }
 }
 
-  
-  document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", () => {
   const userPosition = sessionStorage.getItem("userPosition") || "user";
   loadRobotMessage(userPosition);
   loadTimestamps();
   fetchLatestArreasReportDate();
-  fetchLatestNbcosReportDate(); 
-  fetchLatestTurnoverReportDate() // <--- add this
+  fetchLatestNbcosReportDate();
+  fetchLatestTurnoverReportDate();
 });
-  
 </script>
 </body>
 </html>
