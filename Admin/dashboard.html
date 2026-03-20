@@ -124,9 +124,9 @@
 
   <div id="debugLog"></div>
   
-  <script src="../config.js"></script>
+
   <script>
-    const baseURL = CONFIG.BASE_URL;
+    const baseURL = "https://secure-backend-tzj9.onrender.com";
     let allLogins = [];
 
     function logDebug(msg) {
@@ -136,7 +136,7 @@
     document.addEventListener("DOMContentLoaded", () => {
       const token = sessionStorage.getItem("token");
       const user = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
-      if (!token || !user.username) return location.href = "../login.html";
+      if (!token || !user.username) return location.href = "login.html";
 
       loadUploadSummary();
       loadStatistics();
