@@ -123,18 +123,18 @@
       cursor: pointer;
     }
     .badge-wrapper {
-      margin-top: 1px; 
-      margin-bottom: 1px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      background: white;
-      padding: 6px;
-      border-radius: 12px;
-      position: sticky;
-      top: 0;
-      z-index: 2;
-    }
+  margin-top: 1px; 
+  margin-bottom: 1px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  background: white;
+  padding: 6px;
+  border-radius: 12px;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
 
     .badge-filter {
       background: #ffd700;
@@ -148,17 +148,26 @@
       cursor: pointer;
       font-weight: bold;
     }
-    .table-container {
-      position: relative;
-      margin: 4px;
+   /* .table-container {
+      margin: 8px;
       background: white;
       color: black;
       border-radius: 12px;
-      padding: 1px;
-      height: calc(100vh - 360px); /* Adjust based on header/summary height */
-      overflow-y: auto;
+      padding: 10px;
       overflow-x: auto;
-    }
+      max-height: 60vh;
+    }*/
+    .table-container {
+  position: relative;
+  margin: 4px;
+  background: white;
+  color: black;
+  border-radius: 12px;
+  padding: 1px;
+  height: calc(100vh - 360px); /* Adjust based on header/summary height */
+  overflow-y: auto;
+  overflow-x: auto;
+}
     table {
       width: 100%;
       border-collapse: collapse;
@@ -242,10 +251,17 @@
       border-radius: 50%;
       font-weight: bold;
     }
+
+   /* .export-icon img,
+    .clear-icon img {
+    display: block;
+    margin: auto;
+   }*/
+    
   </style>
 </head>
 
-<body>
+  <body>
   <div class="header-bar">
     <button class="back-icon" onclick="location.href='../index.html'">←</button>
     <div class="header-title">ឥណទានយឺតយ៉ាវ</div>
@@ -270,7 +286,7 @@
     </div>
 
     <div class="summary-section">
-      <div class="badge-wrapper" id="badgeFilters"></div>
+      <div class="badge-wrapper" id="badgeFilters"></div> <!-- moved here -->
       
       <div id="sumCount">👥 ចំនួនឥណទានសរុប: 0</div>
       <div id="sumTotal">💰 សមតុល្យឥណទានសរុប: 0 USD</div>
@@ -278,16 +294,17 @@
       <button class="export-icon" title="Export Excel" onclick="exportExcel()">
         <img src="../icons/excelSP.png" width="20" height="20" alt="Export" />
       </button>
+      
     </div>
-  </div>
+
 
   <div class="table-container">
-    <div id="spinner" class="spinner" style="display: none;"></div>
-    <table id="arreasTable">
-      <thead id="tableHead"></thead>
-      <tbody id="tableBody"></tbody>
-    </table>
-  </div>
+  <div id="spinner" class="spinner" style="display: none;"></div>
+  <table id="arreasTable">
+    <thead id="tableHead"></thead>
+    <tbody id="tableBody"></tbody>
+  </table>
+</div>
 
   <div class="bottom-bar">
     <button class="bottom-btn" onclick="location.href='../index.html'"><img src="../icons/Home.png" width="24"><div>Home</div></button>
@@ -302,72 +319,74 @@
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-
   <script src="../notifications/checkNotification.js"></script>
 
-<script src="../config.js"></script>
-
-console.log("ARREAS CONFIG =", window.CONFIG);
-
+    <script>
 let allData = [];
+let currentSortKey = null;
+let currentSortDir = 'asc';
 
-const API_BASE = window.CONFIG?.BASE_URL || "";
+const fields = {
+  branch: "Branch",
+  teamLeader: "Team_Leader",
+  coResponse: "CO_Response",
+  coId: "CO_ID",
+  osClassify: "OS_Classify",
+  occu: "Occu",
+  class: "Class",
+  pd: "PD"
+};
 
-console.log("ARREAS API_BASE =", API_BASE);
-console.log("ARREAS session token =", sessionStorage.getItem("token"));
-console.log("ARREAS loggedInUser =", sessionStorage.getItem("loggedInUser"));
+const numberFields = ["Prn_OS", "Int_OS", "Prn_Due", "Int_Due", "Penalty", "Arreas", "Balnce", "OS_USD"];
 
 window.addEventListener("DOMContentLoaded", () => {
-  console.log("ARREAS page loaded");
-
+  checkNotification();
   fetchData();
+  setupAutoLogoutEvents();
 });
 
+
 async function fetchData() {
-  console.log("ARREAS fetchData start");
+  document.getElementById("spinner").style.display = "block";
 
   const user = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
   const token = user?.token;
 
-  console.log("ARREAS user =", user);
-  console.log("ARREAS token =", token);
-
   try {
-    const res = await fetch(`${API_BASE}/api/arreas-t24`, {
+    if (!token) throw new Error("Missing token. Please login again.");
+
+    const res = await fetch("https://secure-backend-tzj9.onrender.com/api/arreas-t24", {
       headers: {
         Authorization: `Bearer ${token}`
       }
     });
 
-    console.log("ARREAS response status =", res.status);
-
     if (!res.ok) {
-      const text = await res.text();
-      console.error("ARREAS ERROR =", text);
-      throw new Error(text);
+      const errorText = await res.text();
+      throw new Error(`Server responded with ${res.status}: ${errorText}`);
     }
 
-    const data = await res.json();
+    allData = await res.json();
 
-    console.log("ARREAS data count =", data.length);
-    console.log("ARREAS first row =", data[0]);
-
-    allData = data;
-
-    document.body.innerHTML += `<pre style="color:white">${JSON.stringify(data.slice(0,3), null, 2)}</pre>`;
-
+    document.getElementById("spinner").style.display = "none";
+    renderTable(allData);
+    populateFilters(allData);
+    updateSummaryAndReportDate(allData);
+    updateBadges({});
   } catch (err) {
-    console.error("ARREAS fetch error =", err);
-    alert("Error: " + err.message);
+    document.getElementById("spinner").style.display = "none";
+    alert("Failed to load data: " + err.message);
+    console.error("❌ fetchData error:", err.message);
   }
 }
+      
 
 function formatDate(dateStr) {
   const d = new Date(dateStr);
   return !isNaN(d) ? d.toLocaleDateString('en-GB') : dateStr;
 }
 
-function formatUTCDate(isoString) {
+  function formatUTCDate(isoString) {
   const date = new Date(isoString);
   const day = String(date.getUTCDate()).padStart(2, '0');
   const month = String(date.getUTCMonth() + 1).padStart(2, '0');
@@ -378,7 +397,7 @@ function formatUTCDate(isoString) {
   const period = +hours >= 12 ? 'PM' : 'AM';
   return `${day}/${month}/${year} ${hour12}:${minutes} ${period} (UTC)`;
 }
-
+      
 function formatNumber(value) {
   const num = parseFloat(value);
   return isNaN(num) ? value : num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -469,13 +488,13 @@ function applyFilters(data) {
     }
 
     if (selected.branch) {
-      const filtered = data.filter(d => d.Branch === selected.branch);
-      const prevCOResponse = document.getElementById("coResponse").value;
-      const prevCOID = document.getElementById("coId").value;
+  const filtered = data.filter(d => d.Branch === selected.branch);
+  const prevCOResponse = document.getElementById("coResponse").value;
+  const prevCOID = document.getElementById("coId").value;
 
-      updateDependentSelect("coResponse", filtered, prevCOResponse);
-      updateDependentSelect("coId", filtered, prevCOID);
-    }
+  updateDependentSelect("coResponse", filtered, prevCOResponse);
+  updateDependentSelect("coId", filtered, prevCOID);
+}
 
     const filtered = data.filter(row =>
       Object.entries(selected).every(([id, val]) => val === "" || row[fields[id]] === val)
@@ -498,13 +517,17 @@ function updateDependentSelect(id, subset, prevValue = "") {
     sel.value = prevValue;
   }
 }
+      
 
 function updateSummaryAndReportDate(data) {
+  // Update total count
   document.getElementById("sumCount").textContent = "👥 ចំនួនឥណទានសរុប: " + data.length;
 
+  // Calculate total OS_USD
   const total = data.reduce((sum, row) => sum + parseFloat(row.OS_USD || 0), 0);
   document.getElementById("sumTotal").textContent = "💰 សមតុល្យឥណទានសរុប: " + formatNumber(total) + " USD";
 
+  // Find the latest Report_Date in UTC format
   const dates = data.map(d => new Date(d.Report_Date)).filter(d => !isNaN(d));
   const latest = dates.length > 0 ? new Date(Math.max(...dates)) : null;
 
@@ -524,6 +547,7 @@ function updateSummaryAndReportDate(data) {
   }
 }
 
+  
 function updateBadges(filters) {
   const box = document.getElementById("badgeFilters");
   if (!box) return;
@@ -565,6 +589,7 @@ function exportExcel() {
   XLSX.writeFile(wb, "ArreasT24.xlsx");
 }
 
+
 document.getElementById("searchInput").addEventListener("input", e => {
   const term = e.target.value.toLowerCase();
   const filtered = allData.filter(row =>
@@ -594,3 +619,4 @@ function setupAutoLogoutEvents() {
 </script>
 </body>
 </html>
+    
