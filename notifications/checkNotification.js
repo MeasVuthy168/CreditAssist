@@ -1,7 +1,8 @@
+
 // notifications/checkNotification.js
 // Per-type unread counting + shared badge + optional toast + broadcast to other pages
 
-const API_BASE = "https://secure-backend-tzj9.onrender.com";
+const API_BASE = window.CONFIG?.BASE_URL || "https://secure-backend-new.onrender.com";
 
 const KH_LABELS = {
   user: "ទិន្នន័យរបស់ភ្នាក់ងារឥណទាន",
