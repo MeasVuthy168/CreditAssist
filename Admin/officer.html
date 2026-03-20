@@ -339,8 +339,10 @@ th {
 <div id="debugLog" style="font-size: 10px; color: red; word-break: break-all; max-width: 140px;"></div>
 <div id="debugLabel" style="color: lime; font-size: 12px;"></div>
   
+  <script src="../config.js"></script>
   <script>
     let selectedUsername = null;
+const API_BASE = CONFIG.BASE_URL;
 
     function autoFillImagePath() {
   const username = document.getElementById("username").value.trim();
@@ -366,7 +368,7 @@ function updatePreview() {
   }
 
   if (path.startsWith("profile/")) {
-    preview.src = "https://secure-backend-tzj9.onrender.com/" + path;
+    preview.src = `${API_BASE}/` + path;
   } else {
     preview.src = path;
   }
@@ -419,7 +421,7 @@ async function uploadToServer() {
   }
 
   try {
-    const res = await fetch("https://secure-backend-tzj9.onrender.com/api/upload", {
+    const res = await fetch(`${API_BASE}/api/upload`, {
       method: "POST",
       headers: { Authorization: `Bearer ${token}` },
       body: formData
@@ -482,7 +484,7 @@ function retryPreview(url, attempts) {
   }
 
   try {
-    const res = await fetch("https://secure-backend-tzj9.onrender.com/api/users", {
+    const res = await fetch(`${API_BASE}/api/users`, {
       headers: { Authorization: `Bearer ${token}` }
     });
 
@@ -589,9 +591,9 @@ function retryPreview(url, attempts) {
   };
 
   const isUpdate = selectedUsername && selectedUsername === usernameInput;
-  const url = isUpdate
-    ? `https://secure-backend-tzj9.onrender.com/api/users/${usernameInput}`
-    : "https://secure-backend-tzj9.onrender.com/api/users";
+const url = isUpdate
+  ? `${API_BASE}/api/users/${usernameInput}`
+  : `${API_BASE}/api/users`;
 
   const method = isUpdate ? "PUT" : "POST";
 
@@ -621,7 +623,7 @@ if (res.ok) {
       if (!confirmDelete) return;
       const token = sessionStorage.getItem("token");
 
-      const res = await fetch("https://secure-backend-tzj9.onrender.com/api/users/" + selectedUsername, {
+      const res = await fetch(`${API_BASE}/api/users/` + selectedUsername, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` }
       });
