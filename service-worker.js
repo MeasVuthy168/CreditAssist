@@ -2,7 +2,7 @@
    Place this file at: /service-worker.js (REPO ROOT)
    It must be served from the same origin & scope as your pages.
 */
-const SW_VERSION = 'v6';
+const SW_VERSION = 'v7';
 
 /* ---------------- Lifecycle: take control quickly ---------------- */
 self.addEventListener('install', (event) => {
