@@ -121,8 +121,7 @@
     <button class="btn-close" onclick="window.history.back()">បិទ</button>
   </div>
 
-<script src="../config.js"></script>
-<script>
+  <script>  
   document.addEventListener("DOMContentLoaded", () => {
     const user = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
 
@@ -131,7 +130,7 @@
     document.getElementById("user-username").textContent = user.username || "-";
     document.getElementById("user-branch").textContent = user.branch || "-";
     document.getElementById("user-phone").textContent = user.phone || "-";
-    document.getElementById("profile-photo").src = `${CONFIG.BASE_URL}/` + (user.image || "profile.jpg");
+    document.getElementById("profile-photo").src = "https://secure-backend-tzj9.onrender.com/" + (user.image || "profile.jpg");
   });  
 </script>
 </body>
