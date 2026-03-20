@@ -318,19 +318,66 @@
     </button>
   </div>
 
+
+<!-- DEBUG BOX -->
+<div id="debugLog" style="
+  margin: 8px;
+  background: #111;
+  color: #0f0;
+  font-size: 11px;
+  font-family: monospace;
+  padding: 10px;
+  border-radius: 8px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 160px;
+  overflow-y: auto;
+">Debug log...</div>
+
+<!-- LIBS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script src="/config.js"></script>
+
+<!-- DEBUG HELPER -->
+<script>
+function scriptDebug(msg) {
+  const box = document.getElementById("debugLog");
+  if (box) box.textContent += "\n[script] " + msg;
+  console.log(msg);
+}
+</script>
+
+<!-- CONFIG -->
+<script src="/config.js" onload="scriptDebug('config.js loaded')" onerror="scriptDebug('config.js FAILED')"></script>
+
+<!-- NOTIFICATION -->
 <script src="../notifications/checkNotification.js"></script>
 
-    <script>
+<!-- MAIN SCRIPT -->
+<script>
 
 let allData = [];
 let currentSortKey = null;
 let currentSortDir = 'asc';
 
+// ✅ SAFE CONFIG LOAD
 const API_BASE = window.CONFIG?.BASE_URL || "";
-console.log("CONFIG =", window.CONFIG);
-console.log("API_BASE =", API_BASE);
+
+// DEBUG
+function logDebug(msg) {
+  const box = document.getElementById("debugLog");
+  const line = `[${new Date().toLocaleTimeString()}] ${msg}`;
+  console.log(line);
+  if (box) {
+    box.textContent += "\n" + line;
+    box.scrollTop = box.scrollHeight;
+  }
+}
+
+logDebug("CONFIG = " + JSON.stringify(window.CONFIG || null));
+logDebug("API_BASE = " + API_BASE);
+logDebug("Page = " + location.href);
+
+    
       
 const fields = {
   branch: "Branch",
