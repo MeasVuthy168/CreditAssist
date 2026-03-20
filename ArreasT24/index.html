@@ -328,8 +328,10 @@ let allData = [];
 let currentSortKey = null;
 let currentSortDir = 'asc';
 
-const API_BASE = CONFIG.BASE_URL;
-
+const API_BASE = window.CONFIG?.BASE_URL || "";
+console.log("CONFIG =", window.CONFIG);
+console.log("API_BASE =", API_BASE);
+      
 const fields = {
   branch: "Branch",
   teamLeader: "Team_Leader",
