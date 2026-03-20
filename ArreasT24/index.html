@@ -74,12 +74,11 @@
       position: relative;
       animation: fadeIn 0.4s ease-in;
     }
-
+    
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(-5px); }
       to { opacity: 1; transform: translateY(0); }
     }
-
     .filter-section {
       display: flex;
       flex-direction: column;
@@ -124,7 +123,7 @@
       cursor: pointer;
     }
     .badge-wrapper {
-      margin-top: 1px;
+      margin-top: 1px; 
       margin-bottom: 1px;
       display: flex;
       flex-wrap: wrap;
@@ -136,6 +135,7 @@
       top: 0;
       z-index: 2;
     }
+
     .badge-filter {
       background: #ffd700;
       color: #002c5f;
@@ -155,7 +155,7 @@
       color: black;
       border-radius: 12px;
       padding: 1px;
-      height: calc(100vh - 360px);
+      height: calc(100vh - 360px); /* Adjust based on header/summary height */
       overflow-y: auto;
       overflow-x: auto;
     }
@@ -242,19 +242,6 @@
       border-radius: 50%;
       font-weight: bold;
     }
-    #debugLog {
-      margin: 8px;
-      background: #111;
-      color: #0f0;
-      font-size: 11px;
-      font-family: monospace;
-      padding: 10px;
-      border-radius: 8px;
-      white-space: pre-wrap;
-      word-break: break-word;
-      max-height: 180px;
-      overflow-y: auto;
-    }
   </style>
 </head>
 
@@ -278,12 +265,13 @@
       <div class="filter-section"><label for="class">ចំណាត់ថ្នាក់ឥណទាន</label><select id="class"></select></div>
       <div class="filter-section"><label for="pd">PD</label><select id="pd"></select></div>
       <button class="clear-icon" title="Clear Filters" onclick="resetFilters()">
-        <img src="../icons/clear-filter.png" width="20" height="20" alt="Clear" />
+       <img src="../icons/clear-filter.png" width="20" height="20" alt="Clear" />
       </button>
     </div>
 
     <div class="summary-section">
       <div class="badge-wrapper" id="badgeFilters"></div>
+      
       <div id="sumCount">👥 ចំនួនឥណទានសរុប: 0</div>
       <div id="sumTotal">💰 សមតុល្យឥណទានសរុប: 0 USD</div>
       <div id="latestDate">⏰ របាយការណ៍គិតត្រឹមថ្ងៃទី: -</div>
@@ -313,381 +301,299 @@
     </button>
   </div>
 
-  <div id="debugLog">Debug log...</div>
-
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-
-  <script>
-    function scriptDebug(msg) {
-      const box = document.getElementById("debugLog");
-      if (box) {
-        box.textContent += "\n[script] " + msg;
-        box.scrollTop = box.scrollHeight;
-      }
-      console.log(msg);
-    }
-  </script>
-
-  <script src="../config.js" onload="scriptDebug('config.js loaded')" onerror="scriptDebug('config.js FAILED')"></script>
+  <script src="../config.js"></script>
   <script src="../notifications/checkNotification.js"></script>
 
   <script>
-    window.onerror = function(msg, src, line, col, err) {
-      const box = document.getElementById("debugLog");
-      if (box) {
-        box.textContent += `\n[ERROR] ${msg} @ line ${line}`;
-        box.scrollTop = box.scrollHeight;
-      }
-      console.error(msg, src, line, col, err);
-      return false;
-    };
+let allData = [];
+let currentSortKey = null;
+let currentSortDir = 'asc';
 
-    function logDebug(msg) {
-      const box = document.getElementById("debugLog");
-      const line = `[${new Date().toLocaleTimeString()}] ${msg}`;
-      if (box) {
-        box.textContent += "\n" + line;
-        box.scrollTop = box.scrollHeight;
-      }
-      console.log(line);
-    }
+const API_BASE = window.CONFIG.BASE_URL;
 
-    logDebug("main script entered");
+const fields = {
+  branch: "Branch",
+  teamLeader: "Team_Leader",
+  coResponse: "CO_Response",
+  coId: "CO_ID",
+  osClassify: "OS_Classify",
+  occu: "Occu",
+  class: "Class",
+  pd: "PD"
+};
 
-    const API_BASE = (window.CONFIG && window.CONFIG.BASE_URL) ? window.CONFIG.BASE_URL : "";
-    logDebug("CONFIG = " + JSON.stringify(window.CONFIG || null));
-    logDebug("API_BASE = " + API_BASE);
+const numberFields = ["Prn_OS", "Int_OS", "Prn_Due", "Int_Due", "Penalty", "Arreas", "Balnce", "OS_USD"];
 
-    let allData = [];
-    let currentSortKey = null;
-    let currentSortDir = 'asc';
+window.addEventListener("DOMContentLoaded", () => {
+  checkNotification();
+  fetchData();
+  setupAutoLogoutEvents();
+});
 
-    const fields = {
-      branch: "Branch",
-      teamLeader: "Team_Leader",
-      coResponse: "CO_Response",
-      coId: "CO_ID",
-      osClassify: "OS_Classify",
-      occu: "Occu",
-      class: "Class",
-      pd: "PD"
-    };
+async function fetchData() {
+  document.getElementById("spinner").style.display = "block";
 
-    const numberFields = ["Prn_OS", "Int_OS", "Prn_Due", "Int_Due", "Penalty", "Arreas", "Balnce", "OS_USD"];
+  const user = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
+  const token = user?.token;
 
-    window.addEventListener("DOMContentLoaded", () => {
-      logDebug("DOMContentLoaded fired");
+  try {
+    if (!token) throw new Error("Missing token. Please login again.");
 
-      try {
-        if (typeof checkNotification === "function") {
-          checkNotification();
-          logDebug("checkNotification called");
-        } else {
-          logDebug("checkNotification not found");
-        }
-      } catch (e) {
-        logDebug("checkNotification error: " + e.message);
-      }
-
-      try {
-        document.getElementById("searchInput").addEventListener("input", onSearchInput);
-        logDebug("searchInput listener attached");
-      } catch (e) {
-        logDebug("searchInput attach error: " + e.message);
-      }
-
-      try {
-        fetchData();
-        logDebug("fetchData called");
-      } catch (e) {
-        logDebug("fetchData call error: " + e.message);
-      }
-
-      try {
-        setupAutoLogoutEvents();
-        logDebug("setupAutoLogoutEvents called");
-      } catch (e) {
-        logDebug("setupAutoLogoutEvents error: " + e.message);
+    const res = await fetch(`${API_BASE}/api/arreas-t24`, {
+      headers: {
+        Authorization: `Bearer ${token}`
       }
     });
 
-    async function fetchData() {
-      document.getElementById("spinner").style.display = "block";
-      logDebug("fetchData started");
+    if (!res.ok) {
+      const errorText = await res.text();
+      throw new Error(`Server responded with ${res.status}: ${errorText}`);
+    }
 
-      const user = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
-      const token = user && user.token ? user.token : "";
+    allData = await res.json();
 
-      logDebug("token exists = " + (!!token));
-      logDebug("request url = " + `${API_BASE}/api/arreas-t24`);
+    document.getElementById("spinner").style.display = "none";
+    renderTable(allData);
+    populateFilters(allData);
+    updateSummaryAndReportDate(allData);
+    updateBadges({});
+  } catch (err) {
+    document.getElementById("spinner").style.display = "none";
+    alert("Failed to load data: " + err.message);
+    console.error("❌ fetchData error:", err.message);
+  }
+}
 
-      try {
-        if (!API_BASE) throw new Error("CONFIG missing");
-        if (!token) throw new Error("Missing token. Please login again.");
+function formatDate(dateStr) {
+  const d = new Date(dateStr);
+  return !isNaN(d) ? d.toLocaleDateString('en-GB') : dateStr;
+}
 
-        const res = await fetch(`${API_BASE}/api/arreas-t24`, {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        });
+function formatUTCDate(isoString) {
+  const date = new Date(isoString);
+  const day = String(date.getUTCDate()).padStart(2, '0');
+  const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+  const year = date.getUTCFullYear();
+  const hours = String(date.getUTCHours()).padStart(2, '0');
+  const minutes = String(date.getUTCMinutes()).padStart(2, '0');
+  const hour12 = ((+hours + 11) % 12 + 1).toString().padStart(2, '0');
+  const period = +hours >= 12 ? 'PM' : 'AM';
+  return `${day}/${month}/${year} ${hour12}:${minutes} ${period} (UTC)`;
+}
 
-        logDebug("response status = " + res.status);
+function formatNumber(value) {
+  const num = parseFloat(value);
+  return isNaN(num) ? value : num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
 
-        if (!res.ok) {
-          const errorText = await res.text();
-          logDebug("response error = " + errorText);
-          throw new Error(`Server responded with ${res.status}: ${errorText}`);
-        }
+function renderTable(data) {
+  const head = document.getElementById("tableHead");
+  const body = document.getElementById("tableBody");
+  head.innerHTML = "";
+  body.innerHTML = "";
 
-        allData = await res.json();
-        logDebug("rows loaded = " + allData.length);
+  if (!data.length) {
+    body.innerHTML = "<tr><td colspan='99'>គ្មានទិន្នន័យ</td></tr>";
+    return;
+  }
 
-        document.getElementById("spinner").style.display = "none";
-        renderTable(allData);
-        populateFilters(allData);
-        updateSummaryAndReportDate(allData);
-        updateBadges({});
-        logDebug("render complete");
-      } catch (err) {
-        document.getElementById("spinner").style.display = "none";
-        logDebug("fetchData ERROR = " + err.message);
-        alert("Failed to load data: " + err.message);
-        console.error("fetchData error:", err);
+  const keys = Object.keys(data[0]).filter(k => !["_id", "__v", "Concate", "Report_Date"].includes(k));
+  const headRow = document.createElement("tr");
+  headRow.innerHTML = `<th>No</th>` + keys.map(k => {
+    const sortClass = (currentSortKey === k) ? `sort-${currentSortDir}` : "";
+    return `<th class="${sortClass}" onclick="sortTable('${k}')">${k}</th>`;
+  }).join("");
+  head.appendChild(headRow);
+
+  data.forEach((row, i) => {
+    const tr = document.createElement("tr");
+    const classVal = (row.Class || "").toLowerCase();
+    tr.className = 
+      classVal.includes("loss") ? "loss" :
+      classVal.includes("doubtful") ? "doubtful" :
+      classVal.includes("sub") ? "substandard" :
+      classVal.includes("special") ? "special" : "normal";
+
+    tr.innerHTML = `<td>${i + 1}</td>` + keys.map(k => {
+      let val = row[k] || "";
+      if (k === "DisDate") val = formatDate(val);
+      if (numberFields.includes(k)) val = formatNumber(val);
+      return `<td>${val}</td>`;
+    }).join("");
+
+    tr.addEventListener("click", () => {
+      tr.classList.add("highlighted");
+      setTimeout(() => tr.classList.remove("highlighted"), 600);
+    });
+
+    body.appendChild(tr);
+  });
+}
+
+function sortTable(key) {
+  document.getElementById("spinner").style.display = "block";
+  setTimeout(() => {
+    if (currentSortKey === key) {
+      currentSortDir = currentSortDir === 'asc' ? 'desc' : 'asc';
+    } else {
+      currentSortKey = key;
+      currentSortDir = 'asc';
+    }
+
+    const sorted = [...allData].sort((a, b) => {
+      let x = a[key] || "", y = b[key] || "";
+      if (!isNaN(parseFloat(x)) && !isNaN(parseFloat(y))) {
+        x = parseFloat(x); y = parseFloat(y);
       }
+      return currentSortDir === 'asc' ? (x > y ? 1 : -1) : (x < y ? 1 : -1);
+    });
+
+    renderTable(sorted);
+    document.getElementById("spinner").style.display = "none";
+  }, 200);
+}
+
+function populateFilters(data) {
+  for (const id in fields) {
+    const sel = document.getElementById(id);
+    const values = [...new Set(data.map(d => d[fields[id]]).filter(Boolean))].sort();
+    sel.innerHTML = "<option value=''>All</option>" + values.map(v => `<option>${v}</option>`).join("");
+    sel.addEventListener("change", () => applyFilters(data));
+  }
+}
+
+function applyFilters(data) {
+  document.getElementById("spinner").style.display = "block";
+  setTimeout(() => {
+    const selected = {};
+    for (const id in fields) {
+      selected[id] = document.getElementById(id).value;
     }
 
-    function formatDate(dateStr) {
-      const d = new Date(dateStr);
-      return !isNaN(d) ? d.toLocaleDateString('en-GB') : dateStr;
+    if (selected.branch) {
+      const filtered = data.filter(d => d.Branch === selected.branch);
+      const prevCOResponse = document.getElementById("coResponse").value;
+      const prevCOID = document.getElementById("coId").value;
+
+      updateDependentSelect("coResponse", filtered, prevCOResponse);
+      updateDependentSelect("coId", filtered, prevCOID);
     }
 
-    function formatUTCDate(isoString) {
-      const date = new Date(isoString);
-      const day = String(date.getUTCDate()).padStart(2, '0');
-      const month = String(date.getUTCMonth() + 1).padStart(2, '0');
-      const year = date.getUTCFullYear();
-      const hours = String(date.getUTCHours()).padStart(2, '0');
-      const minutes = String(date.getUTCMinutes()).padStart(2, '0');
-      const hour12 = ((+hours + 11) % 12 + 1).toString().padStart(2, '0');
-      const period = +hours >= 12 ? 'PM' : 'AM';
-      return `${day}/${month}/${year} ${hour12}:${minutes} ${period} (UTC)`;
+    const filtered = data.filter(row =>
+      Object.entries(selected).every(([id, val]) => val === "" || row[fields[id]] === val)
+    );
+
+    renderTable(filtered);
+    updateSummaryAndReportDate(filtered);
+    updateBadges(selected);
+    document.getElementById("spinner").style.display = "none";
+  }, 200);
+}
+
+function updateDependentSelect(id, subset, prevValue = "") {
+  const field = fields[id];
+  const sel = document.getElementById(id);
+  const values = [...new Set(subset.map(d => d[field]).filter(Boolean))].sort();
+  sel.innerHTML = "<option value=''>All</option>" + values.map(v => `<option value="${v}">${v}</option>`).join("");
+
+  if (values.includes(prevValue)) {
+    sel.value = prevValue;
+  }
+}
+
+function updateSummaryAndReportDate(data) {
+  document.getElementById("sumCount").textContent = "👥 ចំនួនឥណទានសរុប: " + data.length;
+
+  const total = data.reduce((sum, row) => sum + parseFloat(row.OS_USD || 0), 0);
+  document.getElementById("sumTotal").textContent = "💰 សមតុល្យឥណទានសរុប: " + formatNumber(total) + " USD";
+
+  const dates = data.map(d => new Date(d.Report_Date)).filter(d => !isNaN(d));
+  const latest = dates.length > 0 ? new Date(Math.max(...dates)) : null;
+
+  if (latest) {
+    const day = String(latest.getUTCDate()).padStart(2, '0');
+    const month = String(latest.getUTCMonth() + 1).padStart(2, '0');
+    const year = latest.getUTCFullYear();
+    const hour = latest.getUTCHours();
+    const minute = String(latest.getUTCMinutes()).padStart(2, '0');
+    const hour12 = ((hour + 11) % 12 + 1).toString().padStart(2, '0');
+    const ampm = hour >= 12 ? 'PM' : 'AM';
+    const formattedUTC = `${day}/${month}/${year} ${hour12}:${minute} ${ampm} (UTC)`;
+
+    document.getElementById("latestDate").textContent = `⏰ របាយការណ៍គិតត្រឹម: ${formattedUTC}`;
+  } else {
+    document.getElementById("latestDate").textContent = "⏰ របាយការណ៍គិតត្រឹម: -";
+  }
+}
+
+function updateBadges(filters) {
+  const box = document.getElementById("badgeFilters");
+  if (!box) return;
+  box.innerHTML = "";
+  for (const id in filters) {
+    const val = filters[id];
+    if (val) {
+      const span = document.createElement("span");
+      span.className = "badge-filter";
+      span.innerHTML = `${id}: ${val} <span onclick="removeFilter('${id}')">&times;</span>`;
+      box.appendChild(span);
     }
+  }
+}
 
-    function formatNumber(value) {
-      const num = parseFloat(value);
-      return isNaN(num) ? value : num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    }
+function removeFilter(id) {
+  document.getElementById("spinner").style.display = "block";
+  setTimeout(() => {
+    document.getElementById(id).value = "";
+    applyFilters(allData);
+  }, 100);
+}
 
-    function renderTable(data) {
-      const head = document.getElementById("tableHead");
-      const body = document.getElementById("tableBody");
-      head.innerHTML = "";
-      body.innerHTML = "";
+function resetFilters() {
+  document.getElementById("spinner").style.display = "block";
+  setTimeout(() => {
+    for (const id in fields) document.getElementById(id).value = "";
+    document.getElementById("searchInput").value = "";
+    renderTable(allData);
+    updateSummaryAndReportDate(allData);
+    updateBadges({});
+    document.getElementById("spinner").style.display = "none";
+  }, 300);
+}
 
-      if (!data.length) {
-        body.innerHTML = "<tr><td colspan='99'>គ្មានទិន្នន័យ</td></tr>";
-        return;
-      }
+function exportExcel() {
+  const table = document.getElementById("arreasTable");
+  const wb = XLSX.utils.table_to_book(table, { sheet: "Arreas T24" });
+  XLSX.writeFile(wb, "ArreasT24.xlsx");
+}
 
-      const keys = Object.keys(data[0]).filter(k => !["_id", "__v", "Concate", "Report_Date"].includes(k));
-      const headRow = document.createElement("tr");
-      headRow.innerHTML = `<th>No</th>` + keys.map(k => {
-        const sortClass = (currentSortKey === k) ? `sort-${currentSortDir}` : "";
-        return `<th class="${sortClass}" onclick="sortTable('${k}')">${k}</th>`;
-      }).join("");
-      head.appendChild(headRow);
+document.getElementById("searchInput").addEventListener("input", e => {
+  const term = e.target.value.toLowerCase();
+  const filtered = allData.filter(row =>
+    (row.Customer || "").toLowerCase().includes(term) ||
+    (row.CIF || "").toLowerCase().includes(term)
+  );
+  renderTable(filtered);
+  updateSummaryAndReportDate(filtered);
+});
 
-      data.forEach((row, i) => {
-        const tr = document.createElement("tr");
-        const classVal = (row.Class || "").toLowerCase();
-        tr.className =
-          classVal.includes("loss") ? "loss" :
-          classVal.includes("doubtful") ? "doubtful" :
-          classVal.includes("sub") ? "substandard" :
-          classVal.includes("special") ? "special" : "normal";
-
-        tr.innerHTML = `<td>${i + 1}</td>` + keys.map(k => {
-          let val = row[k] || "";
-          if (k === "DisDate") val = formatDate(val);
-          if (numberFields.includes(k)) val = formatNumber(val);
-          return `<td>${val}</td>`;
-        }).join("");
-
-        tr.addEventListener("click", () => {
-          tr.classList.add("highlighted");
-          setTimeout(() => tr.classList.remove("highlighted"), 600);
-        });
-
-        body.appendChild(tr);
-      });
-    }
-
-    function sortTable(key) {
-      document.getElementById("spinner").style.display = "block";
-      setTimeout(() => {
-        if (currentSortKey === key) {
-          currentSortDir = currentSortDir === 'asc' ? 'desc' : 'asc';
-        } else {
-          currentSortKey = key;
-          currentSortDir = 'asc';
-        }
-
-        const sorted = [...allData].sort((a, b) => {
-          let x = a[key] || "", y = b[key] || "";
-          if (!isNaN(parseFloat(x)) && !isNaN(parseFloat(y))) {
-            x = parseFloat(x);
-            y = parseFloat(y);
-          }
-          return currentSortDir === 'asc' ? (x > y ? 1 : -1) : (x < y ? 1 : -1);
-        });
-
-        renderTable(sorted);
-        document.getElementById("spinner").style.display = "none";
-      }, 200);
-    }
-
-    function populateFilters(data) {
-      for (const id in fields) {
-        const sel = document.getElementById(id);
-        const values = [...new Set(data.map(d => d[fields[id]]).filter(Boolean))].sort();
-        sel.innerHTML = "<option value=''>All</option>" + values.map(v => `<option>${v}</option>`).join("");
-        sel.addEventListener("change", () => applyFilters(data));
-      }
-    }
-
-    function applyFilters(data) {
-      document.getElementById("spinner").style.display = "block";
-      setTimeout(() => {
-        const selected = {};
-        for (const id in fields) {
-          selected[id] = document.getElementById(id).value;
-        }
-
-        if (selected.branch) {
-          const filtered = data.filter(d => d.Branch === selected.branch);
-          const prevCOResponse = document.getElementById("coResponse").value;
-          const prevCOID = document.getElementById("coId").value;
-
-          updateDependentSelect("coResponse", filtered, prevCOResponse);
-          updateDependentSelect("coId", filtered, prevCOID);
-        }
-
-        const filtered = data.filter(row =>
-          Object.entries(selected).every(([id, val]) => val === "" || row[fields[id]] === val)
-        );
-
-        renderTable(filtered);
-        updateSummaryAndReportDate(filtered);
-        updateBadges(selected);
-        document.getElementById("spinner").style.display = "none";
-      }, 200);
-    }
-
-    function updateDependentSelect(id, subset, prevValue = "") {
-      const field = fields[id];
-      const sel = document.getElementById(id);
-      const values = [...new Set(subset.map(d => d[field]).filter(Boolean))].sort();
-      sel.innerHTML = "<option value=''>All</option>" + values.map(v => `<option value="${v}">${v}</option>`).join("");
-
-      if (values.includes(prevValue)) {
-        sel.value = prevValue;
-      }
-    }
-
-    function updateSummaryAndReportDate(data) {
-      document.getElementById("sumCount").textContent = "👥 ចំនួនឥណទានសរុប: " + data.length;
-
-      const total = data.reduce((sum, row) => sum + parseFloat(row.OS_USD || 0), 0);
-      document.getElementById("sumTotal").textContent = "💰 សមតុល្យឥណទានសរុប: " + formatNumber(total) + " USD";
-
-      const dates = data.map(d => new Date(d.Report_Date)).filter(d => !isNaN(d));
-      const latest = dates.length > 0 ? new Date(Math.max(...dates)) : null;
-
-      if (latest) {
-        const day = String(latest.getUTCDate()).padStart(2, '0');
-        const month = String(latest.getUTCMonth() + 1).padStart(2, '0');
-        const year = latest.getUTCFullYear();
-        const hour = latest.getUTCHours();
-        const minute = String(latest.getUTCMinutes()).padStart(2, '0');
-        const hour12 = ((hour + 11) % 12 + 1).toString().padStart(2, '0');
-        const ampm = hour >= 12 ? 'PM' : 'AM';
-        const formattedUTC = `${day}/${month}/${year} ${hour12}:${minute} ${ampm} (UTC)`;
-
-        document.getElementById("latestDate").textContent = `⏰ របាយការណ៍គិតត្រឹម: ${formattedUTC}`;
-      } else {
-        document.getElementById("latestDate").textContent = "⏰ របាយការណ៍គិតត្រឹម: -";
-      }
-    }
-
-    function updateBadges(filters) {
-      const box = document.getElementById("badgeFilters");
-      if (!box) return;
-      box.innerHTML = "";
-      for (const id in filters) {
-        const val = filters[id];
-        if (val) {
-          const span = document.createElement("span");
-          span.className = "badge-filter";
-          span.innerHTML = `${id}: ${val} <span onclick="removeFilter('${id}')">&times;</span>`;
-          box.appendChild(span);
-        }
-      }
-    }
-
-    function removeFilter(id) {
-      document.getElementById("spinner").style.display = "block";
-      setTimeout(() => {
-        document.getElementById(id).value = "";
-        applyFilters(allData);
-      }, 100);
-    }
-
-    function resetFilters() {
-      document.getElementById("spinner").style.display = "block";
-      setTimeout(() => {
-        for (const id in fields) document.getElementById(id).value = "";
-        document.getElementById("searchInput").value = "";
-        renderTable(allData);
-        updateSummaryAndReportDate(allData);
-        updateBadges({});
-        document.getElementById("spinner").style.display = "none";
-      }, 300);
-    }
-
-    function exportExcel() {
-      const table = document.getElementById("arreasTable");
-      const wb = XLSX.utils.table_to_book(table, { sheet: "Arreas T24" });
-      XLSX.writeFile(wb, "ArreasT24.xlsx");
-    }
-
-    function onSearchInput(e) {
-      const term = e.target.value.toLowerCase();
-      const filtered = allData.filter(row =>
-        (row.Customer || "").toLowerCase().includes(term) ||
-        (row.CIF || "").toLowerCase().includes(term)
-      );
-      renderTable(filtered);
-      updateSummaryAndReportDate(filtered);
-    }
-
-    const AUTO_LOGOUT_MINUTES = 5;
-    let logoutTimer;
-
-    function resetLogoutTimer() {
-      clearTimeout(logoutTimer);
-      logoutTimer = setTimeout(() => {
-        sessionStorage.clear();
-        alert("Session expired. Please login again.");
-        window.location.href = "../login.html";
-      }, AUTO_LOGOUT_MINUTES * 60000);
-    }
-
-    function setupAutoLogoutEvents() {
-      ['mousemove', 'mousedown', 'keydown', 'touchstart', 'touchmove', 'scroll'].forEach(evt =>
-        document.addEventListener(evt, resetLogoutTimer, true)
-      );
-      resetLogoutTimer();
-    }
-  </script>
+const AUTO_LOGOUT_MINUTES = 5;
+let logoutTimer;
+function resetLogoutTimer() {
+  clearTimeout(logoutTimer);
+  logoutTimer = setTimeout(() => {
+    sessionStorage.clear();
+    alert("Session expired. Please login again.");
+    window.location.href = "../login.html";
+  }, AUTO_LOGOUT_MINUTES * 60000);
+}
+function setupAutoLogoutEvents() {
+  ['mousemove', 'mousedown', 'keydown', 'touchstart', 'touchmove', 'scroll'].forEach(evt =>
+    document.addEventListener(evt, resetLogoutTimer, true)
+  );
+  resetLogoutTimer();
+}
+</script>
 </body>
 </html>
