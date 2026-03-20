@@ -298,10 +298,12 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="../config.js"></script>
 
 <script>
 // ✅ Session Protection
 const token = sessionStorage.getItem('token');
+const API_BASE = CONFIG.BASE_URL;
 if (!token) {
   alert("Session expired or unauthorized access.");
   window.location.href = "../login.html";
@@ -374,7 +376,7 @@ async function loadAllData() {
     const token = user?.token;
     if (!token) throw new Error("Missing token");
 
-    const res = await fetch("https://secure-backend-tzj9.onrender.com/api/turnover", {
+    const res = await fetch(`${API_BASE}/api/turnover`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
