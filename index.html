@@ -585,7 +585,7 @@
     </div>
   </div>
 </div>
-    
+<script src="config.js"></script>
 <script>
 // ✅ Check Token
 const token = sessionStorage.getItem('token');
@@ -624,7 +624,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById("welcome").textContent = "សួស្តី, " + name;
 
-  profilePhoto.src = "https://secure-backend-tzj9.onrender.com/" + imgPath;
+  profilePhoto.src = `${CONFIG.BASE_URL}/` + imgPath;
   profilePhoto.onerror = function() {
     this.onerror = null;
     this.src = "icons/default-profile.png"; // fallback
@@ -636,7 +636,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // ✅ Load Robot Message API
 async function loadRobotMessage() {
   try {
-    const res = await fetch("https://secure-backend-tzj9.onrender.com/api/robot-message", {
+  const res = await fetch(`${CONFIG.BASE_URL}/api/robot-message`, {
       headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` }
     });
     const data = await res.json();
