@@ -347,7 +347,7 @@ function scriptDebug(msg) {
 </script>
 
 <!-- CONFIG -->
-<script src="../config.js"></script>
+<script src="../config.js" onload="scriptDebug('config.js loaded')" onerror="scriptDebug('config.js FAILED')"></script>
 
 <!-- NOTIFICATION -->
 <script src="../notifications/checkNotification.js"></script>
