@@ -126,7 +126,7 @@
     <button onclick="login()">ចូលប្រើកម្មវិធី</button>
     <p class="error" id="error-msg"></p>
   </div>
-
+   <script src="config.js"></script>
   <script>
     window.onload = () => {
       const saved = localStorage.getItem("rememberedUser");
@@ -149,7 +149,7 @@
       loading.style.display = "flex";
 
       try {
-        const res = await fetch("https://secure-backend-tzj9.onrender.com/api/login", {
+        const res = await fetch(`${CONFIG.BASE_URL}/api/login`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ username, password })
