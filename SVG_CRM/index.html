@@ -4,11 +4,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>ស្វែងរកអតិថិជន</title>
   <meta name="theme-color" content="#0d2d5c" />
-<script>
-  if (!sessionStorage.getItem("loggedInUser")) {
-    window.location.href = "../login.html";
-  }
-</script>
+  <script>
+    if (!sessionStorage.getItem("loggedInUser")) {
+      window.location.href = "login.html";
+    }
+  </script>
   <style>
 
  /* Load custom Khmer font "Krasar" */
@@ -467,7 +467,6 @@ th, td {
 <span id="notif-badge" class="badge" style="display: none;"></span>
   
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script src="../config.js"></script>
 <script>
   document.getElementById("exportExcelBtn").addEventListener("click", () => {
     const table = document.querySelector(".nbcos-table");
@@ -493,8 +492,8 @@ th, td {
     return Number(value).toLocaleString('en-US');
   }
 
-const token = sessionStorage.getItem('token');
-const API_BASE = CONFIG.BASE_URL;  if (!token) {
+  const token = sessionStorage.getItem('token');
+  if (!token) {
     alert("Session expired or unauthorized access.");
     window.location.href = "../login.html";
   }
@@ -545,7 +544,7 @@ const API_BASE = CONFIG.BASE_URL;  if (!token) {
     }
 
     document.getElementById("loadingOverlay").style.display = "flex";
-    fetch(`${API_BASE}/api/customers/search?q=${encodeURIComponent(query)}`, {
+    fetch(`https://secure-backend-tzj9.onrender.com/api/customers/search?q=${encodeURIComponent(query)}`, {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then(res => res.json())
@@ -553,7 +552,7 @@ const API_BASE = CONFIG.BASE_URL;  if (!token) {
         if (results.length > 0) {
           displayResults(results);
         } else {
-          fetch(`${API_BASE}/api/nbcos/search?q=${encodeURIComponent(query)}`, {
+          fetch(`https://secure-backend-tzj9.onrender.com/api/nbcos/search?q=${encodeURIComponent(query)}`, {
             headers: { Authorization: `Bearer ${token}` }
           })
             .then(res => res.json())
@@ -624,7 +623,7 @@ const API_BASE = CONFIG.BASE_URL;  if (!token) {
     detailPanel.style.display = "block";
     content.innerHTML = "<div class='spinner'></div> <span>កំពុងទាញយកទិន្នន័យ...</span>";
 
-      fetch(`${API_BASE}/api/nbcos/by-cif?cif=${encodeURIComponent(cif)}`, {
+    fetch(`https://secure-backend-tzj9.onrender.com/api/nbcos/by-cif?cif=${encodeURIComponent(cif)}`, {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then(res => res.json())
@@ -676,7 +675,7 @@ const API_BASE = CONFIG.BASE_URL;  if (!token) {
         content.innerHTML = tableHTML;
 
         // ✅ Fetch latest DISBURSE from entire database
-        fetch(`${API_BASE}/api/nbcos/latest-disburse`, {
+        fetch("https://secure-backend-tzj9.onrender.com/api/nbcos/latest-disburse", {
           headers: { Authorization: `Bearer ${token}` }
         })
           .then(res => res.json())
