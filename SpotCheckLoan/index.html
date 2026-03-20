@@ -777,7 +777,6 @@ th, td {
 <span id="notif-badge" class="badge" style="display: none;"></span>
 
 <!-- ✅ Load shared notification script -->
-<script src="../notifications/checkNotification.js"></script>
 <script>
   window.addEventListener("DOMContentLoaded", () => {
     if (typeof checkNotification === "function") {
@@ -788,6 +787,7 @@ th, td {
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="../config.js"></script>
+<script src="../notifications/checkNotification.js"></script>
 <script>
   document.getElementById("createSpotCheckBtn").addEventListener("click", () => {
     const section = document.getElementById("creditSection1");
@@ -1149,9 +1149,9 @@ function displayResults(results, source) {
   detailPanel.style.display = "block";
   content.innerHTML = "<div class='spinner'></div> <span>កំពុងទាញយកទិន្នន័យ...</span>";
 
-  ttps://secure-backend-tzj9.onrender.com/api/nbcos/by-cif?ci
-    headers: { Authorization: `Bearer ${sessionStorage.getItem("token")}` }
-  })
+fetch(`${API_BASE}/api/nbcos/by-cif?cif=${encodeURIComponent(cif)}`, {
+  headers: { Authorization: `Bearer ${sessionStorage.getItem("token")}` }
+})
     .then(res => res.json())
     .then(data => {
       if (!data || data.length === 0) {
