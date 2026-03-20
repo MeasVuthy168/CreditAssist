@@ -4,9 +4,9 @@
   <title>ការត្រួតពិនិត្យឥណទាន</title>
   <meta name="theme-color" content="#0d2d5c" />
   <script>
-    if (!sessionStorage.getItem("loggedInUser")) {
-      window.location.href = "login.html";
-    }
+  if (!sessionStorage.getItem("loggedInUser")) {
+    window.location.href = "../login.html";
+  }
   </script>
   <style>
 
@@ -787,6 +787,7 @@ th, td {
 </script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="../config.js"></script>
 <script>
   document.getElementById("createSpotCheckBtn").addEventListener("click", () => {
     const section = document.getElementById("creditSection1");
@@ -917,7 +918,7 @@ const tableHTML = `
 
   document.getElementById("loadingOverlay").style.display = "flex";
 
-  fetch(`https://secure-backend-tzj9.onrender.com/api/spotcheck?cif=${encodeURIComponent(cif)}`, {
+  fetch(`${API_BASE}/api/spotcheck?cif=${encodeURIComponent(cif)}`, {
     headers: { Authorization: `Bearer ${sessionStorage.getItem("token")}` }
   })
     .then(res => res.json())
@@ -938,7 +939,8 @@ const tableHTML = `
 }
 
   
-  const token = sessionStorage.getItem('token');
+const token = sessionStorage.getItem('token');
+const API_BASE = CONFIG.BASE_URL;
   if (!token) {
     alert("Session expired or unauthorized access.");
     window.location.href = "../login.html";
@@ -992,7 +994,7 @@ const tableHTML = `
 
   document.getElementById("loadingOverlay").style.display = "flex";
 
-  fetch(`https://secure-backend-tzj9.onrender.com/api/spotcheck/search?q=${encodeURIComponent(query)}`, {
+  fetch(`${API_BASE}/api/spotcheck/search?q=${encodeURIComponent(query)}`, {
     headers: { Authorization: `Bearer ${token}` }
   })
     .then(res => res.json())
@@ -1000,7 +1002,7 @@ const tableHTML = `
       if (results.length > 0) {
         displayResults(results, "SpotCheck");
       } else {
-        fetch(`https://secure-backend-tzj9.onrender.com/api/customers/search?q=${encodeURIComponent(query)}`, {
+       fetch(`${API_BASE}/api/customers/search?q=${encodeURIComponent(query)}`, {
           headers: { Authorization: `Bearer ${token}` }
         })
           .then(res => res.json())
@@ -1008,7 +1010,7 @@ const tableHTML = `
             if (customerResults.length > 0) {
               displayResults(customerResults, "Customer");
             } else {
-              fetch(`https://secure-backend-tzj9.onrender.com/api/nbcos/search?q=${encodeURIComponent(query)}`, {
+             fetch(`${API_BASE}/api/nbcos/search?q=${encodeURIComponent(query)}`, {
                 headers: { Authorization: `Bearer ${token}` }
               })
                 .then(res => res.json())
@@ -1106,7 +1108,7 @@ function displayResults(results, source) {
     if (!recordId) return;
 
     document.getElementById("loadingOverlay").style.display = "flex";
-    fetch(`https://secure-backend-tzj9.onrender.com/api/spotcheck/${recordId}`, {
+    fetch(`${API_BASE}/api/spotcheck/${recordId}`, {
       headers: { Authorization: `Bearer ${sessionStorage.getItem("token")}` }
     })
       .then(res => res.json())
@@ -1147,7 +1149,7 @@ function displayResults(results, source) {
   detailPanel.style.display = "block";
   content.innerHTML = "<div class='spinner'></div> <span>កំពុងទាញយកទិន្នន័យ...</span>";
 
-  fetch(`https://secure-backend-tzj9.onrender.com/api/nbcos/by-cif?cif=${encodeURIComponent(cif)}`, {
+  ttps://secure-backend-tzj9.onrender.com/api/nbcos/by-cif?ci
     headers: { Authorization: `Bearer ${sessionStorage.getItem("token")}` }
   })
     .then(res => res.json())
@@ -1201,7 +1203,7 @@ function displayResults(results, source) {
         content.innerHTML = tableHTML;
 
         // ✅ Fetch latest DISBURSE from entire database
-        fetch("https://secure-backend-tzj9.onrender.com/api/nbcos/latest-disburse", {
+        fetch(`${API_BASE}/api/nbcos/latest-disburse`, {
           headers: { Authorization: `Bearer ${token}` }
         })
           .then(res => res.json())
@@ -1307,7 +1309,7 @@ document.addEventListener("click", (e) => {
   if (!recordId) return;
 
   document.getElementById("loadingOverlay").style.display = "flex";
-  fetch(`https://secure-backend-tzj9.onrender.com/api/spotcheck/${recordId}`, {
+  fetch(`${API_BASE}/api/spotcheck/${recordId}`, {
     headers: { Authorization: `Bearer ${sessionStorage.getItem("token")}` }
   })
     .then(res => res.json())
@@ -1438,9 +1440,9 @@ const payload = {
 
     const isUpdate = saveBtn.dataset.updateMode === "true";
     const recordId = saveBtn.dataset.recordId;
-    const url = isUpdate
-      ? `https://secure-backend-tzj9.onrender.com/api/spotcheck/${recordId}`
-      : `https://secure-backend-tzj9.onrender.com/api/spotcheck`;
+const url = isUpdate
+  ? `${API_BASE}/api/spotcheck/${recordId}`
+  : `${API_BASE}/api/spotcheck`;
 
     fetch(url, {
       method: isUpdate ? "PUT" : "POST",
@@ -1494,7 +1496,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("loadingOverlay").style.display = "flex";
 
     // Fetch SpotCheck data by ID
-    fetch(`https://secure-backend-tzj9.onrender.com/api/spotcheck/${recordId}`, {
+    fetch(`${API_BASE}/api/spotcheck/${recordId}`, {
       headers: { Authorization: `Bearer ${sessionStorage.getItem("token")}` }
     })
       .then(res => res.json())
