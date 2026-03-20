@@ -392,8 +392,8 @@
 
 
   
- <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  <!-- ✅ Load shared notification script -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="../config.js"></script>
 <script src="../notifications/checkNotification.js"></script>
 <script>
   window.addEventListener("DOMContentLoaded", () => {
@@ -405,6 +405,7 @@
 
 <script>
     let currentData = [];
+const API_BASE = CONFIG.BASE_URL;
 
     const debug = (msg) => {
       const box = document.getElementById("debugBox");
@@ -442,10 +443,10 @@
       const from = document.getElementById("fromDate").value;
       const to = document.getElementById("toDate").value;
 
-      let url = "https://secure-backend-tzj9.onrender.com/api/spotcheck?";
-      if (from) url += `fromDate=${from}&`;
-      if (to) url += `toDate=${to}&`;
-      url += `username=${loggedUser.username}`;
+let url = `${API_BASE}/api/spotcheck?`;
+if (from) url += `fromDate=${encodeURIComponent(from)}&`;
+if (to) url += `toDate=${encodeURIComponent(to)}&`;
+url += `username=${encodeURIComponent(loggedUser.username)}`;
 
       debug(`📦 Fetching: ${url}`);
       fetch(url, { headers: { Authorization: `Bearer ${token}` } })
@@ -482,6 +483,7 @@ function renderTable(data) {
     // Loop through data rows
     data.forEach(row => {
       const tr = document.createElement("tr");
+tr.dataset.id = row._id || "";
 
       // Highlight the row if its _id matches the stored highlight ID
       if (highlightId && row._id === highlightId) {
@@ -575,7 +577,7 @@ if (!confirm(`តើអ្នកប្រាកដជាចង់លុបទិ
 
   document.getElementById("deleteBtn").disabled = true;
 
-  fetch(`https://secure-backend-tzj9.onrender.com/api/spotcheck/${selectedRowId}`, {
+ fetch(`${API_BASE}/api/spotcheck/${selectedRowId}`, {
     method: 'DELETE',
     headers: {
       Authorization: `Bearer ${sessionStorage.getItem("token")}`
@@ -617,14 +619,8 @@ document.getElementById("tableBody").addEventListener("click", (e) => {
   row.style.backgroundColor = "#ffd700";
   row.style.fontWeight = "bold";
 
-  // Get CIF from clicked row
-  const clickedCIF = row.cells[0].textContent.trim();
-
-  // Find matching record
-  const matchedRecord = currentData.find(item => item.LD_CUSTOMER_ID === clickedCIF);
-
-  // Store selectedRowId as _id if found
-  selectedRowId = matchedRecord ? matchedRecord._id : null;
+selectedRowId = row.dataset.id || null;
+const matchedRecord = currentData.find(item => item._id === selectedRowId);
 
   // Enable or disable buttons
   const isFound = !!matchedRecord;
