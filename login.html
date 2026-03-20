@@ -6,100 +6,250 @@
   <title>ចូលប្រើកម្មវិធី</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="theme-color" content="#0d2d5c" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
 
   <style>
+    @font-face {
+      font-family: 'Krasar';
+      src: url('Krasar-Regular.ttf') format('truetype');
+    }
+    * { box-sizing: border-box; }
     body {
       margin: 0;
-      font-family: Arial;
-      background: #0d2d5c;
+      font-family: 'Krasar', Arial, sans-serif;
+      background-color: #0d2d5c;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
     }
     .login-box {
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      width: 300px;
+      background-color: white;
+      border-radius: 16px;
+      padding: 24px;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
       text-align: center;
     }
-    input {
+    .login-logo {
+      width: 60px;
+      height: 60px;
+      margin-bottom: 10px;
+    }
+    .login-title {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 5px;
+      color: #0d2d5c;
+    }
+    .login-version {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 20px;
+    }
+    input[type="text"], input[type="password"] {
       width: 100%;
-      margin: 8px 0;
       padding: 10px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 6px;
+      background: #f0f0f0;
+      font-family: 'Krasar', Arial, sans-serif;
+      font-size: 15px;
+    }
+    input:focus { outline: none; background: #e4e4e4; }
+    .remember {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 15px;
+      margin: 10px 0 20px;
     }
     button {
       width: 100%;
-      padding: 10px;
-      background: #0d2d5c;
+      padding: 12px;
+      background-color: #0d2d5c;
       color: white;
       border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-family: 'Krasar', Arial, sans-serif;
+      cursor: pointer;
     }
-    .error { color: red; }
+    button:hover { background-color: #09306d; }
+    .error {
+      color: #d22;
+      font-size: 14px;
+      min-height: 20px;
+      margin-top: 10px;
+    }
+    #login-loading {
+      position: fixed;
+      inset: 0;
+      background: rgba(13, 45, 92, 0.7);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .spinner {
+      width: 32px;
+      height: 32px;
+      border: 4px solid #ffffff33;
+      border-top: 4px solid #ffd700;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
   </style>
 </head>
 
 <body>
+  <div id="login-loading"><div class="spinner"></div></div>
 
-<div class="login-box">
-  <h3>Login</h3>
-  <input id="username" placeholder="Username">
-  <input id="password" type="password" placeholder="Password">
-  <button onclick="login()">Login</button>
-  <div class="error" id="error-msg"></div>
-</div>
+  <div class="login-box">
+    <img src="LogoAC.png" class="login-logo" alt="App Logo" />
+    <div class="login-title">Credit Assist</div>
+    <div class="login-version">Version 1.0.0</div>
+    <input type="text" id="username" placeholder="Username" />
+    <input type="password" id="password" placeholder="Password" />
+    <div class="remember">
+      <input type="checkbox" id="rememberMe" />
+      <label for="rememberMe">Remember Me</label>
+    </div>
+    <button onclick="login()">ចូលប្រើកម្មវិធី</button>
+    <p class="error" id="error-msg"></p>
+  </div>
 
-<script src="config.js"></script>
+  <script>
+    window.onload = () => {
+      const saved = localStorage.getItem("rememberedUser");
+      if (saved) {
+        const creds = JSON.parse(saved);
+        document.getElementById("username").value = creds.username;
+        document.getElementById("password").value = creds.password;
+        document.getElementById("rememberMe").checked = true;
+      }
+    };
 
-<script>
-console.log("LOGIN CONFIG =", window.CONFIG);
+    async function login() {
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const rememberMe = document.getElementById("rememberMe").checked;
+      const errorMsg = document.getElementById("error-msg");
+      const loading = document.getElementById("login-loading");
 
-async function login() {
-  const username = document.getElementById("username").value.trim();
-  const password = document.getElementById("password").value.trim();
-  const errorMsg = document.getElementById("error-msg");
+      errorMsg.textContent = "";
+      loading.style.display = "flex";
 
-  const API_BASE = window.CONFIG?.BASE_URL || "";
+      try {
+        const res = await fetch("https://secure-backend-tzj9.onrender.com/api/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, password })
+        });
+        const data = await res.json();
 
-  console.log("LOGIN API_BASE =", API_BASE);
-  console.log("LOGIN username =", username);
+        if (res.ok && data.success) {
+          sessionStorage.setItem("token", data.token); // ✅ Save token here
+          sessionStorage.setItem("loggedInUser", JSON.stringify({
+  token: data.token,
+  username: data.username,
+  fullname: data.fullname,
+  position: data.position,
+  phone: data.phone,
+  image: data.image,
+  branch: data.branch  // ✅ Add this line
+}));
 
-  try {
-    const res = await fetch(`${API_BASE}/api/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, password })
-    });
+          
+          sessionStorage.setItem("userPosition", data.position);
+          sessionStorage.setItem("fullname", data.fullname);
+          sessionStorage.setItem("image", data.image);
+          sessionStorage.setItem("phone", data.phone);
+          sessionStorage.setItem("userFullname", data.fullname);
+          sessionStorage.setItem("branch", data.branch); // ✅ Add this
+          
+          if (rememberMe) {
+            localStorage.setItem("rememberedUser", JSON.stringify({ username, password }));
+          } else {
+            localStorage.removeItem("rememberedUser");
+          }
 
-    const data = await res.json();
+          setTimeout(() => {
+            const position = data.position.trim().toLowerCase();
+            const base = location.href.substring(0, location.href.lastIndexOf("/") + 1);
 
-    console.log("LOGIN status =", res.status);
-    console.log("LOGIN response =", data);
-
-    if (res.ok && data.success) {
-      sessionStorage.setItem("token", data.token);
-
-      console.log("LOGIN token saved =", data.token);
-
-      sessionStorage.setItem("loggedInUser", JSON.stringify({
-        token: data.token,
-        username: data.username,
-        fullname: data.fullname
-      }));
-
-      console.log("LOGIN session =", sessionStorage.getItem("loggedInUser"));
-
-      window.location.href = "ArreasT24/index.html";
-    } else {
-      errorMsg.textContent = data.message || "Login failed";
+            if (position === "admin") {
+              window.location.href = base + "Admin/adminupload.html";
+            } else {
+              window.location.href = base + "index.html";
+            }
+          }, 300);
+        } else {
+          errorMsg.textContent = data.message || "Invalid username or password.";
+          loading.style.display = "none";
+        }
+      } catch (e) {
+        errorMsg.textContent = "Cannot connect to server.";
+        loading.style.display = "none";
+        console.error(e);
+      }
     }
-  } catch (e) {
-    console.error("LOGIN ERROR =", e);
-    errorMsg.textContent = "Server error";
-  }
-}
-</script>
 
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js')
+        .then(reg => console.log('✅ Service Worker registered:', reg.scope))
+        .catch(err => console.error('❌ Service Worker failed:', err));
+    }
+
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      if (localStorage.getItem('a2hsPromptShown')) return;
+      e.preventDefault();
+      deferredPrompt = e;
+
+      const btn = document.createElement('button');
+      btn.textContent = 'បន្ថែមទៅកាន់អេក្រង់ដើម';
+      Object.assign(btn.style, {
+        position: 'fixed',
+        bottom: '20px',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        background: '#ffd700',
+        color: '#0d2d5c',
+        border: 'none',
+        padding: '10px 20px',
+        borderRadius: '8px',
+        fontSize: '16px',
+        fontFamily: 'Krasar, Arial, sans-serif',
+        zIndex: '9999',
+        cursor: 'pointer',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
+      });
+
+      document.body.appendChild(btn);
+
+      btn.addEventListener('click', () => {
+        btn.remove();
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then(choice => {
+          if (choice.outcome === 'accepted') {
+            console.log('✅ A2HS accepted');
+          } else {
+            console.log('❌ A2HS dismissed');
+          }
+          localStorage.setItem('a2hsPromptShown', 'true');
+          deferredPrompt = null;
+        });
+      });
+    });
+  </script>
 </body>
 </html>
