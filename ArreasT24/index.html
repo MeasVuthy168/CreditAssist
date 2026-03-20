@@ -350,18 +350,31 @@ function scriptDebug(msg) {
 <script src="../config.js" onload="scriptDebug('config.js loaded')" onerror="scriptDebug('config.js FAILED')"></script>
 
 <!-- NOTIFICATION -->
-<script src="../notifications/checkNotification.js"></script>
+<script src="../notifications/checkNotification.js"></<script>
 
-<!-- MAIN SCRIPT -->
 <script>
+document.getElementById("debugLog").textContent += "\n[test] main script start";
+</script>
+    
+<script>
+
+window.onerror = function(msg, src, line, col, err) {
+  const box = document.getElementById("debugLog");
+  if (box) {
+    box.textContent += `\n[window.onerror] ${msg} @ line ${line}`;
+  }
+  return false;
+};
+
+document.getElementById("debugLog").textContent += "\n[main] script entered";
 
 let allData = [];
 let currentSortKey = null;
 let currentSortDir = 'asc';
 
-// ✅ SAFE CONFIG LOAD
-const API_BASE = window.CONFIG?.BASE_URL || "";
+const API_BASE = (window.CONFIG && window.CONFIG.BASE_URL) ? window.CONFIG.BASE_URL : "";
 
+document.getElementById("debugLog").textContent += "\n[main] API_BASE = " + API_BASE;
 // DEBUG
 function logDebug(msg) {
   const box = document.getElementById("debugLog");
