@@ -302,72 +302,63 @@
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  <script src="../config.js"></script>
+
   <script src="../notifications/checkNotification.js"></script>
 
-  <script>
+<script src="../config.js"></script>
+
+console.log("ARREAS CONFIG =", window.CONFIG);
+
 let allData = [];
-let currentSortKey = null;
-let currentSortDir = 'asc';
 
 const API_BASE = window.CONFIG?.BASE_URL || "";
 
-const fields = {
-  branch: "Branch",
-  teamLeader: "Team_Leader",
-  coResponse: "CO_Response",
-  coId: "CO_ID",
-  osClassify: "OS_Classify",
-  occu: "Occu",
-  class: "Class",
-  pd: "PD"
-};
-
-const numberFields = ["Prn_OS", "Int_OS", "Prn_Due", "Int_Due", "Penalty", "Arreas", "Balnce", "OS_USD"];
+console.log("ARREAS API_BASE =", API_BASE);
+console.log("ARREAS session token =", sessionStorage.getItem("token"));
+console.log("ARREAS loggedInUser =", sessionStorage.getItem("loggedInUser"));
 
 window.addEventListener("DOMContentLoaded", () => {
-  try {
-    checkNotification();
-  } catch (e) {
-    console.error("checkNotification failed:", e);
-  }
+  console.log("ARREAS page loaded");
 
   fetchData();
-  setupAutoLogoutEvents();
 });
 
 async function fetchData() {
-  document.getElementById("spinner").style.display = "block";
+  console.log("ARREAS fetchData start");
 
   const user = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
   const token = user?.token;
 
-  try {
-    if (!API_BASE) throw new Error("Config not loaded.");
-    if (!token) throw new Error("Missing token. Please login again.");
+  console.log("ARREAS user =", user);
+  console.log("ARREAS token =", token);
 
+  try {
     const res = await fetch(`${API_BASE}/api/arreas-t24`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
     });
 
+    console.log("ARREAS response status =", res.status);
+
     if (!res.ok) {
-      const errorText = await res.text();
-      throw new Error(`Server responded with ${res.status}: ${errorText}`);
+      const text = await res.text();
+      console.error("ARREAS ERROR =", text);
+      throw new Error(text);
     }
 
-    allData = await res.json();
+    const data = await res.json();
 
-    document.getElementById("spinner").style.display = "none";
-    renderTable(allData);
-    populateFilters(allData);
-    updateSummaryAndReportDate(allData);
-    updateBadges({});
+    console.log("ARREAS data count =", data.length);
+    console.log("ARREAS first row =", data[0]);
+
+    allData = data;
+
+    document.body.innerHTML += `<pre style="color:white">${JSON.stringify(data.slice(0,3), null, 2)}</pre>`;
+
   } catch (err) {
-    document.getElementById("spinner").style.display = "none";
-    alert("Failed to load data: " + err.message);
-    console.error("❌ fetchData error:", err.message);
+    console.error("ARREAS fetch error =", err);
+    alert("Error: " + err.message);
   }
 }
 
