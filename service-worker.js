@@ -2,7 +2,8 @@
    Place this file at: /service-worker.js (REPO ROOT)
    It must be served from the same origin & scope as your pages.
 */
-const SW_VERSION = 'v7';
+const SW_VERSION = 'v8';
+const APP_BASE = '/CreditAssist';
 
 /* ---------------- Lifecycle: take control quickly ---------------- */
 self.addEventListener('install', (event) => {
@@ -23,14 +24,14 @@ function toJSONSafe(text) {
 }
 
 function buildOptions(data) {
-  const defaultIcon  = '/icons/Notification.png';
-  const defaultBadge = '/icons/Notification.png';
+  const defaultIcon  = `${APP_BASE}/icons/Notification.png`;
+  const defaultBadge = `${APP_BASE}/icons/Notification.png`;
 
   return {
     body: data.body || 'ទិន្នន័យថ្មីបានបញ្ចូល',
     icon: data.icon || defaultIcon,
     badge: data.badge || defaultBadge,
-    data: { url: data.url || '/index.html' },
+    data: { url: data.url || `${APP_BASE}/index.html` },
     renotify: false,
     requireInteraction: false,
   };
@@ -54,7 +55,7 @@ self.addEventListener('push', (event) => {
 /* ---------------- Click handling ---------------- */
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
-  const url = event.notification?.data?.url || '/index.html';
+  const url = event.notification?.data?.url || `${APP_BASE}/index.html`;
 
   event.waitUntil((async () => {
     const allClients = await clients.matchAll({ type: 'window', includeUncontrolled: true });
@@ -67,6 +68,3 @@ self.addEventListener('notificationclick', (event) => {
     return clients.openWindow(url);
   })());
 });
-
-/* ---------------- Fallback fetch (optional) ---------------- */
-// You can add caching strategies here if you want offline support.
