@@ -151,10 +151,11 @@
   </div>
 
   <audio id="logout-audio" src="logout-sound.mp3" preload="auto"></audio>
-
-  <script>
-    // ====== CONFIG ======
-    const API_BASE  = "https://secure-backend-tzj9.onrender.com";
+  
+<script src="../config.js"></script>
+<script>
+  // ====== CONFIG ======
+    const API_BASE  = CONFIG.BASE_URL;
     const basePath  = "/CreditAssist"; // GitHub Pages base path
 
     // ====== Auth guard ======
