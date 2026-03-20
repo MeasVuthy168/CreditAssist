@@ -4,31 +4,27 @@
   <title>ការត្រួតពិនិត្យឥណទាន</title>
   <meta name="theme-color" content="#0d2d5c" />
   <script>
-  if (!sessionStorage.getItem("loggedInUser")) {
-    window.location.href = "../login.html";
-  }
+    if (!sessionStorage.getItem("loggedInUser")) {
+      window.location.href = "../login.html";
+    }
   </script>
   <style>
-
- /* Load custom Khmer font "Krasar" */
 @font-face {
   font-family: 'Krasar';
   src: url('../Krasar-Regular.ttf') format('truetype');
 }
 
-/* Base body styling */
 body {
   font-family: 'Krasar', Arial, sans-serif;
-  background-color: #1c2331; /* dark navy background */
+  background-color: #1c2331;
   color: white;
   margin: 0;
-  padding-bottom: 70px; /* leave space for fixed bottom bar */
+  padding-bottom: 70px;
   overflow-x: hidden;
 }
 
-/* Fixed top header bar */
 .header-bar {
-  background-color: #0d2d5c; /* deep blue */
+  background-color: #0d2d5c;
   display: flex;
   align-items: center;
   padding: 12px 16px;
@@ -38,7 +34,6 @@ body {
   z-index: 1000;
 }
 
-/* Back arrow icon inside header */
 .back-icon {
   font-size: 22px;
   border: none;
@@ -48,12 +43,10 @@ body {
   cursor: pointer;
 }
 
-/* Title text inside header */
 .header-title {
   font-size: 16px;
 }
 
-/* Floating search bar below header */
 .search-fixed-bar {
   position: fixed;
   top: 56px;
@@ -67,14 +60,12 @@ body {
   align-items: center;
 }
 
-/* Wrapper for search input + button */
 .search-wrapper {
   position: relative;
   width: 100%;
   max-width: 320px;
 }
 
-/* Search input box */
 .search-wrapper input {
   width: 95%;
   padding: 10px 20px 10px 10px;
@@ -85,7 +76,6 @@ body {
   color: #333;
 }
 
-/* Search icon button */
 .search-icon {
   position: absolute;
   right: 20px;
@@ -98,14 +88,12 @@ body {
   color: #666;
 }
 
-/* Label showing number of results */
 #resultLabel {
   margin-top: 10px;
   color: #ccc;
   font-size: 12px;
 }
 
-/* Main data display container */
 .container {
   max-width: 700px;
   margin: 120px auto 0;
@@ -115,7 +103,7 @@ body {
   box-sizing: border-box;
   overflow-x: auto;
 }
-    /* Section title in the container */
+
 .section-title {
   margin-bottom: 10px;
   color: #002c5f;
@@ -123,54 +111,47 @@ body {
   font-weight: bold;
 }
 
-/* Label below search results indicating data source */
 .data-source-label {
   margin-top: 10px;
   color: #ccc;
   font-size: 12px;
 }
 
-/* Wrapper for tables */
 .table-container {
   overflow-x: auto;
   width: 100%;
   box-sizing: border-box;
 }
 
-/* Table base styling */
 table {
   width: 100%;
   border-collapse: collapse;
   font-size: 13px;
-  color: #000; /* Change font color to black */
+  color: #000;
   table-layout: auto;
-  background-color: #fff; /* Set background to white */
+  background-color: #fff;
 }
 
-/* Table header style */
 th {
-  background-color: #f0f0f0; /* Light gray for header */
-  color: #000; /* Black text for header */
+  background-color: #f0f0f0;
+  color: #000;
 }
 
-/* Alternate row coloring */
 tr:nth-child(even) {
-  background-color: #fafafa; /* very light gray */
+  background-color: #fafafa;
 }
 tr:nth-child(odd) {
-  background-color: #ffffff; /* pure white */
+  background-color: #ffffff;
 }
 
-/* Cell text and borders */
 th, td {
   border: 1px solid #ccc;
   padding: 10px;
   text-align: left;
   white-space: nowrap;
-  color: #000; /* Ensure all text is black */
+  color: #000;
 }
 
-/* Fixed bottom button bar */
 .bottom-bar {
   position: fixed;
   bottom: 0;
@@ -182,7 +163,6 @@ th, td {
   align-items: center;
 }
 
-/* Individual buttons inside bottom bar */
 .bottom-btn {
   color: white;
   font-size: 11px;
@@ -193,12 +173,10 @@ th, td {
   border: none;
 }
 
-/* Optional icon spacing inside button */
 .bottom-btn img {
   margin-bottom: 2px;
 }
 
-/* Loading spinner animation */
 .spinner {
   width: 32px;
   height: 32px;
@@ -208,12 +186,10 @@ th, td {
   animation: spin 0.6s linear infinite;
 }
 
-/* Spinner animation keyframes */
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
 
-/* Overlay background during loading */
 #loadingOverlay {
   position: fixed;
   width: 100%;
@@ -227,14 +203,12 @@ th, td {
   align-items: center;
 }
 
-/* Hide UI elements when printing */
 @media print {
   .header-bar, .bottom-bar, #loadingOverlay, .search-fixed-bar {
     display: none !important;
   }
 }
 
-/* Red badge for notification dot */
 .badge {
   position: absolute;
   top: -4px;
@@ -247,7 +221,6 @@ th, td {
   font-weight: bold;
 }
 
-/* NBCOS detail box */
 #nbcosDetail {
   display: none;
   background: #ffffff;
@@ -261,32 +234,27 @@ th, td {
   position: relative;
 }
 
-/* NBCOS section title */
 #nbcosDetail h3 {
   margin: 0 0 10px;
   font-size: 16px;
 }
 
-/* NBCOS content block */
 #nbcosContent {
   font-size: 14px;
   overflow-x: auto;
   max-width: 100%;
 }
 
-/* Highlight row in yellow for attention */
 .highlighted-row {
   background-color: #ffd700 !important;
   color: #002c5f;
 }
 
-/* Horizontal scrolling wrapper for NBCOS table */
 .nbcos-wrapper {
   overflow-x: auto;
   width: 100%;
 }
 
-/* NBCOS data table */
 .nbcos-table {
   border-collapse: collapse;
   width: 100%;
@@ -294,7 +262,6 @@ th, td {
   font-size: 13px;
 }
 
-/* NBCOS table headers */
 .nbcos-table th {
   background: #2f3c4f;
   color: #fff;
@@ -302,22 +269,18 @@ th, td {
   border: 1px solid #ccc;
 }
 
-/* NBCOS table cells */
 .nbcos-table td {
   padding: 10px;
   border: 1px solid #ccc;
   white-space: nowrap;
 }
 
-/* Summary note below NBCOS table */
 .nbcos-summary {
   margin-top: 12px;
   color: #ccc;
   font-size: 12px;
-  
 }
 
-/* Close button for NBCOS detail box */
 #closeDetailBtn {
   position: absolute;
   top: 10px;
@@ -330,10 +293,9 @@ th, td {
   cursor: pointer;
 }
 
-    
- .tap-hint {
+.tap-hint {
   position: absolute;
-  top: 210px; /* adjust based on your layout */
+  top: 210px;
   left: 70%;
   transform: translateX(-70%);
   display: none;
@@ -371,7 +333,8 @@ th, td {
   75% { transform: rotate(10deg); }
   100% { transform: rotate(0); }
 }
-  .createSPbtn {
+
+.createSPbtn {
   position: absolute;
   bottom: 12px;
   right: 16px;
@@ -384,8 +347,7 @@ th, td {
   cursor: pointer;
   z-index: 10;
 }
-    
-    /* === Credit Section Styles === */
+
 #creditSection1 {
   margin: 10px auto 10px;
   background: #fff;
@@ -395,6 +357,7 @@ th, td {
   display: none;
   box-shadow: 0 2px 8px rgba(0,0,0,0.2);
   font-family: 'Krasar', sans-serif;
+  position: relative;
 }
 
 #creditSection1 h3 {
@@ -430,7 +393,6 @@ th, td {
   font-weight: bold;
 }
 
-/* === Floating Button Inside Section 1 === */
 #continueToSection2Btn {
   position: absolute;
   bottom: 16px;
@@ -444,12 +406,7 @@ th, td {
   cursor: pointer;
   z-index: 10;
 }
-#creditSection1 {
-  position: relative;
-}
-    
-    
-/* === Section 2: Physical Inspection Styles === */
+
 #inspectionSection2 {
   margin: 10px auto 10px;
   background: #fff;
@@ -458,11 +415,9 @@ th, td {
   max-width: 700px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.2);
   font-family: 'Krasar', sans-serif;
-  display: none; /* hidden by default */
-  padding-bottom: 80px; /* ensure space for bottom buttons */
+  display: none;
+  padding-bottom: 80px;
 }
-
-    
 
 #inspectionSection2 h3 {
   color: #002c5f;
@@ -471,8 +426,6 @@ th, td {
   font-weight: bold;
 }
 
-
-    
 #inspectionSection2 label {
   color: #002c5f;
   font-size: 13px;
@@ -491,20 +444,19 @@ th, td {
   font-family: 'Krasar', sans-serif;
   box-sizing: border-box;
 }
+
 #inspectionSection2 span.required {
   color: red;
   margin-left: 4px;
   font-weight: bold;
 }
 
-/* === Save & Clear Buttons for Section 2 === */
 #inspectionSection2 .action-buttons {
   position: relative;
   text-align: right;
   margin-top: 20px;
 }
 
-   /* Match input with datalist to other selects */
 #conclusion {
   width: 100%;
   padding: 8px;
@@ -514,7 +466,7 @@ th, td {
   font-family: 'Krasar', sans-serif;
   font-size: 13px;
   box-sizing: border-box;
-} 
+}
 
 #clearBtn {
   margin-right: 12px;
@@ -539,7 +491,7 @@ th, td {
   cursor: pointer;
 }
 
-  .report-icon-btn {
+.report-icon-btn {
   margin-right: 14px;
   display: flex;
   align-items: center;
@@ -553,37 +505,34 @@ th, td {
 .report-icon-btn img {
   width: 36px;
   height: 36px;
-  filter: drop-shadow(0 0 2px #ffd700); /* subtle glow */
+  filter: drop-shadow(0 0 2px #ffd700);
   transition: transform 0.2s;
 }
 
 .report-icon-btn:hover img {
-  transform: scale(1.1); /* hover zoom */
+  transform: scale(1.1);
 }
-
-    
   </style>
 </head>
 
+<body>
 <div class="header-bar">
   <button class="back-icon" onclick="window.location.href='reportSpotcheck.html'">←</button>
   <div class="header-title" style="flex: 1;">បញ្ចូលថ្មី និងកែប្រែ</div>
   <button class="report-icon-btn" onclick="window.location.href='reportSpotcheck.html'" title="បញ្ជីរបាយការណ៍">
-  <img src="../icons/Report.png" alt="Report Icon" />
+    <img src="../icons/Report.png" alt="Report Icon" />
   </button>
 </div>
 
-  <div class="search-fixed-bar">
-    <div class="search-wrapper">
-      <input type="text" id="searchBox" placeholder="សូមបញ្ចូលលេខ CIF ឬឈ្មោះ" />
-      <button class="search-icon" id="searchButton">🔍</button>
-    </div>
-
+<div class="search-fixed-bar">
+  <div class="search-wrapper">
+    <input type="text" id="searchBox" placeholder="សូមបញ្ចូលលេខ CIF ឬឈ្មោះ" />
+    <button class="search-icon" id="searchButton">🔍</button>
   </div>
+</div>
 
-  <div class="container">
-  <div class="section-title">🏦 ព៌តមានគណនី</div> <!-- Title -->
-  
+<div class="container">
+  <div class="section-title">🏦 ព៌តមានគណនី</div>
   <div class="table-container">
     <table id="results">
       <thead style="display: none;">
@@ -602,51 +551,47 @@ th, td {
     </table>
   </div>
 
+  <div id="tapHint" class="tap-hint">
+    <div class="finger">👉</div>
+    <div class="hint-text">សូមចុចដើម្បីមើលព៌តមានឥណទាន</div>
+  </div>
 
- <div id="tapHint" class="tap-hint">
-  <div class="finger">👉</div>
-  <div class="hint-text">សូមចុចដើម្បីមើលព៌តមានឥណទាន</div>
-</div>
-    
-  <div id="dataSourceLabel" class="data-source-label"></div> <!-- Source label -->
+  <div id="dataSourceLabel" class="data-source-label"></div>
   <span id="resultLabel">👥 លទ្ធផលស្វែងរក៖ 0</span>
 </div>
 
-  <div class="bottom-bar">
-    <button class="bottom-btn" onclick="window.location.href='../index.html'">
-      <img src="../icons/Home.png" width="24" height="24" /><div>Home</div>
-    </button>
-    <button class="bottom-btn" onclick="window.location.href='../Setting/index.html'">
-      <img src="../icons/Setting.png" width="24" height="24" /><div>Setting</div>
-    </button>
-    <button class="bottom-btn" onclick="window.location.href='../notifications/index.html'">
-      <div style="position: relative;">
-        <img src="../icons/Notification.png" width="24" height="24" />
-        <span id="notif-badge" class="badge" style="display: none;"></span>
-      </div>
-      <div>Notification</div>
-    </button>
-  </div>
+<div class="bottom-bar">
+  <button class="bottom-btn" onclick="window.location.href='../index.html'">
+    <img src="../icons/Home.png" width="24" height="24" /><div>Home</div>
+  </button>
+  <button class="bottom-btn" onclick="window.location.href='../Setting/index.html'">
+    <img src="../icons/Setting.png" width="24" height="24" /><div>Setting</div>
+  </button>
+  <button class="bottom-btn" onclick="window.location.href='../notifications/index.html'">
+    <div style="position: relative;">
+      <img src="../icons/Notification.png" width="24" height="24" />
+      <span id="notif-badge" class="badge" style="display: none;"></span>
+    </div>
+    <div>Notification</div>
+  </button>
+</div>
 
-  <div id="loadingOverlay">
-    <div class="spinner"></div>
-  </div>
+<div id="loadingOverlay">
+  <div class="spinner"></div>
+</div>
 
-  <div id="nbcosDetail">
-    <button id="closeDetailBtn">×</button>
-    <h3>💰 ព័ត៌មានឥណទាន</h3>
-    <div id="nbcosContent">សូមជ្រើសរើសអតិថិជនពីតារាងខាងលើ</div>
-    <!-- createSPbtn Button -->
-    <button id="createSpotCheckBtn" class="createSPbtn">Create SpotCheck</button>
-  </div>
+<div id="nbcosDetail">
+  <button id="closeDetailBtn">×</button>
+  <h3>💰 ព័ត៌មានឥណទាន</h3>
+  <div id="nbcosContent">សូមជ្រើសរើសអតិថិជនពីតារាងខាងលើ</div>
+  <button id="createSpotCheckBtn" class="createSPbtn">Create SpotCheck</button>
+</div>
 
-  <!-- ✅ Credit Info Form Section -->
 <div id="creditSection1">
   <h3>I. Credit Information</h3>
 
-  <!-- ក - ព័ត៌មានគណនី -->
   <label>ក - ព័ត៌មានគណនី</label>
-  
+
   <label>វដ្តត្រួតពិនិត្យឥណទាន <span class="required">*</span></label>
   <select id="cycle">
     <option value="">-- ជ្រើសរើស --</option>
@@ -658,7 +603,6 @@ th, td {
   <label>ថ្ងៃត្រួតពិនិត្យ <span class="required">*</span></label>
   <input type="date" id="checkDate" />
 
-  <!-- ខ - ប្រវត្តិសងប្រាក់ -->
   <label>ខ - ប្រវត្តិសងប្រាក់</label>
   <label>ស្ថានភាព <span class="required">*</span></label>
   <select id="repaymentStatus">
@@ -671,7 +615,6 @@ th, td {
   <label>បញ្ជាក់:</label>
   <input type="text" id="repaymentNote" />
 
-  <!-- គ - ឯកសារឥណទាន -->
   <label>គ - ឯកសារឥណទាន</label>
   <label>ស្ថានភាពឯកសារ<span class="required">*</span></label>
   <select id="docStatus">
@@ -686,13 +629,9 @@ th, td {
   <button id="continueToSection2Btn">បន្តទៅផ្នែកទី២</button>
 </div>
 
-
-<!-- ✅ Section II - Physical Inspection -->
-
 <div id="inspectionSection2">
   <h3>II. Physical Inspection on site visit</h3>
 
-  <!-- ក - ព័ត៌មានផ្ទាល់ -->
   <label>ក - ព័ត៌មានអំពីមុខរបរ</label>
   <label>មុខរបរពេលខ្ចី<span class="required">*</span></label>
   <input type="text" id="businessOld" />
@@ -709,7 +648,6 @@ th, td {
   <label>បញ្ជាក់បន្ថែម</label>
   <input type="text" id="businessNote" />
 
-  <!-- ខ - ព័ត៌មានទ្រព្យដាក់ធានា -->
   <label>ខ - ព័ត៌មានទ្រព្យដាក់ធានា</label>
   <label>ប្រភេទទ្រព្យ <span class="required">*</span></label>
   <select id="collateralType">
@@ -735,7 +673,6 @@ th, td {
   <label>បញ្ជាក់បន្ថែម</label>
   <input type="text" id="collateralNote" />
 
-  <!-- គ - សញ្ញាណហានិភ័យ -->
   <label>គ - សញ្ញាណហានិភ័យ</label>
   <label>គោលបំណងប្រើប្រាស់ឥណទាន<span class="required">*</span></label>
   <select id="usagePurpose">
@@ -757,15 +694,14 @@ th, td {
   <label>បញ្ជាក់បន្ថែម</label>
   <input type="text" id="sourceNote" />
 
-  <!-- ឃ - សន្និដ្ឋាន -->
   <label>ឃ - សន្និដ្ឋាន</label>
   <label>សន្និដ្ឋាន<span class="required">*</span></label>
-<input list="conclusionOptions" id="conclusion" name="conclusion" placeholder="-- ជ្រើសរើស --" />
+  <input list="conclusionOptions" id="conclusion" name="conclusion" placeholder="-- ជ្រើសរើស --" />
 
-<datalist id="conclusionOptions">
-  <option value="ឥណទានមិនមានសញ្ញាណហានិភ័យណាមួយកើតឡើងទេ ៕">
-  <option value="យោងតាមការត្រួតពិនិត្យឯកសារឥណទាន និងចុះត្រួតពិនិត្យដល់លំនៅដ្ឋាន បង្ហាញថាឥណទានមិនមានសញ្ញាណហានិភ័យណាមួយកើតឡើងទេ ៕">
-</datalist>
+  <datalist id="conclusionOptions">
+    <option value="ឥណទានមិនមានសញ្ញាណហានិភ័យណាមួយកើតឡើងទេ ៕">
+    <option value="យោងតាមការត្រួតពិនិត្យឯកសារឥណទាន និងចុះត្រួតពិនិត្យដល់លំនៅដ្ឋាន បង្ហាញថាឥណទានមិនមានសញ្ញាណហានិភ័យណាមួយកើតឡើងទេ ៕">
+  </datalist>
 
   <div class="action-buttons">
     <button id="clearBtn">Clear</button>
@@ -773,40 +709,19 @@ th, td {
   </div>
 </div>
 
-  
-<span id="notif-badge" class="badge" style="display: none;"></span>
-
-<!-- ✅ Load shared notification script -->
-<script>
-  window.addEventListener("DOMContentLoaded", () => {
-    if (typeof checkNotification === "function") {
-      checkNotification();
-    }
-  });
-</script>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="../config.js"></script>
 <script src="../notifications/checkNotification.js"></script>
+
 <script>
-  document.getElementById("createSpotCheckBtn").addEventListener("click", () => {
-    const section = document.getElementById("creditSection1");
-    section.style.display = section.style.display === "none" ? "block" : "none";
-    window.scrollTo({ top: section.offsetTop - 60, behavior: "smooth" });
-  });
-</script>
-<script>
-  document.getElementById("continueToSection2Btn").addEventListener("click", () => {
-    const section2 = document.getElementById("inspectionSection2");
-    section2.style.display = "block";
-    window.scrollTo({
-      top: section2.offsetTop - 60,
-      behavior: "smooth"
-    });
-  });
-</script>
-  
-<script>
+  const token = sessionStorage.getItem('token');
+  const API_BASE = CONFIG.BASE_URL;
+
+  if (!token) {
+    alert("Session expired or unauthorized access.");
+    window.location.href = "../login.html";
+  }
+
   function formatDate(isoString) {
     if (!isoString) return '';
     const date = new Date(isoString);
@@ -818,136 +733,10 @@ th, td {
     if (!value || isNaN(value)) return '';
     return Number(value).toLocaleString('en-US');
   }
-  
-
-function loadSpotCheckToForm(data) {
-  const map = (id, value) => {
-    const el = document.getElementById(id);
-    if (el) el.value = value || '';
-  };
-
-  // Section 1
-  map("cycle", data.cycle);
-  map("checkDate", data.checkDate);
-  map("repaymentStatus", data.repaymentStatus);
-  map("repaymentNote", data.repaymentNote);
-  map("docStatus", data.docStatus);
-  map("docNote", data.docNote);
-
-  // Section 2
-  map("businessOld", data.businessOld);
-  map("businessNow", data.businessNow);
-  map("businessStatus", data.businessStatus);
-  map("businessNote", data.businessNote);
-  map("collateralType", data.collateralType);
-  map("collateralStatus", data.collateralStatus);
-  map("collateralValue", data.collateralValue);
-  map("collateralNote", data.collateralNote);
-  map("usagePurpose", data.usagePurpose);
-  map("usageNote", data.usageNote);
-  map("repaymentSource", data.repaymentSource);
-  map("sourceNote", data.sourceNote);
-  map("conclusion", data.conclusion);
-
-  // Show form sections
-  document.getElementById("creditSection1").style.display = "block";
-  document.getElementById("inspectionSection2").style.display = "block";
-  window.scrollTo({ top: document.getElementById("creditSection1").offsetTop - 60, behavior: "smooth" });
-
- // === Update Save Button Mode ===
-  const saveBtn = document.getElementById("saveBtn");
-  saveBtn.textContent = "Update";
-  saveBtn.dataset.updateMode = "true";
-  saveBtn.dataset.recordId = data._id;
-  document.getElementById("createSpotCheckBtn").style.display = "none";
-
-  // ✅ Save to sessionStorage to prevent error
-  sessionStorage.setItem("selectedNBCOS", JSON.stringify(data));
-  
-  // === NBCOS Detail ===
-  const nbcosDetail = document.getElementById("nbcosDetail");
-  const nbcosContent = document.getElementById("nbcosContent");
-  nbcosDetail.style.display = "block";
-  nbcosDetail.style.marginTop = "80px";  // <-- Add this here
-  
-  const headers = [
-  "LD_CUSTOMER_ID", "CONTRACT_LD", "NAME_KHMER", "LOAN_SIZE",
-  "OS_USD", "RATE", "CCY", "DISBURSE", "MATURITY",
-  "LOAN_TERM", "LOAN_CYCLE", "CO", "BranchOK", "ProductType"
-];
-
-const tableHTML = `
-  <div class="nbcos-wrapper">
-    <table class="nbcos-table">
-      <thead>
-        <tr>${headers.map(h => `<th>${h}</th>`).join("")}</tr>
-      </thead>
-      <tbody>
-        <tr>
-          ${headers.map(h => {
-            let value = data[h] || data[h.replace("BranchOK", "Branch-OK")] || '';
-
-            if (["DISBURSE", "MATURITY"].includes(h) && value) {
-              const date = new Date(value);
-              if (!isNaN(date)) {
-                value = date.toLocaleDateString('en-GB'); // Format to dd/mm/yyyy
-              }
-            }
-
-            return `<td contenteditable="true">${value}</td>`;
-          }).join("")}
-        </tr>
-      </tbody>
-    </table>
-  </div>
-`;
-
-  nbcosContent.innerHTML = tableHTML;
-  // ✅ Hide tap hint in update mode
-  document.getElementById("tapHint").style.display = "none";
-}
-
-  
-  function alertOptionForSpotCheck(cif) {
-  if (!confirm("លោកអ្នកបានបញ្ចូលទិន្នន័យត្រួតពិនិត្យឥណទានសម្រាប់អតិថិជននេះរួចហើយ។\n\nចង់បន្តធ្វើការកែប្រែទេ?")) {
-    return;
-  }
-
-  const wantsUpdate = confirm("ចុច OK ដើម្បី Update SpotCheck\nចុច Cancel ដើម្បីបង្កើតថ្មី");
-  if (!wantsUpdate) return;
-
-  document.getElementById("loadingOverlay").style.display = "flex";
-
-  fetch(`${API_BASE}/api/spotcheck?cif=${encodeURIComponent(cif)}`, {
-    headers: { Authorization: `Bearer ${sessionStorage.getItem("token")}` }
-  })
-    .then(res => res.json())
-    .then(records => {
-      if (records.length > 0) {
-        loadSpotCheckToForm(records[0]);
-      } else {
-        alert("រកមិនឃើញទិន្នន័យសម្រាប់កែប្រែ។");
-      }
-    })
-    .catch(err => {
-      alert("❌ Cannot load SpotCheck data.");
-      console.error("❌ SpotCheck fetch error:", err.message);
-    })
-    .finally(() => {
-      document.getElementById("loadingOverlay").style.display = "none";
-    });
-}
-
-  
-const token = sessionStorage.getItem('token');
-const API_BASE = CONFIG.BASE_URL;
-  if (!token) {
-    alert("Session expired or unauthorized access.");
-    window.location.href = "../login.html";
-  }
 
   const AUTO_LOGOUT_MINUTES = 5;
   let logoutTimer;
+
   function resetLogoutTimer() {
     clearTimeout(logoutTimer);
     logoutTimer = setTimeout(() => {
@@ -956,15 +745,275 @@ const API_BASE = CONFIG.BASE_URL;
       window.location.href = "../login.html";
     }, AUTO_LOGOUT_MINUTES * 60 * 1000);
   }
+
   function setupAutoLogoutEvents() {
     ['mousemove', 'mousedown', 'keydown', 'touchstart', 'touchmove', 'scroll'].forEach(event => {
       document.addEventListener(event, resetLogoutTimer, true);
     });
     resetLogoutTimer();
   }
-  window.addEventListener('load', setupAutoLogoutEvents);
+
+  function loadSpotCheckToForm(data) {
+    const map = (id, value) => {
+      const el = document.getElementById(id);
+      if (el) el.value = value || '';
+    };
+
+    map("cycle", data.cycle);
+    map("checkDate", data.checkDate);
+    map("repaymentStatus", data.repaymentStatus);
+    map("repaymentNote", data.repaymentNote);
+    map("docStatus", data.docStatus);
+    map("docNote", data.docNote);
+
+    map("businessOld", data.businessOld);
+    map("businessNow", data.businessNow);
+    map("businessStatus", data.businessStatus);
+    map("businessNote", data.businessNote);
+    map("collateralType", data.collateralType);
+    map("collateralStatus", data.collateralStatus);
+    map("collateralValue", data.collateralValue);
+    map("collateralNote", data.collateralNote);
+    map("usagePurpose", data.usagePurpose);
+    map("usageNote", data.usageNote);
+    map("repaymentSource", data.repaymentSource);
+    map("sourceNote", data.sourceNote);
+    map("conclusion", data.conclusion);
+
+    document.getElementById("creditSection1").style.display = "block";
+    document.getElementById("inspectionSection2").style.display = "block";
+    window.scrollTo({ top: document.getElementById("creditSection1").offsetTop - 60, behavior: "smooth" });
+
+    const saveBtn = document.getElementById("saveBtn");
+    saveBtn.textContent = "Update";
+    saveBtn.dataset.updateMode = "true";
+    saveBtn.dataset.recordId = data._id;
+    document.getElementById("createSpotCheckBtn").style.display = "none";
+
+    sessionStorage.setItem("selectedNBCOS", JSON.stringify(data));
+
+    const nbcosDetail = document.getElementById("nbcosDetail");
+    const nbcosContent = document.getElementById("nbcosContent");
+    nbcosDetail.style.display = "block";
+    nbcosDetail.style.marginTop = "80px";
+
+    const headers = [
+      "LD_CUSTOMER_ID", "CONTRACT_LD", "NAME_KHMER", "LOAN_SIZE",
+      "OS_USD", "RATE", "CCY", "DISBURSE", "MATURITY",
+      "LOAN_TERM", "LOAN_CYCLE", "CO", "BranchOK", "ProductType"
+    ];
+
+    const tableHTML = `
+      <div class="nbcos-wrapper">
+        <table class="nbcos-table">
+          <thead>
+            <tr>${headers.map(h => `<th>${h}</th>`).join("")}</tr>
+          </thead>
+          <tbody>
+            <tr>
+              ${headers.map(h => {
+                let value = data[h] || data[h.replace("BranchOK", "Branch-OK")] || '';
+                if (["DISBURSE", "MATURITY"].includes(h) && value) {
+                  const date = new Date(value);
+                  if (!isNaN(date)) value = date.toLocaleDateString('en-GB');
+                }
+                return `<td contenteditable="true">${value}</td>`;
+              }).join("")}
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    `;
+
+    nbcosContent.innerHTML = tableHTML;
+    document.getElementById("tapHint").style.display = "none";
+  }
+
+  function alertOptionForSpotCheck(cif) {
+    if (!confirm("លោកអ្នកបានបញ្ចូលទិន្នន័យត្រួតពិនិត្យឥណទានសម្រាប់អតិថិជននេះរួចហើយ។\n\nចង់បន្តធ្វើការកែប្រែទេ?")) {
+      return;
+    }
+
+    const wantsUpdate = confirm("ចុច OK ដើម្បី Update SpotCheck\nចុច Cancel ដើម្បីបង្កើតថ្មី");
+    if (!wantsUpdate) return;
+
+    document.getElementById("loadingOverlay").style.display = "flex";
+
+    fetch(`${API_BASE}/api/spotcheck?cif=${encodeURIComponent(cif)}`, {
+      headers: { Authorization: `Bearer ${sessionStorage.getItem("token")}` }
+    })
+      .then(res => res.json())
+      .then(records => {
+        if (records.length > 0) {
+          loadSpotCheckToForm(records[0]);
+        } else {
+          alert("រកមិនឃើញទិន្នន័យសម្រាប់កែប្រែ។");
+        }
+      })
+      .catch(err => {
+        alert("❌ Cannot load SpotCheck data.");
+        console.error("❌ SpotCheck fetch error:", err.message);
+      })
+      .finally(() => {
+        document.getElementById("loadingOverlay").style.display = "none";
+      });
+  }
+
+  function performSearch() {
+    const query = document.getElementById("searchBox").value.trim();
+    if (query === "") {
+      alert("សូមបញ្ចូលលេខCIF ឫឈ្មោះអតិថិជន");
+      return;
+    }
+
+    document.getElementById("loadingOverlay").style.display = "flex";
+
+    fetch(`${API_BASE}/api/spotcheck/search?q=${encodeURIComponent(query)}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+      .then(res => res.json())
+      .then(results => {
+        if (results.length > 0) {
+          displayResults(results, "SpotCheck");
+        } else {
+          fetch(`${API_BASE}/api/customers/search?q=${encodeURIComponent(query)}`, {
+            headers: { Authorization: `Bearer ${token}` }
+          })
+            .then(res => res.json())
+            .then(customerResults => {
+              if (customerResults.length > 0) {
+                displayResults(customerResults, "Customer");
+              } else {
+                fetch(`${API_BASE}/api/nbcos/search?q=${encodeURIComponent(query)}`, {
+                  headers: { Authorization: `Bearer ${token}` }
+                })
+                  .then(res => res.json())
+                  .then(nbcosResults => displayNBCOSAsCustomer(nbcosResults))
+                  .catch(err => {
+                    alert("NBCOS fallback failed");
+                    console.error("NBCOS search error:", err);
+                  });
+              }
+            });
+        }
+      })
+      .catch(err => {
+        const message = err?.message || "Unknown error";
+        alert(`Search failed: ${message}`);
+        console.error("❌ Full search error:", err);
+      })
+      .finally(() => {
+        document.getElementById("loadingOverlay").style.display = "none";
+      });
+  }
+
+  function displayResults(results, source) {
+    document.querySelector(".container").style.display = "block";
+    const resultsTable = document.querySelector("#results tbody");
+    const tableHead = document.querySelector("#results thead");
+    const resultLabel = document.getElementById("resultLabel");
+    const dataSourceLabel = document.getElementById("dataSourceLabel");
+    const tapHint = document.getElementById("tapHint");
+
+    resultLabel.textContent = `👥 លទ្ធផលស្វែងរក៖ ${results.length} CIF`;
+    tableHead.style.display = results.length > 0 ? "table-header-group" : "none";
+
+    let headers = [];
+    let headerLabels = [];
+
+    if (source === "SpotCheck") {
+      headers = ["LD_CUSTOMER_ID", "NAME_KHMER", "checkDate", "_id"];
+      headerLabels = ["CIF", "ឈ្មោះខ្មែរ", "កាលបរិច្ឆេទត្រួតពិនិត្យ", "សកម្មភាព"];
+    } else {
+      headers = ["CIF", "ACCOUNT_NAME", "NAME_KHMER", "GENDER", "ADDRESS", "Branch", "CO Response", "Note"];
+      headerLabels = ["CIF", "ឈ្មោះឡាតាំង", "ឈ្មោះខ្មែរ", "ភេទ", "អាស័យដ្ឋាន", "សាខា", "ភ្នាក់ងារ", "ចំណាំ"];
+    }
+
+    tableHead.innerHTML = `<tr>${headerLabels.map(label => `<th>${label}</th>`).join("")}</tr>`;
+
+    resultsTable.innerHTML = results.length > 0
+      ? results.map(item => {
+          const row = headers.map(key => {
+            if (key === "_id") {
+              return item._id
+                ? `<td><button class="load-spot-btn" data-id="${item._id}">✏️</button></td>`
+                : "<td></td>";
+            }
+            return `<td>${item[key] || item[key.replace("BranchOK", "Branch-OK")] || ''}</td>`;
+          }).join("");
+          return `<tr>${row}</tr>`;
+        }).join("")
+      : "<tr><td colspan='8'>🚫រកមិនឃើញលទ្ធផលទេ</td></tr>";
+
+    if (results.length > 0 && source !== "SpotCheck") {
+      tapHint.style.display = "flex";
+      setTimeout(() => tapHint.style.display = "none", 8000);
+    }
+
+    if (source === "Customer" || source === "NBCOS") {
+      document.getElementById("createSpotCheckBtn").style.display = "block";
+    }
+
+    const sources = {
+      "SpotCheck": "⛁ ទិន្នន័យ​ពី:DatabaseSpotCheck",
+      "Customer": "⛁ ទិន្នន័យ​ពី:DatabaseCustomer"
+    };
+
+    dataSourceLabel.textContent = sources[source] || "";
+  }
+
+  function displayNBCOSAsCustomer(data) {
+    const resultsTable = document.querySelector("#results tbody");
+    const tableHead = document.querySelector("#results thead");
+    const resultLabel = document.getElementById("resultLabel");
+    const dataSourceLabel = document.getElementById("dataSourceLabel");
+    const tapHint = document.getElementById("tapHint");
+
+    resultLabel.textContent = `👥 លទ្ធផលស្វែងរក៖ ${data.length} CIF`;
+    tableHead.style.display = data.length > 0 ? "table-header-group" : "none";
+
+    resultsTable.innerHTML = data.length > 0
+      ? data.map(item => `
+        <tr>
+          <td>${item.LD_CUSTOMER_ID || ''}</td>
+          <td>${item.NAME_KHMER || ''}</td>
+          <td>${item.NAME_ENG || ''}</td>
+          <td>${item.TITLE || ''}</td>
+          <td>${item.Address || ''}</td>
+          <td>${item["Branch-OK"] || ''}</td>
+          <td>${item["Credit Officer"] || ''}</td>
+          <td>${item["GovEmplyee/FactWorker"] || ''}</td>
+        </tr>`).join("")
+      : "<tr><td colspan='9'>🚫 រកមិនឃើញលទ្ធផលទេ</td></tr>";
+
+    if (data.length > 0) {
+      tapHint.style.display = "flex";
+      setTimeout(() => tapHint.style.display = "none", 8000);
+      document.getElementById("createSpotCheckBtn").style.display = "block";
+    }
+
+    dataSourceLabel.textContent = data.length > 0 ? "⛁ ទិន្នន័យ​ពី:DatabaseNBC_OS" : "";
+  }
 
   document.addEventListener("DOMContentLoaded", () => {
+    setupAutoLogoutEvents();
+
+    if (typeof checkNotification === "function") {
+      checkNotification();
+    }
+
+    document.getElementById("createSpotCheckBtn").addEventListener("click", () => {
+      const section = document.getElementById("creditSection1");
+      section.style.display = section.style.display === "none" ? "block" : "none";
+      window.scrollTo({ top: section.offsetTop - 60, behavior: "smooth" });
+    });
+
+    document.getElementById("continueToSection2Btn").addEventListener("click", () => {
+      const section2 = document.getElementById("inspectionSection2");
+      section2.style.display = "block";
+      window.scrollTo({ top: section2.offsetTop - 60, behavior: "smooth" });
+    });
+
     document.getElementById("searchBox").addEventListener("input", () => {
       document.getElementById("nbcosDetail").style.display = "none";
       const allRows = document.querySelectorAll("#results tbody tr");
@@ -972,6 +1021,26 @@ const API_BASE = CONFIG.BASE_URL;
         r.style.display = "";
         r.classList.remove("highlighted-row");
       });
+
+      const query = document.getElementById("searchBox").value.trim();
+      const container = document.querySelector(".container");
+      const resultsTable = document.querySelector("#results tbody");
+      const tableHead = document.querySelector("#results thead");
+      const resultLabel = document.getElementById("resultLabel");
+      const dataSourceLabel = document.getElementById("dataSourceLabel");
+
+      document.getElementById("creditSection1").style.display = "none";
+      document.getElementById("inspectionSection2").style.display = "none";
+
+      if (query !== "") {
+        container.style.display = "block";
+        resultsTable.innerHTML = "";
+        tableHead.style.display = "none";
+        resultLabel.textContent = "👥 លទ្ធផលស្វែងរក៖ 0";
+        dataSourceLabel.textContent = "";
+      } else {
+        container.style.display = "none";
+      }
     });
 
     document.getElementById("searchBox").addEventListener("keydown", (e) => {
@@ -982,187 +1051,77 @@ const API_BASE = CONFIG.BASE_URL;
     });
 
     document.getElementById("searchButton").addEventListener("click", performSearch);
-  });
 
-
-  function performSearch() {
-  const query = document.getElementById("searchBox").value.trim();
-  if (query === "") {
-    alert("សូមបញ្ចូលលេខCIF ឫឈ្មោះអតិថិជន");
-    return;
-  }
-
-  document.getElementById("loadingOverlay").style.display = "flex";
-
-  fetch(`${API_BASE}/api/spotcheck/search?q=${encodeURIComponent(query)}`, {
-    headers: { Authorization: `Bearer ${token}` }
-  })
-    .then(res => res.json())
-    .then(results => {
-      if (results.length > 0) {
-        displayResults(results, "SpotCheck");
-      } else {
-       fetch(`${API_BASE}/api/customers/search?q=${encodeURIComponent(query)}`, {
-          headers: { Authorization: `Bearer ${token}` }
-        })
-          .then(res => res.json())
-          .then(customerResults => {
-            if (customerResults.length > 0) {
-              displayResults(customerResults, "Customer");
-            } else {
-             fetch(`${API_BASE}/api/nbcos/search?q=${encodeURIComponent(query)}`, {
-                headers: { Authorization: `Bearer ${token}` }
-              })
-                .then(res => res.json())
-                .then(nbcosResults => displayNBCOSAsCustomer(nbcosResults))
-                .catch(err => {
-                  alert("NBCOS fallback failed");
-                  console.error("NBCOS search error:", err);
-                });
-            }
-          });
-      }
-    })
-    .catch(err => {
-      const message = err?.message || "Unknown error";
-      alert(`Search failed: ${message}`);
-      console.error("❌ Full search error:", err);
-    })
-    .finally(() => {
-      document.getElementById("loadingOverlay").style.display = "none";
+    document.getElementById("closeDetailBtn").addEventListener("click", () => {
+      document.getElementById("nbcosDetail").style.display = "none";
+      const allRows = document.querySelectorAll("#results tbody tr");
+      allRows.forEach(row => {
+        row.style.display = "";
+        row.classList.remove("highlighted-row");
+      });
     });
-}
-
-  // ✅ Hook to search button
-  document.addEventListener("DOMContentLoaded", () => {
-    document.getElementById("searchButton").addEventListener("click", performSearch);
   });
-
-function displayResults(results, source) {
-  document.querySelector(".container").style.display = "block";
-  const resultsTable = document.querySelector("#results tbody");
-  const tableHead = document.querySelector("#results thead");
-  const resultLabel = document.getElementById("resultLabel");
-  const dataSourceLabel = document.getElementById("dataSourceLabel");
-  const tapHint = document.getElementById("tapHint");
-
-  resultLabel.textContent = `👥 លទ្ធផលស្វែងរក៖ ${results.length} CIF`;
-  tableHead.style.display = results.length > 0 ? "table-header-group" : "none";
-
-  let headers = [];
-  let headerLabels = [];
-
-  if (source === "SpotCheck") {
-    headers = ["LD_CUSTOMER_ID", "NAME_KHMER", "checkDate", "_id"];
-    headerLabels = ["CIF", "ឈ្មោះខ្មែរ", "កាលបរិច្ឆេទត្រួតពិនិត្យ", "សកម្មភាព"];
-  } else {
-    headers = ["CIF", "ACCOUNT_NAME", "NAME_KHMER", "GENDER", "ADDRESS", "Branch", "CO Response", "Note"];
-    headerLabels = ["CIF", "ឈ្មោះឡាតាំង", "ឈ្មោះខ្មែរ", "ភេទ", "អាស័យដ្ឋាន", "សាខា", "ភ្នាក់ងារ", "ចំណាំ"];
-  }
-
-  // Table headers
-  const theadHTML = `<tr>${headerLabels.map(label => `<th>${label}</th>`).join("")}</tr>`;
-  tableHead.innerHTML = theadHTML;
-
-  // Table rows
-  resultsTable.innerHTML = results.length > 0
-    ? results.map(item => {
-        const row = headers.map(key => {
-          if (key === "_id") {
-            return item._id
-              ? `<td><button class="load-spot-btn" data-id="${item._id}">✏️</button></td>`
-              : "<td></td>";
-          }
-          return `<td>${item[key] || item[key.replace("BranchOK", "Branch-OK")] || ''}</td>`;
-        }).join("");
-        return `<tr>${row}</tr>`;
-      }).join("")
-    : "<tr><td colspan='8'>🚫រកមិនឃើញលទ្ធផលទេ</td></tr>";
-
-  if (results.length > 0 && source !== "SpotCheck") {
-  tapHint.style.display = "flex";
-  setTimeout(() => tapHint.style.display = "none", 8000);
- }
-  if (source === "Customer" || source === "NBCOS") {
-    document.getElementById("createSpotCheckBtn").style.display = "block";
-  }
-  
-  const sources = {
-    "SpotCheck": "⛁ ទិន្នន័យ​ពី:DatabaseSpotCheck",
-    "Customer": "⛁ ទិន្នន័យ​ពី:DatabaseCustomer"
-  };
-
-  dataSourceLabel.textContent = sources[source] || "";
-}
-
-
-  
 
   document.querySelector("#results tbody").addEventListener("click", function (e) {
-  const isEditBtn = e.target.closest(".load-spot-btn");
-  const sourceLabel = document.getElementById("dataSourceLabel").textContent;
+    const isEditBtn = e.target.closest(".load-spot-btn");
+    const sourceLabel = document.getElementById("dataSourceLabel").textContent;
 
-  // ✅ If edit button was clicked, handle it and exit
-  if (isEditBtn) {
-    const recordId = isEditBtn.dataset.id;
-    if (!recordId) return;
+    if (isEditBtn) {
+      const recordId = isEditBtn.dataset.id;
+      if (!recordId) return;
 
-    document.getElementById("loadingOverlay").style.display = "flex";
-    fetch(`${API_BASE}/api/spotcheck/${recordId}`, {
+      document.getElementById("loadingOverlay").style.display = "flex";
+      fetch(`${API_BASE}/api/spotcheck/${recordId}`, {
+        headers: { Authorization: `Bearer ${sessionStorage.getItem("token")}` }
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (!data || !data._id) return alert("❌ Cannot load record.");
+          loadSpotCheckToForm(data);
+        })
+        .catch(err => {
+          console.error("❌ Failed to load SpotCheck record", err);
+          alert("❌ Failed to load record.");
+        })
+        .finally(() => {
+          document.getElementById("loadingOverlay").style.display = "none";
+        });
+
+      return;
+    }
+
+    if (sourceLabel.includes("DatabaseSpotCheck")) return;
+
+    const row = e.target.closest("tr");
+    if (!row || !row.cells[0]) return;
+
+    const cif = row.cells[0].textContent.trim();
+    if (!cif) return;
+
+    const allRows = document.querySelectorAll("#results tbody tr");
+    allRows.forEach(r => {
+      if (r !== row) r.style.display = "none";
+      else r.classList.add("highlighted-row");
+    });
+
+    const detailPanel = document.getElementById("nbcosDetail");
+    const content = document.getElementById("nbcosContent");
+
+    detailPanel.style.display = "block";
+    content.innerHTML = "<div class='spinner'></div> <span>កំពុងទាញយកទិន្នន័យ...</span>";
+
+    fetch(`${API_BASE}/api/nbcos/by-cif?cif=${encodeURIComponent(cif)}`, {
       headers: { Authorization: `Bearer ${sessionStorage.getItem("token")}` }
     })
       .then(res => res.json())
       .then(data => {
-        if (!data || !data._id) return alert("❌ Cannot load record.");
-        loadSpotCheckToForm(data);
-      })
-      .catch(err => {
-        console.error("❌ Failed to load SpotCheck record", err);
-        alert("❌ Failed to load record.");
-      })
-      .finally(() => {
-        document.getElementById("loadingOverlay").style.display = "none";
-      });
+        if (!data || data.length === 0) {
+          content.innerHTML = "គ្មានទិន្នន័យឥណទានសម្រាប់អតិថិជននេះទេ។";
+          return;
+        }
 
-    return; // ✅ Exit so row click logic does not run
-  }
-
-  // ✅ Disable row click if from SpotCheck
-  if (sourceLabel.includes("DatabaseSpotCheck")) return;
-
-  // Normal row click logic to show NBCOS
-  const row = e.target.closest("tr");
-  if (!row || !row.cells[0]) return;
-
-  const cif = row.cells[0].textContent.trim();
-  if (!cif) return;
-
-  const allRows = document.querySelectorAll("#results tbody tr");
-  allRows.forEach(r => {
-    if (r !== row) r.style.display = "none";
-    else r.classList.add("highlighted-row");
-  });
-
-  const detailPanel = document.getElementById("nbcosDetail");
-  const content = document.getElementById("nbcosContent");
-
-  detailPanel.style.display = "block";
-  content.innerHTML = "<div class='spinner'></div> <span>កំពុងទាញយកទិន្នន័យ...</span>";
-
-fetch(`${API_BASE}/api/nbcos/by-cif?cif=${encodeURIComponent(cif)}`, {
-  headers: { Authorization: `Bearer ${sessionStorage.getItem("token")}` }
-})
-    .then(res => res.json())
-    .then(data => {
-      if (!data || data.length === 0) {
-        content.innerHTML = "គ្មានទិន្នន័យឥណទានសម្រាប់អតិថិជននេះទេ។";
-        return;
-      }
-
-      sessionStorage.setItem("selectedNBCOS", JSON.stringify(data[0]));
-      console.log("✅ Selected NBCOS saved to sessionStorage:", data[0]);
-
-      // ...NBCOS table rendering logic
+        sessionStorage.setItem("selectedNBCOS", JSON.stringify(data[0]));
+        console.log("✅ Selected NBCOS saved to sessionStorage:", data[0]);
 
         const headers = [
           "LD_CUSTOMER_ID", "CONTRACT_LD", "NAME_KHMER", "LOAN_SIZE",
@@ -1173,10 +1132,11 @@ fetch(`${API_BASE}/api/nbcos/by-cif?cif=${encodeURIComponent(cif)}`, {
         let totalOS = 0;
 
         let tableHTML = `<div class="nbcos-wrapper">
-        <table class="nbcos-table">
-         <thead>
-         <tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr>
-         </thead><tbody>`;
+          <table class="nbcos-table">
+            <thead>
+              <tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr>
+            </thead>
+            <tbody>`;
 
         data.forEach(item => {
           tableHTML += `<tr>${headers.map(key => {
@@ -1202,7 +1162,6 @@ fetch(`${API_BASE}/api/nbcos/by-cif?cif=${encodeURIComponent(cif)}`, {
         tableHTML += `</tbody></table></div>`;
         content.innerHTML = tableHTML;
 
-        // ✅ Fetch latest DISBURSE from entire database
         fetch(`${API_BASE}/api/nbcos/latest-disburse`, {
           headers: { Authorization: `Bearer ${token}` }
         })
@@ -1232,290 +1191,192 @@ fetch(`${API_BASE}/api/nbcos/by-cif?cif=${encodeURIComponent(cif)}`, {
       });
   });
 
-  document.getElementById("searchBox").addEventListener("input", () => {
-  const query = document.getElementById("searchBox").value.trim();
-  const container = document.querySelector(".container");
-  const nbcosPanel = document.getElementById("nbcosDetail");
-  const resultsTable = document.querySelector("#results tbody");
-  const tableHead = document.querySelector("#results thead");
-  const resultLabel = document.getElementById("resultLabel");
-  const dataSourceLabel = document.getElementById("dataSourceLabel");
+  document.addEventListener("click", (e) => {
+    const btn = e.target.closest(".load-spot-btn");
+    if (!btn) return;
 
-  nbcosPanel.style.display = "none";
-  document.getElementById("creditSection1").style.display = "none";
-  document.getElementById("inspectionSection2").style.display = "none";
-    
-  if (query !== "") {
-    container.style.display = "block";
-    
-    // Clear table contents and hide header
-    resultsTable.innerHTML = "";
-    tableHead.style.display = "none";
-
-    // Reset label info
-    resultLabel.textContent = "👥 លទ្ធផលស្វែងរក៖ 0";
-    dataSourceLabel.textContent = "";
-  } else {
-    container.style.display = "none";
-  }
-});
-
-
-  
-  function displayNBCOSAsCustomer(data) {
-  const resultsTable = document.querySelector("#results tbody");
-  const tableHead = document.querySelector("#results thead");
-  const resultLabel = document.getElementById("resultLabel");
-  const dataSourceLabel = document.getElementById("dataSourceLabel");
-  const tapHint = document.getElementById("tapHint");
-
-  resultLabel.textContent = `👥 លទ្ធផលស្វែងរក៖ ${data.length} CIF`;
-  tableHead.style.display = data.length > 0 ? "table-header-group" : "none";
-
-  resultsTable.innerHTML = data.length > 0
-    ? data.map(item => `
-      <tr>
-        <td>${item.LD_CUSTOMER_ID || ''}</td>
-        <td>${item.NAME_KHMER || ''}</td>
-        <td>${item.NAME_ENG || ''}</td>
-        <td>${item.TITLE || ''}</td>
-        <td>${item.Address || ''}</td>
-        <td>${item["Branch-OK"] || ''}</td>
-        <td>${item["Credit Officer"] || ''}</td>
-        <td>${item["GovEmplyee/FactWorker"] || ''}</td>
-      </tr>`).join("")
-    : "<tr><td colspan='9'>🚫 រកមិនឃើញលទ្ធផលទេ</td></tr>";
-
-  if (data.length > 0) {
-    tapHint.style.display = "flex";
-    setTimeout(() => tapHint.style.display = "none", 8000);
-  }
-
-  dataSourceLabel.textContent = data.length > 0 ? "⛁ ទិន្នន័យ​ពី:DatabaseNBC_OS" : "";
-}
-  if (data.length > 0) {
-  document.getElementById("createSpotCheckBtn").style.display = "block";
-}
-
-
-
-
-// ✅ Handle SpotCheck row update clicks
-document.addEventListener("click", (e) => {
-  const btn = e.target.closest(".load-spot-btn");
-  if (!btn) return;
-
-  const recordId = btn.dataset.id;
-  if (!recordId) return;
-
-  document.getElementById("loadingOverlay").style.display = "flex";
-  fetch(`${API_BASE}/api/spotcheck/${recordId}`, {
-    headers: { Authorization: `Bearer ${sessionStorage.getItem("token")}` }
-  })
-    .then(res => res.json())
-    .then(data => {
-      if (!data || !data._id) return alert("❌ Cannot load record.");
-      loadSpotCheckToForm(data);
-    })
-    .catch(err => {
-      console.error("❌ Failed to load specific SpotCheck record", err);
-      alert("❌ Failed to load specific SpotCheck record.");
-    })
-    .finally(() => {
-      document.getElementById("loadingOverlay").style.display = "none";
-    });
-});
-</script>
-
-  
-  <script>
-document.addEventListener("DOMContentLoaded", () => {
-  const saveBtn = document.getElementById("saveBtn");
-  const clearBtn = document.getElementById("clearBtn");
-
-  const requiredIds = [
-    "cycle", "checkDate", "repaymentStatus", "docStatus",
-    "businessOld", "businessNow", "businessStatus",
-    "collateralType", "collateralStatus", "collateralValue",
-    "usagePurpose", "repaymentSource", "conclusion"
-  ];
-
-  function validateFields() {
-    let isValid = true;
-    let firstInvalid = null;
-
-    requiredIds.forEach(id => {
-      const field = document.getElementById(id);
-      if (field && !field.value.trim()) {
-        field.style.border = "2px solid red";
-        if (!firstInvalid) firstInvalid = field;
-        isValid = false;
-      } else if (field) {
-        field.style.border = "";
-      }
-    });
-
-    if (!isValid && firstInvalid) {
-      firstInvalid.scrollIntoView({ behavior: "smooth", block: "center" });
-      firstInvalid.focus();
-      alert("សូមបំពេញទិន្នន័យដែលត្រូវបញ្ចូល");
-    }
-
-    return isValid;
-  }
-
-  function resetForm() {
-    document.querySelectorAll('#creditSection1 input, #inspectionSection2 input').forEach(i => {
-      i.value = '';
-      i.style.border = '';
-    });
-    document.querySelectorAll('#creditSection1 select, #inspectionSection2 select').forEach(s => {
-      s.selectedIndex = 0;
-      s.style.border = '';
-    });
-
-    // Reset Save button state
-    saveBtn.textContent = "Save";
-    delete saveBtn.dataset.updateMode;
-    delete saveBtn.dataset.recordId;
-     // ✅ Show Create SpotCheck button again
-  document.getElementById("createSpotCheckBtn").style.display = "block";
-  }
-
-  clearBtn.addEventListener("click", resetForm);
-
-  saveBtn.addEventListener("click", () => {
-    const user = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
-    const selectedNBCOS = JSON.parse(sessionStorage.getItem("selectedNBCOS") || "{}");
-
-    if (!selectedNBCOS || !selectedNBCOS.LD_CUSTOMER_ID) {
-      alert("❌ Please select a customer before saving.");
-      return;
-    }
-
-    if (!validateFields()) return;
-
-    // Get latest NBCOS edits from the editable table cells
-const nbcosCells = document.querySelectorAll("#nbcosDetail .nbcos-table td");
-const keys = [
-  "LD_CUSTOMER_ID", "CONTRACT_LD", "NAME_KHMER", "LOAN_SIZE",
-  "OS_USD", "RATE", "CCY", "DISBURSE", "MATURITY",
-  "LOAN_TERM", "LOAN_CYCLE", "CO", "BranchOK", "ProductType"
-];
-const updatedNBCOS = {};
-nbcosCells.forEach((cell, index) => {
-  if (keys[index]) updatedNBCOS[keys[index]] = cell.textContent.trim();
-});
-
-const payload = {
-  ...updatedNBCOS,
-
-      // Section 1
-      cycle: document.getElementById("cycle").value,
-      checkDate: document.getElementById("checkDate").value,
-      repaymentStatus: document.getElementById("repaymentStatus").value,
-      repaymentNote: document.getElementById("repaymentNote").value,
-      docStatus: document.getElementById("docStatus").value,
-      docNote: document.getElementById("docNote").value,
-
-      // Section 2
-      businessOld: document.getElementById("businessOld").value,
-      businessNow: document.getElementById("businessNow").value,
-      businessStatus: document.getElementById("businessStatus").value,
-      businessNote: document.getElementById("businessNote").value,
-      collateralType: document.getElementById("collateralType").value,
-      collateralStatus: document.getElementById("collateralStatus").value,
-      collateralValue: document.getElementById("collateralValue").value,
-      collateralNote: document.getElementById("collateralNote").value,
-      usagePurpose: document.getElementById("usagePurpose").value,
-      usageNote: document.getElementById("usageNote").value,
-      repaymentSource: document.getElementById("repaymentSource").value,
-      sourceNote: document.getElementById("sourceNote").value,
-      conclusion: document.getElementById("conclusion").value,
-
-      savedBy: user.username || "Unknown"
-    };
+    const recordId = btn.dataset.id;
+    if (!recordId) return;
 
     document.getElementById("loadingOverlay").style.display = "flex";
-
-    const isUpdate = saveBtn.dataset.updateMode === "true";
-    const recordId = saveBtn.dataset.recordId;
-const url = isUpdate
-  ? `${API_BASE}/api/spotcheck/${recordId}`
-  : `${API_BASE}/api/spotcheck`;
-
-    fetch(url, {
-      method: isUpdate ? "PUT" : "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${sessionStorage.getItem("token")}`
-      },
-      body: JSON.stringify(payload)
-    })
-      .then(res => res.json())
-   //.then(data => {
-  // alert(`✅ Spot Check ${isUpdate ? "updated" : "saved"} successfully!`);
-   // resetForm();
-  // })
-      
-  .then(data => {
-  alert(`✅ Spot Check ${isUpdate ? "updated" : "saved"} successfully!`);
-
-  // ✅ Add this to remember which CIF to highlight
-  sessionStorage.setItem("highlightRowId", data._id || recordId);
-    
-  // ✅ Redirect to report page
-  window.location.href = "reportSpotcheck.html";
-})
-      
-      .catch(err => {
-        console.error("❌ Save error:", err);
-        alert("❌ Save failed. See console.");
-      })
-      .finally(() => {
-        document.getElementById("loadingOverlay").style.display = "none";
-      });
-  });
-});
-</script>  
-
-<script>
-// === Auto load SpotCheck data for edit mode via ?id=xxx ===
-document.addEventListener("DOMContentLoaded", () => {
-  const urlParams = new URLSearchParams(window.location.search);
-  const recordId = urlParams.get('id');
-
-  if (recordId) {
-    console.log("Edit mode detected. Loading record:", recordId);
-
-    // Hide search bar & customer info
-    document.querySelector(".search-fixed-bar").style.display = "none";
-    document.querySelector(".container").style.display = "none";
-
-    // Show loading spinner
-    document.getElementById("loadingOverlay").style.display = "flex";
-
-    // Fetch SpotCheck data by ID
     fetch(`${API_BASE}/api/spotcheck/${recordId}`, {
       headers: { Authorization: `Bearer ${sessionStorage.getItem("token")}` }
     })
       .then(res => res.json())
       .then(data => {
-        if (data && data._id) {
-          loadSpotCheckToForm(data); // Existing function
-        } else {
-          alert("❌ Record not found.");
-        }
+        if (!data || !data._id) return alert("❌ Cannot load record.");
+        loadSpotCheckToForm(data);
       })
       .catch(err => {
-        alert("❌ Failed to load SpotCheck record for editing.");
-        console.error(err);
+        console.error("❌ Failed to load specific SpotCheck record", err);
+        alert("❌ Failed to load specific SpotCheck record.");
       })
       .finally(() => {
         document.getElementById("loadingOverlay").style.display = "none";
       });
-  }
-});
+  });
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const saveBtn = document.getElementById("saveBtn");
+    const clearBtn = document.getElementById("clearBtn");
+
+    const requiredIds = [
+      "cycle", "checkDate", "repaymentStatus", "docStatus",
+      "businessOld", "businessNow", "businessStatus",
+      "collateralType", "collateralStatus", "collateralValue",
+      "usagePurpose", "repaymentSource", "conclusion"
+    ];
+
+    function validateFields() {
+      let isValid = true;
+      let firstInvalid = null;
+
+      requiredIds.forEach(id => {
+        const field = document.getElementById(id);
+        if (field && !field.value.trim()) {
+          field.style.border = "2px solid red";
+          if (!firstInvalid) firstInvalid = field;
+          isValid = false;
+        } else if (field) {
+          field.style.border = "";
+        }
+      });
+
+      if (!isValid && firstInvalid) {
+        firstInvalid.scrollIntoView({ behavior: "smooth", block: "center" });
+        firstInvalid.focus();
+        alert("សូមបំពេញទិន្នន័យដែលត្រូវបញ្ចូល");
+      }
+
+      return isValid;
+    }
+
+    function resetForm() {
+      document.querySelectorAll('#creditSection1 input, #inspectionSection2 input').forEach(i => {
+        i.value = '';
+        i.style.border = '';
+      });
+      document.querySelectorAll('#creditSection1 select, #inspectionSection2 select').forEach(s => {
+        s.selectedIndex = 0;
+        s.style.border = '';
+      });
+
+      saveBtn.textContent = "Save";
+      delete saveBtn.dataset.updateMode;
+      delete saveBtn.dataset.recordId;
+      document.getElementById("createSpotCheckBtn").style.display = "block";
+    }
+
+    clearBtn.addEventListener("click", resetForm);
+
+    saveBtn.addEventListener("click", () => {
+      const user = JSON.parse(sessionStorage.getItem("loggedInUser") || "{}");
+      const selectedNBCOS = JSON.parse(sessionStorage.getItem("selectedNBCOS") || "{}");
+
+      if (!selectedNBCOS || !selectedNBCOS.LD_CUSTOMER_ID) {
+        alert("❌ Please select a customer before saving.");
+        return;
+      }
+
+      if (!validateFields()) return;
+
+      const nbcosCells = document.querySelectorAll("#nbcosDetail .nbcos-table td");
+      const keys = [
+        "LD_CUSTOMER_ID", "CONTRACT_LD", "NAME_KHMER", "LOAN_SIZE",
+        "OS_USD", "RATE", "CCY", "DISBURSE", "MATURITY",
+        "LOAN_TERM", "LOAN_CYCLE", "CO", "BranchOK", "ProductType"
+      ];
+
+      const updatedNBCOS = {};
+      nbcosCells.forEach((cell, index) => {
+        if (keys[index]) updatedNBCOS[keys[index]] = cell.textContent.trim();
+      });
+
+      const payload = {
+        ...updatedNBCOS,
+        cycle: document.getElementById("cycle").value,
+        checkDate: document.getElementById("checkDate").value,
+        repaymentStatus: document.getElementById("repaymentStatus").value,
+        repaymentNote: document.getElementById("repaymentNote").value,
+        docStatus: document.getElementById("docStatus").value,
+        docNote: document.getElementById("docNote").value,
+        businessOld: document.getElementById("businessOld").value,
+        businessNow: document.getElementById("businessNow").value,
+        businessStatus: document.getElementById("businessStatus").value,
+        businessNote: document.getElementById("businessNote").value,
+        collateralType: document.getElementById("collateralType").value,
+        collateralStatus: document.getElementById("collateralStatus").value,
+        collateralValue: document.getElementById("collateralValue").value,
+        collateralNote: document.getElementById("collateralNote").value,
+        usagePurpose: document.getElementById("usagePurpose").value,
+        usageNote: document.getElementById("usageNote").value,
+        repaymentSource: document.getElementById("repaymentSource").value,
+        sourceNote: document.getElementById("sourceNote").value,
+        conclusion: document.getElementById("conclusion").value,
+        savedBy: user.username || "Unknown"
+      };
+
+      document.getElementById("loadingOverlay").style.display = "flex";
+
+      const isUpdate = saveBtn.dataset.updateMode === "true";
+      const recordId = saveBtn.dataset.recordId;
+      const url = isUpdate
+        ? `${API_BASE}/api/spotcheck/${recordId}`
+        : `${API_BASE}/api/spotcheck`;
+
+      fetch(url, {
+        method: isUpdate ? "PUT" : "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${sessionStorage.getItem("token")}`
+        },
+        body: JSON.stringify(payload)
+      })
+        .then(res => res.json())
+        .then(data => {
+          alert(`✅ Spot Check ${isUpdate ? "updated" : "saved"} successfully!`);
+          sessionStorage.setItem("highlightRowId", data._id || recordId);
+          window.location.href = "reportSpotcheck.html";
+        })
+        .catch(err => {
+          console.error("❌ Save error:", err);
+          alert("❌ Save failed. See console.");
+        })
+        .finally(() => {
+          document.getElementById("loadingOverlay").style.display = "none";
+        });
+    });
+  });
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const recordId = urlParams.get('id');
+
+    if (recordId) {
+      console.log("Edit mode detected. Loading record:", recordId);
+      document.querySelector(".search-fixed-bar").style.display = "none";
+      document.querySelector(".container").style.display = "none";
+      document.getElementById("loadingOverlay").style.display = "flex";
+
+      fetch(`${API_BASE}/api/spotcheck/${recordId}`, {
+        headers: { Authorization: `Bearer ${sessionStorage.getItem("token")}` }
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data && data._id) {
+            loadSpotCheckToForm(data);
+          } else {
+            alert("❌ Record not found.");
+          }
+        })
+        .catch(err => {
+          alert("❌ Failed to load SpotCheck record for editing.");
+          console.error(err);
+        })
+        .finally(() => {
+          document.getElementById("loadingOverlay").style.display = "none";
+        });
+    }
+  });
 </script>
 </body>
-</html>
