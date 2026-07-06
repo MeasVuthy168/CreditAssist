@@ -1,404 +1,364 @@
-
 <!DOCTYPE html>
 <html lang="km">
+
 <head>
-  <meta charset="UTF-8" />
-  <title>កម្មវិធី​គណនាឥណទាន</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <meta name="theme-color" content="#0d2d5c" />
-  
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
 
-  <style>
-    @font-face {
-      font-family: 'Krasar';
-      src: url('../Krasar-Regular.ttf') format('truetype');
-    }
-    body {
-      font-family: 'Krasar', Arial, sans-serif;
-      background-color: #1c2331;
-      color: white;
-      margin: 0;
-      padding: 0 0 70px;
-    }
-    .header {
-      background-color: #0d2d5c;
-      padding: 14px 16px;
-      display: flex;
-      align-items: center;
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 1000;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    }
-    .header .back {
-      font-size: 22px;
-      color: white;
-      background: none;
-      border: none;
-      margin-right: 12px;
-      cursor: pointer;
-    }
-    .header .title {
-      font-size: 17px;
-      font-weight: bold;
-      color: white;
-    }
-    .container {
-      max-width: 700px;
-      margin: 80px auto 0;
-      background: #2c3545;
-      padding: 20px;
-      border-radius: 12px;
-    }
-    .form-group {
-      display: flex;
-      align-items: center;
-      margin-bottom: 14px;
-    }
-    .form-group label {
-      width: 40%;
-      padding-right: 10px;
-    }
-    .form-group input,
-    .form-group select {
-      width: 60%;
-      height: 48px;
-      padding: 0 10px;
-      border-radius: 6px;
-      border: 1px solid #444;
-      background: #223146;
-      color: white;
-      font-size: 16px;
-      box-sizing: border-box;
-    }
-    .form-group select {
-      background-image: url('data:image/svg+xml;utf8,<svg fill="white" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
-      background-repeat: no-repeat;
-      background-position: right 10px center;
-      background-size: 20px;
-    }
-    .calculate-btn {
-      width: 100%;
-      padding: 12px;
-      background-color: #3399ff;
-      border: none;
-      color: white;
-      border-radius: 6px;
-      cursor: pointer;
-      margin-top: 10px;
-      font-size: 16px;
-    }
-    .export-buttons {
-      margin-top: 20px;
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-    }
-    .table-scroll {
-      overflow-x: auto;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-      font-size: 14px;
-      background-color: #1e2e3e;
-    }
-    th, td {
-      border: 1px solid #444;
-      padding: 8px;
-      text-align: center;
-    }
-    th {
-      background-color: #3d4a5a;
-    }
-    .total-row {
-      font-weight: bold;
-      background-color: #0b5ed7;
-    }
-    .footer {
-      text-align: center;
-      font-size: 14px;
-      color: #aaa;
-      margin-top: 40px;
-    }
+<meta charset="UTF-8">
 
-.bottom-bar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 56px;
-  background: #0d2d5c;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-  z-index: 1000;
-}
+<meta
+name="viewport"
+content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
 
-.bottom-btn {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-size: 11px;
-  color: white;
-  border: none;
-  background: none;
-  padding: 2px;
-}
+<title>កម្មវិធី​គណនាឥណទាន</title>
 
-.bottom-btn img {
-  margin-bottom: 2px;
-  pointer-events: none;
-}
-    .badge {
-  position: absolute;
-  top: -4px;
-  right: -8px;
-  background: red;
-  color: white;
-  font-size: 10px;
-  padding: 2px 6px;
-  border-radius: 50%;
-  font-weight: bold;
-}
-  </style>
+<meta
+name="theme-color"
+content="#032d73">
+
+<link
+rel="stylesheet"
+href="../../assets/css/main.css">
+
+<link
+rel="stylesheet"
+href="../../assets/css/loanCalculate.css">
+
+<link
+rel="stylesheet"
+href="/CM_Pro/assets/css/global-splash.css">
+
+<link rel="stylesheet" href="/CM_Pro/assets/css/toast.css">
+
 </head>
+
 <body>
-  <div class="header">
-    <button class="back" onclick="window.location.href='../index.html'">←</button>
-    <div class="title">កម្មវិធី​គណនាឥណទាន</div>
-  </div>
 
-  <div class="container">
-    <div class="form-group"><label>ទំហំឥណទាន:</label><input id="loanAmount" type="number" /></div>
-    <div class="form-group"><label>ប្រាក់សំណងខួប:</label><input id="periodicRepayment" type="number" /></div>
-    <div class="form-group"><label>រយៈពេលខ្ចី (ខែ):</label><input id="term" type="number" /></div>
-    <div class="form-group"><label>អត្រា​ការ​ប្រាក់​ប្រចាំឆ្នាំ (%):</label><input id="interestRate" type="number" /></div>
-    <div class="form-group">
-      <label>របៀបសងប្រាក់:</label>
-      <select id="paymentMethod">
-        <option value="Linear">បង់ថយ</option>
-        <option value="Annuity">បង់ថេរ</option>
-      </select>
-    </div>
-    <button class="calculate-btn" onclick="calculateLoan()">គណនា</button>
-    <div class="export-buttons">
-      <button onclick="exportToPDF()"><img src="https://img.icons8.com/color/48/pdf.png" alt="PDF" width="32" /></button>
-      <button onclick="exportToExcel()"><img src="https://img.icons8.com/color/48/ms-excel.png" alt="Excel" width="32" /></button>
-    </div>
-    <div id="exportSection"></div>
-  </div>
+<!-- ========================= -->
+<!-- OFFLINE -->
+<!-- ========================= -->
 
-  <!-- Footer -->
-<div class="bottom-bar">
-  <button class="bottom-btn active" onclick="window.location.href='../index.html'">
-    <img src="../icons/Home.png" width="24" height="24" /><div>Home</div>
-  </button>
-  <button class="bottom-btn" onclick="window.location.href='../Setting/index.html'">
-    <img src="../icons/Setting.png" width="24" height="24" /><div>Setting</div>
-  </button>
-  <button class="bottom-btn" onclick="window.location.href='../notifications/index.html'">
-  <div style="position: relative;">
-    <img src="../icons/Notification.png" width="24" height="24" />
-    <span id="notif-badge" class="badge" style="display: none;"></span>
-  </div>
-  <div>Notification</div>
-</button>
+<div id="offlineBanner">
+
+⚠️ No Internet Connection
+
 </div>
-  
+
+<!-- ========================= -->
+<!-- CONFIG -->
+<!-- ========================= -->
+
+<script src="../../config/api.js"></script>
+
+<script src="../../config/auth.js"></script>
+
+<script src="../../config/session.js"></script>
+
+<!-- ========================= -->
+<!-- COMPONENT -->
+<!-- ========================= -->
+
+<script src="/CM_Pro/shared/topbar.js"></script>
+
+<script src="/CM_Pro/assets/js/global-splash.js"></script>
+
+<script src="/CM_Pro/assets/js/toast.js"></script>
+
+<!-- ========================= -->
+<!-- TOPBAR -->
+<!-- ========================= -->
+
+<div id="topbar-container"></div>
+
+<!-- ========================= -->
+<!-- PAGE -->
+<!-- ========================= -->
+
+<div class="page-container">
+
+<div class="form-card">
+
+<div class="form-group">
+
+<label for="loanAmount">ទំហំឥណទាន</label>
+
+<input type="number" id="loanAmount">
+
+</div>
+
+<div class="form-group">
+
+<label for="periodicRepayment">ប្រាក់សំណងខួប</label>
+
+<input type="number" id="periodicRepayment">
+
+</div>
+
+<div class="form-group">
+
+<label for="term">រយៈពេលខ្ចី (ខែ)</label>
+
+<input type="number" id="term">
+
+</div>
+
+<div class="form-group">
+
+<label for="interestRate">អត្រា​ការ​ប្រាក់​ប្រចាំឆ្នាំ (%)</label>
+
+<input type="number" id="interestRate">
+
+</div>
+
+<div class="form-group">
+
+<label for="paymentMethod">របៀបសងប្រាក់</label>
+
+<select id="paymentMethod">
+
+<option value="Linear">បង់ថយ</option>
+
+<option value="Annuity">បង់ថេរ</option>
+
+</select>
+
+</div>
+
+<button class="calculate-btn" id="btnCalculate">
+
+គណនា
+
+</button>
+
+<div class="export-buttons">
+
+<button id="btnPDF">
+
+<img src="https://img.icons8.com/color/48/pdf.png" alt="PDF" width="32">
+
+</button>
+
+<button id="btnExcel">
+
+<img src="https://img.icons8.com/color/48/ms-excel.png" alt="Excel" width="32">
+
+</button>
+
+</div>
+
+</div>
+
+<div id="exportSection"></div>
+
+</div>
+
+<!-- ========================= -->
+<!-- LOADING -->
+<!-- ========================= -->
+
+<div
+id="loadingBox"
+class="loading-box"
+style="display:none;">
+
+<div class="spinner"></div>
+
+</div>
+
+<!-- ========================= -->
+<!-- BOTTOM -->
+<!-- ========================= -->
+
+<div id="bottomnav-container"></div>
+
+<!-- ========================= -->
+<!-- COMPONENT LOADER -->
+<!-- ========================= -->
+
+<script>
+
+let loaded=0;
+
+async function loadComponent(id,file){
+
+try{
+
+const useCache=
+
+id!=="topbar-container";
+
+const cached=
+
+useCache
+
+?
+
+sessionStorage.getItem(
+
+"comp_"+id
+
+)
+
+:
+
+null;
+
+if(cached){
+
+document.getElementById(id).innerHTML=
+
+cached;
+
+}else{
+
+const response=
+
+await fetch(file);
+
+const html=
+
+await response.text();
+
+document.getElementById(id).innerHTML=
+
+html;
+
+if(useCache){
+
+sessionStorage.setItem(
+
+"comp_"+id,
+
+html
+
+);
+
+}
+
+}
+
+if(id==="topbar-container"){
+
+initTopbar({
+
+title:"កម្មវិធី​គណនាឥណទាន",
+
+showBack:true,
+
+showLogo:false,
+
+showProfile:false
+
+});
+
+}
+
+}catch(error){
+
+console.error(error);
+
+}finally{
+
+loaded++;
+
+if(loaded>=2){
+
+setTimeout(()=>{
+
+if(typeof hideGlobalSplash==="function"){
+
+hideGlobalSplash();
+
+}
+
+},300);
+
+}
+
+}
+
+}
+
+function updateOnlineStatus(){
+
+document.getElementById(
+
+"offlineBanner"
+
+).style.display=
+
+navigator.onLine
+
+?
+
+"none"
+
+:
+
+"block";
+
+}
+
+window.addEventListener(
+
+"online",
+
+updateOnlineStatus
+
+);
+
+window.addEventListener(
+
+"offline",
+
+updateOnlineStatus
+
+);
+
+updateOnlineStatus();
+
+loadComponent(
+
+"topbar-container",
+
+"/CM_Pro/components/topbar.html"
+
+);
+
+loadComponent(
+
+"bottomnav-container",
+
+"/CM_Pro/components/bottomnav.html"
+
+);
+
+// =========================
+// Notification Badge
+// =========================
+
+setTimeout(()=>{
+
+if(typeof loadNotificationBadge==="function"){
+
+loadNotificationBadge();
+
+}
+
+},500);
+
+</script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
 
-<script>
-// ✅ Protect Page by Token
-const token = sessionStorage.getItem('token');
-if (!token) {
-  alert("Session expired or unauthorized access.");
-  window.location.href = "../login.html";
-}
+<!-- NOTIFICATION BADGE -->
 
-// ✅ Auto Logout Setup
-const AUTO_LOGOUT_MINUTES = 1;
-let logoutTimer;
-function resetLogoutTimer() {
-  clearTimeout(logoutTimer);
-  logoutTimer = setTimeout(() => {
-    sessionStorage.clear();
-    alert("Session expired due to inactivity. Please log in again.");
-    window.location.href = "../login.html";
-  }, AUTO_LOGOUT_MINUTES * 60 * 1000);
-}
-function setupAutoLogoutEvents() {
-  ['mousemove', 'mousedown', 'keydown', 'touchstart', 'touchmove', 'scroll'].forEach(event => {
-    document.addEventListener(event, resetLogoutTimer, true);
-  });
-  resetLogoutTimer();
-}
-window.addEventListener('load', setupAutoLogoutEvents);
+<script src="/CM_Pro/assets/js/notification-badge.js"></script>
+<script src="../../assets/js/loanCalculate.js"></script>
 
-// ✅ Your Original Scripts Start Here
-
-// Helper: format number like 1,000,000.00
-function format(num) {
-  return num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-}
-
-function calculateLoan() {
-  const loan = parseFloat(document.getElementById("loanAmount").value);
-  const repayment = parseFloat(document.getElementById("periodicRepayment").value);
-  const term = parseFloat(document.getElementById("term").value);
-  const interestRate = parseFloat(document.getElementById("interestRate").value);
-  const method = document.getElementById("paymentMethod").value;
-  const rate = (interestRate / 100) / 12;
-
-  let loanVal = loan, payVal = repayment, months = term;
-  const missing = [isNaN(loan), isNaN(repayment), isNaN(term)].filter(Boolean).length;
-  if (missing !== 1) {
-    alert("សូមទុកប្រអប់មួយ ដើម្បីគណនា។");
-    return;
-  }
-
-  if (isNaN(loanVal)) {
-    loanVal = method === "Annuity"
-      ? payVal * (1 - Math.pow(1 + rate, -months)) / rate
-      : payVal / ((1 / months) + rate);
-  } else if (isNaN(payVal)) {
-    payVal = method === "Annuity"
-      ? (loanVal * rate) / (1 - Math.pow(1 + rate, -months))
-      : (loanVal / months) + (loanVal * rate);
-  } else if (isNaN(months)) {
-    months = Math.ceil(Math.log(payVal / (payVal - loanVal * rate)) / Math.log(1 + rate));
-  }
-
-  let balance = loanVal;
-  let totalPrincipal = 0, totalInterest = 0, totalPayment = 0;
-
-  let html = `<div class="pdf-wrapper"><div style="text-align:center; font-size:22px; font-weight:bold; margin-bottom:15px;">តារាងកាលវិភាគសងប្រាក់</div>`;
-  html += `<table><tr><th>ទំហំឥណទាន</th><td>${format(loanVal)}</td></tr>
-    <tr><th>ប្រាក់សំណងខួប</th><td>${format(payVal)}</td></tr>
-    <tr><th>រយៈពេលខ្ចី (ខែ)</th><td>${months}</td></tr>
-    <tr><th>អត្រា​ការ​ប្រាក់​ប្រចាំឆ្នាំ</th><td>${interestRate}%</td></tr>
-    <tr><th>របៀបសងប្រាក់</th><td>${method === "Annuity" ? "បង់ថេរ" : "បង់ថយ"}</td></tr></table>`;
-
-  html += `<div class="table-scroll"><table><thead><tr>
-    <th>ល.រ</th><th>ប្រាក់ដើម</th><th>ការប្រាក់</th><th>សរុបបង់</th><th>សមតុល្យ</th>
-    </tr></thead><tbody>`;
-
-  for (let i = 1; i <= months; i++) {
-    const interest = balance * rate;
-    const principal = method === "Annuity" ? payVal - interest : loanVal / months;
-    const payment = method === "Annuity" ? payVal : principal + interest;
-    balance -= principal;
-    if (balance < 0) balance = 0;
-
-    totalPrincipal += principal;
-    totalInterest += interest;
-    totalPayment += payment;
-
-    html += `<tr>
-      <td>${i}</td>
-      <td>${format(principal)}</td>
-      <td>${format(interest)}</td>
-      <td>${format(payment)}</td>
-      <td>${format(balance)}</td>
-    </tr>`;
-  }
-
-  html += `<tr class="total-row">
-    <td>សរុប</td>
-    <td>${format(totalPrincipal)}</td>
-    <td>${format(totalInterest)}</td>
-    <td>${format(totalPayment)}</td>
-    <td>-</td>
-  </tr></tbody></table></div></div>`;
-
-  document.getElementById("exportSection").innerHTML = html;
-}
-
-async function exportToPDF() {
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF('p', 'pt', 'a4');
-  const exportSection = document.getElementById("exportSection");
-  if (!exportSection || exportSection.innerHTML.trim() === "") {
-    alert("សូមគណនាមុននឹងនាំចេញ។");
-    return;
-  }
-
-  const translatedSection = exportSection.cloneNode(true);
-  translatedSection.querySelectorAll("th, td").forEach(cell => {
-    cell.textContent = cell.textContent
-      .replace("ល.រ", "No")
-      .replace("ប្រាក់ដើម", "Principal")
-      .replace("ការប្រាក់", "Interest")
-      .replace("សរុបបង់", "Total Payment")
-      .replace("សមតុល្យ", "Balance")
-      .replace("ទំហំឥណទាន", "Loan Amount")
-      .replace("ប្រាក់សំណងខួប", "Periodic Repayment")
-      .replace("រយៈពេលខ្ចី (ខែ)", "Loan Term (months)")
-      .replace("អត្រា​ការ​ប្រាក់​ប្រចាំឆ្នាំ", "Annual Interest Rate")
-      .replace("របៀបសងប្រាក់", "Repayment Method")
-      .replace("បង់ថេរ", "Annuity")
-      .replace("បង់ថយ", "Linear")
-      .replace("សរុប", "Total");
-  });
-
-  const titleBox = translatedSection.querySelector(".pdf-wrapper > div");
-  if (titleBox) titleBox.textContent = "Repayment Schedule";
-
-  const tables = translatedSection.querySelectorAll("table");
-  let finalY = 40;
-  tables.forEach(table => {
-    doc.autoTable({
-      html: table,
-      startY: finalY,
-      styles: { fontSize: 10, halign: 'center' },
-      headStyles: { fillColor: [13, 45, 92], textColor: 255 },
-    });
-    finalY = doc.lastAutoTable.finalY + 20;
-  });
-
-  doc.save("Repayment_Schedule.pdf");
-}
-
-function exportToExcel() {
-  const exportSection = document.getElementById("exportSection");
-  if (!exportSection || exportSection.innerHTML.trim() === "") {
-    alert("សូមគណនាមុននឹងនាំចេញ។");
-    return;
-  }
-
-  const tables = exportSection.querySelectorAll("table");
-  const wb = XLSX.utils.book_new();
-  let allData = [];
-
-  tables.forEach((table, index) => {
-    const sheet = XLSX.utils.table_to_sheet(table);
-    const data = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-    if (index > 0) allData.push([""]);
-    allData = allData.concat(data);
-  });
-
-  const ws = XLSX.utils.aoa_to_sheet(allData);
-  XLSX.utils.book_append_sheet(wb, ws, "Repayment Schedule");
-  XLSX.writeFile(wb, "Repayment_Schedule.xlsx");
-}
- </script> 
-  
-<!-- ✅ Load shared notification script -->
-<script src="../notifications/checkNotification.js"></script>
-
-<!-- ✅ Initialize after DOM ready -->
-<script>
-  window.addEventListener("DOMContentLoaded", () => {
-    setupAutoLogoutEvents();
-    checkNotification();
-  });
-</script>
 </body>
+
 </html>
